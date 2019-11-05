@@ -6,7 +6,8 @@ import Container from "react-bootstrap/Container";
 import VideosDetailsPage from 'app/pages/projects/videos/details';
 import VideosPage from 'app/pages/projects/videos';
 import TestComponent from '../test';
-import SPAHomePage from 'app/pages/spa';
+import OrganizationsPage from 'app/pages/organizations/list';
+import OrganizationDetailsPage from 'app/pages/organizations/details';
 
 interface LoginParams {
 }
@@ -47,9 +48,9 @@ export class Dashboard extends React.Component<Props, State> {
             <Switch>
               <Route exact path="/spa/videos/:id" render={(props) => <VideosDetailsPage {...props} />} />
               <Route path="/spa/videos" component={VideosPage} />
-              <Route path="/spa" component={SPAHomePage} />
+              <Route path="/organizations/:login" component={OrganizationDetailsPage} />
+              <Route exact path="/organizations" component={OrganizationsPage} />
               <Route exact path="/" component={TestComponent} />
-
             </Switch>
           </BrowserRouter>
         </Container>

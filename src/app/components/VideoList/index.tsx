@@ -13,7 +13,7 @@ export default class VideoList extends React.Component<VideoListProps> {
         return (
             <ListGroup>
                 {this.props.videos.map(function (video, index) {
-                    return (<VideoListItem video={video} ></VideoListItem>)
+                    return (<VideoListItem key={video.id} video={video} ></VideoListItem>)
                 })}
             </ListGroup>
         )

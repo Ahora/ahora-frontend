@@ -1,0 +1,30 @@
+{
+    "rightSideBarMenu.enterTagMode": "Enter tag mode",
+    "rightSideBarMenu.closeTagMode": "Close tag mode",
+    "rightSideBarMenu.yes": "Yes",
+    "rightSideBarMenu.no": "No",
+    "rightSideBarMenu.noField": "No field",
+    "rightSideBarMenu.unseeded": "Unseeded",
+    "rightSideBarMenu.zoom": "Zoom",
+    "rightSideBarMenu.or": "Or",
+    "rightSideBarMenu.save": "Save",
+    "rightSideBarMenu.cancel": "Cancel",
+    "rightSideBarMenu.delete": "Delete",
+    "rightSideBarMenu.business": "Business",
+    "rightSideBarMenu.traning": "Traning",
+    "rightSideBarMenu.DeletePhoto": "Delete photo",
+    "rightSideBarMenu.AreYouSure": "Flag",
+    "rightSideBarMenu.flag": "Flag",
+    "rightSideBarMenu.healthy": "Healthy",
+    "rightSideBarMenu.expertReview": "Expert review",
+    "rightSideBarMenu.review": "Review",
+    "rightSideBarMenu.done": "Done",
+    "rightSideBarMenu.copyToBlackList": "Copy to blacklist",
+    "rightSideBarMenu.confidence": "Confidence",
+    "rightSideBarMenu.tags": "Tags",
+    "rightSideBarMenu.clearAllTags": "Clear all tags",
+    "rightSideBarMenu.exit": "Exit",
+    "rightSideBarMenu.editingTag": "Editing tag"
+
+
+}

@@ -23,7 +23,7 @@ export default class VideoListItem extends React.Component<VideoListItemProps> {
         return (
             <ListGroup.Item key={video.id}>
                 <Media>
-                    <a href={`/spa/videos/${video.id}`}>
+                    <a href={`videos/${video.id}`}>
                         <img width={120}
                             height={90}
                             className="mr-3"
@@ -31,8 +31,8 @@ export default class VideoListItem extends React.Component<VideoListItemProps> {
                             alt={`${video.subject}`}
                         /></a>
                     <Media.Body>
-                        <h5><a href={`/spa/videos/${video.id}`}>{video.subject}</a></h5>
-                        <p><a href={`/spa/videos/${video.id}`}>{video.description}</a></p>
+                        <h5><a href={`videos/${video.id}`}>{video.subject}</a></h5>
+                        <p><a href={`videos/${video.id}`}>{video.description}</a></p>
                         <Badge variant="primary">sdsa</Badge>
                     </Media.Body>
                 </Media>

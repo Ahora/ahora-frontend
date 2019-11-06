@@ -3,8 +3,6 @@ import { RouteComponentProps } from 'react-router';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
-import VideosDetailsPage from 'app/pages/projects/videos/details';
-import VideosPage from 'app/pages/projects/videos';
 import TestComponent from '../test';
 import OrganizationsPage from 'app/pages/organizations/list';
 import OrganizationDetailsPage from 'app/pages/organizations/details';
@@ -46,9 +44,7 @@ export class Dashboard extends React.Component<Props, State> {
         <Container>
           <BrowserRouter>
             <Switch>
-              <Route exact path="/spa/videos/:id" render={(props) => <VideosDetailsPage {...props} />} />
-              <Route path="/spa/videos" component={VideosPage} />
-              <Route path="/organizations/:login" component={OrganizationDetailsPage} />
+              <Route path="/organizations/:login/:section?" component={OrganizationDetailsPage} />
               <Route exact path="/organizations" component={OrganizationsPage} />
               <Route exact path="/" component={TestComponent} />
             </Switch>

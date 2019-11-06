@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router';
 
 interface VideosDetailsPageState {
     video: Doc | null;
+
 }
 
 interface VideosDetailsPageParams {
@@ -21,7 +22,7 @@ export default class VideosDetailsPage extends React.Component<Props, VideosDeta
     constructor(props: Props) {
         super(props);
         this.state = {
-            video: null
+            video: null,
         };
     }
 
@@ -31,6 +32,7 @@ export default class VideosDetailsPage extends React.Component<Props, VideosDeta
             video: video
         });
     }
+
     render = () => {
         const video = this.state.video;
         if (video) {
@@ -38,7 +40,7 @@ export default class VideosDetailsPage extends React.Component<Props, VideosDeta
                 <div>
                     <h2>video details: {video.subject}</h2>
                     <div className="embed-responsive embed-responsive-16by9">
-                        <iframe width="560" height="315" allowFullScreen allowTransparency
+                        <iframe width="560" height="315" allowFullScreen
                             src={`https://www.youtube.com/embed/${video.metadata.youtubeId}?&autoplay=1`}></iframe>
                     </div>
                     <div>{video.description}</div>

@@ -45,7 +45,7 @@ export class Dashboard extends React.Component<Props, State> {
           <BrowserRouter>
             <Switch>
               <Route path="/organizations/:login/:section?" component={OrganizationDetailsPage} />
-              <Route exact path="/organizations" component={OrganizationsPage} />
+              <Route path="/organizations" component={OrganizationsPage} />
               <Route exact path="/" component={TestComponent} />
             </Switch>
           </BrowserRouter>

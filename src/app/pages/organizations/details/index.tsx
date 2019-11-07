@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import VideosPage from 'app/pages/projects/videos';
 import VideosDetailsPage from 'app/pages/projects/videos/details';
 import Nav from "react-bootstrap/Nav";
+import LabelsPage from 'app/pages/labels';
 
 interface VideosDetailsPageState {
     organization: Organization | null;
@@ -57,11 +58,15 @@ export default class OrganizationDetailsPage extends React.Component<Props, Vide
                         <Nav.Item>
                             <Nav.Link eventKey="milestones" href={`/organizations/${organization.login}/milestones`}>Milestones</Nav.Link>
                         </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link eventKey="labels" href={`/organizations/${organization.login}/labels`}>Labels</Nav.Link>
+                        </Nav.Item>
                     </Nav>
                     <BrowserRouter>
                         <Switch>
                             <Route path="/organizations/:login/videos/:id" render={(props) => <VideosDetailsPage {...props} />} />
                             <Route path={`/organizations/:login/videos`} component={VideosPage} />
+                            <Route path={`/organizations/:login/labels`} component={LabelsPage} />
                         </Switch>
                     </BrowserRouter>
                 </div>

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { getOrganizations, Organization } from 'app/services/organizations';
 import ListGroup from 'react-bootstrap/ListGroup';
+import { Link } from 'react-router-dom';
 
 interface OrganizationsPageState {
     organizations: Organization[];
@@ -28,7 +29,9 @@ export default class OrganizationsPage extends React.Component<any, Organization
                     <h1>Organizations</h1>
                     <ListGroup>
                         {this.state.organizations.map((org) => {
-                            return <ListGroup.Item key={org.node_id}>{org.login}</ListGroup.Item>
+                            return <ListGroup.Item key={org.node_id}>
+                                <Link to={`organizations/${org.login}`}>{org.login}</Link>
+                            </ListGroup.Item>
                         })}
                     </ListGroup>
                 </div>

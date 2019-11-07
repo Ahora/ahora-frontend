@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { RouteComponentProps, Switch, Route } from 'react-router';
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import TestComponent from '../test';
 import OrganizationsPage from 'app/pages/organizations/list';
 import OrganizationDetailsPage from 'app/pages/organizations/details';
+import { BrowserRouter } from 'react-router-dom';
 
 interface LoginParams {
 }

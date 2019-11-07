@@ -1,15 +1,18 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { IntlProvider  } from 'react-intl';
-
+import { IntlProvider } from 'react-intl';
+import { createBrowserHistory } from 'history';
+import { ConnectedRouter } from 'react-router-redux';
+import { Provider } from 'react-redux';
 import { App } from './app';
 
 // loading general styles and fonts
 import './general-styles.scss';
+import configureStore from 'app/store';
 
 const messages_en = require("./translations/en.json");
 const messages_es = require("./translations/es.json");
-const messages: { [id: string] : any } = {  
+const messages: { [id: string]: any } = {
   'en': messages_en,
   'es': messages_es
 };
@@ -18,10 +21,18 @@ if (!messages[language]) {
   language = 'en';
 }
 
+const history = createBrowserHistory();
+const store = configureStore(history);
+
 // prepare store
-ReactDOM.render(  
-  <IntlProvider locale={language} messages={messages[language]}>
-      <App />
-  </IntlProvider>,
+ReactDOM.render(
+  <Provider store={store}>
+
+    <IntlProvider locale={language} messages={messages[language]}>
+      <ConnectedRouter history={history} store={store}>
+        <App />
+      </ConnectedRouter>
+    </IntlProvider>,
+  </Provider>,
   document.getElementById('root')
 );

@@ -27,7 +27,6 @@ const store = configureStore(history);
 // prepare store
 ReactDOM.render(
   <Provider store={store}>
-
     <IntlProvider locale={language} messages={messages[language]}>
       <ConnectedRouter history={history} store={store}>
         <App />

@@ -1,12 +1,14 @@
 import { Label } from "app/services/labels";
 
 export interface LabelsState {
-    labels: Label[]
+    labels: Label[],
+    loading: boolean
 }
 
 // src/store/chat/types.ts
-export const ADD_LABEL = 'ADD_LABEL'
-export const DELETE_LABEL = 'DELETE_LABEL'
+export const ADD_LABEL = 'ADD_LABEL';
+export const DELETE_LABEL = 'DELETE_LABEL';
+export const FETCH_LABELS = 'FETCH_LABELS';
 
 interface AddLabelAction {
     type: typeof ADD_LABEL
@@ -20,4 +22,8 @@ interface DeleteLabelAction {
     }
 }
 
-export type LabelActionTypes = AddLabelAction | DeleteLabelAction
+interface FetchLabelsAction {
+    type: typeof FETCH_LABELS
+}
+
+export type LabelActionTypes = AddLabelAction | DeleteLabelAction | FetchLabelsAction

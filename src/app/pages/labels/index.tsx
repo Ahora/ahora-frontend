@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { Label, getLabels } from 'app/services/labels';
+import { Label } from 'app/services/labels';
 import Button from 'react-bootstrap/Button';
 import Nav from 'react-bootstrap/Nav';
 import NavItem from 'react-bootstrap/NavItem';
+import { connect } from 'react-redux';
+import { ApplicationState } from 'app/store';
+
 
 interface LabelRow {
     label: Label;
@@ -10,21 +13,24 @@ interface LabelRow {
 }
 
 interface LabelsPageState {
-    labels: LabelRow[];
     addNewLabel: boolean;
 }
 
-export default class LabelsPage extends React.Component<any, LabelsPageState> {
+interface LabelsPageProps {
+    labels: LabelRow[];
+    loading: boolean;
+}
 
-    constructor(props: any) {
+class LabelsPage extends React.Component<LabelsPageProps, LabelsPageState> {
+    constructor(props: LabelsPageProps) {
         super(props);
         this.state = {
-            addNewLabel: false,
-            labels: []
+            addNewLabel: false
         };
     }
 
     async componentDidMount() {
+        /*
         const labels: Label[] = await getLabels(1);
         const labelRows: LabelRow[] = labels.map((label) => {
             return { label, editable: false };
@@ -33,6 +39,7 @@ export default class LabelsPage extends React.Component<any, LabelsPageState> {
         this.setState({
             labels: labelRows
         });
+        */
     }
 
     markAsEditable(row: LabelRow) {
@@ -54,7 +61,8 @@ export default class LabelsPage extends React.Component<any, LabelsPageState> {
             addNewLabel: !this.state.addNewLabel
         })
     }
-    render = () => {
+
+    render() {
         return (
             <div>
                 <h2>Labels</h2>
@@ -82,7 +90,7 @@ export default class LabelsPage extends React.Component<any, LabelsPageState> {
 
                     </thead>
                     <tbody>
-                        {this.state.labels.map((labelRow) => {
+                        {this.props.labels.map((labelRow) => {
                             return (
                                 <tr className="pt-3" key={labelRow.label.id!}>
                                     <td>{labelRow.label.name}</td>
@@ -106,3 +114,10 @@ export default class LabelsPage extends React.Component<any, LabelsPageState> {
         );
     };
 }
+
+export default connect((store: ApplicationState, ownProps: LabelsPageProps) => {
+    return {
+        labels: store.labels.labels,
+        loading: store.labels.loading
+    }
+})(LabelsPage);

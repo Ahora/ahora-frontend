@@ -117,7 +117,7 @@ class LabelsPage extends React.Component<LabelsPageProps, LabelsPageState> {
 
 export default connect((store: ApplicationState, ownProps: LabelsPageProps) => {
     return {
-        labels: store.labels.labels,
+        labels: store.labels.labels.map(label => { return { editable: false, label } }),
         loading: store.labels.loading
     }
-})(LabelsPage);
+})(LabelsPage as any);

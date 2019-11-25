@@ -5,6 +5,7 @@ import Nav from 'react-bootstrap/Nav';
 import NavItem from 'react-bootstrap/NavItem';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
+import { requestLabelsData } from 'app/store/labels/actions';
 
 
 interface LabelRow {
@@ -21,8 +22,16 @@ interface LabelsPageProps {
     loading: boolean;
 }
 
-class LabelsPage extends React.Component<LabelsPageProps, LabelsPageState> {
-    constructor(props: LabelsPageProps) {
+interface DispatchProps {
+    requestLabelsData(): void;
+}
+
+interface AllProps extends LabelsPageProps, DispatchProps {
+
+}
+
+class LabelsPage extends React.Component<AllProps, LabelsPageState> {
+    constructor(props: AllProps) {
         super(props);
         this.state = {
             addNewLabel: false
@@ -30,6 +39,8 @@ class LabelsPage extends React.Component<LabelsPageProps, LabelsPageState> {
     }
 
     async componentDidMount() {
+
+        this.props.requestLabelsData();
         /*
         const labels: Label[] = await getLabels(1);
         const labelRows: LabelRow[] = labels.map((label) => {
@@ -115,9 +126,18 @@ class LabelsPage extends React.Component<LabelsPageProps, LabelsPageState> {
     };
 }
 
-export default connect((store: ApplicationState, ownProps: LabelsPageProps) => {
+
+const mapStateToProps = (store: ApplicationState) => {
     return {
         labels: store.labels.labels.map(label => { return { editable: false, label } }),
         loading: store.labels.loading
+    };
+};
+
+const mapDispatchToProps = (dispatch: any): DispatchProps => {
+    return {
+        requestLabelsData: () => dispatch(requestLabelsData())
     }
-})(LabelsPage as any);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LabelsPage as any); 

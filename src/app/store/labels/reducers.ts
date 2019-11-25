@@ -1,4 +1,4 @@
-import { LabelsState, LabelActionTypes, ADD_LABEL, DELETE_LABEL } from './types'
+import { LabelsState, LabelActionTypes, ADD_LABEL, DELETE_LABEL, RECEIVE_LABELS } from './types'
 
 const initialState: LabelsState = {
     labels: [],
@@ -9,6 +9,8 @@ export function labelReducer(state = initialState, action: LabelActionTypes): La
     switch (action.type) {
         case ADD_LABEL:
             return { ...state, labels: [...state.labels, action.payload] }
+        case RECEIVE_LABELS:
+            return { ...state, labels: action.data }
         case DELETE_LABEL:
             return {
                 ...state,

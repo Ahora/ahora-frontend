@@ -11,9 +11,9 @@ export interface Label {
 
 
 const labelsClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{organizationId}/labels/{:id}");
-export const getLabels = async (organizationId: number): Promise<Label[]> => {
+export const getLabels = async (): Promise<Label[]> => {
     const result = await labelsClient.get({
-        params: { organizationId }
+        params: { organizationId: 1 }
     });
     return result.data;
 }

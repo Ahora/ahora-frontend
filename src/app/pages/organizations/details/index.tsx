@@ -8,6 +8,7 @@ import Nav from "react-bootstrap/Nav";
 import LabelsPage from 'app/pages/labels';
 import DocsPage from 'app/pages/docs';
 import DocsDetailsPage from 'app/pages/docs/details';
+import AddDocPage from 'app/pages/docs/add';
 
 interface VideosDetailsPageState {
     organization: Organization | null;
@@ -72,13 +73,8 @@ export default class OrganizationDetailsPage extends React.Component<Props, Vide
                             <Route path="/organizations/:login/videos/:id" render={(props) => <VideosDetailsPage {...props} />} />
                             <Route path={`/organizations/:login/videos`} component={VideosPage} />
                             <Route path={`/organizations/:login/labels`} component={LabelsPage} />
-                            <Route path={`/organizations/:login/:docType/:id`} component={DocsDetailsPage} />id: number;
-    subject: string;
-    description: string;
-    docType: string;
-    userAlias: string;
-    metadata: any;
-    organizationId: number;
+                            <Route path={`/organizations/:login/:docType/add`} component={AddDocPage} />
+                            <Route path={`/organizations/:login/:docType/:id`} component={DocsDetailsPage} />
                             <Route path={`/organizations/:login/:docType`} component={DocsPage} />
                         </Switch>
                     </BrowserRouter>

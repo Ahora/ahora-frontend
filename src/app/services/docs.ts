@@ -45,3 +45,12 @@ export const getDoc = async (login: string, id: number): Promise<Doc> => {
 
     return result.data;
 }
+
+export const addDoc = async (login: string, docType: string, doc: Doc): Promise<Doc> => {
+    doc.docType = docType;
+    const result = await docsClient.post({
+        params: { login },
+        data: doc
+    });
+    return result.data;
+}

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Doc, getDocs } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
+import Button from 'react-bootstrap/Button';
 
 interface DocsPageState {
     docs: Doc[];
@@ -36,6 +37,9 @@ class DocsPage extends React.Component<Props, DocsPageState> {
         return (
             <div>
                 <h2>{this.props.match.params.docType}</h2>
+                <Button variant="primary" type="button" href={`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/add`}>
+                    Add
+                </Button>
                 <table>
                     <thead>
                         <tr>

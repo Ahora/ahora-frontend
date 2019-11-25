@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { RouteComponentProps, Switch, Route } from 'react-router';
-import { Organization, getOrganizations } from 'app/services/organizations';
+import { Organization, getOrganizations } from '../../../services/organizations';
 import { BrowserRouter } from 'react-router-dom';
 import VideosPage from 'app/pages/projects/videos';
 import VideosDetailsPage from 'app/pages/projects/videos/details';
 import Nav from "react-bootstrap/Nav";
 import LabelsPage from 'app/pages/labels';
+import DocsPage from 'app/pages/docs';
+import DocsDetailsPage from 'app/pages/docs/details';
 
 interface VideosDetailsPageState {
     organization: Organization | null;
@@ -70,6 +72,14 @@ export default class OrganizationDetailsPage extends React.Component<Props, Vide
                             <Route path="/organizations/:login/videos/:id" render={(props) => <VideosDetailsPage {...props} />} />
                             <Route path={`/organizations/:login/videos`} component={VideosPage} />
                             <Route path={`/organizations/:login/labels`} component={LabelsPage} />
+                            <Route path={`/organizations/:login/:docType/:id`} component={DocsDetailsPage} />id: number;
+    subject: string;
+    description: string;
+    docType: string;
+    userAlias: string;
+    metadata: any;
+    organizationId: number;
+                            <Route path={`/organizations/:login/:docType`} component={DocsPage} />
                         </Switch>
                     </BrowserRouter>
                 </div>

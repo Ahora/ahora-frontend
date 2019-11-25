@@ -19,7 +19,7 @@ export default class VideosPage extends React.Component<any, VideosPageState> {
   }
 
   async componentDidMount() {
-    const videos: Doc[] = await getDocs("video");
+    const videos: Doc[] = await getDocs("ahora", "video");
     this.setState({
       videos
     });

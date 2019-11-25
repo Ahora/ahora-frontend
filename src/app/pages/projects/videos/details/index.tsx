@@ -27,7 +27,7 @@ export default class VideosDetailsPage extends React.Component<Props, VideosDeta
     }
 
     async componentDidMount() {
-        const video: Doc = await getDoc(parseInt(this.props.match.params.id));
+        const video: Doc = await getDoc("ahora", parseInt(this.props.match.params.id));
         this.setState({
             video: video
         });

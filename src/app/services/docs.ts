@@ -21,21 +21,25 @@ export interface VideoDoc extends Doc {
 
 
 
-const docsClient: RestCollectorClient = new RestCollectorClient("/api/docs/{id}");
-export const getDocs = async (docType: string | string[]): Promise<Doc[]> => {
+const docsClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{login}/docs/{id}");
+export const getDocs = async (login: string, docType: string | string[]): Promise<Doc[]> => {
     const result = await docsClient.get({
+        params: {
+            login
+        },
         query: {
-            docType: docType
+            docType,
         }
     });
 
     return result.data;
 }
 
-export const getDoc = async (id: number): Promise<Doc> => {
+export const getDoc = async (login: string, id: number): Promise<Doc> => {
     const result = await docsClient.get({
         params: {
-            id
+            id,
+            login
         }
     });
 

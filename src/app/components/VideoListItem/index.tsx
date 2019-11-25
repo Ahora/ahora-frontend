@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { VideoDoc } from 'app/services/videos';
+import { VideoDoc } from 'app/services/docs';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Media from 'react-bootstrap/Media';
 import Badge from 'react-bootstrap/Badge';

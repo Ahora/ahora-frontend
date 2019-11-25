@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Doc, getVideos } from 'app/services/videos';
+import { Doc, getDocs } from 'app/services/docs';
 import VideoList from 'app/components/VideoList';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
@@ -19,7 +19,7 @@ export default class VideosPage extends React.Component<any, VideosPageState> {
   }
 
   async componentDidMount() {
-    const videos: Doc[] = await getVideos();
+    const videos: Doc[] = await getDocs("video");
     this.setState({
       videos
     });

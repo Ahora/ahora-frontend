@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Doc, getVideo } from 'app/services/videos';
+import { Doc, getDoc } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
 import Tags from 'app/components/Tags';
 
@@ -27,7 +27,7 @@ export default class VideosDetailsPage extends React.Component<Props, VideosDeta
     }
 
     async componentDidMount() {
-        const video: Doc = await getVideo(parseInt(this.props.match.params.id));
+        const video: Doc = await getDoc(parseInt(this.props.match.params.id));
         this.setState({
             video: video
         });

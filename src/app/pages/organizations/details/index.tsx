@@ -56,6 +56,9 @@ export default class OrganizationDetailsPage extends React.Component<Props, Vide
                             <Nav.Link eventKey="postmortems" href={`/organizations/${organization.login}/postmortems`}>Postmortems</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
+                            <Nav.Link eventKey="discussions" href={`/organizations/${organization.login}/discussions`}>Discussions</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
                             <Nav.Link eventKey="milestones" href={`/organizations/${organization.login}/milestones`}>Milestones</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Doc, getDoc } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
+import { CommentListComponent } from 'app/components/Comments/List';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -35,9 +36,17 @@ class DocsDetailsPage extends React.Component<Props, DocsDetailsPageState> {
             <div>
                 {this.state.doc &&
                     <>
-                        <h2>{this.props.match.params.docType}</h2>
-                        <h3>{this.state.doc.subject}</h3>
-                        <p>{this.state.doc.description}</p>
+                        <div className="details">
+                            <h2>{this.props.match.params.docType}</h2>
+                            <h3>{this.state.doc.subject}</h3>
+                            <p>{this.state.doc.description}</p>
+
+                        </div>
+                        <div>
+                            <h4>Comments</h4>
+                            <CommentListComponent docId={this.state.doc.id} login={this.props.match.params.login}></CommentListComponent>
+                        </div>
+
                     </>
                 }
             </div>

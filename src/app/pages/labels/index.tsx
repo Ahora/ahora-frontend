@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { Label } from 'app/services/labels';
-import Button from 'react-bootstrap/Button';
+import * as React from 'react'; import Button from 'react-bootstrap/Button';
 import Nav from 'react-bootstrap/Nav';
 import NavItem from 'react-bootstrap/NavItem';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { requestLabelsData } from 'app/store/labels/actions';
+import { Dispatch } from 'redux';
+import { Label } from 'app/services/labels';
 
 
 interface LabelRow {
@@ -127,14 +127,14 @@ class LabelsPage extends React.Component<AllProps, LabelsPageState> {
 }
 
 
-const mapStateToProps = (store: ApplicationState) => {
+const mapStateToProps = (state: ApplicationState) => {
     return {
-        labels: store.labels.labels.map(label => { return { editable: false, label } }),
-        loading: store.labels.loading
+        labels: state.labels.labels.map(label => { return { editable: false, label } }),
+        loading: state.labels.loading
     };
 };
 
-const mapDispatchToProps = (dispatch: any): DispatchProps => {
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
         requestLabelsData: () => dispatch(requestLabelsData())
     }

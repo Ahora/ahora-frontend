@@ -10,6 +10,7 @@ export interface Doc {
     metadata: any;
     createdAt: Date;
     updatedAt: Date;
+    htmlDescription: string;
 }
 
 

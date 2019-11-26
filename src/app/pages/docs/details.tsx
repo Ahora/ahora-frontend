@@ -37,10 +37,8 @@ class DocsDetailsPage extends React.Component<Props, DocsDetailsPageState> {
                 {this.state.doc &&
                     <>
                         <div className="details">
-                            <h2>{this.props.match.params.docType}</h2>
-                            <h3>{this.state.doc.subject}</h3>
-                            <p>{this.state.doc.description}</p>
-
+                            <h2>{this.state.doc.subject}</h2>
+                            <p className="markdown-body" dangerouslySetInnerHTML={{ __html: this.state.doc.htmlDescription }}></p>
                         </div>
                         <div>
                             <h4>Comments</h4>

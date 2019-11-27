@@ -11,6 +11,7 @@ export interface Doc {
     createdAt: Date;
     updatedAt: Date;
     htmlDescription: string;
+    status: number;
 }
 
 

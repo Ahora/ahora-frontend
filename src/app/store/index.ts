@@ -4,15 +4,15 @@ import { History } from "history";
 import { routerMiddleware } from 'connected-react-router';
 import { LabelsState } from './labels/types';
 import createSagaMiddleware from "redux-saga";
-import mySaga from "./labels/sagas";
-
-
+import labelSaga from "./labels/sagas";
+import statusesSaga from "./statuses/sagas";
+import { StatusesState } from './statuses/types';
 
 // The top-level state object
 export interface ApplicationState {
-    labels: LabelsState
+    labels: LabelsState,
+    statuses: StatusesState
 }
-
 
 export default function configureStore(history: History) {
     const sagaMiddleware = createSagaMiddleware();
@@ -26,7 +26,8 @@ export default function configureStore(history: History) {
         ),
     );
 
-    sagaMiddleware.run(mySaga);
+    sagaMiddleware.run(labelSaga);
+    sagaMiddleware.run(statusesSaga);
 
     return store
 }

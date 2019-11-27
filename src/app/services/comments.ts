@@ -5,6 +5,7 @@ export interface Comment {
     id: number;
     docId: number;
     comment: string;
+    htmlComment: string;
     createdAt: Date;
     userAlias: string;
 }

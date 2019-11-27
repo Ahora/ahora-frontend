@@ -9,6 +9,7 @@ import LabelsPage from 'app/pages/labels';
 import DocsPage from 'app/pages/docs';
 import DocsDetailsPage from 'app/pages/docs/details';
 import AddDocPage from 'app/pages/docs/add';
+import EditDocPage from 'app/pages/docs/edit';
 
 interface VideosDetailsPageState {
     organization: Organization | null;
@@ -74,6 +75,7 @@ export default class OrganizationDetailsPage extends React.Component<Props, Vide
                             <Route path={`/organizations/:login/videos`} component={VideosPage} />
                             <Route path={`/organizations/:login/labels`} component={LabelsPage} />
                             <Route path={`/organizations/:login/:docType/add`} component={AddDocPage} />
+                            <Route path={`/organizations/:login/:docType/:id/edit`} component={EditDocPage} />
                             <Route path={`/organizations/:login/:docType/:id`} component={DocsDetailsPage} />
                             <Route path={`/organizations/:login/:docType`} component={DocsPage} />
                         </Switch>

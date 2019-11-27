@@ -55,3 +55,17 @@ export const addDoc = async (login: string, docType: string, doc: Doc): Promise<
     });
     return result.data;
 }
+
+export const updateDoc = async (login: string, id: number, doc: Doc): Promise<Doc> => {
+    const result = await docsClient.put({
+        params: { login, id },
+        data: doc
+    });
+    return result.data;
+}
+
+export const deleteDoc = async (login: string, id: number): Promise<void> => {
+    await docsClient.delete({
+        params: { login, id }
+    });
+}

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Doc, getDoc } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
 import { CommentListComponent } from 'app/components/Comments/List';
+import Button from 'react-bootstrap/Button';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -38,6 +39,7 @@ class DocsDetailsPage extends React.Component<Props, DocsDetailsPageState> {
                     <>
                         <div className="details">
                             <h2>{this.state.doc.subject}</h2>
+                            <Button href={`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/${this.state.doc.id}/edit`}>Edit</Button>
                             <p className="markdown-body" dangerouslySetInnerHTML={{ __html: this.state.doc.htmlDescription }}></p>
                         </div>
                         <div>

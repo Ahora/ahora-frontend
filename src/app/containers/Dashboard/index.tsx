@@ -3,11 +3,11 @@ import { RouteComponentProps, Switch, Route } from 'react-router';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
-import TestComponent from '../test';
 import OrganizationsPage from 'app/pages/organizations/list';
 import OrganizationDetailsPage from 'app/pages/organizations/details';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Link } from 'react-router-dom';
 import CurrentUser from 'app/components/CurrentUser';
+import RootPageComponent from 'app/pages/RootPage';
 
 interface LoginParams {
 }
@@ -41,16 +41,16 @@ export class Dashboard extends React.Component<Props, State> {
     return (
       <>
         <Navbar bg="light">
-          <Navbar.Brand>Ahora!</Navbar.Brand>
+          <Navbar.Brand><Link to="/">Ahora!</Link></Navbar.Brand>
           <Nav className="mr-auto"></Nav>
           <CurrentUser></CurrentUser>
         </Navbar>
         <Container>
           <BrowserRouter>
             <Switch>
+              <Route exact path="/" component={RootPageComponent} />
               <Route path="/organizations/:login/:section?" component={OrganizationDetailsPage} />
               <Route path="/organizations" component={OrganizationsPage} />
-              <Route exact path="/" component={TestComponent} />
             </Switch>
           </BrowserRouter>
         </Container>

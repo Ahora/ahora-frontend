@@ -29,7 +29,7 @@ export default class OrganizationsPage extends React.Component<any, Organization
                     <h1>Organizations</h1>
                     <ListGroup>
                         {this.state.organizations.map((org) => {
-                            return <ListGroup.Item key={org.node_id}>
+                            return <ListGroup.Item key={org.id}>
                                 <Link to={`organizations/${org.login}`}>{org.login}</Link>
                             </ListGroup.Item>
                         })}

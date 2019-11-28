@@ -38,6 +38,7 @@
     "babel-loader": "^8.0.6",
     "bootstrap": "^4.3.1",
     "cache-base": "^4.0.0",
+    "classnames": "^2.2.6",
     "connected-react-router": "^6.5.2",
     "copy-webpack-plugin": "^5.0.4",
     "css-loader": "^3.2.0",

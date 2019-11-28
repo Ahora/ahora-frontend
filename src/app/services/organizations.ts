@@ -2,6 +2,7 @@
 import { RestCollectorClient } from "rest-collector";
 
 export interface Organization {
+    id: number;
     node_id: number;
     login: string;
     description: string;

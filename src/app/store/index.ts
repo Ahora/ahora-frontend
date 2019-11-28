@@ -6,12 +6,15 @@ import { LabelsState } from './labels/types';
 import createSagaMiddleware from "redux-saga";
 import labelSaga from "./labels/sagas";
 import statusesSaga from "./statuses/sagas";
+import currentUserSaga from "./currentuser/sagas";
 import { StatusesState } from './statuses/types';
+import { CurrentUserState } from './currentuser/types';
 
 // The top-level state object
 export interface ApplicationState {
     labels: LabelsState,
-    statuses: StatusesState
+    statuses: StatusesState,
+    currentUser: CurrentUserState
 }
 
 export default function configureStore(history: History) {
@@ -28,6 +31,7 @@ export default function configureStore(history: History) {
 
     sagaMiddleware.run(labelSaga);
     sagaMiddleware.run(statusesSaga);
+    sagaMiddleware.run(currentUserSaga);
 
     return store
 }

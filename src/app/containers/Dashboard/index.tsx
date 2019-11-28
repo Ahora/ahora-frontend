@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { RouteComponentProps, Switch, Route } from 'react-router';
 import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import TestComponent from '../test';
 import OrganizationsPage from 'app/pages/organizations/list';
 import OrganizationDetailsPage from 'app/pages/organizations/details';
 import { BrowserRouter } from 'react-router-dom';
+import CurrentUser from 'app/components/CurrentUser';
 
 interface LoginParams {
 }
@@ -40,6 +42,8 @@ export class Dashboard extends React.Component<Props, State> {
       <>
         <Navbar bg="light">
           <Navbar.Brand>Ahora!</Navbar.Brand>
+          <Nav className="mr-auto"></Nav>
+          <CurrentUser></CurrentUser>
         </Navbar>
         <Container>
           <BrowserRouter>

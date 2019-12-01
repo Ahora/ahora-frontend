@@ -37,7 +37,7 @@ export default class OrganizationDetailsPage extends React.Component<Props, Vide
 
     async componentDidMount() {
         const organizations: Organization[] = await getOrganizations();
-        const organization: Organization = organizations.filter(x => x.login.toLowerCase() === this.props.match.params.login.toLowerCase())[0];
+        const organization: Organization = organizations.filter(x => x.login === this.props.match.params.login)[0];
         this.setState({
             organization
         });

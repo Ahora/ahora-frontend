@@ -7,8 +7,10 @@ import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Status } from 'app/services/statuses';
 import { Dispatch } from 'redux';
+import Nav from "react-bootstrap/Nav";
 import { requestStatusesData } from 'app/store/statuses/actions';
 import Moment from 'react-moment';
+import SearchDocsInput, { SearchCriterias } from 'app/components/SearchLabels';
 
 interface DocsPageState {
     docs: Doc[];
@@ -54,13 +56,25 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         });
     }
 
+    async searchSelected(searchCriterias: SearchCriterias) {
+        const docs: Doc[] = await getDocs(this.props.match.params.login, this.props.match.params.docType, searchCriterias);
+        this.setState({
+            docs
+        });
+    }
+
     render() {
         return (
             <div>
-                <h2>{this.props.match.params.docType}</h2>
-                <Button variant="primary" type="button" href={`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/add`}>
-                    Add
-                </Button>
+                <SearchDocsInput searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
+                <Nav className="mb-3">
+                    <Nav.Item>
+                        <Button variant="primary" type="button" href={`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/add`}>
+                            Add
+                        </Button>
+                    </Nav.Item>
+                </Nav>
+
                 <Table striped bordered hover>
                     <thead>
                         <tr>

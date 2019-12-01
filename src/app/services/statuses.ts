@@ -11,12 +11,12 @@ export interface Status {
 const statusesClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{organizationId}/statuses/{:id}");
 export const getList = async (): Promise<Status[]> => {
     const result = await statusesClient.get({
-        params: { organizationId: 1 }
+        params: { organizationId: "ahora" }
     });
     return result.data;
 }
 
-export const add = async (organizationId: number, status: Status): Promise<Status> => {
+export const add = async (organizationId: string, status: Status): Promise<Status> => {
     const result = await statusesClient.post({
         params: { organizationId },
         data: status

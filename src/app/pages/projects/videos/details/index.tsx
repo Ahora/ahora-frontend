@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Doc, getDoc } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
-import Tags from 'app/components/Tags';
 
 interface VideosDetailsPageState {
     video: Doc | null;
@@ -44,7 +43,6 @@ export default class VideosDetailsPage extends React.Component<Props, VideosDeta
                             src={`https://www.youtube.com/embed/${video.metadata.youtubeId}?&autoplay=0`}></iframe>
                     </div>
                     <div className="mt-2 mt-b">
-                        <Tags></Tags>
                     </div>
                     <div>{video.description}</div>
                     <div>{video.createdAt}</div>

@@ -1,5 +1,6 @@
 
 import { RestCollectorClient } from "rest-collector";
+import { SearchCriterias } from "app/components/SearchLabels";
 
 export interface Doc {
     id: number;
@@ -24,14 +25,19 @@ export interface VideoDoc extends Doc {
 
 
 const docsClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{login}/docs/{id}");
-export const getDocs = async (login: string, docType: string | string[]): Promise<Doc[]> => {
+export const getDocs = async (login: string, docType: string | string[], query?: SearchCriterias): Promise<Doc[]> => {
+
+    const query1: any = query ? {
+        label: query.label,
+        assignee: query.assignee,
+        status: query.status,
+        text: query.text,
+        docType
+    } : { docType };
+
     const result = await docsClient.get({
-        params: {
-            login
-        },
-        query: {
-            docType,
-        }
+        params: { login },
+        query: query1
     });
 
     return result.data;

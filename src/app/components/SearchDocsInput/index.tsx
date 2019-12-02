@@ -20,24 +20,28 @@ interface Props {
 }
 
 interface State {
-    searchCriteria?: string;
+    searchCriteriaText?: string;
 }
 
 export default class SearchDocsInput extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
+
+        this.state = {
+            searchCriteriaText: this.props.searchCriteria
+        }
     }
 
     onTextChange(event: any) {
         this.setState({
-            searchCriteria: event.target.value
+            searchCriteriaText: event.target.value
         });
     }
 
     search() {
-        if (this.state.searchCriteria) {
-            const queryObject: SearchCriterias = parse(this.state.searchCriteria, options) as any;
+        if (this.state.searchCriteriaText) {
+            const queryObject: SearchCriterias = parse(this.state.searchCriteriaText, options) as any;
             this.props.searchSelected(queryObject);
         }
         else {
@@ -46,7 +50,8 @@ export default class SearchDocsInput extends React.Component<Props, State> {
     }
 
     async componentDidMount() {
-
+        console.log("tolat");
+        this.search();
     }
     render = () => {
         return (
@@ -55,7 +60,7 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                     <InputGroup>
                         <Form.Control
                             type="text"
-                            value={this.props.searchCriteria}
+                            value={this.state.searchCriteriaText}
                             onChange={this.onTextChange.bind(this)}
                             placeholder="enter your search criteria"
                             aria-describedby="inputGroupPrepend"

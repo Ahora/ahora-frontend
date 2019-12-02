@@ -50,10 +50,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     async componentDidMount() {
         this.props.requestStatusesData();
-        const docs: Doc[] = await getDocs(this.props.match.params.login, this.props.match.params.docType);
-        this.setState({
-            docs
-        });
     }
 
     async searchSelected(searchCriterias: SearchCriterias) {
@@ -66,7 +62,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     render() {
         return (
             <div>
-                <SearchDocsInput searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
+                <SearchDocsInput searchCriteria="status:opened" searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
                 <Nav className="mb-3">
                     <Nav.Item>
                         <Button variant="primary" type="button" href={`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/add`}>

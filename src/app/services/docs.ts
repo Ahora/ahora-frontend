@@ -1,6 +1,6 @@
 
 import { RestCollectorClient } from "rest-collector";
-import { SearchCriterias } from "app/components/SearchLabels";
+import { SearchCriterias } from "app/components/SearchDocsInput";
 
 export interface Doc {
     id: number;

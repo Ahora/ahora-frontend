@@ -68,7 +68,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                 {doc &&
                     <>
                         <div className="details">
-                            <h2>{doc.subject} {this.props.statuses.length}
+                            <h2>{doc.subject}
                                 <div className="float-right">
                                     <ButtonGroup>
                                         {this.props.statuses.map((status) => {

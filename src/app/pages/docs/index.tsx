@@ -10,7 +10,7 @@ import { Dispatch } from 'redux';
 import Nav from "react-bootstrap/Nav";
 import { requestStatusesData } from 'app/store/statuses/actions';
 import Moment from 'react-moment';
-import SearchDocsInput, { SearchCriterias } from 'app/components/SearchLabels';
+import SearchDocsInput, { SearchCriterias } from 'app/components/SearchDocsInput';
 
 interface DocsPageState {
     docs: Doc[];

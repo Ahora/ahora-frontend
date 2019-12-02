@@ -16,7 +16,7 @@ export interface SearchCriterias {
 
 interface Props {
     searchCriteria?: string;
-    searchSelected(searchCriterias: SearchCriterias): void
+    searchSelected(searchCriterias?: SearchCriterias): void
 }
 
 interface State {
@@ -39,6 +39,9 @@ export default class SearchDocsInput extends React.Component<Props, State> {
         if (this.state.searchCriteria) {
             const queryObject: SearchCriterias = parse(this.state.searchCriteria, options) as any;
             this.props.searchSelected(queryObject);
+        }
+        else {
+            this.props.searchSelected();
         }
     }
 

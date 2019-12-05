@@ -2,6 +2,8 @@ import * as React from 'react';
 import { getOrganizations, Organization } from 'app/services/organizations';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { Link } from 'react-router-dom';
+import Nav from 'react-bootstrap/Nav';
+import Button from 'react-bootstrap/Button';
 
 interface OrganizationsPageState {
     organizations: Organization[];
@@ -27,6 +29,11 @@ export default class OrganizationsPage extends React.Component<any, Organization
             return (
                 <div>
                     <h1>Organizations</h1>
+                    <Nav className="mb-3">
+                        <Nav.Item>
+                            <Button variant="primary" type="button" href={`/organizations/add`}>Add</Button>
+                        </Nav.Item>
+                    </Nav>
                     <ListGroup>
                         {this.state.organizations.map((org) => {
                             return <ListGroup.Item key={org.id}>

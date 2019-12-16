@@ -70,7 +70,7 @@ export default class OrganizationDetailsPage extends React.Component<Props, Vide
                     </Nav>
                     <BrowserRouter>
                         <Switch>
-                            <Route path={`/organizations/:login/settings/:settingsSection`} component={OrganizationSettingsPage} />
+                            <Route path={`/organizations/:login/settings/:settingsSection?`} component={OrganizationSettingsPage} />
                             <Route path={`/organizations/:login/statuses`} component={StatusesPage} />
                             <Route path={`/organizations/:login/:docType/add`} component={AddDocPage} />
                             <Route path={`/organizations/:login/:docType/:id/edit`} component={EditDocPage} />

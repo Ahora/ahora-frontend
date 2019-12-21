@@ -13,7 +13,7 @@ const statusesClient: RestCollectorClient = new RestCollectorClient(
 export const getList = async (): Promise<Status[]> => {
   const result = await statusesClient.get({
     params: {
-      organizationId: store.getState().organizations.currentOrganization?.login
+      organizationId: store.getState().organizations.currentOrganization!.login
     }
   });
   return result.data;

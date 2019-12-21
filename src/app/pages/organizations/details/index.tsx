@@ -15,6 +15,7 @@ import { Dispatch } from "redux";
 import { setCurrentOrganization } from "app/store/organizations/actions";
 import { connect } from "react-redux";
 import { ApplicationState } from "app/store";
+import { Link } from "react-router-dom";
 
 interface OrganizationDetailsPageProps {
   organization: Organization | null;
@@ -31,8 +32,8 @@ interface DispatchProps {
 
 interface Props
   extends RouteComponentProps<OrganizationPageParams>,
-    DispatchProps,
-    OrganizationDetailsPageProps {}
+  DispatchProps,
+  OrganizationDetailsPageProps { }
 
 class OrganizationDetailsPage extends React.Component<Props> {
   constructor(props: Props) {
@@ -58,79 +59,28 @@ class OrganizationDetailsPage extends React.Component<Props> {
             defaultActiveKey={this.props.match.params.section || "home"}
           >
             <Nav.Item>
-              <Nav.Link
-                eventKey="home"
-                href={`/organizations/${organization.login}`}
-              >
-                Home
-              </Nav.Link>
+              <Link className="nav-link" to={`/organizations/${organization.login}`}>Home</Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link
-                eventKey="videos"
-                href={`/organizations/${organization.login}/videos`}
-              >
-                Videos
-              </Nav.Link>
+              <Link className="nav-link" to={`/organizations/${organization.login}/discussions`}>Discussions</Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link
-                eventKey="postmortems"
-                href={`/organizations/${organization.login}/postmortems`}
-              >
-                Postmortems
-              </Nav.Link>
+              <Link className="nav-link" to={`/organizations/${organization.login}/meetings`}>Meetings Summary</Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link
-                eventKey="discussions"
-                href={`/organizations/${organization.login}/discussions`}
-              >
-                Discussions
-              </Nav.Link>
+              <Link className="nav-link" to={`/organizations/${organization.login}/videos`}>Videos</Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link
-                eventKey="labels"
-                href={`/organizations/${organization.login}/labels`}
-              >
-                Labels
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link
-                eventKey="settings"
-                href={`/organizations/${organization.login}/settings`}
-              >
-                Settings
-              </Nav.Link>
+              <Link className="nav-link" to={`/organizations/${organization.login}/settings`}>Settings</Link>
             </Nav.Item>
           </Nav>
           <Switch>
-            <Route
-              path={`/organizations/:login/settings/:settingsSection?`}
-              component={OrganizationSettingsPage}
-            />
-            <Route
-              path={`/organizations/:login/statuses`}
-              component={StatusesPage}
-            />
-            <Route
-              path={`/organizations/:login/:docType/add`}
-              component={AddDocPage}
-            />
-            <Route
-              path={`/organizations/:login/:docType/:id/edit`}
-              component={EditDocPage}
-            />
-            <Route
-              path={`/organizations/:login/:docType/:id`}
-              component={DocsDetailsPage}
-            />
-            <Route
-              path={`/organizations/:login/:docType`}
-              component={DocsPage}
-            />
+            <Route path={`/organizations/:login/settings/:settingsSection?`} component={OrganizationSettingsPage} />
+            <Route path={`/organizations/:login/statuses`} component={StatusesPage} />
+            <Route path={`/organizations/:login/:docType/add`} component={AddDocPage} />
+            <Route path={`/organizations/:login/:docType/:id/edit`} component={EditDocPage} />
+            <Route path={`/organizations/:login/:docType/:id`} component={DocsDetailsPage} />
+            <Route path={`/organizations/:login/:docType`} component={DocsPage} />
           </Switch>
         </div>
       );

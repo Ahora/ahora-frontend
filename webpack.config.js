@@ -241,12 +241,12 @@ module.exports = {
   devServer: {
     proxy: {
       '/api/**': {
-        target: 'http://localhost:3001',
-        secure: false,
+        target: 'https://ahora.dev',
+        secure: true,
         changeOrigin: true,
       },
       '/auth/**': {
-        target: 'http://localhost:3001',
+        target: 'https://ahora.dev',
         secure: false,
         changeOrigin: true,
       }

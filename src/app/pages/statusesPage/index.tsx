@@ -4,7 +4,7 @@ import NavItem from 'react-bootstrap/NavItem';
 import { Status, add, deleteStatus, editStatus } from 'app/services/statuses';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
-import { requestStatusesData } from 'app/store/statuses/actions';
+import { requestStatusesData, addStatusFromState, deleteStatusFromState, updateStatusToState } from 'app/store/statuses/actions';
 import { connect } from 'react-redux';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
@@ -28,6 +28,9 @@ interface StatusPageProps {
 
 interface DispatchProps {
     requestLabelsData(): void;
+    addStatusToState(status: Status): void,
+    updateStatusToState(status: Status): void,
+    removeStatusFromState(id: number): void
 }
 
 interface AllProps extends StatusPageProps, DispatchProps {
@@ -91,12 +94,14 @@ class StatusesPage extends React.Component<AllProps, StatusesPageState> {
 
         if (status.status.id) {
             await editStatus(this.props.organizationId, status.status);
+            this.props.updateStatusToState(status.status);
+
         }
         else {
-            await add(this.props.organizationId, status.status);
+            const addedstatus = await add(this.props.organizationId, status.status);
+            this.props.addStatusToState(addedstatus);
         }
 
-        this.props.requestLabelsData();
         this.setState({
             newStatus: undefined
         });
@@ -104,7 +109,7 @@ class StatusesPage extends React.Component<AllProps, StatusesPageState> {
 
     public async onDeleteStatus(status: StatusRow) {
         await deleteStatus(this.props.organizationId, status.status.id!);
-        this.props.requestLabelsData();
+        this.props.removeStatusFromState(status.status.id!);
     }
 
 
@@ -137,7 +142,6 @@ class StatusesPage extends React.Component<AllProps, StatusesPageState> {
                                     <td>
                                         {statusRow.editable ? (
                                             <Form.Control value={statusRow.name} name="name" onChange={(e: any) => { this.saveData(e, statusRow) }} type="text" />
-
                                         ) : (<>{statusRow.status.name}</>)}
                                     </td>
                                     <td>
@@ -175,7 +179,10 @@ const mapStateToProps = (state: ApplicationState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        requestLabelsData: () => dispatch(requestStatusesData())
+        requestLabelsData: () => dispatch(requestStatusesData()),
+        addStatusToState: (status: Status) => { dispatch(addStatusFromState(status)) },
+        removeStatusFromState: (id: number) => { dispatch(deleteStatusFromState(id)) },
+        updateStatusToState: (status: Status) => { dispatch(updateStatusToState(status)) }
     }
 }
 

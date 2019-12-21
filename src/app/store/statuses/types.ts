@@ -9,11 +9,17 @@ export interface StatusesState {
 // src/store/chat/types.ts
 export const ADD_STATUS = 'ADD_STATUS';
 export const DELETE_STATUS = 'DELETE_STATUS';
+export const UPDATE_STATUS = 'UPDATE_STATUS';
 export const FETCH_STATUSES = 'FETCH_STATUSS';
 export const RECEIVE_STATUSES = 'RECEIVE_STATUSS';
 
 interface AddStatusAction {
     type: typeof ADD_STATUS
+    payload: Status
+}
+
+interface UpdateStatusAction {
+    type: typeof UPDATE_STATUS
     payload: Status
 }
 
@@ -29,4 +35,4 @@ interface FetchStatusesAction {
     data: Status[]
 }
 
-export type StatusActionTypes = AddStatusAction | DeleteStatusAction | FetchStatusesAction
+export type StatusActionTypes = AddStatusAction | DeleteStatusAction | FetchStatusesAction | UpdateStatusAction

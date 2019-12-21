@@ -1,4 +1,4 @@
-import { StatusesState, StatusActionTypes, ADD_STATUS, DELETE_STATUS, RECEIVE_STATUSES } from './types'
+import { StatusesState, StatusActionTypes, ADD_STATUS, DELETE_STATUS, RECEIVE_STATUSES, UPDATE_STATUS } from './types'
 import { Status } from 'app/services/statuses'
 
 const initialState: StatusesState = {
@@ -23,6 +23,11 @@ export function statusesReducer(state = initialState, action: StatusActionTypes)
                 statuses: state.statuses.filter(
                     status => status.id !== action.meta.id
                 )
+            }
+        case UPDATE_STATUS:
+            return {
+                ...state,
+                statuses: state.statuses.map((status, i) => i === action.payload.id ? action.payload : status)
             }
         default:
             return state

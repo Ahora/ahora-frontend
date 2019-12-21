@@ -9,6 +9,7 @@ import statusesSaga from "./statuses/sagas";
 import currentUserSaga from "./currentuser/sagas";
 import { StatusesState } from './statuses/types';
 import { CurrentUserState } from './currentuser/types';
+import { createBrowserHistory } from 'history';
 
 // The top-level state object
 export interface ApplicationState {
@@ -17,21 +18,19 @@ export interface ApplicationState {
     currentUser: CurrentUserState
 }
 
-export default function configureStore(history: History) {
-    const sagaMiddleware = createSagaMiddleware();
-    const store = createStore(
-        createRootReducer(history), // root reducer with router state
-        compose(
-            applyMiddleware(sagaMiddleware),
-            applyMiddleware(
-                routerMiddleware(history),
-            ),
+export const history: History = createBrowserHistory();
+const sagaMiddleware = createSagaMiddleware();
+export const appState = createRootReducer(history);
+export const store = createStore(
+    appState, // root reducer with router state
+    compose(
+        applyMiddleware(sagaMiddleware),
+        applyMiddleware(
+            routerMiddleware(history),
         ),
-    );
+    ),
+);
 
-    sagaMiddleware.run(labelSaga);
-    sagaMiddleware.run(statusesSaga);
-    sagaMiddleware.run(currentUserSaga);
-
-    return store
-}
+sagaMiddleware.run(labelSaga);
+sagaMiddleware.run(statusesSaga);
+sagaMiddleware.run(currentUserSaga);

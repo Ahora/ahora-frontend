@@ -5,6 +5,8 @@ import Nav from "react-bootstrap/Nav";
 import StatusesPage from 'app/pages/statusesPage';
 import { Organization, getOrganizations } from 'app/services/organizations';
 import LabelsPage from 'app/pages/labels';
+import PeoplePage from 'app/pages/people';
+
 
 interface SettingsPageState {
     organization: Organization | null;
@@ -53,11 +55,15 @@ export default class OrganizationSettingsPage extends React.Component<Props, Set
                         <Nav.Item>
                             <Nav.Link eventKey="labels" href={`/organizations/${organization.login}/settings/labels`}>Labels</Nav.Link>
                         </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link eventKey="people" href={`/organizations/${organization.login}/settings/people`}>People</Nav.Link>
+                        </Nav.Item>
                     </Nav>
                     <BrowserRouter>
                         <Switch>
                             <Route path={`/organizations/:login/settings/statuses`} component={StatusesPage} />
                             <Route path={`/organizations/:login/settings/labels`} component={LabelsPage} />
+                            <Route path={`/organizations/:login/settings/people`} component={PeoplePage} />
                         </Switch>
                     </BrowserRouter>
                 </div>

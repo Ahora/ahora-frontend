@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps, Switch, Route } from 'react-router';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Link } from 'react-router-dom';
 import Nav from "react-bootstrap/Nav";
 import StatusesPage from 'app/pages/statusesPage';
 import { Organization, getOrganizations } from 'app/services/organizations';
@@ -47,10 +47,10 @@ export default class OrganizationSettingsPage extends React.Component<Props, Set
                 <div>
                     <Nav className="mb-3" variant="tabs" defaultActiveKey={this.props.match.params.settingsSection || "home"}>
                         <Nav.Item>
-                            <Nav.Link eventKey="home" href={`/organizations/${organization.login}/settings`}>Home</Nav.Link>
+                            <Link className="nav-link" to={`/organizations/${organization.login}/settings`}>Home</Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="statuses" href={`/organizations/${organization.login}/settings/statuses`}>Statuses</Nav.Link>
+                            <Link className="nav-link" to={`/organizations/${organization.login}/settings/statuses`}>Statuses</Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link eventKey="labels" href={`/organizations/${organization.login}/settings/labels`}>Labels</Nav.Link>

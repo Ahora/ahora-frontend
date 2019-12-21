@@ -10,12 +10,14 @@ import currentUserSaga from "./currentuser/sagas";
 import { StatusesState } from './statuses/types';
 import { CurrentUserState } from './currentuser/types';
 import { createBrowserHistory } from 'history';
+import { OrganizationsState } from './organizations/types';
 
 // The top-level state object
 export interface ApplicationState {
     labels: LabelsState,
     statuses: StatusesState,
-    currentUser: CurrentUserState
+    currentUser: CurrentUserState,
+    organizations: OrganizationsState
 }
 
 export const history: History = createBrowserHistory();

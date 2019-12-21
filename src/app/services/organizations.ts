@@ -20,3 +20,11 @@ export const getOrganizations = async (): Promise<Organization[]> => {
     const result = await docsClient.get();
     return result.data;
 }
+
+
+export const getOrganizationByLogin = async (login: string): Promise<Organization | null> => {
+    const result = await docsClient.get({
+        params: { id: login }
+    });
+    return result.data;
+}

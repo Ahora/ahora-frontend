@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps, Switch, Route } from 'react-router';
-import { Organization, getOrganizations } from '../../../services/organizations';
+import { Organization, getOrganizationByLogin } from '../../../services/organizations';
 import { BrowserRouter } from 'react-router-dom';
 import Nav from "react-bootstrap/Nav";
 import StatusesPage from 'app/pages/statusesPage';
@@ -9,8 +9,12 @@ import DocsDetailsPage from 'app/pages/docs/details';
 import AddDocPage from 'app/pages/docs/add';
 import EditDocPage from 'app/pages/docs/edit';
 import OrganizationSettingsPage from '../settings';
+import { Dispatch } from 'redux';
+import { setCurrentOrganization } from 'app/store/organizations/actions';
+import { connect } from 'react-redux';
+import { ApplicationState } from 'app/store';
 
-interface VideosDetailsPageState {
+interface OrganizationDetailsPageProps {
     organization: Organization | null;
 }
 
@@ -20,29 +24,28 @@ interface OrganizationPageParams {
 }
 
 
-interface Props extends RouteComponentProps<OrganizationPageParams> {
+interface DispatchProps {
+    setOrganizationToState(organization: Organization | null): void;
+}
+
+
+interface Props extends RouteComponentProps<OrganizationPageParams>, DispatchProps, OrganizationDetailsPageProps {
 
 }
 
 
-export default class OrganizationDetailsPage extends React.Component<Props, VideosDetailsPageState> {
+class OrganizationDetailsPage extends React.Component<Props> {
 
     constructor(props: Props) {
         super(props);
-        this.state = {
-            organization: null
-        };
     }
 
     async componentDidMount() {
-        const organizations: Organization[] = await getOrganizations();
-        const organization: Organization = organizations.filter(x => x.login === this.props.match.params.login)[0];
-        this.setState({
-            organization
-        });
+        const organization: Organization | null = await getOrganizationByLogin(this.props.match.params.login);
+        this.props.setOrganizationToState(organization);
     }
     render = () => {
-        const organization = this.state.organization;
+        const organization = this.props.organization;
         if (organization) {
             return (
                 <div>
@@ -86,3 +89,17 @@ export default class OrganizationDetailsPage extends React.Component<Props, Vide
         }
     };
 }
+
+const mapStateToProps = (state: ApplicationState) => {
+    return {
+        organization: state.organizations.currentOrganization
+    };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+    return {
+        setOrganizationToState: (organization: Organization) => { dispatch(setCurrentOrganization(organization)) },
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrganizationDetailsPage as any); 

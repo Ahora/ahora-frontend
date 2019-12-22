@@ -16,6 +16,7 @@ export interface SearchCriterias {
 
 interface Props {
     searchCriteria?: string;
+    docType: string;
     searchSelected(searchCriterias?: SearchCriterias): void
 }
 
@@ -30,6 +31,12 @@ export default class SearchDocsInput extends React.Component<Props, State> {
 
         this.state = {
             searchCriteriaText: this.props.searchCriteria
+        }
+    }
+
+    componentWillReceiveProps(nextProps: Props) {
+        if (nextProps.docType !== this.props.docType) {
+            this.search();
         }
     }
 
@@ -50,7 +57,6 @@ export default class SearchDocsInput extends React.Component<Props, State> {
     }
 
     async componentDidMount() {
-        console.log("tolat");
         this.search();
     }
     render = () => {

@@ -11,9 +11,11 @@ import Nav from "react-bootstrap/Nav";
 import { requestStatusesData } from 'app/store/statuses/actions';
 import Moment from 'react-moment';
 import SearchDocsInput, { SearchCriterias } from 'app/components/SearchDocsInput';
+import { Link } from 'react-router-dom';
+import Spinner from 'react-bootstrap/Spinner';
 
 interface DocsPageState {
-    docs: Doc[];
+    docs: Doc[] | null;
 }
 
 interface DocsPageParams {
@@ -44,7 +46,15 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     constructor(props: AllProps) {
         super(props);
         this.state = {
-            docs: []
+            docs: null
+        }
+    }
+
+    componentWillReceiveProps(nextProps: DocsPageProps) {
+        if (nextProps.match.params.docType !== this.props.match.params.docType!) {
+            this.setState({
+                docs: null
+            });
         }
     }
 
@@ -62,37 +72,43 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     render() {
         return (
             <div>
-                <SearchDocsInput searchCriteria="status:opened" searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
+                <SearchDocsInput docType={this.props.match.params.docType} searchCriteria="status:opened" searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
                 <Nav className="mb-3">
                     <Nav.Item>
-                        <Button variant="primary" type="button" href={`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/add`}>
-                            Add
-                        </Button>
+                        <Link to={`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/add`}>
+                            <Button variant="primary" type="button">Add</Button>
+                        </Link>
                     </Nav.Item>
                 </Nav>
 
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Status</th>
-                            <th>Updated At</th>
-                            <th>Created At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.docs.map((doc) => {
-                            const currentStatus: Status | undefined = this.props.statuses.get(doc.status);
-                            return (
-                                <tr className="pt-3" key={doc.id!}>
-                                    <td><a href={`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/${doc.id}`}>{doc.subject}</a></td>
-                                    <td>{(currentStatus) ? currentStatus.name : ""}</td>
-                                    <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.updatedAt}></Moment></td>
-                                    <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.createdAt}></Moment></td>
-                                </tr>);
-                        })}
-                    </tbody>
-                </Table>
+                {this.state.docs ?
+                    (<Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Updated At</th>
+                                <th>Created At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.docs.map((doc) => {
+                                const currentStatus: Status | undefined = this.props.statuses.get(doc.status);
+                                return (
+                                    <tr className="pt-3" key={doc.id!}>
+                                        <td><Link to={`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/${doc.id}`}>{doc.subject}</Link></td>
+                                        <td>{(currentStatus) ? currentStatus.name : ""}</td>
+                                        <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.updatedAt}></Moment></td>
+                                        <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.createdAt}></Moment></td>
+                                    </tr>);
+                            })}
+                        </tbody>
+                    </Table>) :
+                    (
+                        <div className="text-center">
+                            <Spinner animation="border" variant="primary" />
+                        </div>
+                    )}
             </div>
         );
     };

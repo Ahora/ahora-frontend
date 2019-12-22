@@ -53,11 +53,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
         <div>
           <h2>{organization.login}</h2>
           <p>{organization.description}</p>
-          <Nav
-            className="mb-3"
-            variant="tabs"
-            defaultActiveKey={this.props.match.params.section || "home"}
-          >
+          <Nav className="mb-3" variant="tabs" defaultActiveKey={this.props.match.params.section || "home"}>
             <Nav.Item>
               <Link className="nav-link" to={`/organizations/${organization.login}`}>Home</Link>
             </Nav.Item>

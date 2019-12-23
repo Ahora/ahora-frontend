@@ -108,7 +108,7 @@ class EditOrganizationPage extends React.Component<Props, EditOrganizationPageSt
             );
         }
         else {
-            return (<div><Spinner animation="border" variant="primary" /></div>);
+            return (<div className="text-center"><Spinner animation="border" variant="primary" /></div>);
         }
     };
 }

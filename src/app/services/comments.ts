@@ -7,7 +7,11 @@ export interface Comment {
     comment: string;
     htmlComment: string;
     createdAt: Date;
-    userAlias: string;
+    pinned: boolean;
+    user: {
+        username: string;
+        displayName?: string;
+    }
 }
 
 
@@ -44,6 +48,14 @@ export const addComment = async (login: string, docId: number, comment: string):
 export const deleteComment = async (login: string, comment: Comment): Promise<Comment> => {
     const result = await commentsClient.delete({
         params: { login, docId: comment.docId, id: comment.id }
+    });
+    return result.data;
+}
+
+export const togglePinComment = async (login: string, comment: Comment, pinned: boolean = false): Promise<Comment> => {
+    const result = await commentsClient.put({
+        params: { login, docId: comment.docId, id: comment.id },
+        data: { pinned }
     });
     return result.data;
 }

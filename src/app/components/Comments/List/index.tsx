@@ -30,7 +30,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
     }
 
     async componentDidMount() {
-        const comments: Comment[] = await getComments(this.props.login, this.props.docId)
+        const comments: Comment[] = await getComments(this.props.login, this.props.docId);
         this.setState({
             comments
         });
@@ -42,7 +42,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
                 {this.state.comments && this.state.comments.length > 0 &&
                     <div className="list">
                         {this.state.comments.map((comment: Comment) => {
-                            return (<CommentDetailsComponent key={comment.id} comment={comment}></CommentDetailsComponent>);
+                            return (<CommentDetailsComponent login={this.props.login} key={comment.id} comment={comment}></CommentDetailsComponent>);
                         })}
                     </div>
                 }

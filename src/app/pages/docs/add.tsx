@@ -53,9 +53,7 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
                         <Form.Label>Description</Form.Label>
                         <Form.Control name="description" onChange={this.handleChange.bind(this)} as="textarea" rows="10" />
                     </Form.Group>
-                    <Button variant="primary" type="submit">
-                        Add
-                    </Button>
+                    <Button variant="primary" type="submit">Add</Button>
                 </Form>
             </div>
         );

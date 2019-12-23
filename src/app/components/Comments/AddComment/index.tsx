@@ -64,8 +64,7 @@ export class AddCommentComponent extends React.Component<CommentsProps, State> {
                     <InputGroup.Append>
                         <Button variant="primary" disabled={disablePost} onClick={this.post()}>
                             {this.state.submittingComment ?
-                                <Spinner animation="border" />
-                                :
+                                <Spinner animation="border" /> :
                                 <>
                                     Post
                                 </>

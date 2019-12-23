@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { addOrg } from 'app/services/organizations';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 interface AddDocsPageState {
     form: any;
@@ -30,8 +31,12 @@ export default class AddOrganizationPage extends React.Component<Props, AddDocsP
     async onSubmit(even: any) {
         event!.preventDefault();
 
-        const addedOrg = await addOrg(this.state.form);
-        this.props.history.replace(`/organizations/${addedOrg.login}`)
+        try {
+            const addedOrg = await addOrg(this.state.form);
+            this.props.history.replace(`/organizations/${addedOrg.login}`);
+        } catch (error) {
+            console.log(error.status);
+        }
     }
 
     render() {
@@ -41,15 +46,29 @@ export default class AddOrganizationPage extends React.Component<Props, AddDocsP
                 <Form onSubmit={this.onSubmit.bind(this)}>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Organization Name</Form.Label>
-                        <Form.Control name="login" onChange={this.handleChange.bind(this)} type="text" />
+                        <Form.Control name="displayName" onChange={this.handleChange.bind(this)} type="text" />
+                    </Form.Group>
+                    <Form.Group controlId="validationCustomUsername">
+                        <Form.Label>Url</Form.Label>
+                        <InputGroup>
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroupPrepend">https://ahora.dev/organizations/</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <Form.Control name="login" onChange={this.handleChange.bind(this)} type="text" />
+                        </InputGroup>
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>Type</Form.Label>
+                        <Form.Control name="orgType" onChange={this.handleChange.bind(this)} as="select">
+                            <option value="0">Public</option>
+                            <option value="1">Private</option>
+                        </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlTextarea1">
                         <Form.Label>Description</Form.Label>
                         <Form.Control name="description" onChange={this.handleChange.bind(this)} as="textarea" rows="10" />
                     </Form.Group>
-                    <Button variant="primary" type="submit">
-                        Add
-                    </Button>
+                    <Button variant="primary" type="submit">Add</Button>
                 </Form>
             </div>
         );

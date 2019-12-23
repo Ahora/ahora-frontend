@@ -51,7 +51,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
     if (organization) {
       return (
         <div>
-          <h2>{organization.login}</h2>
+          <h2>{organization.displayName}</h2>
           <p>{organization.description}</p>
           <Nav className="mb-3" variant="tabs" defaultActiveKey={this.props.match.params.section || "home"}>
             <Nav.Item>

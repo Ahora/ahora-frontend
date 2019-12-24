@@ -86,6 +86,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                         <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>Assignee</th>
                                 <th>Status</th>
                                 <th>Updated At</th>
                                 <th>Created At</th>
@@ -97,6 +98,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                 return (
                                     <tr className="pt-3" key={doc.id!}>
                                         <td><Link to={`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/${doc.id}`}>{doc.subject}</Link></td>
+                                        <td>{(doc.assignee) && doc.assignee.username}</td>
                                         <td>{(currentStatus) ? currentStatus.name : ""}</td>
                                         <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.updatedAt}></Moment></td>
                                         <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.createdAt}></Moment></td>

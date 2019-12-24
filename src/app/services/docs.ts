@@ -13,6 +13,10 @@ export interface Doc {
     updatedAt: Date;
     htmlDescription: string;
     status: number;
+    assignee?: {
+        username: string;
+        displayName: string;
+    }
 }
 
 

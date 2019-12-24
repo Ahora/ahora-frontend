@@ -10,7 +10,7 @@ import CurrentUser from "app/components/CurrentUser";
 import RootPageComponent from "app/pages/RootPage";
 import AddOrganizationPage from "app/pages/organizations/add";
 
-interface LoginParams {}
+interface LoginParams { }
 
 interface Props extends RouteComponentProps<LoginParams> {
   selectedMenu: number;
@@ -33,7 +33,7 @@ export class Dashboard extends React.Component<Props, State> {
     return <></>;
   };
 
-  async componentDidMount() {}
+  async componentDidMount() { }
 
   render = () => {
     return (

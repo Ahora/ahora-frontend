@@ -5,6 +5,7 @@ import Nav from "react-bootstrap/Nav";
 import StatusesPage from "app/pages/statusesPage";
 import { Organization, getOrganizations } from "app/services/organizations";
 import PeoplePage from "app/pages/people";
+import docTypesPage from "app/pages/docTypes";
 import EditOrganizationPage from "app/pages/organizations/edit";
 
 interface SettingsPageState {
@@ -48,10 +49,12 @@ export default class OrganizationSettingsPage extends React.Component<
             <Nav.Item><Link className="nav-link" to={`/organizations/${organization.login}/settings`}>Home</Link></Nav.Item>
             <Nav.Item><Link className="nav-link" to={`/organizations/${organization.login}/settings/people`}>People</Link></Nav.Item>
             <Nav.Item><Link className="nav-link" to={`/organizations/${organization.login}/settings/statuses`}>Statuses</Link></Nav.Item>
+            <Nav.Item><Link className="nav-link" to={`/organizations/${organization.login}/settings/doctypes`}>Doc Types</Link></Nav.Item>
           </Nav>
           <Switch>
             <Route path={`/organizations/:login/settings/statuses`} component={StatusesPage} />
             <Route path={`/organizations/:login/settings/people`} component={PeoplePage} />
+            <Route path={`/organizations/:login/settings/doctypes`} component={docTypesPage} />
             <Route exactpath={`/organizations/:login/settings`} component={EditOrganizationPage} />
           </Switch>
         </div>

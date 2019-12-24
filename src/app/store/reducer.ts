@@ -5,6 +5,9 @@ import { labelReducer } from './labels/reducers'
 import { statusesReducer } from './statuses/reducers';
 import { currentUserReducer } from './currentuser/reducers';
 import { currentOrganizationsReducer } from './organizations/reducers';
+import { docTypesReducer } from './docTypes/reducers';
+
+
 
 
 const createRootReducer = (history: History) => combineReducers({
@@ -12,6 +15,7 @@ const createRootReducer = (history: History) => combineReducers({
     labels: labelReducer,
     statuses: statusesReducer,
     currentUser: currentUserReducer,
-    organizations: currentOrganizationsReducer
+    organizations: currentOrganizationsReducer,
+    docTypes: docTypesReducer
 })
 export default createRootReducer;

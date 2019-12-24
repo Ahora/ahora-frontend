@@ -1,9 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps, Switch, Route } from "react-router";
-import {
-  Organization,
-  getOrganizationByLogin
-} from "../../../services/organizations";
+import { Organization, getOrganizationByLogin } from "../../../services/organizations";
 import Nav from "react-bootstrap/Nav";
 import StatusesPage from "app/pages/statusesPage";
 import DocsPage from "app/pages/docs";
@@ -16,9 +13,12 @@ import { setCurrentOrganization } from "app/store/organizations/actions";
 import { connect } from "react-redux";
 import { ApplicationState } from "app/store";
 import { Link } from "react-router-dom";
+import { DocType } from "app/services/docTypes";
+import { requestDocTypesData } from "app/store/docTypes/actions";
 
 interface OrganizationDetailsPageProps {
   organization: Organization | null;
+  docTypes?: DocType[];
 }
 
 interface OrganizationPageParams {
@@ -28,6 +28,7 @@ interface OrganizationPageParams {
 
 interface DispatchProps {
   setOrganizationToState(organization: Organization | null): void;
+  requestDocTypes(): void;
 }
 
 interface Props
@@ -45,6 +46,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
       this.props.match.params.login
     );
     this.props.setOrganizationToState(organization);
+    this.props.requestDocTypes();
   }
   render = () => {
     const organization = this.props.organization;
@@ -57,15 +59,16 @@ class OrganizationDetailsPage extends React.Component<Props> {
             <Nav.Item>
               <Link className="nav-link" to={`/organizations/${organization.login}`}>Home</Link>
             </Nav.Item>
-            <Nav.Item>
-              <Link className="nav-link" to={`/organizations/${organization.login}/discussions`}>Discussions</Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link className="nav-link" to={`/organizations/${organization.login}/meetings`}>Meetings Summary</Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link className="nav-link" to={`/organizations/${organization.login}/videos`}>Videos</Link>
-            </Nav.Item>
+
+            {this.props.docTypes &&
+              <>
+                {this.props.docTypes.map((docType) => {
+                  return (<Nav.Item>
+                    <Link className="nav-link" to={`/organizations/${organization.login}/${docType.code}`}>{docType.name}</Link>
+                  </Nav.Item>);
+                })}
+              </>
+            }
             <Nav.Item>
               <Link className="nav-link" to={`/organizations/${organization.login}/settings`}>Settings</Link>
             </Nav.Item>
@@ -88,15 +91,15 @@ class OrganizationDetailsPage extends React.Component<Props> {
 
 const mapStateToProps = (state: ApplicationState) => {
   return {
-    organization: state.organizations.currentOrganization
+    organization: state.organizations.currentOrganization,
+    docTypes: state.docTypes.docTypes
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    setOrganizationToState: (organization: Organization) => {
-      dispatch(setCurrentOrganization(organization));
-    }
+    requestDocTypes: () => dispatch(requestDocTypesData()),
+    setOrganizationToState: (organization: Organization) => dispatch(setCurrentOrganization(organization))
   };
 };
 

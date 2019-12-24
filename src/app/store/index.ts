@@ -6,18 +6,21 @@ import { LabelsState } from './labels/types';
 import createSagaMiddleware from "redux-saga";
 import labelSaga from "./labels/sagas";
 import statusesSaga from "./statuses/sagas";
+import docTypeSaga from "./docTypes/sagas";
 import currentUserSaga from "./currentuser/sagas";
 import { StatusesState } from './statuses/types';
 import { CurrentUserState } from './currentuser/types';
 import { createBrowserHistory } from 'history';
 import { OrganizationsState } from './organizations/types';
+import { DocTypesState } from './docTypes/types';
 
 // The top-level state object
 export interface ApplicationState {
     labels: LabelsState,
     statuses: StatusesState,
     currentUser: CurrentUserState,
-    organizations: OrganizationsState
+    organizations: OrganizationsState,
+    docTypes: DocTypesState
 }
 
 export const history: History = createBrowserHistory();
@@ -34,5 +37,6 @@ export const store = createStore(
 );
 
 sagaMiddleware.run(labelSaga);
+sagaMiddleware.run(docTypeSaga);
 sagaMiddleware.run(statusesSaga);
 sagaMiddleware.run(currentUserSaga);

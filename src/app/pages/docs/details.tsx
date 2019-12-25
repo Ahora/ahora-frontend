@@ -82,7 +82,6 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                             <p className="markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
                         </div>
                         <div>
-                            <h4>Comments</h4>
                             <CommentListComponent docId={doc.id} login={this.props.match.params.login}></CommentListComponent>
                         </div>
 

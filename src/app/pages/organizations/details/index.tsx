@@ -63,7 +63,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
             {this.props.docTypes &&
               <>
                 {this.props.docTypes.map((docType) => {
-                  return (<Nav.Item>
+                  return (<Nav.Item key={docType.id}>
                     <Link className="nav-link" to={`/organizations/${organization.login}/${docType.code}`}>{docType.name}</Link>
                   </Nav.Item>);
                 })}

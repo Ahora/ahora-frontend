@@ -1,9 +1,9 @@
 import * as React from 'react';
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import { addComment, Comment } from 'app/services/comments';
+import MarkDownEditor from 'app/components/MarkDownEditor';
+import Nav from 'react-bootstrap/Nav';
 
 
 interface CommentsProps {
@@ -19,12 +19,11 @@ interface State {
 
 export class AddCommentComponent extends React.Component<CommentsProps, State> {
 
-    private textInput?: any;
     constructor(props: CommentsProps) {
         super(props);
 
-        this.textInput = React.createRef();
         this.state = {
+            comment: "",
             submittingComment: false
         }
     }
@@ -36,7 +35,6 @@ export class AddCommentComponent extends React.Component<CommentsProps, State> {
                     submittingComment: true
                 });
                 const newComment: Comment = await addComment(this.props.login, this.props.docId, this.state.comment);
-                this.textInput.current.value = "";
                 this.setState({
                     comment: undefined,
                     submittingComment: false
@@ -46,12 +44,10 @@ export class AddCommentComponent extends React.Component<CommentsProps, State> {
         }
     }
 
-    handleChange() {
-        return () => {
-            this.setState({
-                comment: this.textInput.current.value
-            });
-        }
+    handleChange(text: string) {
+        this.setState({
+            comment: text
+        });
     }
 
 
@@ -59,19 +55,15 @@ export class AddCommentComponent extends React.Component<CommentsProps, State> {
         const disablePost: boolean = !(!!this.state.comment && this.state.comment.trim().length > 0);
         return (
             <div>
-                <InputGroup className="mb-3">
-                    <FormControl as="textarea" placeholder="Add a comment" ref={this.textInput} onChange={this.handleChange()} />
-                    <InputGroup.Append>
-                        <Button variant="primary" disabled={disablePost} onClick={this.post()}>
-                            {this.state.submittingComment ?
-                                <Spinner animation="border" /> :
-                                <>
-                                    Post
-                                </>
-                            }
-                        </Button>
-                    </InputGroup.Append>
-                </InputGroup>
+                <MarkDownEditor value={this.state.comment} onChange={this.handleChange.bind(this)} />
+                <Nav className="justify-content-end mt-2">
+                    <Button variant="success" disabled={disablePost} onClick={this.post()}>
+                        {this.state.submittingComment ?
+                            <Spinner animation="border" /> :
+                            <>Comment</>
+                        }
+                    </Button>
+                </Nav>
             </div>
         );
     }

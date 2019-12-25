@@ -45,6 +45,16 @@ export const addComment = async (login: string, docId: number, comment: string):
     return result.data;
 }
 
+export const updateComment = async (login: string, docId: number, id: number, comment: string): Promise<Comment> => {
+    const result = await commentsClient.put({
+        params: { login, docId, id },
+        data: {
+            comment
+        }
+    });
+    return result.data;
+}
+
 export const deleteComment = async (login: string, comment: Comment): Promise<Comment> => {
     const result = await commentsClient.delete({
         params: { login, docId: comment.docId, id: comment.id }

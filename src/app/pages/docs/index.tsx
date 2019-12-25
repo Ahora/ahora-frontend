@@ -13,19 +13,22 @@ import Moment from 'react-moment';
 import SearchDocsInput, { SearchCriterias } from 'app/components/SearchDocsInput';
 import { Link } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
+import { DocType } from 'app/services/docTypes';
+import { requestDocTypesData } from 'app/store/docTypes/actions';
 
 interface DocsPageState {
     docs: Doc[] | null;
 }
 
 interface DocsPageParams {
-    docType: string;
+    docTypeCode: string;
     login: string;
 }
 
 
 interface injectedParams {
     statuses: Map<number, Status>;
+    docTypes: Map<number, DocType>;
     loading: boolean
 }
 
@@ -36,6 +39,7 @@ interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedPar
 
 interface DispatchProps {
     requestStatusesData(): void;
+    requestDocTypes(): void;
 }
 
 interface AllProps extends DocsPageProps, DispatchProps {
@@ -51,7 +55,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     }
 
     componentWillReceiveProps(nextProps: DocsPageProps) {
-        if (nextProps.match.params.docType !== this.props.match.params.docType!) {
+        if (nextProps.match.params.docTypeCode !== this.props.match.params.docTypeCode!) {
             this.setState({
                 docs: null
             });
@@ -60,14 +64,18 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     async componentDidMount() {
         this.props.requestStatusesData();
+        this.props.requestDocTypes();
     }
 
     async searchSelected(searchCriterias: SearchCriterias) {
+
+        console.log(searchCriterias);
         //Show spinner while searching
         this.setState({
             docs: null
         });
-        const docs: Doc[] = await getDocs(this.props.match.params.login, this.props.match.params.docType, searchCriterias);
+
+        const docs: Doc[] = await getDocs(this.props.match.params.login, searchCriterias);
         this.setState({
             docs
         });
@@ -76,10 +84,10 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     render() {
         return (
             <div>
-                <SearchDocsInput docType={this.props.match.params.docType} searchCriteria="status:opened" searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
+                <SearchDocsInput searchCriteria="status:opened" searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
                 <Nav className="mb-3">
                     <Nav.Item>
-                        <Link to={`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/add`}>
+                        <Link to={`/organizations/${this.props.match.params.login}/doctypes/add`}>
                             <Button variant="primary" type="button">Add</Button>
                         </Link>
                     </Nav.Item>
@@ -89,6 +97,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                     (<Table striped bordered hover>
                         <thead>
                             <tr>
+                                <th>Doc Type</th>
                                 <th>Name</th>
                                 <th>Assignee</th>
                                 <th>Status</th>
@@ -99,9 +108,12 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                         <tbody>
                             {this.state.docs.map((doc) => {
                                 const currentStatus: Status | undefined = this.props.statuses.get(doc.status);
+                                const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId)
                                 return (
+
                                     <tr className="pt-3" key={doc.id!}>
-                                        <td><Link to={`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/${doc.id}`}>{doc.subject}</Link></td>
+                                        <td>{currentDocType && currentDocType.name}</td>
+                                        <td><Link to={`/organizations/${this.props.match.params.login}/doctypes/${doc.id}`}>{doc.subject}</Link></td>
                                         <td>{(doc.assignee) && doc.assignee.username}</td>
                                         <td>{(currentStatus) ? currentStatus.name : ""}</td>
                                         <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.updatedAt}></Moment></td>
@@ -123,13 +135,15 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 const mapStateToProps = (state: ApplicationState): injectedParams => {
     return {
         statuses: state.statuses.map,
+        docTypes: state.docTypes.mapById,
         loading: state.statuses.loading
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        requestStatusesData: () => dispatch(requestStatusesData())
+        requestStatusesData: () => dispatch(requestStatusesData()),
+        requestDocTypes: () => dispatch(requestDocTypesData())
     }
 }
 

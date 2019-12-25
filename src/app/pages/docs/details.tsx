@@ -16,7 +16,6 @@ interface DocsDetailsPageState {
 }
 
 interface DocsDetailsPageParams {
-    docType: string;
     login: string;
     id: string;
 }
@@ -76,7 +75,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                             return <Button key={status.id} onClick={() => { this.changeStatus(status.id!); }} variant={(status.id === doc.status) ? "primary" : "light"} >{status.name}</Button>
                                         })}
                                     </ButtonGroup>
-                                    <Link to={`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/${doc.id}/edit`}><Button variant="warning" className="ml-4">Edit</Button></Link>
+                                    <Link to={`/organizations/${this.props.match.params.login}/doctypes/${doc.id}/edit`}><Button variant="warning" className="ml-4">Edit</Button></Link>
                                 </div></h2>
 
                             <p className="markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>

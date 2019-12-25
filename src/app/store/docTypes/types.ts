@@ -3,7 +3,8 @@ import { DocType } from "app/services/docTypes";
 export interface DocTypesState {
     docTypes: DocType[],
     loading: boolean,
-    map: Map<number, DocType>
+    mapById: Map<number, DocType>
+    mapByCode: Map<string, DocType>
 }
 
 // src/store/chat/types.ts

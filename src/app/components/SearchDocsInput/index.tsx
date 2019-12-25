@@ -4,19 +4,19 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import { parse, SearchParserOptions } from "search-query-parser";
 
-var options: SearchParserOptions = { keywords: ['assignee', 'label', 'status'], alwaysArray: true }
+var options: SearchParserOptions = { keywords: ['assignee', 'label', 'status', 'docType'], alwaysArray: true }
 
 export interface SearchCriterias {
     assignee: string[] | undefined;
     label: string[] | undefined;
     status: string[] | undefined;
     text: string | string[]
+    docType: string | string[]
 }
 
 
 interface Props {
     searchCriteria?: string;
-    docType: string;
     searchSelected(searchCriterias?: SearchCriterias): void
 }
 
@@ -31,12 +31,6 @@ export default class SearchDocsInput extends React.Component<Props, State> {
 
         this.state = {
             searchCriteriaText: this.props.searchCriteria
-        }
-    }
-
-    componentWillReceiveProps(nextProps: Props) {
-        if (nextProps.docType !== this.props.docType) {
-            this.search();
         }
     }
 

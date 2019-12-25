@@ -4,23 +4,30 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { updateDoc, Doc, getDoc, deleteDoc } from 'app/services/docs';
 import MarkDownEditor from 'app/components/MarkDownEditor';
+import { ApplicationState } from 'app/store';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import { requestDocTypesData } from 'app/store/docTypes/actions';
+import { DocType } from 'app/services/docTypes';
 
 interface EditDocPageState {
     form: any;
 }
 
 interface EditDocPageParams {
-    docType: string;
     login: string;
     id: string;
 }
 
-interface Props extends RouteComponentProps<EditDocPageParams> {
-
+interface DispatchProps {
+    requestDocTypes(): void;
 }
 
+interface Props extends RouteComponentProps<EditDocPageParams>, DispatchProps {
+    docTypes: DocType[];
+}
 
-export default class EditDocPage extends React.Component<Props, EditDocPageState> {
+class EditDocPage extends React.Component<Props, EditDocPageState> {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -29,6 +36,7 @@ export default class EditDocPage extends React.Component<Props, EditDocPageState
     }
 
     async componentDidMount() {
+        this.props.requestDocTypes();
         const doc: Doc = await getDoc(this.props.match.params.login, parseInt(this.props.match.params.id));
         this.setState({ form: doc });
     }
@@ -47,7 +55,7 @@ export default class EditDocPage extends React.Component<Props, EditDocPageState
         event!.preventDefault();
 
         const updatedDoc: Doc = await updateDoc(this.props.match.params.login, this.state.form.id, this.state.form);
-        this.props.history.replace(`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}/${updatedDoc.id}`)
+        this.props.history.replace(`/organizations/${this.props.match.params.login}/doctypes/${updatedDoc.id}`);
     }
 
 
@@ -55,14 +63,25 @@ export default class EditDocPage extends React.Component<Props, EditDocPageState
         event!.preventDefault();
 
         await deleteDoc(this.props.match.params.login, this.state.form.id);
-        this.props.history.replace(`/organizations/${this.props.match.params.login}/${this.props.match.params.docType}`)
+        this.props.history.replace(`/organizations/${this.props.match.params.login}/doctypes`);
     }
 
     render() {
         return (
             <div>
-                <h1>Add {this.props.match.params.docType}</h1>
+                <h1>Edit</h1>
                 <Form onSubmit={this.onSubmit.bind(this)}>
+                    <Form.Group controlId="exampleForm.ControlInput1">
+                        <Form.Label>Type</Form.Label>
+                        <Form.Control name="docTypeId" value={this.state.form.docTypeId} onChange={this.handleChange.bind(this)} as="select">
+                            {this.state.form.docTypeId && <>
+                                {this.props.docTypes.map((docType: DocType) => {
+                                    return (<option key={docType.id} value={docType.id}>{docType.name}</option>)
+                                })}
+                            </>
+                            }
+                        </Form.Control>
+                    </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Subject</Form.Label>
                         <Form.Control name="subject" value={this.state.form.subject} onChange={this.handleChange.bind(this)} type="subject" />
@@ -82,3 +101,19 @@ export default class EditDocPage extends React.Component<Props, EditDocPageState
         );
     };
 }
+
+
+const mapStateToProps = (state: ApplicationState) => {
+    return {
+        organization: state.organizations.currentOrganization,
+        docTypes: state.docTypes.docTypes
+    };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+    return {
+        requestDocTypes: () => dispatch(requestDocTypesData()),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditDocPage as any);

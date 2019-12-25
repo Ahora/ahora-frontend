@@ -2,7 +2,6 @@ import * as React from "react";
 import { RouteComponentProps, Switch, Route } from "react-router";
 import { Organization, getOrganizationByLogin } from "../../../services/organizations";
 import Nav from "react-bootstrap/Nav";
-import StatusesPage from "app/pages/statusesPage";
 import DocsPage from "app/pages/docs";
 import DocsDetailsPage from "app/pages/docs/details";
 import AddDocPage from "app/pages/docs/add";
@@ -59,27 +58,19 @@ class OrganizationDetailsPage extends React.Component<Props> {
             <Nav.Item>
               <Link className="nav-link" to={`/organizations/${organization.login}`}>Home</Link>
             </Nav.Item>
-
-            {this.props.docTypes &&
-              <>
-                {this.props.docTypes.map((docType) => {
-                  return (<Nav.Item key={docType.id}>
-                    <Link className="nav-link" to={`/organizations/${organization.login}/${docType.code}`}>{docType.name}</Link>
-                  </Nav.Item>);
-                })}
-              </>
-            }
+            <Nav.Item>
+              <Link className="nav-link" to={`/organizations/${organization.login}/doctypes`}>Browse</Link>
+            </Nav.Item>
             <Nav.Item>
               <Link className="nav-link" to={`/organizations/${organization.login}/settings`}>Settings</Link>
             </Nav.Item>
           </Nav>
           <Switch>
             <Route path={`/organizations/:login/settings/:settingsSection?`} component={OrganizationSettingsPage} />
-            <Route path={`/organizations/:login/statuses`} component={StatusesPage} />
-            <Route path={`/organizations/:login/:docType/add`} component={AddDocPage} />
-            <Route path={`/organizations/:login/:docType/:id/edit`} component={EditDocPage} />
-            <Route path={`/organizations/:login/:docType/:id`} component={DocsDetailsPage} />
-            <Route path={`/organizations/:login/:docType`} component={DocsPage} />
+            <Route path={`/organizations/:login/doctypes/add`} component={AddDocPage} />
+            <Route path={`/organizations/:login/doctypes/:id/edit`} component={EditDocPage} />
+            <Route path={`/organizations/:login/doctypes/:id`} component={DocsDetailsPage} />
+            <Route path={`/organizations/:login/doctypes`} component={DocsPage} />
           </Switch>
         </div>
       );

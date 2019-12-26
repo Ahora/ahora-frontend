@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { addOrg } from 'app/services/organizations';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Container from 'react-bootstrap/Container';
 
 interface AddDocsPageState {
     form: any;
@@ -41,7 +42,7 @@ export default class AddOrganizationPage extends React.Component<Props, AddDocsP
 
     render() {
         return (
-            <div>
+            <Container>
                 <h1>Add Organization</h1>
                 <Form onSubmit={this.onSubmit.bind(this)}>
                     <Form.Group controlId="exampleForm.ControlInput1">
@@ -70,7 +71,7 @@ export default class AddOrganizationPage extends React.Component<Props, AddDocsP
                     </Form.Group>
                     <Button variant="primary" type="submit">Add</Button>
                 </Form>
-            </div>
+            </Container>
         );
     };
 }

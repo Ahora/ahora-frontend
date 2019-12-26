@@ -4,6 +4,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import { Link } from 'react-router-dom';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
 
 interface OrganizationsPageState {
     organizations: Organization[];
@@ -27,7 +28,7 @@ export default class OrganizationsPage extends React.Component<any, Organization
     render = () => {
         if (this.state.organizations) {
             return (
-                <div>
+                <Container>
                     <h1>Organizations</h1>
                     <Nav className="mb-3">
                         <Nav.Item>
@@ -41,7 +42,7 @@ export default class OrganizationsPage extends React.Component<any, Organization
                             </ListGroup.Item>
                         })}
                     </ListGroup>
-                </div>
+                </Container>
             );
         }
         else {

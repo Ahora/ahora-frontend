@@ -68,8 +68,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     }
 
     async searchSelected(searchCriterias: SearchCriterias) {
-
-        console.log(searchCriterias);
         //Show spinner while searching
         this.setState({
             docs: null

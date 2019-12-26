@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { CommentListComponent } from 'app/components/Comments/List';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Container from 'react-bootstrap/Container';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
@@ -64,7 +65,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     render() {
         const doc: Doc | null = this.state.doc;
         return (
-            <div>
+            <Container fluid={true}>
                 {doc &&
                     <>
                         <div className="details">
@@ -86,7 +87,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
                     </>
                 }
-            </div>
+            </Container>
         );
     };
 }

@@ -2,7 +2,6 @@ import * as React from "react";
 import { RouteComponentProps, Switch, Route } from "react-router";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import Container from "react-bootstrap/Container";
 import OrganizationsPage from "app/pages/organizations";
 import OrganizationDetailsPage from "app/pages/organizations/details";
 import { Link } from "react-router-dom";
@@ -45,17 +44,15 @@ export class Dashboard extends React.Component<Props, State> {
           <Nav className="mr-auto"></Nav>
           <CurrentUser></CurrentUser>
         </Navbar>
-        <Container>
-          <Switch>
-            <Route exact path="/" component={RootPageComponent} />
-            <Route path="/organizations/add" component={AddOrganizationPage} />
-            <Route
-              path="/organizations/:login/:section?"
-              component={OrganizationDetailsPage}
-            />
-            <Route path="/organizations" component={OrganizationsPage} />
-          </Switch>
-        </Container>
+        <Switch>
+          <Route exact path="/" component={RootPageComponent} />
+          <Route path="/organizations/add" component={AddOrganizationPage} />
+          <Route
+            path="/organizations/:login"
+            component={OrganizationDetailsPage}
+          />
+          <Route path="/organizations" component={OrganizationsPage} />
+        </Switch>
       </>
     );
   };

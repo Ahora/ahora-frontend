@@ -2,6 +2,7 @@ import * as React from "react";
 import { RouteComponentProps, Switch, Route } from "react-router";
 import { Organization, getOrganizationByLogin } from "../../../services/organizations";
 import Nav from "react-bootstrap/Nav";
+import Container from "react-bootstrap/Container";
 import DocsPage from "app/pages/docs";
 import DocsDetailsPage from "app/pages/docs/details";
 import AddDocPage from "app/pages/docs/add";
@@ -51,7 +52,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
     const organization = this.props.organization;
     if (organization) {
       return (
-        <div>
+        <Container fluid={true}>
           <h2>{organization.displayName}</h2>
           <p>{organization.description}</p>
           <Nav className="mb-3" variant="tabs" defaultActiveKey={this.props.match.params.section || "home"}>
@@ -72,7 +73,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
             <Route path={`/organizations/:login/doctypes/:id`} component={DocsDetailsPage} />
             <Route path={`/organizations/:login/doctypes`} component={DocsPage} />
           </Switch>
-        </div>
+        </Container>
       );
     } else {
       return <div>Loading....</div>;

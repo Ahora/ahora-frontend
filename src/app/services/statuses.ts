@@ -19,10 +19,7 @@ export const getList = async (): Promise<Status[]> => {
   return result.data;
 };
 
-export const add = async (
-  organizationId: string,
-  status: Status
-): Promise<Status> => {
+export const add = async (organizationId: string, status: Status): Promise<Status> => {
   const result = await statusesClient.post({
     params: { organizationId },
     data: status
@@ -30,10 +27,7 @@ export const add = async (
   return result.data;
 };
 
-export const editStatus = async (
-  organizationId: string,
-  status: Status
-): Promise<Status> => {
+export const editStatus = async (organizationId: string, status: Status): Promise<Status> => {
   const result = await statusesClient.put({
     params: { organizationId, id: status.id! },
     data: status
@@ -41,10 +35,7 @@ export const editStatus = async (
   return result.data;
 };
 
-export const deleteStatus = async (
-  organizationId: string,
-  id: number
-): Promise<void> => {
+export const deleteStatus = async (organizationId: string, id: number): Promise<void> => {
   await statusesClient.delete({
     params: { organizationId, id }
   });

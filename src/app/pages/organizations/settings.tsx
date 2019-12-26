@@ -6,6 +6,7 @@ import StatusesPage from "app/pages/statusesPage";
 import { Organization, getOrganizations } from "app/services/organizations";
 import PeoplePage from "app/pages/people";
 import docTypesPage from "app/pages/docTypes";
+import LabelsPage from "app/pages/labels";
 import EditOrganizationPage from "app/pages/organizations/edit";
 
 interface SettingsPageState {
@@ -50,11 +51,13 @@ export default class OrganizationSettingsPage extends React.Component<
             <Nav.Item><Link className="nav-link" to={`/organizations/${organization.login}/settings/people`}>People</Link></Nav.Item>
             <Nav.Item><Link className="nav-link" to={`/organizations/${organization.login}/settings/statuses`}>Statuses</Link></Nav.Item>
             <Nav.Item><Link className="nav-link" to={`/organizations/${organization.login}/settings/doctypes`}>Doc Types</Link></Nav.Item>
+            <Nav.Item><Link className="nav-link" to={`/organizations/${organization.login}/settings/labels`}>Labels</Link></Nav.Item>
           </Nav>
           <Switch>
             <Route path={`/organizations/:login/settings/statuses`} component={StatusesPage} />
             <Route path={`/organizations/:login/settings/people`} component={PeoplePage} />
             <Route path={`/organizations/:login/settings/doctypes`} component={docTypesPage} />
+            <Route path={`/organizations/:login/settings/labels`} component={LabelsPage} />
             <Route exactpath={`/organizations/:login/settings`} component={EditOrganizationPage} />
           </Switch>
         </div>

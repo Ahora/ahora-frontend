@@ -1,11 +1,11 @@
 import { call, put, takeLatest } from 'redux-saga/effects'
 import { FETCH_LABELS } from './types';
 import { receiveLabelsData } from "./actions";
-import { getLabels } from "./../../services/labels";
+import { getList } from "app/services/labels"
 
 function* getLabelsFromServer(action: any) {
     try {
-        const data = yield call(getLabels);
+        const data = yield call(getList);
         yield put(receiveLabelsData(data));
     } catch (e) {
         console.log(e);

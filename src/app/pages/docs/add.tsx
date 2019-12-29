@@ -4,11 +4,15 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { addDoc } from 'app/services/docs';
 import MarkDownEditor from 'app/components/MarkDownEditor';
+import LabelsSelector from 'app/components/LabelsSelector';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { requestDocTypesData } from 'app/store/docTypes/actions';
 import { connect } from 'react-redux';
 import { DocType } from 'app/services/docTypes';
+import { Label } from 'app/services/labels';
+
+
 
 interface AddDocsPageState {
     form: any;
@@ -44,6 +48,10 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
                 form: { ...this.state.form, docTypeId: nextProps.docTypes[0].id }
             });
         }
+    }
+
+    onLabelsChanged(labels: Label[]) {
+        this.setState({ form: { ...this.state.form, labels: labels.map((label) => label.id) } });
     }
 
     handleEditorChange(text: any) {
@@ -84,6 +92,11 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
                         <Form.Label>Description</Form.Label>
                         <MarkDownEditor value={this.state.form.description} onChange={this.handleEditorChange.bind(this)} />
                     </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlTextarea1">
+                        <Form.Label>Labels</Form.Label>
+                        <LabelsSelector onChange={this.onLabelsChanged.bind(this)}></LabelsSelector>
+                    </Form.Group>
+
                     <Button variant="primary" type="submit">Add</Button>
                 </Form>
             </div>

@@ -10,6 +10,7 @@ export interface Doc {
     userAlias: string;
     metadata: any;
     createdAt: Date;
+    labels?: number[];
     updatedAt: Date;
     htmlDescription: string;
     status: number;

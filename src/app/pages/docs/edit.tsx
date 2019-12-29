@@ -9,6 +9,8 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { requestDocTypesData } from 'app/store/docTypes/actions';
 import { DocType } from 'app/services/docTypes';
+import { Label } from 'app/services/labels';
+import LabelsSelector from 'app/components/LabelsSelector';
 
 interface EditDocPageState {
     form: any;
@@ -43,6 +45,10 @@ class EditDocPage extends React.Component<Props, EditDocPageState> {
 
     handleEditorChange(text: any) {
         this.setState({ form: { ...this.state.form, description: text } });
+    }
+
+    onLabelsChanged(labels: Label[]) {
+        this.setState({ form: { ...this.state.form, labels: labels.map((label) => label.id) } });
     }
 
     handleChange(event: any) {
@@ -90,14 +96,14 @@ class EditDocPage extends React.Component<Props, EditDocPageState> {
                         <Form.Label>Description</Form.Label>
                         <MarkDownEditor value={this.state.form.description} onChange={this.handleEditorChange.bind(this)} />
                     </Form.Group>
-                    <Button variant="primary" type="submit">
-                        Save
-                    </Button>
-                    <Button variant="danger" type="button" onClick={this.onDelete.bind(this)}>
-                        Delete
-                    </Button>
+                    <Form.Group controlId="exampleForm.ControlTextarea1">
+                        <Form.Label>Labels</Form.Label>
+                        <LabelsSelector defaultSelected={this.state.form.labels} onChange={this.onLabelsChanged.bind(this)}></LabelsSelector>
+                    </Form.Group>
+                    <Button variant="primary" type="submit">Save</Button>
+                    <Button variant="danger" type="button" onClick={this.onDelete.bind(this)}>Delete</Button>
                 </Form>
-            </div>
+            </div >
         );
     };
 }

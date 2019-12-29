@@ -11,6 +11,7 @@ import { Dispatch } from 'redux';
 import { requestStatusesData } from 'app/store/statuses/actions';
 import { Status } from 'app/services/statuses';
 import { Link } from 'react-router-dom';
+import LabelsList from 'app/components/LabelsSelector/details';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -77,7 +78,9 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                         })}
                                     </ButtonGroup>
                                     <Link to={`/organizations/${this.props.match.params.login}/doctypes/${doc.id}/edit`}><Button variant="warning" className="ml-4">Edit</Button></Link>
-                                </div></h2>
+                                </div>
+                            </h2>
+                            <LabelsList defaultSelected={doc.labels}></LabelsList>
 
                             <p className="markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
                         </div>

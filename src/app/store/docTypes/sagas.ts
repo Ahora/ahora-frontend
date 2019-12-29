@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from 'redux-saga/effects'
+import { call, put, takeLeading } from 'redux-saga/effects'
 import { FETCH_DOCTYPES } from './types';
 import { receiveDocTypesData } from "./actions";
 import { getList } from "../../services/docTypes";
@@ -20,7 +20,7 @@ function* getLabelsFromServer(action: any) {
   and only the latest one will be run.
 */
 function* mySaga() {
-    yield takeLatest(FETCH_DOCTYPES, getLabelsFromServer);
+    yield takeLeading(FETCH_DOCTYPES, getLabelsFromServer);
 }
 
 export default mySaga;

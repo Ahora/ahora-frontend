@@ -15,6 +15,8 @@ import { Link } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
 import { DocType } from 'app/services/docTypes';
 import { requestDocTypesData } from 'app/store/docTypes/actions';
+import LabelsList from 'app/components/LabelsSelector/details';
+
 
 interface DocsPageState {
     docs: Doc[] | null;
@@ -111,7 +113,10 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
                                     <tr className="pt-3" key={doc.id!}>
                                         <td>{currentDocType && currentDocType.name}</td>
-                                        <td><Link to={`/organizations/${this.props.match.params.login}/doctypes/${doc.id}`}>{doc.subject}</Link></td>
+                                        <td>
+                                            <div></div><Link to={`/organizations/${this.props.match.params.login}/doctypes/${doc.id}`}>{doc.subject}</Link>
+                                            <LabelsList defaultSelected={doc.labels}></LabelsList></td>
+
                                         <td>{(doc.assignee) && doc.assignee.username}</td>
                                         <td>{(currentStatus) ? currentStatus.name : ""}</td>
                                         <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.updatedAt}></Moment></td>

@@ -14,6 +14,7 @@ interface LabelRow {
     editable: boolean;
     name?: string;
     description?: string;
+    color?: string;
 }
 
 interface LabelesPageState {
@@ -50,6 +51,7 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
     public markAsEditable(labelRow: LabelRow) {
         labelRow.editable = true;
         labelRow.name = labelRow.label.name;
+        labelRow.color = labelRow.label.color;
         labelRow.description = labelRow.label.description || "";
         this.setState({});
     }
@@ -88,6 +90,7 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
 
     public async saveLabel(label: LabelRow) {
         label.label.name = label.name!;
+        label.label.color = label.color;
         label.label.description = label.description!;
 
         if (label.label.id) {
@@ -129,7 +132,8 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>description</th>
+                            <th>Color</th>
+                            <th>Description</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -144,9 +148,15 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
                                     </td>
                                     <td>
                                         {labelRow.editable ? (
+                                            <Form.Control name="color" value={labelRow.color} onChange={(e: any) => { this.saveData(e, labelRow) }} type="text" />
+                                        ) : (<>{labelRow.label.color}</>)}
+                                    </td>
+                                    <td>
+                                        {labelRow.editable ? (
                                             <Form.Control name="description" value={labelRow.description} onChange={(e: any) => { this.saveData(e, labelRow) }} type="text" />
                                         ) : (<>{labelRow.label.description}</>)}
                                     </td>
+
                                     <td>
                                         {labelRow.editable ? (
                                             <>

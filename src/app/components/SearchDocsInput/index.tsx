@@ -10,8 +10,8 @@ export interface SearchCriterias {
     assignee: string[] | undefined;
     label: string[] | undefined;
     status: string[] | undefined;
-    text: string | string[]
-    docType: string | string[]
+    text: string | string[] | undefined
+    docType: string | string[] | undefined
 }
 
 
@@ -43,7 +43,13 @@ export default class SearchDocsInput extends React.Component<Props, State> {
     search() {
         if (this.state.searchCriteriaText) {
             const queryObject: SearchCriterias = parse(this.state.searchCriteriaText, options) as any;
-            this.props.searchSelected(queryObject);
+            this.props.searchSelected({
+                assignee: queryObject.assignee,
+                docType: queryObject.docType,
+                label: queryObject.label,
+                text: queryObject.text,
+                status: queryObject.status
+            });
         }
         else {
             this.props.searchSelected();

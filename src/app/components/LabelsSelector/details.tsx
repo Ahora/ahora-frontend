@@ -63,7 +63,7 @@ class LabelsList extends React.Component<AllProps, LabelsSelectorState> {
         return (
             <div>
                 {this.state.selectedLabels && this.state.selectedLabels.map((label: Label) => {
-                    return <Badge className="mr-2" variant="primary" key={label.id}>{label.name}</Badge>;
+                    return <Badge className="mr-2" variant="primary" style={{ backgroundColor: label.color }} key={label.id}>{label.name}</Badge>;
                 })}
 
             </div>

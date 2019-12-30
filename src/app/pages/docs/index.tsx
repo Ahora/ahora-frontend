@@ -16,6 +16,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import { DocType } from 'app/services/docTypes';
 import { requestDocTypesData } from 'app/store/docTypes/actions';
 import LabelsList from 'app/components/LabelsSelector/details';
+import { setSearchCriteria } from 'app/store/organizations/actions';
 
 
 interface DocsPageState {
@@ -31,7 +32,8 @@ interface DocsPageParams {
 interface injectedParams {
     statuses: Map<number, Status>;
     docTypes: Map<number, DocType>;
-    loading: boolean
+    loading: boolean;
+    searchCriteria?: string;
 }
 
 interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedParams {
@@ -42,6 +44,7 @@ interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedPar
 interface DispatchProps {
     requestStatusesData(): void;
     requestDocTypes(): void;
+    setSearchCriterias(data?: string): void;
 }
 
 interface AllProps extends DocsPageProps, DispatchProps {
@@ -69,8 +72,8 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         this.props.requestDocTypes();
     }
 
-    async searchSelected(searchCriterias: SearchCriterias) {
-        //Show spinner while searching
+    async searchSelected(searchCriterias: SearchCriterias, searchCriteriasText: string) {
+        this.props.setSearchCriterias(searchCriteriasText);
         this.setState({
             docs: null
         });
@@ -84,7 +87,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     render() {
         return (
             <div>
-                <SearchDocsInput searchCriteria="status:opened" searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
+                <SearchDocsInput searchCriteria={this.props.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
                 <Nav className="mb-3">
                     <Nav.Item>
                         <Link to={`/organizations/${this.props.match.params.login}/doctypes/add`}>
@@ -139,12 +142,14 @@ const mapStateToProps = (state: ApplicationState): injectedParams => {
     return {
         statuses: state.statuses.map,
         docTypes: state.docTypes.mapById,
-        loading: state.statuses.loading
+        loading: state.statuses.loading,
+        searchCriteria: state.organizations.SearchCriterias
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
+        setSearchCriterias: (data: string) => dispatch(setSearchCriteria(data)),
         requestStatusesData: () => dispatch(requestStatusesData()),
         requestDocTypes: () => dispatch(requestDocTypesData())
     }

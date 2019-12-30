@@ -17,7 +17,7 @@ export interface SearchCriterias {
 
 interface Props {
     searchCriteria?: string;
-    searchSelected(searchCriterias?: SearchCriterias): void
+    searchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string): void
 }
 
 interface State {
@@ -40,7 +40,11 @@ export default class SearchDocsInput extends React.Component<Props, State> {
         });
     }
 
-    search() {
+    search(event: any) {
+        if (event) {
+            event!.preventDefault();
+        }
+
         if (this.state.searchCriteriaText) {
             const queryObject: SearchCriterias = parse(this.state.searchCriteriaText, options) as any;
             this.props.searchSelected({
@@ -49,7 +53,7 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                 label: queryObject.label,
                 text: queryObject.text,
                 status: queryObject.status
-            });
+            }, this.state.searchCriteriaText);
         }
         else {
             this.props.searchSelected();
@@ -57,26 +61,28 @@ export default class SearchDocsInput extends React.Component<Props, State> {
     }
 
     async componentDidMount() {
-        this.search();
+        this.search(null);
     }
     render = () => {
         return (
             <div>
-                <Form.Group controlId="validationCustomUsername">
-                    <InputGroup>
-                        <Form.Control
-                            type="text"
-                            value={this.state.searchCriteriaText}
-                            onChange={this.onTextChange.bind(this)}
-                            placeholder="enter your search criteria"
-                            aria-describedby="inputGroupPrepend"
-                            required
-                        />
-                        <InputGroup.Append>
-                            <Button color="primary" variant="primary" onClick={this.search.bind(this)}>Search</Button>
-                        </InputGroup.Append>
-                    </InputGroup>
-                </Form.Group>
+                <form onSubmit={this.search.bind(this)}>
+                    <Form.Group>
+                        <InputGroup>
+                            <Form.Control
+                                type="text"
+                                value={this.state.searchCriteriaText}
+                                onChange={this.onTextChange.bind(this)}
+                                placeholder="enter your search criteria"
+                                aria-describedby="inputGroupPrepend"
+                                required
+                            />
+                            <InputGroup.Append>
+                                <Button type="submit" color="primary" variant="primary">Search</Button>
+                            </InputGroup.Append>
+                        </InputGroup>
+                    </Form.Group>
+                </form>
             </div>
         );
     };

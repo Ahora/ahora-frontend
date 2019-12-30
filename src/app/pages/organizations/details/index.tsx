@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RouteComponentProps, Switch, Route } from "react-router";
+import { RouteComponentProps, Switch, Route, Redirect } from "react-router";
 import { Organization, getOrganizationByLogin } from "../../../services/organizations";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
@@ -55,10 +55,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
         <Container fluid={true}>
           <h2>{organization.displayName}</h2>
           <p>{organization.description}</p>
-          <Nav className="mb-3" variant="tabs" defaultActiveKey={this.props.match.params.section || "home"}>
-            <Nav.Item>
-              <Link className="nav-link" to={`/organizations/${organization.login}`}>Home</Link>
-            </Nav.Item>
+          <Nav className="mb-3" variant="tabs" defaultActiveKey={this.props.match.params.section || "browse"}>
             <Nav.Item>
               <Link className="nav-link" to={`/organizations/${organization.login}/doctypes`}>Browse</Link>
             </Nav.Item>
@@ -72,6 +69,9 @@ class OrganizationDetailsPage extends React.Component<Props> {
             <Route path={`/organizations/:login/doctypes/:id/edit`} component={EditDocPage} />
             <Route path={`/organizations/:login/doctypes/:id`} component={DocsDetailsPage} />
             <Route path={`/organizations/:login/doctypes`} component={DocsPage} />
+            <Route path={`/organizations/:login`}>
+              <Redirect to={`/organizations/${this.props.match.params.login}/doctypes`} />
+            </Route>
           </Switch>
         </Container>
       );

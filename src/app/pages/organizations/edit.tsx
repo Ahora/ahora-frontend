@@ -9,6 +9,8 @@ import { ApplicationState } from "app/store";
 import { setCurrentOrganization } from 'app/store/organizations/actions';
 import Spinner from 'react-bootstrap/Spinner';
 import InputGroup from 'react-bootstrap/InputGroup';
+import { Status } from 'app/services/statuses';
+import { requestStatusesData } from 'app/store/statuses/actions';
 
 interface EditOrganizationPageState {
     form: any;
@@ -20,10 +22,12 @@ interface EditDocPageParams {
 
 interface DispatchProps {
     setOrganizationToState(organization: Organization | null): void;
+    requestStatusesData(): void;
 }
 
 interface Props extends RouteComponentProps<EditDocPageParams>, DispatchProps {
     organization?: Organization;
+    statuses?: Status[];
 }
 
 
@@ -36,6 +40,7 @@ class EditOrganizationPage extends React.Component<Props, EditOrganizationPageSt
     }
 
     async componentDidMount() {
+        this.props.requestStatusesData();
         if (this.props.organization) {
             this.setState({ form: { ...this.props.organization } });
         }
@@ -90,11 +95,19 @@ class EditOrganizationPage extends React.Component<Props, EditOrganizationPageSt
                                 <Form.Control value={this.state.form.login} name="login" onChange={this.handleChange.bind(this)} type="text" />
                             </InputGroup>
                         </Form.Group>
-                        <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Group>
                             <Form.Label>Type</Form.Label>
                             <Form.Control value={this.state.form.orgType} name="orgType" onChange={this.handleChange.bind(this)} as="select">
                                 <option value="0">Public</option>
                                 <option value="1">Private</option>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Default Status</Form.Label>
+                            <Form.Control value={this.state.form.defaultStatus} name="defaultStatus" onChange={this.handleChange.bind(this)} as="select">
+                                {this.props.statuses && this.props.statuses.map((status: Status) => {
+                                    return <option value={status.id}>{status.name}</option>
+                                })}
                             </Form.Control>
                         </Form.Group>
                         <Form.Group controlId="exampleForm.ControlTextarea1">
@@ -115,12 +128,14 @@ class EditOrganizationPage extends React.Component<Props, EditOrganizationPageSt
 
 const mapStateToProps = (state: ApplicationState) => {
     return {
-        organization: state.organizations.currentOrganization
+        organization: state.organizations.currentOrganization,
+        statuses: state.statuses.statuses
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
+        requestStatusesData: () => dispatch(requestStatusesData()),
         setOrganizationToState: (organization: Organization) => {
             dispatch(setCurrentOrganization(organization));
         }

@@ -171,7 +171,7 @@ class StatusesPage extends React.Component<AllProps, StatusesPageState> {
 
 const mapStateToProps = (state: ApplicationState) => {
     return {
-        organizationId: "ahora",
+        organizationId: state.organizations.currentOrganization!.login,
         statuses: state.statuses.statuses.map(status => { return { editable: false, status } }),
         loading: state.statuses.loading
     };

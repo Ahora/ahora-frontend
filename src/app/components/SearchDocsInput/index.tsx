@@ -75,7 +75,6 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                                 onChange={this.onTextChange.bind(this)}
                                 placeholder="enter your search criteria"
                                 aria-describedby="inputGroupPrepend"
-                                required
                             />
                             <InputGroup.Append>
                                 <Button type="submit" color="primary" variant="primary">Search</Button>

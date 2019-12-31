@@ -1,5 +1,5 @@
 
-import { RestCollectorClient } from "rest-collector";
+import AhoraRestCollector from "./base";
 
 export interface OrganizationUser {
     id?: number;
@@ -14,24 +14,21 @@ export interface OrganizationUser {
 
 
 
-const orgUsersClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{organizationId}/users/{id}");
+const orgUsersClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/users/{id}");
 export const getUsersByOrganization = async (): Promise<OrganizationUser[]> => {
-    const result = await orgUsersClient.get({
-        params: { organizationId: "ahora" }
-    });
+    const result = await orgUsersClient.get();
     return result.data;
 }
 
 
 export const deleteUserMethod = async (user: OrganizationUser): Promise<void> => {
     await orgUsersClient.delete({
-        params: { organizationId: "ahora", id: user.id! }
+        params: { id: user.id! }
     })
 }
 
 export const addUser = async (login: string, permission: number = 1): Promise<OrganizationUser> => {
     const result = await orgUsersClient.post({
-        params: { organizationId: "ahora" },
         data: { login, permission }
     });
 

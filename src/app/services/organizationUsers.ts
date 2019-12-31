@@ -12,8 +12,6 @@ export interface OrganizationUser {
     }
 }
 
-
-
 const orgUsersClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/users/{id}");
 export const getUsersByOrganization = async (): Promise<OrganizationUser[]> => {
     const result = await orgUsersClient.get();

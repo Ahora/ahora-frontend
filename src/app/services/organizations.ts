@@ -14,7 +14,7 @@ export interface Organization {
     description: string;
     orgType: OrganizationType
 }
-const docsClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{id}");
+const docsClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{login}");
 
 export const addOrg = async (org: Organization): Promise<Organization> => {
     const result = await docsClient.post({
@@ -30,7 +30,7 @@ export const getOrganizations = async (): Promise<Organization[]> => {
 
 export const updateOrganization = async (organization: Organization): Promise<Organization> => {
     const result = await docsClient.put({
-        params: { id: organization.id },
+        params: { login: organization.login },
         data: organization
     });
     return result.data;
@@ -38,13 +38,13 @@ export const updateOrganization = async (organization: Organization): Promise<Or
 
 export const deleteOrganization = async (organization: Organization): Promise<void> => {
     await docsClient.delete({
-        params: { id: organization.id }
+        params: { login: organization.login }
     });
 }
 
 export const getOrganizationByLogin = async (login: string): Promise<Organization | null> => {
     const result = await docsClient.get({
-        params: { id: login }
+        params: { login }
     });
     return result.data;
 }

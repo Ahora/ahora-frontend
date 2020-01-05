@@ -102,9 +102,11 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 </ButtonGroup>
                                 <Link to={`/organizations/${this.props.match.params.login}/doctypes/${doc.id}/edit`}><Button variant="warning" className="ml-4">Edit</Button></Link>
 
-                                <LabelsList defaultSelected={doc.labels}></LabelsList>
+                                <div className="mt-2"><LabelsList defaultSelected={doc.labels}></LabelsList></div>
 
-                                <p className="markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
+                                <p className="mt-4 markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
+                                <CommentListComponent docId={doc.id} login={this.props.match.params.login}></CommentListComponent>
+
                             </Col>
                             <Col xs={12} md={4}>
                                 <h2>People</h2>
@@ -137,10 +139,6 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 </Table>
                             </Col>
                         </Row>
-                        <div>
-                            <CommentListComponent docId={doc.id} login={this.props.match.params.login}></CommentListComponent>
-                        </div>
-
                     </>
                 }
             </Container>

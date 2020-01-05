@@ -23,7 +23,7 @@ export default class MarkDownEditor extends React.Component<MarkDownEditorProps>
     }
 
     render() {
-        return (<MdEditor config={{ view: { html: false, fullScreen: false, md: true, menu: true } }
+        return (<MdEditor style={{ height: "200px" }} config={{ view: { html: false, fullScreen: false, md: true, menu: true } }
         } renderHTML={(text) => this.mdParser.render(text)} name="description" value={this.props.value || ""} onChange={this.handleEditorChange.bind(this)} />
         );
     }

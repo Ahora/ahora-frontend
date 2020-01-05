@@ -2,6 +2,11 @@
 import { RestCollectorClient } from "rest-collector";
 import * as fetch from 'isomorphic-fetch';
 
+export interface UserItem {
+    username: string;
+    displayName: string;
+    id?: number
+}
 
 export interface User {
     id: number;
@@ -19,7 +24,7 @@ export function makeAndHandleRequest(query: string, page = 1) {
             const options = data.items.map((i: any) => ({
                 avatar_url: i.avatar_url,
                 id: i.id,
-                login: i.login,
+                username: i.login,
             }));
             return { options, total_count: data.total_count };
         });

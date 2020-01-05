@@ -2,9 +2,10 @@ import * as React from 'react';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import { Fragment } from 'react';
-import SelectUser, { UserItem } from 'app/components/users/selectusers';
+import SelectUser from 'app/components/users/selectusers';
 import { getUsersByOrganization, OrganizationUser, deleteUserMethod, addUser } from 'app/services/organizationUsers';
 import Spinner from 'react-bootstrap/Spinner';
+import { UserItem } from 'app/services/users';
 
 interface StatusesPageState {
     users: OrganizationUser[] | null;
@@ -37,7 +38,7 @@ export default class PeoplePage extends React.Component<AllProps, StatusesPageSt
     }
 
     async onSelectUser(user: UserItem) {
-        const addedUser = await addUser(user.login);
+        const addedUser = await addUser(user.username);
         this.setState({
             users: [...this.state.users, addedUser]
         });

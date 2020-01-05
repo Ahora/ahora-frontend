@@ -1,6 +1,7 @@
 
 import { RestCollectorClient } from "rest-collector";
 import { SearchCriterias } from "app/components/SearchDocsInput";
+import { UserItem } from "./users";
 
 export interface Doc {
     id: number;
@@ -14,10 +15,7 @@ export interface Doc {
     updatedAt: Date;
     htmlDescription: string;
     status: number;
-    assignee?: {
-        username: string;
-        displayName: string;
-    }
+    assignee?: UserItem
 }
 
 
@@ -41,12 +39,17 @@ export const getDocs = async (login: string, query?: SearchCriterias): Promise<D
 
 export const getDoc = async (login: string, id: number): Promise<Doc> => {
     const result = await docsClient.get({
-        params: {
-            id,
-            login
-        }
+        params: { id, login }
     });
 
+    return result.data;
+}
+
+export const assignDoc = async (login: string, id: number, username: string): Promise<UserItem> => {
+    const result = await docsClient.post({
+        url: `/api/organizations/${login}/docs/${id}/assignee`,
+        data: { username }
+    });
     return result.data;
 }
 

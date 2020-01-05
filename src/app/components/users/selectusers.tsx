@@ -1,19 +1,18 @@
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import * as React from "react";
 import GithubMenuItem from "./GithubMenuItem";
-import { makeAndHandleRequest } from "app/services/users";
-
-export interface UserItem {
-    login: string;
-}
+import { makeAndHandleRequest, UserItem } from "app/services/users";
 
 interface SelectUserProps {
     onSelect(user: UserItem): void;
+    defaultSelected?: UserItem[]
+    editMode?: boolean;
 }
 interface State {
     isLoading: boolean,
     options: UserItem[],
     query: string;
+    editMode: boolean;
 }
 
 export default class SelectUser extends React.Component<SelectUserProps, State> {
@@ -26,33 +25,64 @@ export default class SelectUser extends React.Component<SelectUserProps, State> 
             isLoading: false,
             options: [],
             query: '',
+            editMode: (props.editMode === undefined) ? true : props.editMode
         };
     }
 
+    onBlur() {
+        this.setState({
+            editMode: false,
+        });
+    }
+
+    onStartEdit() {
+        this.setState({
+            editMode: true,
+        });
+    }
+
     onChange(users: UserItem[]) {
-        this.props.onSelect(users[0]);
+        if (users.length > 0) {
+            this.props.onSelect(users[0]);
+            this.setState({
+                editMode: (this.props.editMode === undefined) ? true : this.props.editMode
+            });
+        }
     }
 
     render() {
-        return (
-            <AsyncTypeahead
-                labelKey="login"
-                {...this.state}
-                maxResults={50 - 1}
-                minLength={2}
-                onChange={(users) => { this.onChange(users) }}
-                onInputChange={this._handleInputChange}
-                onPaginate={this._handlePagination}
-                onSearch={this._handleSearch}
-                paginate
-                placeholder="Search for a Github user..."
-                renderMenuItemChildren={(option: any, props) => {
-                    return <GithubMenuItem key={option.id} user={option} />;
-                }
-                }
-                useCache={false}
-            />
-        );
+        if (this.state.editMode) {
+            return (
+                <AsyncTypeahead
+                    labelKey="username"
+                    {...this.state}
+                    maxResults={50 - 1}
+                    minLength={2}
+                    autoFocus={true}
+                    onBlur={this.onBlur.bind(this)}
+                    onChange={(users) => { this.onChange(users) }}
+                    onInputChange={this._handleInputChange}
+                    onPaginate={this._handlePagination}
+                    onSearch={this._handleSearch}
+                    defaultSelected={this.props.defaultSelected}
+                    paginate
+                    placeholder="Search for a Github user..."
+                    renderMenuItemChildren={(option: any, props) => {
+                        return <GithubMenuItem key={option.id} user={option} />;
+                    }
+                    }
+                    useCache={false}
+                />
+            );
+        }
+        else {
+            if (this.props.defaultSelected && this.props.defaultSelected.length > 0) {
+                return (<span onClick={this.onStartEdit.bind(this)}>{this.props.defaultSelected[0].displayName} ({this.props.defaultSelected[0].username})</span>)
+            }
+            else {
+                return (<span onClick={this.onStartEdit.bind(this)}>Unassigned</span>)
+            }
+        }
     }
 
     _handleInputChange = (query: string) => {

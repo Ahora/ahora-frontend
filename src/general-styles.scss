@@ -3,3 +3,8 @@
 @import "tags.css";
 @import "github-markdown-css/github-markdown.css";
 @import 'react-bootstrap-typeahead/css/Typeahead.css';
+@import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
+
+.rbt {
+    display: inline-flex;
+}

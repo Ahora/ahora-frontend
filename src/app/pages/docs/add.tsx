@@ -90,7 +90,7 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlTextarea1">
                         <Form.Label>Description</Form.Label>
-                        <MarkDownEditor value={this.state.form.description} onChange={this.handleEditorChange.bind(this)} />
+                        <MarkDownEditor height="400px" value={this.state.form.description} onChange={this.handleEditorChange.bind(this)} />
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlTextarea1">
                         <Form.Label>Labels</Form.Label>

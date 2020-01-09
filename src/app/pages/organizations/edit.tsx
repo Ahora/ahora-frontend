@@ -55,16 +55,16 @@ class EditOrganizationPage extends React.Component<Props, EditOrganizationPageSt
     async onSubmit(even: any) {
         event!.preventDefault();
 
-        const organization: Organization = await updateOrganization(this.state.form);
+        const organization: Organization = await updateOrganization(this.props.organization!.login, this.state.form);
 
-        if (this.props.organization!.login !== organization.login) {
+        if (this.props.organization!.login !== this.state.form.login) {
             this.props.setOrganizationToState(organization);
-            this.props.history.replace(`/organizations/${organization.login}/settings`);
+            this.props.history.replace(`/organizations/${this.state.form.login}/settings`);
         }
         else {
             this.props.setOrganizationToState(organization);
         }
-        alert(`Orgnization ${organization.displayName} update successfully`);
+        alert(`Orgnization ${this.state.form.displayName} update successfully`);
 
     }
 

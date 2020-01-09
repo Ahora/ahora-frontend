@@ -28,9 +28,9 @@ export const getOrganizations = async (): Promise<Organization[]> => {
     return result.data;
 }
 
-export const updateOrganization = async (organization: Organization): Promise<Organization> => {
+export const updateOrganization = async (orgName: string, organization: Organization): Promise<Organization> => {
     const result = await docsClient.put({
-        params: { login: organization.login },
+        params: { login: orgName },
         data: organization
     });
     return result.data;

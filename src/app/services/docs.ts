@@ -2,6 +2,7 @@
 import { RestCollectorClient } from "rest-collector";
 import { SearchCriterias } from "app/components/SearchDocsInput";
 import { UserItem } from "./users";
+import { DocWatchers } from "./watchers";
 
 export interface Doc {
     id: number;
@@ -49,6 +50,20 @@ export const assignDoc = async (login: string, id: number, username: string): Pr
     const result = await docsClient.post({
         url: `/api/organizations/${login}/docs/${id}/assignee`,
         data: { username }
+    });
+    return result.data;
+}
+
+export const watchDoc = async (login: string, id: number): Promise<DocWatchers> => {
+    const result = await docsClient.post({
+        url: `/api/organizations/${login}/docs/${id}/watch`
+    });
+    return result.data;
+}
+
+export const unwatchDoc = async (login: string, id: number): Promise<UserItem> => {
+    const result = await docsClient.post({
+        url: `/api/organizations/${login}/docs/${id}/unwatch`
     });
     return result.data;
 }

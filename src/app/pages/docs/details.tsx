@@ -20,6 +20,7 @@ import { DocType } from 'app/services/docTypes';
 import { requestDocTypesData } from 'app/store/docTypes/actions';
 import Table from 'react-bootstrap/Table';
 import Moment from 'react-moment';
+import DocWatchersComponent from 'app/components/DocWatchers';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -123,7 +124,9 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                             </tr>)}
                                     </tbody>
                                 </Table>
-                                <h2>Times</h2>
+                                <h2>Watchers</h2>
+                                <DocWatchersComponent docId={doc.id} login={this.props.match.params.login}></DocWatchersComponent>
+                                <h2 className="mt-3">Times</h2>
                                 <Table>
                                     <tbody>
                                         <tr>

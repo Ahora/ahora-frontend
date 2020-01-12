@@ -1,7 +1,7 @@
 
 import { RestCollectorClient } from "rest-collector";
 
-export interface DocWatchers {
+export interface DocWatcher {
     id: number;
     docId: number;
     userId: number;
@@ -13,7 +13,7 @@ export interface DocWatchers {
 
 
 const watchersClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{login}/docs/{docId}/watchers");
-export const getWatchers = async (login: string, docId: number): Promise<DocWatchers[]> => {
+export const getWatchers = async (login: string, docId: number): Promise<DocWatcher[]> => {
     const result = await watchersClient.get({
         params: { login, docId }
     });

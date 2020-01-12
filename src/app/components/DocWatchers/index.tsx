@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DocWatchers, getWatchers } from 'app/services/watchers';
+import { DocWatcher, getWatchers } from 'app/services/watchers';
 import Spinner from 'react-bootstrap/Spinner';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button';
 import { watchDoc, unwatchDoc } from 'app/services/docs';
 
 interface injectedParams {
-    currentUser: User | undefined,
+    currentUser?: User,
 }
 
 interface DispatchProps {
@@ -24,7 +24,7 @@ interface DocWatcherProps extends injectedParams, DispatchProps {
 
 interface State {
     isWatchedByMe: boolean,
-    watchers?: DocWatchers[];
+    watchers?: DocWatcher[];
 }
 
 class DocWatchersComponent extends React.Component<DocWatcherProps, State> {
@@ -40,7 +40,7 @@ class DocWatchersComponent extends React.Component<DocWatcherProps, State> {
     async watch() {
         if (this.props.currentUser) {
 
-            const myWatch: DocWatchers = await watchDoc(this.props.login, this.props.docId);
+            const myWatch: DocWatcher = await watchDoc(this.props.login, this.props.docId);
             myWatch.user = {
                 username: this.props.currentUser.username,
                 displayName: this.props.currentUser.displayName
@@ -58,22 +58,24 @@ class DocWatchersComponent extends React.Component<DocWatcherProps, State> {
             unwatchDoc(this.props.login, this.props.docId);
             this.setState({
                 isWatchedByMe: false,
-                watchers: this.state.watchers.filter((watcher) => { watcher.userId === this.props.currentUser?.id })
+                watchers: this.state.watchers.filter((watcher) => { watcher.userId !== this.props.currentUser!.id })
             });
         }
     }
 
     async componentDidMount() {
-        const watchers: DocWatchers[] = await getWatchers(this.props.login, this.props.docId);
+        const watchers: DocWatcher[] = await getWatchers(this.props.login, this.props.docId);
 
-        let isWatchedByMe: boolean = false;
-        const myWatch: DocWatchers[] | null = watchers.filter((watcher) => watcher.userId === this.props.currentUser?.id)
-        isWatchedByMe = (myWatch.length > 0);
+        if (this.props.currentUser) {
+            let isWatchedByMe: boolean = false;
+            const myWatch: DocWatcher[] | null = watchers.filter((watcher) => watcher.userId === this.props.currentUser!.id)
+            isWatchedByMe = (myWatch.length > 0);
 
-        this.setState({
-            watchers,
-            isWatchedByMe
-        });
+            this.setState({
+                watchers,
+                isWatchedByMe
+            });
+        }
     }
 
     render() {

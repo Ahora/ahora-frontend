@@ -75,6 +75,8 @@ class DocWatchersComponent extends React.Component<DocWatcherProps, State> {
                 watchers,
                 isWatchedByMe
             });
+        } else {
+            this.setState({ watchers });
         }
     }
 

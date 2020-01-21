@@ -29,10 +29,9 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
     }
 
     commentAdded(comment: Comment): void {
-        const newComments: Comment[] = [...this.state.comments];
-        newComments.push(comment);
+        const comments: Comment[] = [comment, ...this.state.comments];
         this.setState({
-            comments: newComments
+            comments
         });
     }
 
@@ -46,6 +45,9 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
     render() {
         return (
             <div>
+                <div className="mt-2 mb-2">
+                    <AddCommentComponent commentAdded={(comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.docId}></AddCommentComponent>
+                </div>
                 {this.state.comments ?
                     (<>
                         {this.state.comments.length > 0 &&
@@ -58,9 +60,6 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
                     </>) :
                     (<div className="text-center"><Spinner animation="border" variant="primary" /></div>)
                 }
-                <div className="mt-2">
-                    <AddCommentComponent commentAdded={(comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.docId}></AddCommentComponent>
-                </div>
             </div>
         );
     }

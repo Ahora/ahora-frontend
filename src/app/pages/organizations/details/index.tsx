@@ -15,7 +15,7 @@ import { ApplicationState } from "app/store";
 import { Link } from "react-router-dom";
 import { DocType } from "app/services/docTypes";
 import { requestDocTypesData } from "app/store/docTypes/actions";
-import OrganizationTeamPage from "app/pages/teams";
+import OrganizationTeamRootPage from "app/pages/teams/root";
 
 interface OrganizationDetailsPageProps {
   organization: Organization | null;
@@ -32,10 +32,9 @@ interface DispatchProps {
   requestDocTypes(): void;
 }
 
-interface Props
-  extends RouteComponentProps<OrganizationPageParams>,
-  DispatchProps,
-  OrganizationDetailsPageProps { }
+interface Props extends RouteComponentProps<OrganizationPageParams>, DispatchProps, OrganizationDetailsPageProps {
+
+}
 
 class OrganizationDetailsPage extends React.Component<Props> {
   constructor(props: Props) {
@@ -73,7 +72,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
             <Route path={`/organizations/:login/doctypes/:id/edit`} component={EditDocPage} />
             <Route path={`/organizations/:login/doctypes/:id`} component={DocsDetailsPage} />
             <Route path={`/organizations/:login/doctypes`} component={DocsPage} />
-            <Route path={`/organizations/:login/teams`} component={OrganizationTeamPage} />
+            <Route path={`/organizations/:login/teams`} component={OrganizationTeamRootPage} />
             <Route path={`/organizations/:login`}>
               <Redirect to={`/organizations/${this.props.match.params.login}/doctypes`} />
             </Route>

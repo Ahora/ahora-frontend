@@ -8,22 +8,27 @@ export interface OrganizationTeam {
     organizationId: number;
 }
 
-const orgTEamsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/teams/{id}");
-export const getTeamsByOrganization = async (): Promise<OrganizationTeam[]> => {
-    const result = await orgTEamsClient.get();
+const orgTeamsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/teams/{id}");
+export const getTeams = async (parentId: number | null): Promise<OrganizationTeam[]> => {
+    const result = await orgTeamsClient.get({ query: { parentId: parentId ? parentId : "null" } });
+    return result.data;
+}
+
+export const getTeamById = async (id: number): Promise<OrganizationTeam> => {
+    const result = await orgTeamsClient.get({ params: { id } });
     return result.data;
 }
 
 
 export const deleteOrganizationTeamMethod = async (user: OrganizationTeam): Promise<void> => {
-    await orgTEamsClient.delete({
+    await orgTeamsClient.delete({
         params: { id: user.id! }
     })
 }
 
-export const addOrganizationTeam = async (name: string): Promise<OrganizationTeam> => {
-    const result = await orgTEamsClient.post({
-        data: { name }
+export const addOrganizationTeam = async (name: string, parentId: number | null = null): Promise<OrganizationTeam> => {
+    const result = await orgTeamsClient.post({
+        data: { name, parentId }
     });
 
     return result.data;

@@ -1,7 +1,6 @@
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import * as React from "react";
-import GithubMenuItem from "./GithubMenuItem";
-import { makeAndHandleRequest, UserItem } from "app/services/users";
+import { UserItem, searchUsers } from "app/services/users";
 
 interface SelectUserProps {
     onSelect(user: UserItem): void;
@@ -17,10 +16,8 @@ interface State {
 
 export default class SelectUser extends React.Component<SelectUserProps, State> {
 
-    private _cache: any;
     constructor(props: SelectUserProps) {
         super(props);
-        this._cache = {};
         this.state = {
             isLoading: false,
             options: [],
@@ -31,7 +28,7 @@ export default class SelectUser extends React.Component<SelectUserProps, State> 
 
     onBlur() {
         this.setState({
-            editMode: false,
+            editMode: true,
         });
     }
 
@@ -55,23 +52,20 @@ export default class SelectUser extends React.Component<SelectUserProps, State> 
             return (
                 <AsyncTypeahead
                     labelKey="username"
-                    {...this.state}
                     maxResults={50 - 1}
-                    minLength={2}
-                    autoFocus={true}
+                    {...this.state}
                     onBlur={this.onBlur.bind(this)}
                     onChange={(users) => { this.onChange(users) }}
-                    onInputChange={this._handleInputChange}
-                    onPaginate={this._handlePagination}
-                    onSearch={this._handleSearch}
+                    onInputChange={this._handleInputChange.bind(this)}
+                    onSearch={this._handleSearch.bind(this)}
                     defaultSelected={this.props.defaultSelected}
-                    paginate
-                    placeholder="Search for a Github user..."
-                    renderMenuItemChildren={(option: any, props) => {
-                        return <GithubMenuItem key={option.id} user={option} />;
+                    placeholder="Search for a user..."
+                    renderMenuItemChildren={
+                        (user: UserItem) => {
+                            console.log(user);
+                            return <div key={user.id}>{user.displayName} ({user.username})</div>;
+                        }
                     }
-                    }
-                    useCache={false}
                 />
             );
         }
@@ -89,49 +83,13 @@ export default class SelectUser extends React.Component<SelectUserProps, State> 
         this.setState({ query });
     }
 
-    _handlePagination = (e: any, shownResults: any) => {
-        const { query } = this.state;
-        const cachedQuery = this._cache[query];
-
-        // Don't make another request if:
-        // - the cached results exceed the shown results
-        // - we've already fetched all possible results
-        if (
-            cachedQuery.options.length > shownResults ||
-            cachedQuery.options.length === cachedQuery.total_count
-        ) {
-            return;
-        }
-
+    _handleSearch = async (query: string) => {
         this.setState({ isLoading: true });
 
-        const page = cachedQuery.page + 1;
-
-        makeAndHandleRequest(query, page)
-            .then((resp: any) => {
-                const options = cachedQuery.options.concat(resp.options);
-                this._cache[query] = { ...cachedQuery, options, page };
-                this.setState({
-                    isLoading: false,
-                    options,
-                });
-            });
-    }
-
-    _handleSearch = (query: string) => {
-        if (this._cache[query]) {
-            this.setState({ options: this._cache[query].options });
-            return;
-        }
-
-        this.setState({ isLoading: true });
-        makeAndHandleRequest(query)
-            .then((resp: any) => {
-                this._cache[query] = { ...resp, page: 1 };
-                this.setState({
-                    isLoading: false,
-                    options: resp.options,
-                });
-            });
+        const users = await searchUsers(query);
+        this.setState({
+            isLoading: false,
+            options: users,
+        });
     }
 }

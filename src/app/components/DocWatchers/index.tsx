@@ -95,9 +95,9 @@ class DocWatchersComponent extends React.Component<DocWatcherProps, State> {
                         }
 
                         {this.state.watchers.length > 0 &&
-                            <div className="list">
+                            <div className="list mt-2">
                                 {this.state.watchers.map((watcher) => {
-                                    return (<div key={watcher.id}><i className="fas fa-user mr-2"></i>{watcher.user.username}</div>);
+                                    return (<div key={watcher.id}><i className="fas fa-user mr-2"></i>{watcher.user.displayName || watcher.user.username}</div>);
                                 })}
                             </div>
                         }

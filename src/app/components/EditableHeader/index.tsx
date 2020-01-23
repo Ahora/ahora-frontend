@@ -28,12 +28,20 @@ export default class EditableHeader extends React.Component<EditableHeaderParams
         });
     }
 
-    onSubmit(event: any) {
-        this.props.onChanged(this.state.value);
-        event.preventDefault();
+    onSubmit() {
+        if (this.state.editMode) {
+            this.props.onChanged(this.state.value);
 
+            this.setState({
+                editMode: false
+            });
+        }
+    }
+
+    cancel() {
         this.setState({
-            editMode: false
+            editMode: false,
+            value: this.props.value
         });
     }
 
@@ -45,14 +53,13 @@ export default class EditableHeader extends React.Component<EditableHeaderParams
         return (
             <>
                 {this.state.editMode ?
-                    <Form onSubmit={this.onSubmit.bind(this)}>
-                        <InputGroup>
-                            <Form.Control onBlur={this.onSubmit.bind(this)} value={this.state.value} onChange={this.valueChanged.bind(this)} placeholder="Enter team name" />
-                            <InputGroup.Append>
-                                <Button type="submit" variant="primary"><span className="fa fa-check"></span></Button>
-                            </InputGroup.Append>
-                        </InputGroup>
-                    </Form>
+                    <InputGroup>
+                        <Form.Control value={this.state.value} onChange={this.valueChanged.bind(this)} placeholder="Enter team name" />
+                        <InputGroup.Append>
+                            <Button type="submit" onClick={this.onSubmit.bind(this)} variant="primary"><span className="fa fa-check"></span></Button>
+                            <Button onClick={this.cancel.bind(this)} type="button" variant="danger"><span className="fa fa-times-circle"></span></Button>
+                        </InputGroup.Append>
+                    </InputGroup>
                     :
                     (<div onClick={this.startEdit.bind(this)}>{this.props.children}</div>)
                 }

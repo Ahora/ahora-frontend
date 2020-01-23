@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Doc, getDoc, updateDoc, assignDoc } from 'app/services/docs';
+import { Doc, getDoc, updateDoc, assignDoc, updateDocSubject } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
 import { CommentListComponent } from 'app/components/Comments/List';
 import Button from 'react-bootstrap/Button';
@@ -21,6 +21,7 @@ import { requestDocTypesData } from 'app/store/docTypes/actions';
 import Table from 'react-bootstrap/Table';
 import Moment from 'react-moment';
 import DocWatchersComponent from 'app/components/DocWatchers';
+import EditableHeader from 'app/components/EditableHeader';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -82,6 +83,13 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         });
     }
 
+    async onSubjectChanged(value: string) {
+        await updateDocSubject(this.props.match.params.login, this.state.doc!.id, value);
+        this.setState({
+            doc: { ...this.state.doc!, subject: value },
+        });
+    }
+
     render() {
         const doc: Doc | null = this.state.doc;
         let docType: DocType | undefined;
@@ -95,7 +103,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                     <>
                         <Row className="details">
                             <Col xs={12} md={8}>
-                                <h1>{doc.subject}</h1>
+                                <EditableHeader onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h1>{doc.subject}</h1></EditableHeader>
                                 <ButtonGroup>
                                     {this.props.statuses.map((status) => {
                                         return <Button key={status.id} onClick={() => { this.changeStatus(status.id!); }} variant={(status.id === doc.status) ? "primary" : "light"} >{status.name}</Button>

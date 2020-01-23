@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { deleteOrganizationTeamMethod, OrganizationTeam, getTeamById, addOrganizationTeam, getTeams, OrganizationTeamUser, getUsersByTeam, addUser, deleteUserFromTeam } from 'app/services/organizationTeams';
+import { deleteOrganizationTeamMethod, OrganizationTeam, getTeamById, addOrganizationTeam, getTeams, OrganizationTeamUser, getUsersByTeam, addUser, deleteUserFromTeam, updateTeamName } from 'app/services/organizationTeams';
 import { RouteComponentProps } from 'react-router';
 import Table from 'react-bootstrap/Table';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 import SelectUser from 'app/components/users/selectusers';
 import Spinner from 'react-bootstrap/Spinner';
 import { UserItem } from 'app/services/users';
+import EditableHeader from 'app/components/EditableHeader';
 
 interface TeamsPageState {
     team: OrganizationTeam | null;
@@ -101,7 +102,15 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
         this.setState({
             users: this.state.users!.filter(user => user.id !== userToDelete.id)
         });
+    }
 
+    async onTeamNameChanged(value: string) {
+        if (this.state.team) {
+            await updateTeamName(value, this.state.team.id);
+            this.setState({
+                team: { ...this.state.team, name: value }
+            })
+        }
     }
 
     render() {
@@ -111,13 +120,13 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                 <div>
                     {this.state.team &&
                         <>
-                            <h2>Team: {this.state.team && this.state.team.name}</h2>
-                            <h2>Members</h2>
+                            <EditableHeader onChanged={this.onTeamNameChanged.bind(this)} value={this.state.team.name}><h2>Team: {this.state.team && this.state.team.name}</h2></EditableHeader>
                         </>
                     }
+                    <h2>Members</h2>
                     <SelectUser editMode={true} onSelect={this.addUserToTeam.bind(this)} ></SelectUser>
                     {this.state.users ?
-                        <Table>
+                        <Table className="mt-2">
                             <thead>
                                 <tr>
                                     <th>User</th>
@@ -169,9 +178,11 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                             </tbody>
                         </Table>
                     }
-                    <h2>Danger Zone</h2>
                     {this.state.team &&
-                        <Button type="button" onClick={this.deleteTeam.bind(this)} variant="danger">Delete Team</Button>
+                        <div>
+                            <h2>Danger Zone</h2>
+                            <Button type="button" onClick={this.deleteTeam.bind(this)} variant="danger">Delete Team</Button>
+                        </div>
                     }
                 </div>
             </div>

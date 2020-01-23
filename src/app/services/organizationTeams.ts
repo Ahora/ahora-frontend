@@ -51,6 +51,15 @@ export const addOrganizationTeam = async (name: string, parentId: number | null 
     return result.data;
 }
 
+export const updateTeamName = async (name: string, id: number): Promise<OrganizationTeam> => {
+    const result = await orgTeamsClient.put({
+        params: { id },
+        data: { name }
+    });
+
+    return result.data;
+}
+
 export const addUser = async (userId: number, teamId: number | null = null): Promise<OrganizationTeamUser> => {
     const result = await orgTeamsUsersClient.post({
         params: { teamId },

@@ -30,7 +30,16 @@ export function makeAndHandleRequest(query: string, page = 1) {
         });
 }
 const currentUserClient: RestCollectorClient = new RestCollectorClient("/api/me");
+const userClient: RestCollectorClient = new RestCollectorClient("/api/users/{id}");
 export const getCurrentUser = async (): Promise<User | undefined> => {
     const result = await currentUserClient.get();
+    return result.data;
+}
+
+
+export const searchUsers = async (q: string): Promise<UserItem[]> => {
+    const result = await userClient.get({
+        query: { q }
+    });
     return result.data;
 }

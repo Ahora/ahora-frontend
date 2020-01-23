@@ -1,15 +1,19 @@
 import * as React from 'react';
-import { deleteOrganizationTeamMethod, OrganizationTeam, getTeamById, addOrganizationTeam, getTeams } from 'app/services/organizationTeams';
+import { deleteOrganizationTeamMethod, OrganizationTeam, getTeamById, addOrganizationTeam, getTeams, OrganizationTeamUser, getUsersByTeam, addUser, deleteUserFromTeam } from 'app/services/organizationTeams';
 import { RouteComponentProps } from 'react-router';
 import Table from 'react-bootstrap/Table';
 import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
+import SelectUser from 'app/components/users/selectusers';
+import Spinner from 'react-bootstrap/Spinner';
+import { UserItem } from 'app/services/users';
 
 interface TeamsPageState {
     team: OrganizationTeam | null;
     subTeams: OrganizationTeam[] | null;
+    users: OrganizationTeamUser[] | null
     teamNameVal?: string;
 }
 
@@ -31,7 +35,8 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
         super(props);
         this.state = {
             team: null,
-            subTeams: null
+            subTeams: null,
+            users: null
         };
     }
 
@@ -41,6 +46,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
             this.componentDidMount();
         }
     }
+
     async componentDidMount() {
         const currentTeamId: number | null = this.props.match.params.id ? parseInt(this.props.match.params.id) : null;
         if (currentTeamId) {
@@ -53,6 +59,10 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
 
         const subTeams = await getTeams(currentTeamId);
         this.setState({ subTeams });
+
+        const users = await getUsersByTeam(currentTeamId);
+        this.setState({ users });
+
     }
 
     teamNameChanged(event: any) {
@@ -72,12 +82,26 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
         }
     }
 
-
     async deleteTeam() {
         if (this.state.team) {
             await deleteOrganizationTeamMethod(this.state.team);
             this.props.history.replace(`/organizations/${this.props.match.params.login}/teams/${this.state.team.parentId}`)
         }
+    }
+
+    async addUserToTeam(user: UserItem) {
+        const addedUser: OrganizationTeamUser = await addUser(user.id!, this.state.team ? this.state.team.id : null);
+        this.setState({
+            users: [addedUser, ...this.state.users]
+        });
+    }
+
+    async deleteUser(userToDelete: OrganizationTeamUser) {
+        await deleteUserFromTeam(userToDelete.id, this.state.team ? this.state.team.id : null);
+        this.setState({
+            users: this.state.users!.filter(user => user.id !== userToDelete.id)
+        });
+
     }
 
     render() {
@@ -88,10 +112,34 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                     {this.state.team &&
                         <>
                             <h2>Team: {this.state.team && this.state.team.name}</h2>
-                            <h2>Sub Teams</h2>
+                            <h2>Members</h2>
                         </>
                     }
+                    <SelectUser editMode={true} onSelect={this.addUserToTeam.bind(this)} ></SelectUser>
+                    {this.state.users ?
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {(this.state.users.map((user) => {
+                                    return (
+                                        <tr className="pt-3" key={user.id}>
+                                            <td>{user.user.displayName} ({user.user.username})</td>
+                                            <td>
+                                                <Button variant="danger" onClick={() => { this.deleteUser(user); }}>Delete</Button>
+                                            </td>
+                                        </tr>);
+                                }))}
+                            </tbody>
+                        </Table>
+                        : (<div className="text-center"><Spinner animation="border" variant="primary" /></div>)
+                    }
                     <div>
+                        <h2>Sub Teams</h2>
                         <Form onSubmit={this.submitForm.bind(this)}>
                             <Form.Group>
                                 <Form.Label>Add Team</Form.Label>
@@ -121,8 +169,6 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                             </tbody>
                         </Table>
                     }
-                    <h2>Members</h2>
-
                     <h2>Danger Zone</h2>
                     {this.state.team &&
                         <Button type="button" onClick={this.deleteTeam.bind(this)} variant="danger">Delete Team</Button>

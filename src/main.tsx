@@ -28,7 +28,7 @@ ReactDOM.render(
       <ConnectedRouter history={history} store={store}>
         <App />
       </ConnectedRouter>
-    </IntlProvider>,
+    </IntlProvider>
   </Provider>,
   document.getElementById('root')
 );

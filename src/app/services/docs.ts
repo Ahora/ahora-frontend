@@ -1,5 +1,5 @@
 
-import { RestCollectorClient } from "rest-collector";
+import AhoraRestCollector from "./base";
 import { SearchCriterias } from "app/components/SearchDocsInput";
 import { UserItem } from "./users";
 import { DocWatcher } from "./watchers";
@@ -28,10 +28,9 @@ export interface VideoDoc extends Doc {
 
 
 
-const docsClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{login}/docs/{id}");
-export const getDocs = async (login: string, query?: SearchCriterias): Promise<Doc[]> => {
+const docsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}");
+export const getDocs = async (query?: SearchCriterias): Promise<Doc[]> => {
     const result = await docsClient.get({
-        params: { login },
         query: query
     });
 

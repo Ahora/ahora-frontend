@@ -1,57 +1,46 @@
 import * as React from 'react';
 import { Doc, getDocs } from 'app/services/docs';
-import { RouteComponentProps } from 'react-router';
-import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Status } from 'app/services/statuses';
 import { Dispatch } from 'redux';
-import Nav from "react-bootstrap/Nav";
 import { requestStatusesData } from 'app/store/statuses/actions';
 import Moment from 'react-moment';
-import SearchDocsInput, { SearchCriterias } from 'app/components/SearchDocsInput';
+import { SearchCriterias } from 'app/components/SearchDocsInput';
 import { Link } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
 import { DocType } from 'app/services/docTypes';
 import { requestDocTypesData } from 'app/store/docTypes/actions';
 import LabelsList from 'app/components/LabelsSelector/details';
-import { setSearchCriteria } from 'app/store/organizations/actions';
-
+import { Organization } from 'app/services/organizations';
 
 interface DocsPageState {
     docs: Doc[] | null;
 }
 
-interface DocsPageParams {
-    docTypeCode: string;
-    login: string;
-}
-
-
 interface injectedParams {
     statuses: Map<number, Status>;
     docTypes: Map<number, DocType>;
     loading: boolean;
-    searchCriteria?: string;
+    currentOrganization: Organization | undefined,
 }
 
-interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedParams {
-
+interface DocsPageProps extends injectedParams {
+    searchCriteria: SearchCriterias;
 }
 
 
 interface DispatchProps {
     requestStatusesData(): void;
     requestDocTypes(): void;
-    setSearchCriterias(data?: string): void;
 }
 
 interface AllProps extends DocsPageProps, DispatchProps {
 
 }
 
-class DocsPage extends React.Component<AllProps, DocsPageState> {
+class DocListPage extends React.Component<AllProps, DocsPageState> {
     constructor(props: AllProps) {
         super(props);
         this.state = {
@@ -59,26 +48,11 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         }
     }
 
-    componentWillReceiveProps(nextProps: DocsPageProps) {
-        if (nextProps.match.params.docTypeCode !== this.props.match.params.docTypeCode!) {
-            this.setState({
-                docs: null
-            });
-        }
-    }
-
     async componentDidMount() {
         this.props.requestStatusesData();
         this.props.requestDocTypes();
-    }
 
-    async searchSelected(searchCriterias: SearchCriterias, searchCriteriasText: string) {
-        this.props.setSearchCriterias(searchCriteriasText);
-        this.setState({
-            docs: null
-        });
-
-        const docs: Doc[] = await getDocs(searchCriterias);
+        const docs: Doc[] = await getDocs(this.props.searchCriteria);
         this.setState({
             docs
         });
@@ -87,15 +61,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     render() {
         return (
             <div>
-                <SearchDocsInput searchCriteria={this.props.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
-                <Nav className="mb-3">
-                    <Nav.Item>
-                        <Link to={`/organizations/${this.props.match.params.login}/doctypes/add`}>
-                            <Button variant="primary" type="button">Add</Button>
-                        </Link>
-                    </Nav.Item>
-                </Nav>
-
                 {this.state.docs ?
                     (<Table striped bordered hover>
                         <thead>
@@ -109,7 +74,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.docs.map((doc) => {
+                            {this.props.currentOrganization && this.state.docs.map((doc) => {
                                 const currentStatus: Status | undefined = this.props.statuses.get(doc.status);
                                 const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId)
                                 return (
@@ -117,7 +82,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                     <tr className="pt-3" key={doc.id!}>
                                         <td>{currentDocType && currentDocType.name}</td>
                                         <td>
-                                            <div></div><Link to={`/organizations/${this.props.match.params.login}/doctypes/${doc.id}`}>{doc.subject}</Link>
+                                            <div></div><Link to={`/organizations/${this.props.currentOrganization!.login}/doctypes/${doc.id}`}>{doc.subject}</Link>
                                             <LabelsList defaultSelected={doc.labels}></LabelsList></td>
 
                                         <td>{(doc.assignee) && doc.assignee.username}</td>
@@ -140,19 +105,18 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
 const mapStateToProps = (state: ApplicationState): injectedParams => {
     return {
+        currentOrganization: state.organizations.currentOrganization,
         statuses: state.statuses.map,
         docTypes: state.docTypes.mapById,
-        loading: state.statuses.loading,
-        searchCriteria: state.organizations.SearchCriterias
+        loading: state.statuses.loading
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        setSearchCriterias: (data: string) => dispatch(setSearchCriteria(data)),
         requestStatusesData: () => dispatch(requestStatusesData()),
         requestDocTypes: () => dispatch(requestDocTypesData())
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocsPage as any); 
+export default connect(mapStateToProps, mapDispatchToProps)(DocListPage as any); 

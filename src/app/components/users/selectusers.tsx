@@ -62,7 +62,6 @@ export default class SelectUser extends React.Component<SelectUserProps, State> 
                     placeholder="Search for a user..."
                     renderMenuItemChildren={
                         (user: UserItem) => {
-                            console.log(user);
                             return <div key={user.id}>{user.displayName} ({user.username})</div>;
                         }
                     }

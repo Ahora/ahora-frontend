@@ -1,5 +1,5 @@
 
-import { RestCollectorClient } from "rest-collector";
+import AhoraRestCollector from "./base";
 
 export interface Comment {
     id: number;
@@ -15,7 +15,7 @@ export interface Comment {
 }
 
 
-const commentsClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{login}/docs/{docId}/Comments/{id}");
+const commentsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{docId}/Comments/{id}");
 export const getComments = async (login: string, docId: number): Promise<Comment[]> => {
     const result = await commentsClient.get({
         params: { login, docId }

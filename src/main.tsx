@@ -5,6 +5,7 @@ import { ConnectedRouter } from 'react-router-redux';
 import { Provider } from 'react-redux';
 import { App } from './app';
 
+
 // loading general styles and fonts
 import './general-styles.scss';
 import { store, history } from 'app/store';

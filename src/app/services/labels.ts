@@ -1,5 +1,5 @@
 
-import AhoraRestCollector from "./base";
+import { RestCollectorClient } from "rest-collector";
 
 export interface Label {
     id?: number;
@@ -8,7 +8,7 @@ export interface Label {
     color?: string;
 }
 
-const labelesClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/labels/{id}");
+const labelesClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{organizationId}/labels/{id}");
 
 export const getList = async (): Promise<Label[]> => {
     const result = await labelesClient.get();

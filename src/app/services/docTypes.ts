@@ -1,5 +1,4 @@
-import { RestCollectorClient } from "rest-collector";
-import { store } from "app/store";
+import AhoraRestCollector from "./base";
 
 export interface DocType {
   id?: number;
@@ -8,15 +7,11 @@ export interface DocType {
   description: string;
 }
 
-const docTypesClient: RestCollectorClient = new RestCollectorClient(
+const docTypesClient: AhoraRestCollector = new AhoraRestCollector(
   "/api/organizations/{organizationId}/doctypes/{id}"
 );
 export const getList = async (): Promise<DocType[]> => {
-  const result = await docTypesClient.get({
-    params: {
-      organizationId: store.getState().organizations.currentOrganization!.login
-    }
-  });
+  const result = await docTypesClient.get();
   return result.data;
 };
 

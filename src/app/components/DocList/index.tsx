@@ -40,7 +40,7 @@ interface AllProps extends DocsPageProps, DispatchProps {
 
 }
 
-class DocListPage extends React.Component<AllProps, DocsPageState> {
+class DocList extends React.Component<AllProps, DocsPageState> {
     constructor(props: AllProps) {
         super(props);
         this.state = {
@@ -62,37 +62,41 @@ class DocListPage extends React.Component<AllProps, DocsPageState> {
         return (
             <div>
                 {this.state.docs ?
-                    (<Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>Doc Type</th>
-                                <th>Name</th>
-                                <th>Assignee</th>
-                                <th>Status</th>
-                                <th>Updated At</th>
-                                <th>Created At</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.props.currentOrganization && this.state.docs.map((doc) => {
-                                const currentStatus: Status | undefined = this.props.statuses.get(doc.status);
-                                const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId)
-                                return (
+                    <>
+                        {this.state.docs.length > 0 ?
+                            (<Table striped bordered hover>
+                                <thead>
+                                    <tr>
+                                        <th>Doc Type</th>
+                                        <th>Name</th>
+                                        <th>Assignee</th>
+                                        <th>Status</th>
+                                        <th>Updated At</th>
+                                        <th>Created At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.props.currentOrganization && this.state.docs.map((doc) => {
+                                        const currentStatus: Status | undefined = this.props.statuses.get(doc.status);
+                                        const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId)
+                                        return (
 
-                                    <tr className="pt-3" key={doc.id!}>
-                                        <td>{currentDocType && currentDocType.name}</td>
-                                        <td>
-                                            <div></div><Link to={`/organizations/${this.props.currentOrganization!.login}/doctypes/${doc.id}`}>{doc.subject}</Link>
-                                            <LabelsList defaultSelected={doc.labels}></LabelsList></td>
+                                            <tr className="pt-3" key={doc.id!}>
+                                                <td>{currentDocType && currentDocType.name}</td>
+                                                <td>
+                                                    <div></div><Link to={`/organizations/${this.props.currentOrganization!.login}/doctypes/${doc.id}`}>{doc.subject}</Link>
+                                                    <LabelsList defaultSelected={doc.labels}></LabelsList></td>
 
-                                        <td>{(doc.assignee) && doc.assignee.username}</td>
-                                        <td>{(currentStatus) ? currentStatus.name : ""}</td>
-                                        <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.updatedAt}></Moment></td>
-                                        <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.createdAt}></Moment></td>
-                                    </tr>);
-                            })}
-                        </tbody>
-                    </Table>) :
+                                                <td>{(doc.assignee) && doc.assignee.username}</td>
+                                                <td>{(currentStatus) ? currentStatus.name : ""}</td>
+                                                <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.updatedAt}></Moment></td>
+                                                <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.createdAt}></Moment></td>
+                                            </tr>);
+                                    })}
+                                </tbody>
+                            </Table>) : <>{this.props.children}</>
+                        }
+                    </> :
                     (
                         <div className="text-center">
                             <Spinner animation="border" variant="primary" />
@@ -119,4 +123,4 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocListPage as any); 
+export default connect(mapStateToProps, mapDispatchToProps)(DocList as any); 

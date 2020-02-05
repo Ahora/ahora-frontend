@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RouteComponentProps, Switch, Route, Redirect } from "react-router";
+import { RouteComponentProps, Switch, Route } from "react-router";
 import { Organization, getOrganizationByLogin } from "../../../services/organizations";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
@@ -7,6 +7,7 @@ import DocsPage from "app/pages/docs";
 import DocsDetailsPage from "app/pages/docs/details";
 import AddDocPage from "app/pages/docs/add";
 import EditDocPage from "app/pages/docs/edit";
+import OrganizationDashboardPage from "app/pages/OrganizationDashboard";
 import OrganizationSettingsPage from "../settings";
 import { Dispatch } from "redux";
 import { setCurrentOrganization } from "app/store/organizations/actions";
@@ -57,6 +58,9 @@ class OrganizationDetailsPage extends React.Component<Props> {
           <p>{organization.description}</p>
           <Nav className="mb-3" variant="tabs" defaultActiveKey={this.props.match.params.section || "browse"}>
             <Nav.Item>
+              <Link className="nav-link" to={`/organizations/${organization.login}`}>Dashboard</Link>
+            </Nav.Item>
+            <Nav.Item>
               <Link className="nav-link" to={`/organizations/${organization.login}/doctypes`}>Browse</Link>
             </Nav.Item>
             <Nav.Item>
@@ -73,8 +77,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
             <Route path={`/organizations/:login/doctypes/:id`} component={DocsDetailsPage} />
             <Route path={`/organizations/:login/doctypes`} component={DocsPage} />
             <Route path={`/organizations/:login/teams`} component={OrganizationTeamRootPage} />
-            <Route path={`/organizations/:login`}>
-              <Redirect to={`/organizations/${this.props.match.params.login}/doctypes`} />
+            <Route path={`/organizations/:login`} component={OrganizationDashboardPage}>
             </Route>
           </Switch>
         </Container>

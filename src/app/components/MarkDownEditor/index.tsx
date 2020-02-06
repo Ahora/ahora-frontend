@@ -1,7 +1,11 @@
 import * as React from "react";
 import * as MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite';
+import FileUpload from "../FileUpload";
 
+interface MarkDownEditorState {
+    value: string
+}
 
 interface MarkDownEditorProps {
     value?: string;
@@ -9,23 +13,45 @@ interface MarkDownEditorProps {
     height?: string;
 }
 
-export default class MarkDownEditor extends React.Component<MarkDownEditorProps> {
+export default class MarkDownEditor extends React.Component<MarkDownEditorProps, MarkDownEditorState> {
 
     private mdParser: MarkdownIt;
 
     constructor(props: MarkDownEditorProps) {
         super(props);
-        this.mdParser = new MarkdownIt(/* Markdown-it options */)
+        this.mdParser = new MarkdownIt();
+        this.state = { value: props.value || "" };
+    }
 
+
+    componentWillReceiveProps(nextProps: MarkDownEditorProps) {
+        if (this.props.value !== nextProps.value) {
+            this.setState({
+                value: nextProps.value || ""
+            });
+        }
     }
 
     handleEditorChange(data: any) {
+        this.setState({ value: data.text })
         this.props.onChange(data.text);
     }
 
+    onFileUploaded(url: string): void {
+        this.setState({
+            value: (this.state.value || "") + "\n" + url
+        });
+        this.props.onChange(this.state.value);
+
+    }
+
     render() {
-        return (<MdEditor style={this.props.height ? { height: this.props.height } : undefined} config={{ view: { html: false, fullScreen: false, md: true, menu: true } }
-        } renderHTML={(text) => this.mdParser.render(text)} name="description" value={this.props.value || ""} onChange={this.handleEditorChange.bind(this)} />
+        return (
+            <div>
+                <MdEditor style={this.props.height ? { height: this.props.height } : undefined} config={{ view: { html: false, fullScreen: false, md: true, menu: true } }
+                } renderHTML={(text) => this.mdParser.render(text)} name="description" value={this.state.value} onChange={this.handleEditorChange.bind(this)} />
+                <FileUpload onFileUploaded={this.onFileUploaded.bind(this)}></FileUpload>
+            </div>
         );
     }
 }

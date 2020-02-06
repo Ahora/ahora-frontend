@@ -1,14 +1,26 @@
 import * as React from 'react';
 import './style.scss';
+import { AttachmentUpload, AddAttachment, markUploaded } from 'app/services/attachments';
+import { RestCollectorClient, RestCollectorRequest } from 'rest-collector';
+
+
+const bucketUploader: RestCollectorClient = new RestCollectorClient(undefined, {
+    decorateRequest: (req: RestCollectorRequest, bag?: File): void => {
+        if (bag) {
+            req.headers["Content-Type"] = bag.type
+        }
+    }
+});
+
 
 interface DragAndDropState {
     drag: boolean;
-    dragging: boolean;
 }
 
 interface DragAndDropProps {
     multiple?: boolean;
     accept?: string;
+    onFileUploaded(url: string): void;
 }
 
 class FileUpload extends React.Component<DragAndDropProps, DragAndDropState> {
@@ -20,12 +32,29 @@ class FileUpload extends React.Component<DragAndDropProps, DragAndDropState> {
 
         this.dragCounter = 0;
         this.state = {
-            dragging: true,
             drag: false
         };
 
         this.dropRef = React.createRef()
 
+    }
+
+    async uploadFiles(files: FileList) {
+        for (let index = 0; index < files.length; index++) {
+            const file: File = files[index];
+
+            const uploadInfo: AttachmentUpload = await AddAttachment({
+                contentType: file.type,
+                filename: file.name
+            });
+            await bucketUploader.put({
+                url: uploadInfo.urlToUpload,
+                data: file,
+                bag: file
+            });
+            await markUploaded(uploadInfo.id)
+            this.props.onFileUploaded(uploadInfo.viewUrl);
+        }
     }
 
     handleDrag = (e: any) => {
@@ -37,7 +66,7 @@ class FileUpload extends React.Component<DragAndDropProps, DragAndDropState> {
         e.stopPropagation()
         this.dragCounter++
         if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
-            this.setState({ drag: true })
+            this.setState({ drag: true });
         }
     }
     handleDragOut = (e: any) => {
@@ -53,24 +82,21 @@ class FileUpload extends React.Component<DragAndDropProps, DragAndDropState> {
         e.stopPropagation()
         this.setState({ drag: false })
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-            console.log(e.dataTransfer.files);
-            //this.props.handleDrop(e.dataTransfer.files)
+            this.uploadFiles(e.dataTransfer.files);
             e.dataTransfer.clearData()
             this.dragCounter = 0
         }
     }
 
-    onChange(event: React.ChangeEvent<HTMLInputElement>) {
-        console.log(event);
-
+    onChange(event: any) {
+        this.uploadFiles(event.target.files);
     }
     componentDidMount() {
-        /*let div = this.dropRef.current!;
+        let div = this.dropRef.current!;
         div.addEventListener('dragenter', this.handleDragIn)
         div.addEventListener('dragleave', this.handleDragOut)
         div.addEventListener('dragover', this.handleDrag)
         div.addEventListener('drop', this.handleDrop)
-        */
     }
     componentWillUnmount() {
         let div = this.dropRef.current!;
@@ -81,13 +107,14 @@ class FileUpload extends React.Component<DragAndDropProps, DragAndDropState> {
     }
     render() {
         return (
-            <div id="drop-area">
-                <form className="my-form">
-                    <p>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region</p>
+            <div ref={this.dropRef}>
+                <div>
+                    <div className={this.state.drag ? "drop-area drag" : "drop-area"}>Upload multiple files by dragging and dropping images to here</div>
                     <input type="file" id="fileElem" onChange={this.onChange.bind(this)} multiple={this.props.multiple} accept={this.props.accept} />
                     <label className="button" htmlFor="fileElem">Select some files</label>
-                </form>
+                </div>
             </div>
+
         )
     }
 }

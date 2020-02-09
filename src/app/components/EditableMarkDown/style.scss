@@ -1,0 +1,16 @@
+.editablemarkdown {
+    position: relative;
+
+    .editbutton {
+        display: none;
+    }
+}
+.editablemarkdown:hover {  
+    .editbutton {
+        display: block;
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        right: 0px;
+    }
+}

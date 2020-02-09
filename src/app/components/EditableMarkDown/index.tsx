@@ -2,6 +2,7 @@ import * as React from 'react';
 import MarkDownEditor from '../MarkDownEditor';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import './style.scss';
 
 interface EditableMarkDownParams {
     value: string;
@@ -15,7 +16,6 @@ interface EditableMarkDownState {
 }
 
 export default class EditableMarkDown extends React.Component<EditableMarkDownParams, EditableMarkDownState> {
-    private clickDivRef: React.RefObject<HTMLDivElement>;
 
     constructor(props: EditableMarkDownParams) {
         super(props);
@@ -24,7 +24,6 @@ export default class EditableMarkDown extends React.Component<EditableMarkDownPa
             editMode: false,
             updating: false
         };
-        this.clickDivRef = React.createRef();
     }
 
     startEdit(event: any) {
@@ -70,7 +69,14 @@ export default class EditableMarkDown extends React.Component<EditableMarkDownPa
                     <>
                         {this.state.updating ?
                             <div className="text-center"><Spinner animation="border" variant="primary" /></div> :
-                            <div ref={this.clickDivRef} onClick={this.startEdit.bind(this)}>{this.props.children}</div>
+                            <div className="editablemarkdown">
+                                <div>
+                                    {this.props.children}
+                                    <Button className="editbutton" variant="outline-secondary" onClick={this.startEdit.bind(this)}>
+                                        <span className="fa fa-edit"></span>
+                                    </Button>
+                                </div>
+                            </div>
                         }
                     </>
                 }

@@ -109,9 +109,8 @@ class FileUpload extends React.Component<DragAndDropProps, DragAndDropState> {
         return (
             <div ref={this.dropRef}>
                 <div>
-                    <div className={this.state.drag ? "drop-area drag" : "drop-area"}>Upload multiple files by dragging and dropping images to here</div>
+                    <div className={this.state.drag ? "drop-area drag" : "drop-area"}><label htmlFor="fileElem">Upload multiple files by dragging and dropping images to here</label></div>
                     <input type="file" id="fileElem" onChange={this.onChange.bind(this)} multiple={this.props.multiple} accept={this.props.accept} />
-                    <label className="button" htmlFor="fileElem">Select some files</label>
                 </div>
             </div>
 

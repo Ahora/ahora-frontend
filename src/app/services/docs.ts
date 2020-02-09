@@ -91,6 +91,14 @@ export const updateDocSubject = async (login: string, id: number, subject: strin
     return result.data;
 }
 
+export const updateDocDescription = async (login: string, id: number, description: string): Promise<Doc> => {
+    const result = await docsClient.put({
+        params: { id, login },
+        data: { description }
+    });
+    return result.data;
+}
+
 export const deleteDoc = async (login: string, id: number): Promise<void> => {
     await docsClient.delete({
         params: { login, id }

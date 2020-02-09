@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Doc, getDoc, updateDoc, assignDoc, updateDocSubject } from 'app/services/docs';
+import { Doc, getDoc, updateDoc, assignDoc, updateDocSubject, updateDocDescription } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
 import { CommentListComponent } from 'app/components/Comments/List';
 import Button from 'react-bootstrap/Button';
@@ -22,6 +22,7 @@ import Table from 'react-bootstrap/Table';
 import Moment from 'react-moment';
 import DocWatchersComponent from 'app/components/DocWatchers';
 import EditableHeader from 'app/components/EditableHeader';
+import EditableMarkDown from 'app/components/EditableMarkDown';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -90,6 +91,13 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         });
     }
 
+    async onDescriptionChanged(value: string) {
+        const newDoc = await updateDocDescription(this.props.match.params.login, this.state.doc!.id, value);
+        this.setState({
+            doc: newDoc,
+        });
+    }
+
     render() {
         const doc: Doc | null = this.state.doc;
         let docType: DocType | undefined;
@@ -113,7 +121,10 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
                                 <div className="mt-2"><LabelsList defaultSelected={doc.labels}></LabelsList></div>
 
-                                <p className="mt-4 markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
+                                <EditableMarkDown onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
+                                    <p className="mt-4 markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
+                                </EditableMarkDown>
+
                                 <CommentListComponent docId={doc.id} login={this.props.match.params.login}></CommentListComponent>
 
                             </Col>

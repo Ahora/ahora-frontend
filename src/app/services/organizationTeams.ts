@@ -26,6 +26,11 @@ export const getTeams = async (parentId: number | null): Promise<OrganizationTea
     return result.data;
 }
 
+export const getAllTeams = async (): Promise<OrganizationTeam[]> => {
+    const result = await orgTeamsClient.get();
+    return result.data;
+}
+
 export const getUsersByTeam = async (teamId: number | null): Promise<OrganizationTeamUser[]> => {
     const result = await orgTeamsUsersClient.get({ params: { teamId: teamId ? teamId : "null" } });
     return result.data;

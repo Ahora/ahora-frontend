@@ -136,6 +136,10 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                             <td>Assignee:</td>
                                             <td><SelectUser editMode={false} defaultSelected={doc.assignee && [doc.assignee]} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser></td>
                                         </tr>
+                                        <tr>
+                                            <td>Reporter:</td>
+                                            <td>{doc.reporter.displayName} ({doc.reporter.username})</td>
+                                        </tr>
                                         {docType &&
                                             (<tr>
                                                 <td>Type: </td>

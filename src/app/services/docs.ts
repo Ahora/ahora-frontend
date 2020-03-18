@@ -17,6 +17,7 @@ export interface Doc {
     htmlDescription: string;
     status: number;
     assignee?: UserItem
+    reporter: UserItem
 }
 
 

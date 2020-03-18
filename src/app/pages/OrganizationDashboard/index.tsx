@@ -9,10 +9,16 @@ import { Organization } from "app/services/organizations";
 import DocList from "app/components/DocList";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
+import { OrganizationTeam, getAllTeams } from "app/services/organizationTeams";
+const Graph = require("react-graph-vis");
 
 interface OrganizationDashboardPageProps {
   organization: Organization | null;
   docTypes?: DocType[];
+}
+
+interface OrganizationDashboardState {
+  teams: OrganizationTeam[]
 }
 
 interface OrganizationPageParams {
@@ -28,20 +34,63 @@ interface Props extends RouteComponentProps<OrganizationPageParams>, DispatchPro
 
 }
 
-class OrganizationDashboardPage extends React.Component<Props> {
+class OrganizationDashboardPage extends React.Component<Props, OrganizationDashboardState> {
   constructor(props: Props) {
     super(props);
+
+    this.state = {
+      teams: []
+    }
   }
 
-  async componentDidMount() {
 
+
+  async componentDidMount() {
+    const teams: OrganizationTeam[] = await getAllTeams();
+    this.setState({
+      teams
+    });
   }
 
   render = () => {
     const organization = this.props.organization;
+
+    const nodes: any[] = this.state.teams.map((team) => {
+      return { id: team.id, label: team.name, title: team.name }
+    });
+
+    if (organization) {
+      nodes.push({ id: -1, label: organization.displayName })
+
+    }
+
+    const edges: any[] = this.state.teams.map((team) => {
+      return { from: team.id, to: team.parentId || -1 };
+    });
+
+    const graph = { nodes, edges };
+
+    const options: any = {
+      layout: {
+        hierarchical: true
+      },
+      edges: {
+        color: "#000000"
+      },
+      height: "500px"
+    };
+
+    const events: any = {
+      select: function (event: any) {
+        console.log(event);
+      }
+    };
     if (organization) {
       return (
         <div>
+          <div style={{ display: "none" }}>
+            <Graph.default graph={graph} options={options} events={events} style={{ height: "640px" }} />
+          </div>
           <h2>Assigned to me</h2>
           <DocList searchCriteria={{ assignee: ["me"], status: ["opened"] }}>
             <p>No Assigned Tasks</p>

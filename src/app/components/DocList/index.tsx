@@ -48,14 +48,26 @@ class DocList extends React.Component<AllProps, DocsPageState> {
         }
     }
 
-    async componentDidMount() {
-        this.props.requestStatusesData();
-        this.props.requestDocTypes();
-
-        const docs: Doc[] = await getDocs(this.props.searchCriteria);
+    async loadData(searchCriteria: SearchCriterias) {
+        this.setState({
+            docs: null
+        });
+        const docs: Doc[] = await getDocs(searchCriteria);
         this.setState({
             docs
         });
+    }
+
+    componentWillReceiveProps(nextProps: DocsPageProps) {
+        if (nextProps.searchCriteria !== this.props.searchCriteria) {
+            this.loadData(nextProps.searchCriteria);
+        }
+    }
+
+    async componentDidMount() {
+        this.props.requestStatusesData();
+        this.props.requestDocTypes();
+        //this.loadData(this.props.searchCriteria);
     }
 
     render() {
@@ -64,37 +76,39 @@ class DocList extends React.Component<AllProps, DocsPageState> {
                 {this.state.docs ?
                     <>
                         {this.state.docs.length > 0 ?
-                            (<Table striped bordered hover>
-                                <thead>
-                                    <tr>
-                                        <th>Doc Type</th>
-                                        <th>Name</th>
-                                        <th>Assignee</th>
-                                        <th>Status</th>
-                                        <th>Updated At</th>
-                                        <th>Created At</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.props.currentOrganization && this.state.docs.map((doc) => {
-                                        const currentStatus: Status | undefined = this.props.statuses.get(doc.status);
-                                        const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId)
-                                        return (
+                            (<div>
+                                <Table striped bordered hover>
+                                    <thead>
+                                        <tr>
+                                            <th>Doc Type</th>
+                                            <th>Name</th>
+                                            <th>Assignee</th>
+                                            <th>Status</th>
+                                            <th>Updated At</th>
+                                            <th>Created At</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {this.props.currentOrganization && this.state.docs.map((doc) => {
+                                            const currentStatus: Status | undefined = this.props.statuses.get(doc.status);
+                                            const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId)
+                                            return (
 
-                                            <tr className="pt-3" key={doc.id!}>
-                                                <td>{currentDocType && currentDocType.name}</td>
-                                                <td>
-                                                    <div></div><Link to={`/organizations/${this.props.currentOrganization!.login}/doctypes/${doc.id}`}>{doc.subject}</Link>
-                                                    <LabelsList defaultSelected={doc.labels}></LabelsList></td>
+                                                <tr className="pt-3" key={doc.id!}>
+                                                    <td>{currentDocType && currentDocType.name}</td>
+                                                    <td>
+                                                        <div></div><Link to={`/organizations/${this.props.currentOrganization!.login}/doctypes/${doc.id}`}>{doc.subject}</Link>
+                                                        <LabelsList defaultSelected={doc.labels}></LabelsList></td>
 
-                                                <td>{(doc.assignee) && doc.assignee.username}</td>
-                                                <td>{(currentStatus) ? currentStatus.name : ""}</td>
-                                                <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.updatedAt}></Moment></td>
-                                                <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.createdAt}></Moment></td>
-                                            </tr>);
-                                    })}
-                                </tbody>
-                            </Table>) : <>{this.props.children}</>
+                                                    <td>{(doc.assignee) && doc.assignee.username}</td>
+                                                    <td>{(currentStatus) ? currentStatus.name : ""}</td>
+                                                    <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.updatedAt}></Moment></td>
+                                                    <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.createdAt}></Moment></td>
+                                                </tr>);
+                                        })}
+                                    </tbody>
+                                </Table>
+                            </div>) : <>{this.props.children}</>
                         }
                     </> :
                     (

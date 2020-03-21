@@ -61,7 +61,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
               <Link className="nav-link" to={`/organizations/${organization.login}`}>Dashboard</Link>
             </Nav.Item>
             <Nav.Item>
-              <Link className="nav-link" to={`/organizations/${organization.login}/doctypes`}>Browse</Link>
+              <Link className="nav-link" to={`/organizations/${organization.login}/docs`}>Browse</Link>
             </Nav.Item>
             <Nav.Item>
               <Link className="nav-link" to={`/organizations/${organization.login}/teams`}>Teams</Link>
@@ -72,10 +72,10 @@ class OrganizationDetailsPage extends React.Component<Props> {
           </Nav>
           <Switch>
             <Route path={`/organizations/:login/settings/:settingsSection?`} component={OrganizationSettingsPage} />
-            <Route path={`/organizations/:login/doctypes/add`} component={AddDocPage} />
-            <Route path={`/organizations/:login/doctypes/:id/edit`} component={EditDocPage} />
-            <Route path={`/organizations/:login/doctypes/:id`} component={DocsDetailsPage} />
-            <Route path={`/organizations/:login/doctypes`} component={DocsPage} />
+            <Route path={`/organizations/:login/docs/add`} component={AddDocPage} />
+            <Route path={`/organizations/:login/docs/:id/edit`} component={EditDocPage} />
+            <Route path={`/organizations/:login/docs/:id`} component={DocsDetailsPage} />
+            <Route path={`/organizations/:login/docs`} component={DocsPage} />
             <Route path={`/organizations/:login/teams`} component={OrganizationTeamRootPage} />
             <Route path={`/organizations/:login`} component={OrganizationDashboardPage}>
             </Route>

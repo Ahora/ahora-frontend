@@ -84,6 +84,7 @@ class DocList extends React.Component<AllProps, DocsPageState> {
                                             <th>Name</th>
                                             <th>Assignee</th>
                                             <th>Status</th>
+                                            <th>comments</th>
                                             <th>Updated At</th>
                                             <th>Created At</th>
                                         </tr>
@@ -97,11 +98,12 @@ class DocList extends React.Component<AllProps, DocsPageState> {
                                                 <tr className="pt-3" key={doc.id!}>
                                                     <td>{currentDocType && currentDocType.name}</td>
                                                     <td>
-                                                        <div></div><Link to={`/organizations/${this.props.currentOrganization!.login}/doctypes/${doc.id}`}>{doc.subject}</Link>
+                                                        <div></div><Link to={`/organizations/${this.props.currentOrganization!.login}/docs/${doc.id}`}>{doc.subject}</Link>
                                                         <LabelsList defaultSelected={doc.labels}></LabelsList></td>
 
                                                     <td>{(doc.assignee) && doc.assignee.username}</td>
                                                     <td>{(currentStatus) ? currentStatus.name : ""}</td>
+                                                    <td>{doc.commentsNumber}</td>
                                                     <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.updatedAt}></Moment></td>
                                                     <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.createdAt}></Moment></td>
                                                 </tr>);

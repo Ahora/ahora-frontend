@@ -72,7 +72,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                 <SearchDocsInput searchCriteria={this.props.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
                 <Nav className="mb-3">
                     <Nav.Item>
-                        <Link to={`/organizations/${this.props.match.params.login}/doctypes/add`}>
+                        <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>
                             <Button variant="primary" type="button">Add</Button>
                         </Link>
                     </Nav.Item>

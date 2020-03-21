@@ -10,10 +10,13 @@ export interface Doc {
     description: string;
     docTypeId: number;
     userAlias: string;
+    docId?: number;
     metadata: any;
     createdAt: Date;
     labels?: number[];
     updatedAt: Date;
+    commentsNumber: number;
+    closedAt: number;
     htmlDescription: string;
     status: number;
     assignee?: UserItem

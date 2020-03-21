@@ -94,7 +94,7 @@ class OrganizationDashboardPage extends React.Component<Props, OrganizationDashb
           <h2>Assigned to me</h2>
           <DocList searchCriteria={{ assignee: ["me"], status: ["opened"] }}>
             <p>No Assigned Tasks</p>
-            <Link to={`/organizations/${organization.login}/doctypes/add`}>
+            <Link to={`/organizations/${organization.login}/docs/add`}>
               <Button variant="primary" type="button">Add Doc</Button>
             </Link>
           </DocList>

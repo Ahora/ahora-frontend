@@ -136,14 +136,32 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                             <td>Assignee:</td>
                                             <td><SelectUser editMode={false} defaultSelected={doc.assignee && [doc.assignee]} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser></td>
                                         </tr>
-                                        <tr>
-                                            <td>Reporter:</td>
-                                            <td>{doc.reporter.displayName} ({doc.reporter.username})</td>
-                                        </tr>
+                                        {doc.reporter &&
+
+                                            <tr>
+                                                <td>Reporter:</td>
+                                                <td>{doc.reporter.displayName} ({doc.reporter.username})</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </Table>
+                                <h2>More</h2>
+                                <Table>
+                                    <tbody>
                                         {docType &&
                                             (<tr>
                                                 <td>Type: </td>
                                                 <td>{docType.name}</td>
+                                            </tr>)}
+                                        {doc.closedAt &&
+                                            (<tr>
+                                                <td>Closed At: </td>
+                                                <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.closedAt}></Moment></td>
+                                            </tr>)}
+                                        {doc.docId &&
+                                            (<tr>
+                                                <td>Github Issue Id: </td>
+                                                <td>{doc.docId}</td>
                                             </tr>)}
                                     </tbody>
                                 </Table>

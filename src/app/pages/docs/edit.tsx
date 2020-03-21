@@ -61,7 +61,7 @@ class EditDocPage extends React.Component<Props, EditDocPageState> {
         event!.preventDefault();
 
         const updatedDoc: Doc = await updateDoc(this.props.match.params.login, this.state.form.id, this.state.form);
-        this.props.history.replace(`/organizations/${this.props.match.params.login}/doctypes/${updatedDoc.id}`);
+        this.props.history.replace(`/organizations/${this.props.match.params.login}/docs/${updatedDoc.id}`);
     }
 
 
@@ -69,7 +69,7 @@ class EditDocPage extends React.Component<Props, EditDocPageState> {
         event!.preventDefault();
 
         await deleteDoc(this.props.match.params.login, this.state.form.id);
-        this.props.history.replace(`/organizations/${this.props.match.params.login}/doctypes`);
+        this.props.history.replace(`/organizations/${this.props.match.params.login}/docs`);
     }
 
     render() {

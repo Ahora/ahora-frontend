@@ -68,7 +68,7 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
         event!.preventDefault();
 
         const addedDoc = await addDoc(this.props.match.params.login, this.state.form);
-        this.props.history.replace(`/organizations/${this.props.match.params.login}/doctypes/${addedDoc.id}`)
+        this.props.history.replace(`/organizations/${this.props.match.params.login}/docs/${addedDoc.id}`)
     }
 
     render() {

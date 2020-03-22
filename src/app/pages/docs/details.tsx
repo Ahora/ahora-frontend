@@ -117,14 +117,14 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                         return <Button key={status.id} onClick={() => { this.changeStatus(status.id!); }} variant={(status.id === doc.status) ? "primary" : "light"} >{status.name}</Button>
                                     })}
                                 </ButtonGroup>
-                                <Link to={`/organizations/${this.props.match.params.login}/doctypes/${doc.id}/edit`}><Button variant="warning" className="ml-4">Edit</Button></Link>
+                                <Link to={`/organizations/${this.props.match.params.login}/docs/${doc.id}/edit`}><Button variant="warning" className="ml-4">Edit</Button></Link>
 
                                 <div className="mt-2"><LabelsList defaultSelected={doc.labels}></LabelsList></div>
 
                                 <EditableMarkDown onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
                                     <p className="mt-4 markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
                                 </EditableMarkDown>
-
+                                <h2>Comments</h2>
                                 <CommentListComponent docId={doc.id} login={this.props.match.params.login}></CommentListComponent>
 
                             </Col>

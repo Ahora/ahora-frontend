@@ -16,21 +16,17 @@ export interface Doc {
     labels?: number[];
     updatedAt: Date;
     commentsNumber: number;
+    views: number;
     closedAt: number;
     htmlDescription: string;
     status: number;
     assignee?: UserItem
-    reporter: UserItem
+    reporter: UserItem,
+    lastView: null | {
+        updatedAt: Date
+    }
+
 }
-
-
-export interface VideoDoc extends Doc {
-    metadata: {
-        youtubeId: string;
-    };
-}
-
-
 
 const docsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}");
 export const getDocs = async (query?: SearchCriterias): Promise<Doc[]> => {

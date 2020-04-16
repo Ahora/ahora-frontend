@@ -153,10 +153,19 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                                 <td>Type: </td>
                                                 <td>{docType.name}</td>
                                             </tr>)}
+                                        <tr>
+                                            <td>Views: </td>
+                                            <td>{doc.views}</td>
+                                        </tr>
                                         {doc.closedAt &&
                                             (<tr>
                                                 <td>Closed At: </td>
                                                 <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.closedAt}></Moment></td>
+                                            </tr>)}
+                                        {doc.lastView &&
+                                            (<tr>
+                                                <td>Last viewd by me: </td>
+                                                <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.lastView.updatedAt}></Moment></td>
                                             </tr>)}
                                         {doc.docId &&
                                             (<tr>

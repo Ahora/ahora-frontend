@@ -84,7 +84,8 @@ class DocList extends React.Component<AllProps, DocsPageState> {
                                             <th>Name</th>
                                             <th>Assignee</th>
                                             <th>Status</th>
-                                            <th>comments</th>
+                                            <th>Comments</th>
+                                            <th>Views</th>
                                             <th>Updated At</th>
                                             <th>Created At</th>
                                         </tr>
@@ -104,6 +105,7 @@ class DocList extends React.Component<AllProps, DocsPageState> {
                                                     <td>{(doc.assignee) && doc.assignee.username}</td>
                                                     <td>{(currentStatus) ? currentStatus.name : ""}</td>
                                                     <td>{doc.commentsNumber}</td>
+                                                    <td>{doc.views}</td>
                                                     <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.updatedAt}></Moment></td>
                                                     <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.createdAt}></Moment></td>
                                                 </tr>);

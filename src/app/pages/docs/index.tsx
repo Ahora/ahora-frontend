@@ -79,7 +79,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     onChartClick(data: any) {
 
-        this.props.setSearchCriterias(this.state.searchCriteriasText + ` docType" ${data.name}`);
+        this.props.setSearchCriterias(this.state.searchCriteriasText + ` docType:${data.name}`);
         this.setState({
             searchCriteria: { ...this.state.searchCriteria!, docType: data.name },
             chart: undefined

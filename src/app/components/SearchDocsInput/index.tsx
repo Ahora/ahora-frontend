@@ -34,6 +34,13 @@ export default class SearchDocsInput extends React.Component<Props, State> {
         }
     }
 
+    componentWillReceiveProps(nextProps: Props) {
+        if (nextProps.searchCriteria !== this.props.searchCriteria) {
+            this.setState({
+                searchCriteriaText: nextProps.searchCriteria
+            });
+        }
+    }
     onTextChange(event: any) {
         this.setState({
             searchCriteriaText: event.target.value

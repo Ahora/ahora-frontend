@@ -13,10 +13,14 @@ import { DocType } from 'app/services/docTypes';
 import { requestDocTypesData } from 'app/store/docTypes/actions';
 import { setSearchCriteria } from 'app/store/organizations/actions';
 import DocList from 'app/components/DocList';
+import { PieChart, Pie, Tooltip, Legend, Cell } from 'recharts';
+import { getDocGroup } from 'app/services/docs';
 
 
 interface DocsPageState {
     searchCriteria?: SearchCriterias;
+    searchCriteriasText?: string;
+    chart?: any[];
 }
 
 interface DocsPageParams {
@@ -62,11 +66,38 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     async searchSelected(searchCriterias: SearchCriterias, searchCriteriasText: string) {
         this.props.setSearchCriterias(searchCriteriasText);
         this.setState({
-            searchCriteria: searchCriterias
+            searchCriteria: searchCriterias,
+            chart: undefined,
+            searchCriteriasText
+        });
+
+        const chart: any[] = await getDocGroup("docTypeId", searchCriterias);
+        this.setState({
+            chart
+        });
+    }
+
+    onChartClick(data: any) {
+
+        this.props.setSearchCriterias(this.state.searchCriteriasText + ` docType" ${data.name}`);
+        this.setState({
+            searchCriteria: { ...this.state.searchCriteria!, docType: data.name },
+            chart: undefined
         });
     }
 
     render() {
+        let chartData: any[] | undefined;
+        if (this.state.chart && this.state.chart.length > 1) {
+            chartData = this.state.chart.map((data) => {
+                return {
+                    name: data.docType.name,
+                    value: parseInt(data.count),
+                    color: data.docTypeId === 14 ? '#C13C37' : '#E38627'
+                }
+            });
+        }
+        const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
         return (
             <div>
                 <SearchDocsInput searchCriteria={this.props.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
@@ -77,7 +108,18 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                         </Link>
                     </Nav.Item>
                 </Nav>
+                {chartData &&
+                    <PieChart width={400} height={400}>
+                        <Pie onClick={this.onChartClick.bind(this)} dataKey="value" isAnimationActive={false} data={chartData} fill="#8884d8" label >
+                            {
+                                chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+                            }
+                        </Pie>
+                        <Tooltip />
+                        <Legend layout='horizontal' verticalAlign="bottom" align="center" />
 
+                    </PieChart>
+                }
                 <DocList searchCriteria={this.state.searchCriteria}>No Results</DocList>
             </div>
         );

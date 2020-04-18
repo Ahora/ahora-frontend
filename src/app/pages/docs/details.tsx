@@ -63,7 +63,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     }
 
     async changeStatus(statusId: number) {
-        const doc = { ...this.state.doc!, status: statusId };
+        const doc = { ...this.state.doc!, statusId: statusId };
         const updatedDoc = await updateDoc(this.props.match.params.login, doc.id, doc);
         this.setState({
             doc: updatedDoc
@@ -114,7 +114,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 <EditableHeader onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h1>{doc.subject}</h1></EditableHeader>
                                 <ButtonGroup>
                                     {this.props.statuses.map((status) => {
-                                        return <Button key={status.id} onClick={() => { this.changeStatus(status.id!); }} variant={(status.id === doc.status) ? "primary" : "light"} >{status.name}</Button>
+                                        return <Button key={status.id} onClick={() => { this.changeStatus(status.id!); }} variant={(status.id === doc.statusId) ? "primary" : "light"} >{status.name}</Button>
                                     })}
                                 </ButtonGroup>
                                 <Link to={`/organizations/${this.props.match.params.login}/docs/${doc.id}/edit`}><Button variant="warning" className="ml-4">Edit</Button></Link>

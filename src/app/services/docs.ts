@@ -19,7 +19,7 @@ export interface Doc {
     views: number;
     closedAt: number;
     htmlDescription: string;
-    status: number;
+    statusId: number;
     assignee?: UserItem
     reporter: UserItem,
     lastView: null | {
@@ -32,6 +32,14 @@ const docsClient: AhoraRestCollector = new AhoraRestCollector("/api/organization
 export const getDocs = async (query?: SearchCriterias): Promise<Doc[]> => {
     const result = await docsClient.get({
         query: query
+    });
+
+    return result.data;
+}
+
+export const getDocGroup = async (group: string, query?: SearchCriterias): Promise<any[]> => {
+    const result = await docsClient.get({
+        query: { ...query, group }
     });
 
     return result.data;

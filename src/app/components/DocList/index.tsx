@@ -92,7 +92,7 @@ class DocList extends React.Component<AllProps, DocsPageState> {
                                     </thead>
                                     <tbody>
                                         {this.props.currentOrganization && this.state.docs.map((doc) => {
-                                            const currentStatus: Status | undefined = this.props.statuses.get(doc.status);
+                                            const currentStatus: Status | undefined = this.props.statuses.get(doc.statusId);
                                             const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId)
                                             return (
 

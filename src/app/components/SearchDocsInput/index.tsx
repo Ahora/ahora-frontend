@@ -2,16 +2,16 @@ import * as React from 'react';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
-import { parse, SearchParserOptions } from "search-query-parser";
+import { parse, SearchParserOptions, } from "search-query-parser";
 
 var options: SearchParserOptions = { keywords: ['assignee', 'label', 'status', 'docType'], alwaysArray: true }
 
 export interface SearchCriterias {
-    assignee: string[] | undefined;
-    label: string[] | undefined;
-    status: string[] | undefined;
-    text: string | string[] | undefined
-    docType: string | string[] | undefined
+    assignee?: string[];
+    label?: string[];
+    status?: string[];
+    text?: string | string[]
+    docType?: string | string[]
 }
 
 
@@ -68,7 +68,6 @@ export default class SearchDocsInput extends React.Component<Props, State> {
     }
 
     async componentDidMount() {
-        this.search(null);
     }
     render = () => {
         return (

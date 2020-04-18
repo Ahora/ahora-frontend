@@ -15,6 +15,7 @@ import { setSearchCriteria } from 'app/store/organizations/actions';
 import DocList from 'app/components/DocList';
 import { PieChart, Pie, Tooltip, Legend, Cell } from 'recharts';
 import { getDocGroup } from 'app/services/docs';
+import { parseUrl, ParsedUrl } from "query-string";
 
 
 interface DocsPageState {
@@ -61,6 +62,11 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     async componentDidMount() {
         this.props.requestStatusesData();
         this.props.requestDocTypes();
+
+        const parsedUrl: ParsedUrl = parseUrl(this.props.location.search);
+        const searchCriterias: SearchCriterias = parsedUrl.query;
+
+        this.searchSelected(searchCriterias, "custom");
     }
 
     async searchSelected(searchCriterias: SearchCriterias, searchCriteriasText: string) {
@@ -92,12 +98,12 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
             chartData = this.state.chart.map((data) => {
                 return {
                     name: data.docType.name,
-                    value: parseInt(data.count),
-                    color: data.docTypeId === 14 ? '#C13C37' : '#E38627'
+                    value: parseInt(data.count)
                 }
             });
         }
         const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
         return (
             <div>
                 <SearchDocsInput searchCriteria={this.props.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>

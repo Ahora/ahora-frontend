@@ -13,7 +13,7 @@ import { DocType } from 'app/services/docTypes';
 import { requestDocTypesData } from 'app/store/docTypes/actions';
 import { setSearchCriteria } from 'app/store/organizations/actions';
 import DocList from 'app/components/DocList';
-import { PieChart, Pie, Tooltip, Legend, Cell } from 'recharts';
+//import { PieChart, Pie, Tooltip, Legend, Cell } from 'recharts';
 import { getDocGroup } from 'app/services/docs';
 import { parseUrl, ParsedUrl } from "query-string";
 
@@ -59,6 +59,16 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         }
     }
 
+    printTextOfQuery(field: string, val: string | string[]): string {
+        if (typeof (val) === "string") {
+            return `${field}:${val}`;
+        }
+        else {
+            return val.map((itemVal) => `${field}:${itemVal}`).join(" ");
+
+        }
+    }
+
     async componentDidMount() {
         this.props.requestStatusesData();
         this.props.requestDocTypes();
@@ -66,7 +76,29 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         const parsedUrl: ParsedUrl = parseUrl(this.props.location.search);
         const searchCriterias: SearchCriterias = parsedUrl.query;
 
-        this.searchSelected(searchCriterias, "custom");
+        let text: string = "";
+        if (searchCriterias.status) {
+            text += " " + this.printTextOfQuery("status", searchCriterias.status);
+        }
+
+        if (searchCriterias.label) {
+            text += " " + this.printTextOfQuery("label", searchCriterias.label);
+        }
+
+        if (searchCriterias.docType) {
+            text += " " + this.printTextOfQuery("docType", searchCriterias.docType);
+        }
+
+        if (searchCriterias.assignee) {
+            text += " " + this.printTextOfQuery("assignee", searchCriterias.assignee);
+        }
+
+        if (searchCriterias.reporter) {
+            text += " " + this.printTextOfQuery("reporter", searchCriterias.reporter);
+        }
+
+
+        this.searchSelected(searchCriterias, text);
     }
 
     async searchSelected(searchCriterias: SearchCriterias, searchCriteriasText: string) {
@@ -93,6 +125,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     }
 
     render() {
+        /*
         let chartData: any[] | undefined;
         if (this.state.chart && this.state.chart.length > 1) {
             chartData = this.state.chart.map((data) => {
@@ -103,6 +136,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
             });
         }
         const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+        */
 
         return (
             <div>
@@ -114,18 +148,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                         </Link>
                     </Nav.Item>
                 </Nav>
-                {chartData &&
-                    <PieChart width={400} height={400}>
-                        <Pie onClick={this.onChartClick.bind(this)} dataKey="value" isAnimationActive={false} data={chartData} fill="#8884d8" label >
-                            {
-                                chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                            }
-                        </Pie>
-                        <Tooltip />
-                        <Legend layout='horizontal' verticalAlign="bottom" align="center" />
-
-                    </PieChart>
-                }
                 <DocList searchCriteria={this.state.searchCriteria}>No Results</DocList>
             </div>
         );

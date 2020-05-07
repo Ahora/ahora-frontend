@@ -8,8 +8,9 @@ var options: SearchParserOptions = { keywords: ['assignee', 'label', 'status', '
 
 export interface SearchCriterias {
     assignee?: string[];
-    label?: string[];
-    status?: string[];
+    reporter?: string[];
+    label?: string | string[];
+    status?: string | string[];
     text?: string | string[]
     docType?: string | string[]
 }

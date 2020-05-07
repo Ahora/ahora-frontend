@@ -6,13 +6,14 @@ import { Label } from 'app/services/labels';
 import { requestLabelsData } from 'app/store/labels/actions';
 import { getDocGroup } from 'app/services/docs';
 import { SearchCriterias } from '../SearchDocsInput';
-import { PieChart, Pie, Tooltip, Cell, BarChart, XAxis, YAxis, Bar, CartesianGrid } from 'recharts';
+import { PieChart, Pie, Tooltip, Cell, BarChart, XAxis, YAxis, Bar, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { RouteComponentProps } from 'react-router';
 import { Organization } from 'app/services/organizations';
 import { stringify } from "query-string";
 
 interface LabelsSelectorState {
     labels?: any[];
+    bars: string[],
     chartData?: any[];
 }
 
@@ -37,7 +38,9 @@ class LabelsGraph extends React.Component<AllProps, LabelsSelectorState> {
     constructor(props: AllProps) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            bars: []
+        };
     }
 
     async componentDidMount() {
@@ -46,18 +49,29 @@ class LabelsGraph extends React.Component<AllProps, LabelsSelectorState> {
         const rawData: any[] = await getDocGroup("label", this.props.searchCriterias);
         if (rawData && this.props.labelMap) {
             const chartData: any[] = [];
+            const bars: string[] = [];
+            if (rawData.length > 0) {
+                const firstItem: any = rawData[0];
+
+                for (const key in firstItem) {
+                    if (key !== "count") {
+                        bars.push(key);
+                    }
+                }
+            }
+
             rawData.forEach((LabelRow) => {
                 const label: Label | undefined = this.props.labelMap.get(LabelRow["labels.labelId"]);
                 if (label && (!this.props.labelStartWith || label.name.startsWith(this.props.labelStartWith))) {
                     chartData.push({
+                        ...LabelRow,
                         name: label.name,
-                        id: LabelRow["labels.labelId"],
                         color: label.color,
                         value: parseInt(LabelRow.count)
                     });
                 }
             });
-            this.setState({ chartData });
+            this.setState({ chartData, bars });
         }
     }
 
@@ -78,6 +92,7 @@ class LabelsGraph extends React.Component<AllProps, LabelsSelectorState> {
             <div>
                 {this.state.chartData &&
                     <>
+                        <h2>{this.props.labelStartWith}</h2>
                         <PieChart style={{ display: "none" }} width={400} height={400}>
                             <Pie dataKey="value" isAnimationActive={false} data={this.state.chartData} fill="#8884d8" label >
                                 {
@@ -86,26 +101,24 @@ class LabelsGraph extends React.Component<AllProps, LabelsSelectorState> {
                             </Pie>
                             <Tooltip />
                         </PieChart>
-                        <BarChart onClick={this.onClick.bind(this)}
-                            width={800}
-                            height={500}
-                            data={this.state.chartData}
-                            margin={{
-                                top: 5, right: 30, left: 20, bottom: 5,
-                            }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <Tooltip />
-                            <Bar dataKey="value" fill="#8884d8">
+                        <ResponsiveContainer width="100%" height={300}>
+                            <BarChart onClick={this.onClick.bind(this)} data={this.state.chartData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
                                 {
-                                    this.state.chartData.map((entry, index) => (
-                                        <Cell cursor="pointer" fill={`#${entry.color}`} key={`cell-${index}`} />
-                                    ))
+                                    this.state.bars.map((bar) => <Bar dataKey="value" fill="#8884d8">
+                                        {
+                                            this.state.chartData!.map((entry, index) => (
+                                                <Cell cursor="pointer" fill={`#${entry.color}`} key={`cell-${index}`} />
+                                            ))
+                                        }
+                                    </Bar>)
                                 }
-                            </Bar>
-                        </BarChart>
+
+                            </BarChart>
+                        </ResponsiveContainer>
                     </>
                 }
 

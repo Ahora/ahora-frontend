@@ -92,8 +92,11 @@ class OrganizationDashboardPage extends React.Component<Props, OrganizationDashb
           <div style={{ display: "none" }}>
             <Graph.default graph={graph} options={options} events={events} style={{ height: "640px" }} />
           </div>
-          <LabelsGraph history={this.props.history} searchCriterias={{ status: ["opened", "closed"] }} labelStartWith="area/"></LabelsGraph>
-          <LabelsGraph history={this.props.history} searchCriterias={{ status: ["opened", "closed"] }} labelStartWith="sig/"></LabelsGraph>
+          <LabelsGraph history={this.props.history} searchCriterias={{ status: ["opened"] }} labelStartWith="priority/"></LabelsGraph>
+          <LabelsGraph history={this.props.history} searchCriterias={{ status: ["opened"] }} labelStartWith="area/"></LabelsGraph>
+          <LabelsGraph history={this.props.history} searchCriterias={{ status: ["opened"] }} labelStartWith="kind/"></LabelsGraph>
+          <LabelsGraph history={this.props.history} searchCriterias={{ status: ["opened"] }} labelStartWith="size/"></LabelsGraph>
+          <LabelsGraph history={this.props.history} searchCriterias={{ status: ["opened"] }} labelStartWith="sig/"></LabelsGraph>
           <h2 style={{ display: "none" }}>Assigned to me</h2>
           <DocList style={{ display: "none" }} searchCriteria={{ assignee: ["me"], status: ["opened"] }}>
             <p>No Assigned Tasks</p>

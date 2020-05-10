@@ -10,7 +10,7 @@ import DocList from "app/components/DocList";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import { OrganizationTeam, getAllTeams } from "app/services/organizationTeams";
-import LabelsGraph from "app/components/Charts/LabelsGraph";
+import DocsGraph from "app/components/Charts/DocsGraph";
 const Graph = require("react-graph-vis");
 
 interface OrganizationDashboardPageProps {
@@ -92,11 +92,7 @@ class OrganizationDashboardPage extends React.Component<Props, OrganizationDashb
           <div style={{ display: "none" }}>
             <Graph.default graph={graph} options={options} events={events} style={{ height: "640px" }} />
           </div>
-          <LabelsGraph history={this.props.history} searchCriterias={{ status: ["opened"] }} labelStartWith="priority/"></LabelsGraph>
-          <LabelsGraph history={this.props.history} searchCriterias={{ status: ["opened"] }} labelStartWith="area/"></LabelsGraph>
-          <LabelsGraph history={this.props.history} searchCriterias={{ status: ["opened"] }} labelStartWith="kind/"></LabelsGraph>
-          <LabelsGraph history={this.props.history} searchCriterias={{ status: ["opened"] }} labelStartWith="size/"></LabelsGraph>
-          <LabelsGraph history={this.props.history} searchCriterias={{ status: ["opened"] }} labelStartWith="sig/"></LabelsGraph>
+          <DocsGraph group={["docType", "repo"]} displayType="bars" history={this.props.history} searchCriterias={{ status: ["opened"] }}></DocsGraph>
           <h2 style={{ display: "none" }}>Assigned to me</h2>
           <DocList style={{ display: "none" }} searchCriteria={{ assignee: ["me"], status: ["opened"] }}>
             <p>No Assigned Tasks</p>

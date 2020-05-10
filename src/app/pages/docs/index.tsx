@@ -85,6 +85,10 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
             text += " " + this.printTextOfQuery("label", searchCriterias.label);
         }
 
+        if (searchCriterias.repo) {
+            text += " " + this.printTextOfQuery("repo", searchCriterias.repo);
+        }
+
         if (searchCriterias.docType) {
             text += " " + this.printTextOfQuery("docType", searchCriterias.docType);
         }

@@ -11,6 +11,7 @@ export interface SearchCriterias {
     reporter?: string[];
     label?: string | string[];
     status?: string | string[];
+    repo?: string | string[];
     text?: string | string[]
     docType?: string | string[]
 }
@@ -58,6 +59,7 @@ export default class SearchDocsInput extends React.Component<Props, State> {
             this.props.searchSelected({
                 assignee: queryObject.assignee,
                 docType: queryObject.docType,
+                repo: queryObject.repo,
                 label: queryObject.label,
                 text: queryObject.text,
                 status: queryObject.status

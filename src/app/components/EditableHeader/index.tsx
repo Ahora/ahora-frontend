@@ -4,12 +4,12 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 interface EditableHeaderParams {
-    value: string;
-    onChanged(value: string): void;
+    value?: string;
+    onChanged(value?: string): void;
 }
 
 interface EditableHeaderState {
-    value: string;
+    value?: string;
     editMode: boolean;
 }
 

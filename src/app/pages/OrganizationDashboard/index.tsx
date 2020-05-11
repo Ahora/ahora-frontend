@@ -10,8 +10,6 @@ import DocList from "app/components/DocList";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import { OrganizationTeam, getAllTeams } from "app/services/organizationTeams";
-import EditableGraph from "app/components/Charts/EditableGraph";
-import { DocsGraphDisplayType } from "app/components/Charts/DocsGraph";
 
 interface OrganizationDashboardPageProps {
   organization: Organization | null;
@@ -68,7 +66,6 @@ class OrganizationDashboardPage extends React.Component<Props, OrganizationDashb
     if (organization) {
       return (
         <div>
-          <EditableGraph info={{ displayType: DocsGraphDisplayType.bars, primaryGroup: "docType", searchCriterias: { status: ["opened"] } }} history={this.props.history}></EditableGraph>
           <h2 style={{ display: "none" }}>Assigned to me</h2>
           <DocList style={{ display: "none" }} searchCriteria={{ assignee: ["me"], status: ["opened"] }}>
             <p>No Assigned Tasks</p>

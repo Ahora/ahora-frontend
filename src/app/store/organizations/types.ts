@@ -1,8 +1,9 @@
 import { Organization } from "app/services/organizations";
+import { SearchCriterias } from "app/components/SearchDocsInput";
 
 export interface OrganizationsState {
     currentOrganization: Organization | undefined,
-    SearchCriterias: string
+    SearchCriterias: SearchCriterias
 }
 
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
@@ -16,7 +17,7 @@ interface SetCurrentOrganizationAction {
 
 interface SetSearchCriteriasAction {
     type: typeof SET_SEARCH_CRITERIAS,
-    data: string
+    data: SearchCriterias
 }
 
 export type OrganizationsActionTypes = SetCurrentOrganizationAction | SetSearchCriteriasAction

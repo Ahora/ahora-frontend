@@ -4,7 +4,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import { parse, SearchParserOptions, } from "search-query-parser";
 
-var options: SearchParserOptions = { keywords: ['assignee', 'label', 'status', 'docType'], alwaysArray: true }
+var options: SearchParserOptions = { keywords: ['assignee', 'label', 'status', 'docType', "repo"], alwaysArray: true }
 
 export interface SearchCriterias {
     assignee?: string[];
@@ -18,12 +18,14 @@ export interface SearchCriterias {
 
 
 interface Props {
-    searchCriteria?: string;
+    searchCriteriaText?: string;
+    searchCriterias?: SearchCriterias;
     searchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string): void
 }
 
 interface State {
     searchCriteriaText?: string;
+    searchCriterias?: SearchCriterias;
 }
 
 export default class SearchDocsInput extends React.Component<Props, State> {
@@ -32,17 +34,66 @@ export default class SearchDocsInput extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            searchCriteriaText: this.props.searchCriteria
+            searchCriteriaText: this.props.searchCriteriaText,
+            searchCriterias: this.props.searchCriterias
         }
     }
 
-    componentWillReceiveProps(nextProps: Props) {
-        if (nextProps.searchCriteria !== this.props.searchCriteria) {
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps.searchCriterias !== this.props.searchCriterias) {
+
             this.setState({
-                searchCriteriaText: nextProps.searchCriteria
+                searchCriterias: this.props.searchCriterias
             });
+            this.reloadData(this.props.searchCriterias);
         }
     }
+
+
+    printTextOfQuery(field: string, val: string | string[]): string {
+        if (typeof (val) === "string") {
+            return `${field}:${val}`;
+        }
+        else {
+            return val.map((itemVal) => `${field}:${itemVal}`).join(" ");
+
+        }
+    }
+
+    reloadData(searchCriterias?: SearchCriterias) {
+        let text: string = "";
+        if (searchCriterias) {
+
+            if (searchCriterias.status) {
+                text += " " + this.printTextOfQuery("status", searchCriterias.status);
+            }
+
+            if (searchCriterias.label) {
+                text += " " + this.printTextOfQuery("label", searchCriterias.label);
+            }
+
+            if (searchCriterias.repo) {
+                text += " " + this.printTextOfQuery("repo", searchCriterias.repo);
+            }
+
+            if (searchCriterias.docType) {
+                text += " " + this.printTextOfQuery("docType", searchCriterias.docType);
+            }
+
+            if (searchCriterias.assignee) {
+                text += " " + this.printTextOfQuery("assignee", searchCriterias.assignee);
+            }
+
+            if (searchCriterias.reporter) {
+                text += " " + this.printTextOfQuery("reporter", searchCriterias.reporter);
+            }
+        }
+
+        this.setState({
+            searchCriteriaText: text
+        });
+    }
+
     onTextChange(event: any) {
         this.setState({
             searchCriteriaText: event.target.value
@@ -56,6 +107,10 @@ export default class SearchDocsInput extends React.Component<Props, State> {
 
         if (this.state.searchCriteriaText) {
             const queryObject: SearchCriterias = parse(this.state.searchCriteriaText, options) as any;
+            this.setState({
+                searchCriterias: queryObject,
+                searchCriteriaText: this.state.searchCriteriaText
+            });
             this.props.searchSelected({
                 assignee: queryObject.assignee,
                 docType: queryObject.docType,
@@ -71,26 +126,25 @@ export default class SearchDocsInput extends React.Component<Props, State> {
     }
 
     async componentDidMount() {
+        this.reloadData(this.state.searchCriterias);
     }
     render = () => {
         return (
             <div>
-                <form onSubmit={this.search.bind(this)}>
-                    <Form.Group>
-                        <InputGroup>
-                            <Form.Control
-                                type="text"
-                                value={this.state.searchCriteriaText}
-                                onChange={this.onTextChange.bind(this)}
-                                placeholder="enter your search criteria"
-                                aria-describedby="inputGroupPrepend"
-                            />
-                            <InputGroup.Append>
-                                <Button type="submit" color="primary" variant="primary">Search</Button>
-                            </InputGroup.Append>
-                        </InputGroup>
-                    </Form.Group>
-                </form>
+                <Form.Group>
+                    <InputGroup>
+                        <Form.Control
+                            type="text"
+                            value={this.state.searchCriteriaText}
+                            onChange={this.onTextChange.bind(this)}
+                            placeholder="enter your search criteria"
+                            aria-describedby="inputGroupPrepend"
+                        />
+                        <InputGroup.Append>
+                            <Button type="button" onClick={this.search.bind(this)} color="primary" variant="primary">Search</Button>
+                        </InputGroup.Append>
+                    </InputGroup>
+                </Form.Group>
             </div>
         );
     };

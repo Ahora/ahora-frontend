@@ -10,8 +10,8 @@ import DocList from "app/components/DocList";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import { OrganizationTeam, getAllTeams } from "app/services/organizationTeams";
-import DocsGraph from "app/components/Charts/DocsGraph";
-const Graph = require("react-graph-vis");
+import EditableGraph from "app/components/Charts/EditableGraph";
+import { DocsGraphDisplayType } from "app/components/Charts/DocsGraph";
 
 interface OrganizationDashboardPageProps {
   organization: Organization | null;
@@ -65,34 +65,10 @@ class OrganizationDashboardPage extends React.Component<Props, OrganizationDashb
 
     }
 
-    const edges: any[] = this.state.teams.map((team) => {
-      return { from: team.id, to: team.parentId || -1 };
-    });
-
-    const graph = { nodes, edges };
-
-    const options: any = {
-      layout: {
-        hierarchical: true
-      },
-      edges: {
-        color: "#000000"
-      },
-      height: "500px"
-    };
-
-    const events: any = {
-      select: function (event: any) {
-        console.log(event);
-      }
-    };
     if (organization) {
       return (
         <div>
-          <div style={{ display: "none" }}>
-            <Graph.default graph={graph} options={options} events={events} style={{ height: "640px" }} />
-          </div>
-          <DocsGraph group={["docType", "repo"]} displayType="bars" history={this.props.history} searchCriterias={{ status: ["opened"] }}></DocsGraph>
+          <EditableGraph info={{ displayType: DocsGraphDisplayType.bars, primaryGroup: "docType", searchCriterias: { status: ["opened"] } }} history={this.props.history}></EditableGraph>
           <h2 style={{ display: "none" }}>Assigned to me</h2>
           <DocList style={{ display: "none" }} searchCriteria={{ assignee: ["me"], status: ["opened"] }}>
             <p>No Assigned Tasks</p>
@@ -100,7 +76,7 @@ class OrganizationDashboardPage extends React.Component<Props, OrganizationDashb
               <Button variant="primary" type="button">Add Doc</Button>
             </Link>
           </DocList>
-        </div>
+        </div >
       );
     } else {
       return <div>Loading....</div>;

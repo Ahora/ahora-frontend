@@ -13,8 +13,6 @@ import { DocType } from 'app/services/docTypes';
 import { requestDocTypesData } from 'app/store/docTypes/actions';
 import { setSearchCriteria } from 'app/store/organizations/actions';
 import DocList from 'app/components/DocList';
-//import { PieChart, Pie, Tooltip, Legend, Cell } from 'recharts';
-import { getDocGroup } from 'app/services/docs';
 import { parseUrl, ParsedUrl } from "query-string";
 
 
@@ -34,7 +32,7 @@ interface injectedParams {
     statuses: Map<number, Status>;
     docTypes: Map<number, DocType>;
     loading: boolean;
-    searchCriteria?: string;
+    searchCriteria?: SearchCriterias;
 }
 
 interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedParams {
@@ -75,76 +73,26 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
         const parsedUrl: ParsedUrl = parseUrl(this.props.location.search);
         const searchCriterias: SearchCriterias = parsedUrl.query;
+        this.searchSelected(searchCriterias);
 
-        let text: string = "";
-        if (searchCriterias.status) {
-            text += " " + this.printTextOfQuery("status", searchCriterias.status);
-        }
-
-        if (searchCriterias.label) {
-            text += " " + this.printTextOfQuery("label", searchCriterias.label);
-        }
-
-        if (searchCriterias.repo) {
-            text += " " + this.printTextOfQuery("repo", searchCriterias.repo);
-        }
-
-        if (searchCriterias.docType) {
-            text += " " + this.printTextOfQuery("docType", searchCriterias.docType);
-        }
-
-        if (searchCriterias.assignee) {
-            text += " " + this.printTextOfQuery("assignee", searchCriterias.assignee);
-        }
-
-        if (searchCriterias.reporter) {
-            text += " " + this.printTextOfQuery("reporter", searchCriterias.reporter);
-        }
-
-
-        this.searchSelected(searchCriterias, text);
     }
 
-    async searchSelected(searchCriterias: SearchCriterias, searchCriteriasText: string) {
+    async searchSelected(searchCriterias: SearchCriterias, searchCriteriasText?: string) {
         this.props.setSearchCriterias(searchCriteriasText);
         this.setState({
             searchCriteria: searchCriterias,
-            chart: undefined,
             searchCriteriasText
         });
-
-        const chart: any[] = await getDocGroup("docTypeId", searchCriterias);
-        this.setState({
-            chart
-        });
-    }
-
-    onChartClick(data: any) {
-
-        this.props.setSearchCriterias(this.state.searchCriteriasText + ` docType:${data.name}`);
-        this.setState({
-            searchCriteria: { ...this.state.searchCriteria!, docType: data.name },
-            chart: undefined
+        console.log({
+            searchCriteria: searchCriterias,
+            searchCriteriasText
         });
     }
 
     render() {
-        /*
-        let chartData: any[] | undefined;
-        if (this.state.chart && this.state.chart.length > 1) {
-            chartData = this.state.chart.map((data) => {
-                return {
-                    name: data.docType.name,
-                    value: parseInt(data.count)
-                }
-            });
-        }
-        const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-        */
-
         return (
             <div>
-                <SearchDocsInput searchCriteria={this.props.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
+                <SearchDocsInput searchCriterias={this.state.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
                 <Nav className="mb-3">
                     <Nav.Item>
                         <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>

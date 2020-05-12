@@ -13,6 +13,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/isomorphic-fetch": "0.0.35",
+    "@types/react-beautiful-dnd": "^12.1.2",
     "@types/react-bootstrap-typeahead": "^3.4.5",
     "@types/recharts": "^1.8.9",
     "fork-ts-checker-webpack-plugin": "^3.0.1"
@@ -74,6 +75,7 @@
     "query-string": "^6.12.1",
     "react": "^16.9.0",
     "react-addons-update": "^15.6.2",
+    "react-beautiful-dnd": "^13.0.0",
     "react-bootstrap": "^1.0.0-beta.14",
     "react-bootstrap-typeahead": "^3.4.7",
     "react-dom": "^16.9.0",

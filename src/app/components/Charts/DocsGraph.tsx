@@ -136,7 +136,7 @@ class DocsGraph extends React.Component<AllProps, DocsGraphState> {
                                         <YAxis />
                                         <Tooltip />
                                         {
-                                            this.state.bars.map((bar) => <Bar dataKey="count" fill="#8884d8">
+                                            this.state.bars.map((bar) => <Bar key={bar} dataKey="count" fill="#8884d8">
                                                 {
                                                     this.state.chartData!.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
                                                 }

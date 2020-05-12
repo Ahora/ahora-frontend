@@ -7,6 +7,8 @@ import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import EditableGraph from 'app/components/Charts/EditableGraph';
 import { updatedGadget, BasicDashboardGadget, addDashboardGadget } from 'app/services/dashboardGadgets';
+import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
+
 
 interface DashboardsDetailsPageState {
     dashboard: Dashboard | null;
@@ -27,14 +29,26 @@ interface AllProps extends DashboardDetailsPageProps {
 
 }
 
+// a little function to help us with reordering the result
+const reorder = (list: any[], startIndex: number, endIndex: number) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+};
 
 class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPageState> {
+
+    private newItemCount: number;
+
     constructor(props: AllProps) {
         super(props);
         this.state = {
             dashboard: null,
             gadgets: []
         }
+        this.newItemCount = -1;
     }
 
     async componentDidMount() {
@@ -51,14 +65,15 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
 
     async addEmptyGadget() {
         this.setState({
-            gadgets: [{ gadgetType: "graph", metadata: {} }, ...this.state.gadgets]
+            gadgets: [{ id: this.newItemCount, gadgetType: "graph", metadata: {} }, ...this.state.gadgets]
         });
+        this.newItemCount = this.newItemCount - 1;
     }
 
     async onUpdate(gadget: BasicDashboardGadget) {
 
         if (this.state.dashboard) {
-            if (gadget.id) {
+            if (gadget.id > 0) {
                 await updatedGadget(this.state.dashboard.id, gadget.id, gadget);
             }
             else {
@@ -75,6 +90,38 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
         });
     }
 
+
+    onDragEnd(result: DropResult) {
+        // dropped outside the list
+        if (!result.destination) {
+            return;
+        }
+
+        if (result.source.index != result.destination.index) {
+
+            /*const draggableGadget: BasicDashboardGadget = this.state.gadgets[result.source.index];
+            const afterGadget: BasicDashboardGadget = this.state.gadgets[result.destination.index];
+
+
+            console.log(result.source.index, result.destination.index);
+            console.log(draggableGadget, afterGadget);
+            */
+
+            const gadgets = reorder(
+                this.state.gadgets,
+                result.source.index,
+                result.destination.index
+            );
+
+            this.setState({
+                gadgets
+            });
+        }
+
+
+
+    }
+
     render() {
         const dashboard: Dashboard | null = this.state.dashboard;
         return (
@@ -88,10 +135,34 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
                                 <Button onClick={this.addEmptyGadget.bind(this)} variant="primary" type="button">Add Dadgets</Button>
                             </Nav.Item>
                         </Nav>
+                        <DragDropContext onDragEnd={this.onDragEnd.bind(this)}>
+                            <Droppable droppableId="droppable">
+                                {(provided, snapshot) => (
+                                    <div
+                                        {...provided.droppableProps}
+                                        ref={provided.innerRef}
+                                    >
+                                        {this.state.gadgets.map((gadget, index) => (
+                                            <Draggable key={gadget.id} draggableId={gadget.id!.toString()} index={index}>
+                                                {(provided, snapshot) => (
+                                                    <div className="mt-2"
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                    >
+                                                        <EditableGraph key={gadget.id} onUpdate={this.onUpdate.bind(this)} info={gadget} isNew={gadget.id < 0} history={this.props.history}></EditableGraph>
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
                         <div>
                             {this.state.gadgets.map((gadget) =>
                                 <div className="mt-2">
-                                    <EditableGraph key={gadget.id} onUpdate={this.onUpdate.bind(this)} info={gadget} isNew={!!!gadget.id} history={this.props.history}></EditableGraph>
                                 </div>
                             )}
 

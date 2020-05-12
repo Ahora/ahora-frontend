@@ -3,7 +3,7 @@ import AhoraRestCollector from "./base";
 import { UserItem } from "./users";
 
 export interface BasicDashboardGadget {
-    id?: number;
+    id: number;
     title?: string;
     metadata?: any;
     gadgetType: string;

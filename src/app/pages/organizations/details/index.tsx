@@ -5,9 +5,10 @@ import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import DocsPage from "app/pages/docs";
 import DocsDetailsPage from "app/pages/docs/details";
+import DashboardDetailsPage from "app/pages/dashboards/details";
 import AddDocPage from "app/pages/docs/add";
+import AddDashboardPage from "app/pages/dashboards/add";
 import EditDocPage from "app/pages/docs/edit";
-import OrganizationDashboardPage from "app/pages/OrganizationDashboard";
 import OrganizationSettingsPage from "../settings";
 import { Dispatch } from "redux";
 import { setCurrentOrganization } from "app/store/organizations/actions";
@@ -17,6 +18,7 @@ import { Link } from "react-router-dom";
 import { DocType } from "app/services/docTypes";
 import { requestDocTypesData } from "app/store/docTypes/actions";
 import OrganizationTeamRootPage from "app/pages/teams/root";
+import DashboardsPage from "app/pages/dashboards";
 
 interface OrganizationDetailsPageProps {
   organization: Organization | null;
@@ -58,7 +60,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
           <p>{organization.description}</p>
           <Nav className="mb-3" variant="tabs" defaultActiveKey={this.props.match.params.section || "browse"}>
             <Nav.Item>
-              <Link className="nav-link" to={`/organizations/${organization.login}`}>Dashboard</Link>
+              <Link className="nav-link" to={`/organizations/${organization.login}/dashboards`}>Dashboard</Link>
             </Nav.Item>
             <Nav.Item>
               <Link className="nav-link" to={`/organizations/${organization.login}/docs`}>Browse</Link>
@@ -76,8 +78,11 @@ class OrganizationDetailsPage extends React.Component<Props> {
             <Route path={`/organizations/:login/docs/:id/edit`} component={EditDocPage} />
             <Route path={`/organizations/:login/docs/:id`} component={DocsDetailsPage} />
             <Route path={`/organizations/:login/docs`} component={DocsPage} />
+            <Route path={`/organizations/:login/dashboards/add`} component={AddDashboardPage} />
+            <Route path={`/organizations/:login/dashboards/:id`} component={DashboardDetailsPage} />
+            <Route path={`/organizations/:login/dashboards`} component={DashboardsPage} />
             <Route path={`/organizations/:login/teams`} component={OrganizationTeamRootPage} />
-            <Route path={`/organizations/:login`} component={OrganizationDashboardPage}>
+            <Route path={`/organizations/:login`} component={DashboardsPage}>
             </Route>
           </Switch>
         </Container>

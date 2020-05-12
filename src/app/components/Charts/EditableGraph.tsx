@@ -4,26 +4,31 @@ import DocsGraph, { DocsGraphDisplayType } from './DocsGraph';
 import Form from 'react-bootstrap/Form';
 import { RouteComponentProps } from 'react-router';
 import Button from 'react-bootstrap/Button';
+import { BasicDashboardGadget } from 'app/services/dashboardGadgets';
 
 interface EditableGraphProps {
 }
 
 interface EditableGraphState {
-    info: EditableGraphData;
+    info: BasicDashboardGadget;
     editMode: boolean;
 
 }
 
-interface EditableGraphData {
+export interface EditableGraphData {
+    id?: number;
     searchCriterias?: SearchCriterias;
     primaryGroup?: string;
     secondaryGroup?: string;
-    displayType?: DocsGraphDisplayType
+    displayType?: DocsGraphDisplayType;
+    title: string
 }
 
 interface AllProps extends RouteComponentProps<EditableGraphProps> {
-    info: EditableGraphData;
+    info: BasicDashboardGadget;
+    isNew: boolean;
 
+    onUpdate: (info: BasicDashboardGadget) => Promise<void>;
 }
 
 const groupOptions: { name: string, value: string }[] = [
@@ -66,7 +71,16 @@ class EditableGraph extends React.Component<AllProps, EditableGraphState> {
     constructor(props: AllProps) {
         super(props);
 
-        this.state = { info: this.props.info, editMode: false };
+        this.state = {
+            info: {
+                ...this.props.info,
+                metadata: {
+                    ...this.props.info.metadata,
+                    displayType: this.props.info.metadata.displayType || DocsGraphDisplayType.bars
+                }
+            },
+            editMode: this.props.isNew
+        };
 
     }
 
@@ -78,7 +92,10 @@ class EditableGraph extends React.Component<AllProps, EditableGraphState> {
         this.setState({
             info: {
                 ...this.state.info,
-                primaryGroup: event.target.value
+                metadata: {
+                    ...this.state.info.metadata,
+                    primaryGroup: event.target.value
+                }
             }
         });
     }
@@ -87,7 +104,10 @@ class EditableGraph extends React.Component<AllProps, EditableGraphState> {
         this.setState({
             info: {
                 ...this.state.info,
-                secondaryGroup: event.target.value
+                metadata: {
+                    ...this.state.info.metadata,
+                    secondaryGroup: event.target.value
+                }
             }
         });
     }
@@ -96,7 +116,10 @@ class EditableGraph extends React.Component<AllProps, EditableGraphState> {
         this.setState({
             info: {
                 ...this.state.info,
-                displayType: event.target.value
+                metadata: {
+                    ...this.state.info.metadata,
+                    displayType: event.target.value
+                }
             }
         });
     }
@@ -105,7 +128,10 @@ class EditableGraph extends React.Component<AllProps, EditableGraphState> {
         this.setState({
             info: {
                 ...this.state.info,
-                searchCriterias: searchCriterias
+                metadata: {
+                    ...this.state.info.metadata,
+                    searchCriterias: searchCriterias
+                }
             },
             editMode: true
         });
@@ -117,11 +143,24 @@ class EditableGraph extends React.Component<AllProps, EditableGraphState> {
         })
     }
 
+    handleTitleChange(event: any) {
+        let fleldVal = event.target.value;
+
+        this.setState({
+            info: {
+                ...this.state.info,
+                title: fleldVal
+            }
+        })
+    }
+
     async onSubmit(even: any) {
         event!.preventDefault();
         this.setState({
             editMode: false
-        })
+        });
+
+        await this.props.onUpdate(this.state.info);
     }
 
     render() {
@@ -131,24 +170,28 @@ class EditableGraph extends React.Component<AllProps, EditableGraphState> {
                     this.state.editMode ?
                         <Form className={this.state.editMode ? "d-block" : "d-none"} onSubmit={this.onSubmit.bind(this)}>
                             <Form.Group>
+                                <Form.Label>Title:</Form.Label>
+                                <Form.Control value={this.state.info.title} name="title" onChange={this.handleTitleChange.bind(this)} type="title" />
+                            </Form.Group>
+                            <Form.Group>
                                 <Form.Label>query:</Form.Label>
-                                <SearchDocsInput searchCriterias={this.state.info.searchCriterias} searchSelected={this.searchSelected.bind(this)} ></SearchDocsInput>
+                                <SearchDocsInput searchCriterias={this.state.info.metadata.searchCriterias} searchSelected={this.searchSelected.bind(this)} ></SearchDocsInput>
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Primary Group:</Form.Label>
-                                <Form.Control name="primaryGroup" value={this.state.info.primaryGroup} onChange={this.handleChangePrimaryGroup.bind(this)} as="select">
+                                <Form.Control name="primaryGroup" value={this.state.info.metadata.primaryGroup} onChange={this.handleChangePrimaryGroup.bind(this)} as="select">
                                     {groupOptions.map((groupOption) => <option value={groupOption.value}>{groupOption.name}</option>)}
                                 </Form.Control>
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Secondary Group:</Form.Label>
-                                <Form.Control name="secondaryGroup" value={this.state.info.secondaryGroup} onChange={this.handleChangeSecondaryGroup.bind(this)} as="select">
+                                <Form.Control name="secondaryGroup" value={this.state.info.metadata.secondaryGroup} onChange={this.handleChangeSecondaryGroup.bind(this)} as="select">
                                     {groupOptions.map((groupOption) => <option value={groupOption.value}>{groupOption.name}</option>)}
                                 </Form.Control>
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>display</Form.Label>
-                                <Form.Control name="secondaryGroup" value={this.state.info.displayType || DocsGraphDisplayType.bars} onChange={this.handleDisplatTypeChange.bind(this)} as="select">
+                                <Form.Control name="secondaryGroup" value={this.state.info.metadata.displayType || DocsGraphDisplayType.bars} onChange={this.handleDisplatTypeChange.bind(this)} as="select">
                                     <option value="bars">Bars</option>
                                     <option value="pie">Pie</option>
                                 </Form.Control>
@@ -156,9 +199,18 @@ class EditableGraph extends React.Component<AllProps, EditableGraphState> {
                             <Button type="submit">Done</Button>
                         </Form>
                         :
-                        <Button onClick={this.gotEdit.bind(this)}>Edit</Button>
+                        <div>
+                            <div>{this.state.info.title}</div>
+                            <Button onClick={this.gotEdit.bind(this)}>Edit</Button>
+                        </div>
                 }
-                <DocsGraph group={[this.state.info.primaryGroup, this.state.info.secondaryGroup]} displayType={this.state.info.displayType} history={this.props.history} searchCriterias={this.state.info.searchCriterias}></DocsGraph>
+                {
+                    this.state.info && this.state.info.metadata &&
+                    (this.state.info.metadata.primaryGroup || this.state.info.metadata.secondaryGroup) &&
+                    this.state.info.metadata.displayType &&
+                    <DocsGraph group={[this.state.info.metadata.primaryGroup, this.state.info.metadata.secondaryGroup]} displayType={this.state.info.metadata.displayType || "bars"} history={this.props.history} searchCriterias={this.state.info.metadata.searchCriterias}></DocsGraph>
+
+                }
             </div>
         );
     }

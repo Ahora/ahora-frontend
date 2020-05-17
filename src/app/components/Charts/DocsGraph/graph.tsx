@@ -4,17 +4,12 @@ import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { requestLabelsData } from 'app/store/labels/actions';
 import { getDocGroup } from 'app/services/docs';
-import { SearchCriterias } from '../SearchDocsInput';
 import { PieChart, Pie, Tooltip, Cell, BarChart, XAxis, YAxis, Bar, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { RouteComponentProps } from 'react-router';
 import { Organization } from 'app/services/organizations';
 import { stringify } from "query-string";
 import Spinner from 'react-bootstrap/Spinner';
-
-export enum DocsGraphDisplayType {
-    bars = "bars",
-    pie = "pie"
-}
+import DocsGraphData, { DocsGraphDisplayType } from './data';
 
 interface DocsGraphState {
     bars: string[],
@@ -34,10 +29,7 @@ interface DispatchProps {
 }
 
 interface AllProps extends RouteComponentProps<DocsGraphProps>, DispatchProps, InjectedProps {
-    labelStartWith?: string;
-    searchCriterias: SearchCriterias;
-    group: string[];
-    displayType: DocsGraphDisplayType
+    data: DocsGraphData;
 }
 
 class DocsGraph extends React.Component<AllProps, DocsGraphState> {
@@ -52,10 +44,10 @@ class DocsGraph extends React.Component<AllProps, DocsGraphState> {
 
     componentWillReceiveProps(nextProps: AllProps) {
         //TODO: Compare arrays better!
-        if (nextProps.displayType !== this.props.displayType
-            || nextProps.searchCriterias !== this.props.searchCriterias
-            || nextProps.group[0] !== this.props.group[0]
-            || nextProps.group[1] !== this.props.group[1]) {
+        if (nextProps.data.displayType !== this.props.data.displayType
+            || nextProps.data.searchCriterias !== this.props.data.searchCriterias
+            || nextProps.data.primaryGroup !== this.props.data.primaryGroup
+            || nextProps.data.secondaryGroup !== this.props.data.secondaryGroup) {
             this.updateGraph(nextProps);
         }
     }
@@ -64,7 +56,10 @@ class DocsGraph extends React.Component<AllProps, DocsGraphState> {
         this.setState({
             loading: true
         });
-        const rawData: any[] = await getDocGroup(props.group, props.searchCriterias);
+        const rawData: any[] = await getDocGroup([props.data.primaryGroup!, props.data.secondaryGroup!], props.data.searchCriterias);
+        this.setState({
+            loading: false
+        });
         const chartData: any[] = [];
         const bars: string[] = [];
         if (rawData.length > 0) {
@@ -97,7 +92,7 @@ class DocsGraph extends React.Component<AllProps, DocsGraphState> {
         this.props.history.push({
             pathname: `/organizations/${this.props.organization!.login}/docs/`,
             search: "?" + stringify({
-                ...this.props.searchCriterias as any,
+                ...this.props.data.searchCriterias as any,
                 ...e.activePayload[0].payload.criteria
             })
         });
@@ -114,8 +109,7 @@ class DocsGraph extends React.Component<AllProps, DocsGraphState> {
                         </div>
                         : this.state.chartData &&
                         <>
-                            <h2>{this.props.labelStartWith}</h2>
-                            {this.props.displayType === DocsGraphDisplayType.pie &&
+                            {this.props.data.displayType === DocsGraphDisplayType.pie &&
                                 <ResponsiveContainer width="100%" height={300}>
                                     <PieChart>
                                         <Pie dataKey="count" isAnimationActive={false} data={this.state.chartData} fill="#8884d8" label >
@@ -127,7 +121,7 @@ class DocsGraph extends React.Component<AllProps, DocsGraphState> {
                                     </PieChart>
                                 </ResponsiveContainer>
                             }
-                            {this.props.displayType === DocsGraphDisplayType.bars &&
+                            {this.props.data.displayType === DocsGraphDisplayType.bars &&
 
                                 <ResponsiveContainer width="100%" height={300}>
                                     <BarChart onClick={this.onClick.bind(this)} data={this.state.chartData}>

@@ -1,18 +1,22 @@
 import * as React from 'react';
-import { Dashboard, getDashboard, updateDashboardDescription, updateDashboardTitle } from 'app/services/dashboard';
+import { Dashboard, getDashboard, updateDashboardDescription, updateDashboardTitle, updateDashboard } from 'app/services/dashboard';
 import { RouteComponentProps } from 'react-router';
 import Container from 'react-bootstrap/Container';
 import EditableHeader from 'app/components/EditableHeader';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
-import EditableGraph from 'app/components/Charts/EditableGraph';
-import { updatedGadget, BasicDashboardGadget, addDashboardGadget } from 'app/services/dashboardGadgets';
+import { BasicDashboardGadget } from 'app/services/dashboardGadgets';
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
+import DashboardGadget from 'app/components/dashboards/DashboardGadget';
 
+interface PageGadget {
+    isNew: boolean;
+    gadget: BasicDashboardGadget
+}
 
 interface DashboardsDetailsPageState {
     dashboard: Dashboard | null;
-    gadgets: BasicDashboardGadget[];
+    gadgets: PageGadget[];
 }
 
 interface DashboardsDetailsPageParams {
@@ -53,7 +57,15 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
 
     async componentDidMount() {
         const dashboard: Dashboard = await getDashboard(parseInt(this.props.match.params.id));
-        this.setState({ dashboard, gadgets: dashboard.gadgets });
+
+        let gadgets = dashboard.gadgets ? dashboard.gadgets.map((gadget) => {
+            return {
+                gadget,
+                isNew: false
+            }
+        }) : [];
+
+        this.setState({ dashboard, gadgets });
     }
 
     async onTitleChanged(value: string) {
@@ -65,22 +77,26 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
 
     async addEmptyGadget() {
         this.setState({
-            gadgets: [{ id: this.newItemCount, gadgetType: "graph", metadata: {} }, ...this.state.gadgets]
+            gadgets: [{ isNew: true, gadget: { id: new Date().toISOString(), gadgetType: "docsgraph", metadata: {} }, ...this.state.gadgets }]
         });
         this.newItemCount = this.newItemCount - 1;
     }
 
     async onUpdate(gadget: BasicDashboardGadget) {
 
-        if (this.state.dashboard) {
-            if (gadget.id > 0) {
-                await updatedGadget(this.state.dashboard.id, gadget.id, gadget);
-            }
-            else {
-                await addDashboardGadget(this.state.dashboard.id, gadget);
-            }
-        }
+        const gadgets = [...this.state.gadgets];
+        const index = gadgets.findIndex(x => x.gadget.id === gadget.id);
+        gadgets[index].gadget = gadget;
 
+        this.setState({
+            gadgets
+        });
+
+        if (this.state.dashboard) {
+            await updateDashboard(this.state.dashboard.id, {
+                ...this.state.dashboard, gadgets: gadgets.map((g) => { return g.gadget; })
+            });
+        }
     }
 
     async onDescriptionChanged(value: string) {
@@ -90,6 +106,17 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
         });
     }
 
+    async onGadgetDelete(gadget: BasicDashboardGadget) {
+        var gadgets = [...this.state.gadgets];
+        var index = gadgets.findIndex(x => x.gadget.id === gadget.id);
+        if (index !== -1 && this.state.dashboard) {
+            gadgets.splice(index, 1);
+            this.setState({ gadgets });
+            await updateDashboard(this.state.dashboard.id, {
+                ...this.state.dashboard, gadgets: gadgets.map((g) => { return g.gadget; })
+            });
+        }
+    }
 
     onDragEnd(result: DropResult) {
         // dropped outside the list
@@ -101,8 +128,8 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
 
             /*const draggableGadget: BasicDashboardGadget = this.state.gadgets[result.source.index];
             const afterGadget: BasicDashboardGadget = this.state.gadgets[result.destination.index];
-
-
+ 
+ 
             console.log(result.source.index, result.destination.index);
             console.log(draggableGadget, afterGadget);
             */
@@ -116,10 +143,11 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
             this.setState({
                 gadgets
             });
+
+            if (this.state.dashboard) {
+                updateDashboard(this.state.dashboard?.id, { ...this.state.dashboard, gadgets });
+            }
         }
-
-
-
     }
 
     render() {
@@ -143,14 +171,14 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
                                         ref={provided.innerRef}
                                     >
                                         {this.state.gadgets.map((gadget, index) => (
-                                            <Draggable key={gadget.id} draggableId={gadget.id!.toString()} index={index}>
+                                            <Draggable key={gadget.gadget.id} draggableId={gadget.gadget.id!.toString()} index={index}>
                                                 {(provided, snapshot) => (
-                                                    <div className="mt-2"
+                                                    <div
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
                                                         {...provided.dragHandleProps}
                                                     >
-                                                        <EditableGraph key={gadget.id} onUpdate={this.onUpdate.bind(this)} info={gadget} isNew={gadget.id < 0} history={this.props.history}></EditableGraph>
+                                                        <DashboardGadget editMode={gadget.isNew} onDelete={this.onGadgetDelete.bind(this)} key={gadget.gadget.id} onUpdate={this.onUpdate.bind(this)} info={gadget.gadget} match={this.props.match} location={this.props.location} history={this.props.history}></DashboardGadget>
                                                     </div>
                                                 )}
                                             </Draggable>
@@ -160,13 +188,6 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
                                 )}
                             </Droppable>
                         </DragDropContext>
-                        <div>
-                            {this.state.gadgets.map((gadget) =>
-                                <div className="mt-2">
-                                </div>
-                            )}
-
-                        </div>
                     </>
 
                 }

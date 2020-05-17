@@ -44,15 +44,12 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 
 class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPageState> {
 
-    private newItemCount: number;
-
     constructor(props: AllProps) {
         super(props);
         this.state = {
             dashboard: null,
             gadgets: []
         }
-        this.newItemCount = -1;
     }
 
     async componentDidMount() {
@@ -77,9 +74,8 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
 
     async addEmptyGadget() {
         this.setState({
-            gadgets: [{ isNew: true, gadget: { id: new Date().toISOString(), gadgetType: "docsgraph", metadata: {} }, ...this.state.gadgets }]
+            gadgets: [{ isNew: true, gadget: { id: new Date().toISOString(), gadgetType: "docsgraph", metadata: {} } }, ...this.state.gadgets]
         });
-        this.newItemCount = this.newItemCount - 1;
     }
 
     async onUpdate(gadget: BasicDashboardGadget) {
@@ -173,12 +169,12 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
                                         {this.state.gadgets.map((gadget, index) => (
                                             <Draggable key={gadget.gadget.id} draggableId={gadget.gadget.id!.toString()} index={index}>
                                                 {(provided, snapshot) => (
-                                                    <div
+                                                    <div key={gadget.gadget.id}
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
                                                         {...provided.dragHandleProps}
                                                     >
-                                                        <DashboardGadget editMode={gadget.isNew} onDelete={this.onGadgetDelete.bind(this)} key={gadget.gadget.id} onUpdate={this.onUpdate.bind(this)} info={gadget.gadget} match={this.props.match} location={this.props.location} history={this.props.history}></DashboardGadget>
+                                                        <DashboardGadget key={gadget.gadget.id} editMode={gadget.isNew} onDelete={this.onGadgetDelete.bind(this)} onUpdate={this.onUpdate.bind(this)} info={gadget.gadget} match={this.props.match} location={this.props.location} history={this.props.history}></DashboardGadget>
                                                     </div>
                                                 )}
                                             </Draggable>

@@ -156,7 +156,7 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
                         <EditableHeader onChanged={this.onDescriptionChanged.bind(this)} value={dashboard.description}>{dashboard.description}</EditableHeader>
                         <Nav className="mb-3">
                             <Nav.Item>
-                                <Button onClick={this.addEmptyGadget.bind(this)} variant="primary" type="button">Add Dadgets</Button>
+                                <Button onClick={this.addEmptyGadget.bind(this)} variant="primary" type="button">Add Gadgets</Button>
                             </Nav.Item>
                         </Nav>
                         <DragDropContext onDragEnd={this.onDragEnd.bind(this)}>

@@ -32,8 +32,8 @@ class RootPageComponent extends React.Component<AllProps> {
           <Container>
             <h1>Ahora! - extend your community</h1>
             <p className="lead text-muted">
-              Manage your community better, Having multiple repositories solution and put teams and collaboration in the center.<br />
-              Ahora is open source and free solution for public repositories.
+              Manage your community better, having multiple repositories solution and put teams and collaboration in the center.<br />
+              Ahora is an open source and free solution for public repositories.
               </p>
             <p>
               {this.props.currentUser ?
@@ -53,7 +53,7 @@ class RootPageComponent extends React.Component<AllProps> {
                   <div className="icon">
                     <i className="fab fa-github"></i>
                   </div>
-                  Show smart graphs of you issues and pull requests
+                  Show smart graphs of your <br /> issues and pull requests
                 </Card.Body>
               </Card>
             </div>
@@ -64,7 +64,7 @@ class RootPageComponent extends React.Component<AllProps> {
                   <div className="icon">
                     <i className="fas fa-code-branch"></i>
                   </div>
-                  Manage your cross organization repositories in a single place.</Card.Body>
+                  Manage your cross organization's repositories in a single place</Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
@@ -74,7 +74,7 @@ class RootPageComponent extends React.Component<AllProps> {
                   <div className="icon">
                     <i className="far fa-comments"></i>
                   </div>
-                  Share your ideas and collect feedback easily with others
+                  Share ideas and collect feedback <br /> easily with others
                 </Card.Body>
               </Card>
             </div>
@@ -85,7 +85,7 @@ class RootPageComponent extends React.Component<AllProps> {
                   <div className="icon">
                     <i className="fas fa-dollar-sign"></i>
                   </div>
-                  Use Ahora free without limitations for public repositories.</Card.Body>
+                  Use Ahora free without limitations <br /> for public repositories</Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
@@ -101,11 +101,11 @@ class RootPageComponent extends React.Component<AllProps> {
             <div className="col-md-4">
               <Card>
                 <Card.Header>Advanced teams support</Card.Header>
-                <Card.Body>
+                <Card.Body className="text-center">
                   <div className="icon">
                     <i className="fas fa-user-friends"></i>
                   </div>
-                  Search issues by specific team.<br />
+                  Search issues by specific team<br />
                   Visualize dependencies between teams<br />
                 </Card.Body>
               </Card>

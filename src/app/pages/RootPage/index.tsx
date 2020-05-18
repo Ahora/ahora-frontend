@@ -50,45 +50,64 @@ class RootPageComponent extends React.Component<AllProps> {
               <Card>
                 <Card.Header>Visualize your github content</Card.Header>
                 <Card.Body className="text-center">
+                  <div className="icon">
+                    <i className="fab fa-github"></i>
+                  </div>
                   Show smart graphs of you issues and pull requests
                 </Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
               <Card>
-                <Card.Header>Multiple Repositories aggregation</Card.Header>
-                <Card.Body className="text-center">Manage your cross organization repositories in a single place.</Card.Body>
+                <Card.Header>Multiple repositories aggregation</Card.Header>
+                <Card.Body className="text-center">
+                  <div className="icon">
+                    <i className="fas fa-code-branch"></i>
+                  </div>
+                  Manage your cross organization repositories in a single place.</Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
               <Card>
                 <Card.Header>Discussions</Card.Header>
-                <Card.Body>
-                  Manage and share discussions<br />
-                  Share your ideas and collect feedback easily with others!<br />
+                <Card.Body className="text-center">
+                  <div className="icon">
+                    <i className="far fa-comments"></i>
+                  </div>
+                  Share your ideas and collect feedback easily with others
                 </Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
               <Card>
                 <Card.Header>Free for public repositories</Card.Header>
-                <Card.Body className="text-center">Use Ahora free without limitations for public repositories.</Card.Body>
+                <Card.Body className="text-center">
+                  <div className="icon">
+                    <i className="fas fa-dollar-sign"></i>
+                  </div>
+                  Use Ahora free without limitations for public repositories.</Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
               <Card>
                 <Card.Header>Open source</Card.Header>
-                <Card.Body className="text-center">Ahora will always be open source!</Card.Body>
+                <Card.Body className="text-center">
+                  <div className="icon">
+                    <i className="fab fa-git-square"></i>
+                  </div>
+                  Ahora will always be open source!</Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
               <Card>
-                <Card.Header>Advanced Teams support</Card.Header>
+                <Card.Header>Advanced teams support</Card.Header>
                 <Card.Body>
+                  <div className="icon">
+                    <i className="fas fa-user-friends"></i>
+                  </div>
                   Search issues by specific team.<br />
                   Visualize dependencies between teams<br />
-                  Identify bottlenecks
-            </Card.Body>
+                </Card.Body>
               </Card>
             </div>
           </Row>

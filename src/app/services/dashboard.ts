@@ -46,7 +46,7 @@ export const addDashboard = async (dasboard: Dashboard): Promise<Dashboard> => {
     return result.data;
 }
 
-export const updateDoc = async (id: number, dasboard: Dashboard): Promise<Dashboard> => {
+export const updateDashboard = async (id: number, dasboard: Dashboard): Promise<Dashboard> => {
     const result = await DashboardsClient.put({
         params: { id },
         data: dasboard

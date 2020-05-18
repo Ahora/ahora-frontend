@@ -90,14 +90,14 @@ class DashboardGadget extends React.Component<AllProps, EditableGraphState> {
 
         return (
             <Card>
+                <Card.Header>
+                    {this.props.info.title}
+                    <DropdownButton id={`gadget-settings-${this.props.info.id}`} className="float-right" size="sm" title="Settings">
+                        <Dropdown.Item onClick={this.edit.bind(this)}>Edit</Dropdown.Item>
+                        <Dropdown.Item onClick={this.remove.bind(this)}>Remove</Dropdown.Item>
+                    </DropdownButton>
+                </Card.Header>
                 <Card.Body>
-                    <Card.Title>
-                        {this.props.info.title}
-                        <DropdownButton id={`gadget-settings-${this.props.info.id}`} className="float-right" size="sm" title="Settings">
-                            <Dropdown.Item onClick={this.edit.bind(this)}>Edit</Dropdown.Item>
-                            <Dropdown.Item onClick={this.remove.bind(this)}>Remove</Dropdown.Item>
-                        </DropdownButton>
-                    </Card.Title>
                     {
                         this.state.editMode &&
                         <>
@@ -121,10 +121,7 @@ class DashboardGadget extends React.Component<AllProps, EditableGraphState> {
                         </>
                     }
                     {
-                        this.state.info &&
-                        <>
-                            <GadgetFactory info={this.state.info} history={this.props.history} match={this.props.match} location={this.props.location}></GadgetFactory>
-                        </>
+                        this.state.info && <GadgetFactory info={this.state.info} history={this.props.history} match={this.props.match} location={this.props.location}></GadgetFactory>
                     }
                 </Card.Body>
             </Card >

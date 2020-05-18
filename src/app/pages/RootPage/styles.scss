@@ -1,14 +1,19 @@
 .main {
-    min-height: 100vh;
-    align-items: stretch;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    .card {
+        .card-header {
+            text-align: center;
+        }
 
-    .is-vcentered{
-        align-items: center;
-        display: flex;
-        flex-grow: 1;
-        flex-shrink: 0;
+        .card-body {
+            height: 130px;
+
+            .icon {
+                font-size: 40px;
+                text-align: center;
+                margin: 10px;
+            }
+
+        }
+        margin-bottom: 10px;
     }
 }

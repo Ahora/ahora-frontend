@@ -4,20 +4,20 @@ import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { requestLabelsData } from 'app/store/labels/actions';
 import { getDocGroup } from 'app/services/docs';
-import { PieChart, Pie, Tooltip, Cell, BarChart, XAxis, YAxis, Bar, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { Cell, XAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, YAxis } from 'recharts';
 import { RouteComponentProps } from 'react-router';
 import { Organization } from 'app/services/organizations';
 import { stringify } from "query-string";
 import Spinner from 'react-bootstrap/Spinner';
-import DocsGraphData, { DocsGraphDisplayType } from './data';
+import DocsDateTimeGraphData from './data';
 
-interface DocsGraphState {
+interface DocsDateTimeGraphState {
     bars: string[],
     chartData?: any[];
     loading: boolean;
 }
 
-interface DocsGraphProps {
+interface DocsDateTimeGraphProps {
 }
 
 interface InjectedProps {
@@ -28,11 +28,11 @@ interface DispatchProps {
     requestLabels(): void;
 }
 
-interface AllProps extends RouteComponentProps<DocsGraphProps>, DispatchProps, InjectedProps {
-    data: DocsGraphData;
+interface AllProps extends RouteComponentProps<DocsDateTimeGraphProps>, DispatchProps, InjectedProps {
+    data: DocsDateTimeGraphData;
 }
 
-class DocsGraph extends React.Component<AllProps, DocsGraphState> {
+class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState> {
     constructor(props: AllProps) {
         super(props);
 
@@ -43,8 +43,8 @@ class DocsGraph extends React.Component<AllProps, DocsGraphState> {
     }
 
     componentWillReceiveProps(nextProps: AllProps) {
-        if (nextProps.data.displayType !== this.props.data.displayType
-            || nextProps.data.searchCriterias !== this.props.data.searchCriterias
+        //TODO: Compare arrays better!
+        if (nextProps.data.searchCriterias !== this.props.data.searchCriterias
             || nextProps.data.primaryGroup !== this.props.data.primaryGroup
             || nextProps.data.secondaryGroup !== this.props.data.secondaryGroup) {
             this.updateGraph(nextProps);
@@ -108,32 +108,23 @@ class DocsGraph extends React.Component<AllProps, DocsGraphState> {
                         </div>
                         : this.state.chartData &&
                         <ResponsiveContainer width="100%" height={300}>
-                            {this.props.data.displayType === DocsGraphDisplayType.pie ?
-                                <PieChart>
-                                    <Pie dataKey="count" isAnimationActive={false} data={this.state.chartData} fill="#8884d8" label >
+                            <LineChart width={500} height={300} data={this.state.chartData}>
+                                <XAxis
+                                    scale='time'
+                                    type="number"
+                                    dataKey="name" />
+                                <YAxis />
+                                <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                                {
+                                    this.state.bars.map((bar) => <Line key={bar} type="monotone" dataKey="count" stroke="#8884d8">
                                         {
-                                            this.state.chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+                                            this.state.chartData!.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
                                         }
-                                    </Pie>
-                                    <Tooltip />
-                                </PieChart>
-                                :
-                                <BarChart onClick={this.onClick.bind(this)} data={this.state.chartData}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    {
-                                        this.state.bars.map((bar) => <Bar key={bar} dataKey="count" fill="#8884d8">
-                                            {
-                                                this.state.chartData!.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                                            }
-                                        </Bar>)
-                                    }
-
-                                </BarChart>
-                            }
+                                    </Line>)
+                                }
+                            </LineChart>
                         </ResponsiveContainer>
+
                 }
 
             </div>
@@ -153,4 +144,4 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocsGraph as any)
+export default connect(mapStateToProps, mapDispatchToProps)(DocsDateTimeGraph as any)

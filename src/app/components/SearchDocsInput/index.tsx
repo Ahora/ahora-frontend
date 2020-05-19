@@ -4,7 +4,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import { parse, SearchParserOptions, } from "search-query-parser";
 
-var options: SearchParserOptions = { keywords: ['assignee', 'label', 'status', 'docType', "repo"], alwaysArray: true }
+var searchOptions: SearchParserOptions = { keywords: ['assignee', 'reporter', 'label', 'status', 'docType', "repo"], alwaysArray: true }
 
 export interface SearchCriterias {
     assignee?: string[];
@@ -62,31 +62,15 @@ export default class SearchDocsInput extends React.Component<Props, State> {
 
     reloadData(searchCriterias?: SearchCriterias) {
         let text: string = "";
-        if (searchCriterias) {
+        if (searchCriterias && searchOptions.keywords) {
+            const searchCriteriasAsAny: any = searchCriterias;
 
-            if (searchCriterias.status) {
-                text += " " + this.printTextOfQuery("status", searchCriterias.status);
-            }
 
-            if (searchCriterias.label) {
-                text += " " + this.printTextOfQuery("label", searchCriterias.label);
-            }
-
-            if (searchCriterias.repo) {
-                text += " " + this.printTextOfQuery("repo", searchCriterias.repo);
-            }
-
-            if (searchCriterias.docType) {
-                text += " " + this.printTextOfQuery("docType", searchCriterias.docType);
-            }
-
-            if (searchCriterias.assignee) {
-                text += " " + this.printTextOfQuery("assignee", searchCriterias.assignee);
-            }
-
-            if (searchCriterias.reporter) {
-                text += " " + this.printTextOfQuery("reporter", searchCriterias.reporter);
-            }
+            searchOptions.keywords.forEach((option) => {
+                if (searchCriteriasAsAny[option]) {
+                    text += " " + this.printTextOfQuery(option, searchCriteriasAsAny[option]);
+                }
+            });
         }
 
         this.setState({
@@ -106,19 +90,26 @@ export default class SearchDocsInput extends React.Component<Props, State> {
         }
 
         if (this.state.searchCriteriaText) {
-            const queryObject: SearchCriterias = parse(this.state.searchCriteriaText, options) as any;
+            const queryObject: SearchCriterias = parse(this.state.searchCriteriaText, searchOptions) as any;
             this.setState({
                 searchCriterias: queryObject,
                 searchCriteriaText: this.state.searchCriteriaText
             });
-            this.props.searchSelected({
-                assignee: queryObject.assignee,
-                docType: queryObject.docType,
-                repo: queryObject.repo,
-                label: queryObject.label,
-                text: queryObject.text,
-                status: queryObject.status
-            }, this.state.searchCriteriaText);
+
+            const result: any = {};
+            if (searchOptions.keywords) {
+                const searchCriteriasAsAny: any = queryObject;
+
+                searchOptions.keywords.forEach((option) => {
+                    if (searchCriteriasAsAny[option]) {
+                        result[option] = searchCriteriasAsAny[option];
+                    }
+                });
+            }
+
+
+
+            this.props.searchSelected(result, this.state.searchCriteriaText);
         }
         else {
             this.props.searchSelected();

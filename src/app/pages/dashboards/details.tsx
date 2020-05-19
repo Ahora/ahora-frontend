@@ -141,7 +141,7 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
             });
 
             if (this.state.dashboard) {
-                updateDashboard(this.state.dashboard?.id, { ...this.state.dashboard, gadgets });
+                updateDashboard(this.state.dashboard?.id, { ...this.state.dashboard, gadgets: gadgets.map((g) => { return g.gadget; }) });
             }
         }
     }

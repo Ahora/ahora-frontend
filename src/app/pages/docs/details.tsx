@@ -167,11 +167,22 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                                 <td>Last viewd by me: </td>
                                                 <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.lastView.updatedAt}></Moment></td>
                                             </tr>)}
-                                        {doc.docId &&
-                                            (<tr>
-                                                <td>Github Issue Id: </td>
-                                                <td>{doc.docId}</td>
-                                            </tr>)}
+                                        {doc.source &&
+                                            (<>
+
+                                                <tr>
+                                                    <td>Github Issue Id: </td>
+                                                    <td><a target="_blank" href={doc.source.url}>{doc.docId}</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Repo</td>
+                                                    <td>{doc.source.repo}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Organization</td>
+                                                    <td>{doc.source.organization}</td>
+                                                </tr>
+                                            </>)}
                                     </tbody>
                                 </Table>
                                 <h2>Watchers</h2>

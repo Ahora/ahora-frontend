@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dashboard, getDashboard, updateDashboardDescription, updateDashboardTitle, updateDashboard } from 'app/services/dashboard';
+import { Dashboard, getDashboard, updateDashboardDescription, updateDashboardTitle, updateDashboard, deleteDashboard } from 'app/services/dashboard';
 import { RouteComponentProps } from 'react-router';
 import Container from 'react-bootstrap/Container';
 import EditableHeader from 'app/components/EditableHeader';
@@ -146,17 +146,29 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
         }
     }
 
+    async remove() {
+        if (this.state.dashboard) {
+            await deleteDashboard(this.state.dashboard!.id);
+            this.props.history.replace(`/organizations/${this.props.match.params.login}/dashboards`);
+        }
+    }
+
     render() {
         const dashboard: Dashboard | null = this.state.dashboard;
         return (
             <Container fluid={true}>
                 {dashboard &&
                     <>
-                        <EditableHeader onChanged={this.onTitleChanged.bind(this)} value={dashboard.title}><h1>{dashboard.title}</h1></EditableHeader>
+                        <EditableHeader onChanged={this.onTitleChanged.bind(this)} value={dashboard.title}>
+                            <h1>{dashboard.title}</h1>
+                        </EditableHeader>
                         <EditableHeader onChanged={this.onDescriptionChanged.bind(this)} value={dashboard.description}>{dashboard.description}</EditableHeader>
                         <Nav className="mb-3">
                             <Nav.Item>
-                                <Button onClick={this.addEmptyGadget.bind(this)} variant="primary" type="button">Add Gadgets</Button>
+                                <Button onClick={this.addEmptyGadget.bind(this)} variant="primary" type="button">Add gadget</Button>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Button onClick={this.remove.bind(this)} variant="danger" type="button">Delete dashboard</Button>
                             </Nav.Item>
                         </Nav>
                         <DragDropContext onDragEnd={this.onDragEnd.bind(this)}>

@@ -11,6 +11,11 @@ export interface Doc {
     docTypeId: number;
     userAlias: string;
     docId?: number;
+    source?: {
+        repo: string;
+        organization: string;
+        url: string;
+    }
     metadata: any;
     createdAt: Date;
     labels?: number[];

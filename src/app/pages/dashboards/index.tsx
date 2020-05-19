@@ -58,7 +58,6 @@ class DashboardsPage extends React.Component<AllProps, DashboardsPageState> {
                             <th>Title</th>
                             <th>Description</th>
                             <th>User</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>

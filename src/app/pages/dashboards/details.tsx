@@ -121,15 +121,6 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
         }
 
         if (result.source.index != result.destination.index) {
-
-            /*const draggableGadget: BasicDashboardGadget = this.state.gadgets[result.source.index];
-            const afterGadget: BasicDashboardGadget = this.state.gadgets[result.destination.index];
- 
- 
-            console.log(result.source.index, result.destination.index);
-            console.log(draggableGadget, afterGadget);
-            */
-
             const gadgets = reorder(
                 this.state.gadgets,
                 result.source.index,
@@ -197,7 +188,6 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
                             </Droppable>
                         </DragDropContext>
                     </>
-
                 }
             </Container>
         );

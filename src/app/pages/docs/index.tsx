@@ -83,10 +83,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
             searchCriteria: searchCriterias,
             searchCriteriasText
         });
-        console.log({
-            searchCriteria: searchCriterias,
-            searchCriteriasText
-        });
     }
 
     render() {

@@ -84,11 +84,7 @@ export default class SearchDocsInput extends React.Component<Props, State> {
         });
     }
 
-    search(event: any) {
-        if (event) {
-            event!.preventDefault();
-        }
-
+    search() {
         if (this.state.searchCriteriaText) {
             const queryObject: SearchCriterias = parse(this.state.searchCriteriaText, searchOptions) as any;
             this.setState({
@@ -107,12 +103,20 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                 });
             }
 
-
-
             this.props.searchSelected(result, this.state.searchCriteriaText);
         }
         else {
             this.props.searchSelected();
+        }
+    }
+
+    handleBlur() {
+        this.search();
+    }
+
+    handleKeyDown(e: any) {
+        if (e.key === 'Enter') {
+            this.search();
         }
     }
 
@@ -130,6 +134,8 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                             onChange={this.onTextChange.bind(this)}
                             placeholder="enter your search criteria"
                             aria-describedby="inputGroupPrepend"
+                            onKeyDown={this.handleKeyDown.bind(this)}
+                            onBlur={this.handleBlur.bind(this)}
                         />
                         <InputGroup.Append>
                             <Button type="button" onClick={this.search.bind(this)} color="primary" variant="primary">Search</Button>

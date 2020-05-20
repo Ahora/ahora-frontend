@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { DocWatcher, getWatchers } from 'app/services/watchers';
-import Spinner from 'react-bootstrap/Spinner';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { User } from 'app/services/users';

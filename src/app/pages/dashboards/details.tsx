@@ -53,7 +53,7 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
     }
 
     async componentDidMount() {
-        const dashboard: Dashboard = await getDashboard(parseInt(this.props.match.params.id));
+        let dashboard: Dashboard = await getDashboard(parseInt(this.props.match.params.id));
 
         let gadgets = dashboard.gadgets ? dashboard.gadgets.map((gadget) => {
             return {
@@ -74,7 +74,7 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
 
     async addEmptyGadget() {
         this.setState({
-            gadgets: [{ isNew: true, gadget: { id: new Date().toISOString(), gadgetType: "docsgraph", metadata: {} } }, ...this.state.gadgets]
+            gadgets: [{ isNew: true, gadget: { id: new Date().toISOString(), gadgetType: "AhoraBarsPie", metadata: {} } }, ...this.state.gadgets]
         });
     }
 

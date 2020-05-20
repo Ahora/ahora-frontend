@@ -1,38 +1,32 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
-import { Dispatch } from 'redux';
-import { requestLabelsData } from 'app/store/labels/actions';
 import { getDocGroup } from 'app/services/docs';
 import { PieChart, Pie, Tooltip, Cell, BarChart, XAxis, YAxis, Bar, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { RouteComponentProps } from 'react-router';
 import { Organization } from 'app/services/organizations';
 import { stringify } from "query-string";
-import DocsGraphData, { DocsGraphDisplayType } from './data';
+import BarPieGadgetData, { BarPieGadgetDisplayType } from './data';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 
-interface DocsGraphState {
+interface BarPieGadgetState {
     bars: string[],
     chartData?: any[];
     loading: boolean;
 }
 
-interface DocsGraphProps {
+interface BarPieGadgetProps {
 }
 
 interface InjectedProps {
     organization: Organization | undefined;
 }
 
-interface DispatchProps {
-    requestLabels(): void;
+interface AllProps extends RouteComponentProps<BarPieGadgetProps>, InjectedProps {
+    data: BarPieGadgetData;
 }
 
-interface AllProps extends RouteComponentProps<DocsGraphProps>, DispatchProps, InjectedProps {
-    data: DocsGraphData;
-}
-
-class DocsGraph extends React.Component<AllProps, DocsGraphState> {
+class BarPieGadget extends React.Component<AllProps, BarPieGadgetState> {
     constructor(props: AllProps) {
         super(props);
 
@@ -71,7 +65,6 @@ class DocsGraph extends React.Component<AllProps, DocsGraphState> {
             //remove last space!
             barTitle = barTitle.substr(0, barTitle.length - 1)
             bars.push(barTitle);
-
         }
 
         rawData.forEach((LabelRow) => {
@@ -106,7 +99,7 @@ class DocsGraph extends React.Component<AllProps, DocsGraphState> {
                         <AhoraSpinner />
                         : this.state.chartData &&
                         <ResponsiveContainer width="100%" height={300}>
-                            {this.props.data.displayType === DocsGraphDisplayType.pie ?
+                            {this.props.data.displayType === BarPieGadgetDisplayType.pie ?
                                 <PieChart>
                                     <Pie dataKey="count" isAnimationActive={false} data={this.state.chartData} fill="#8884d8" label >
                                         {
@@ -145,10 +138,4 @@ const mapStateToProps = (state: ApplicationState): InjectedProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-    return {
-        requestLabels: () => dispatch(requestLabelsData())
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DocsGraph as any)
+export default connect(mapStateToProps)(BarPieGadget as any)

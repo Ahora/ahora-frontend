@@ -1,20 +1,20 @@
 import * as React from 'react';
-import DocsDateTimeGraphData from './data';
+import BarPieGadgetData, { BarPieGadgetDisplayType } from './data';
 import SearchDocsInput, { SearchCriterias } from 'app/components/SearchDocsInput';
 import Form from 'react-bootstrap/Form';
 import GroupBySelect from 'app/components/Forms/Basics/GroupBySelect';
 
-interface DocsDateTimeGraphState {
-    form: DocsDateTimeGraphData;
+interface BarPieGadgetState {
+    form: BarPieGadgetData;
 }
 
-interface DocsDateTimeGraphProps {
-    data: DocsDateTimeGraphData;
-    onUpdate: (metadata: DocsDateTimeGraphData) => void;
+interface BarPieGadgetProps {
+    data: BarPieGadgetData;
+    onUpdate: (metadata: BarPieGadgetData) => void;
 }
 
-class DocsDateTimeGraphForm extends React.Component<DocsDateTimeGraphProps, DocsDateTimeGraphState> {
-    constructor(props: DocsDateTimeGraphProps) {
+class BarPieGadgetForm extends React.Component<BarPieGadgetProps, BarPieGadgetState> {
+    constructor(props: BarPieGadgetProps) {
         super(props);
 
         this.state = {
@@ -49,6 +49,7 @@ class DocsDateTimeGraphForm extends React.Component<DocsDateTimeGraphProps, Docs
         this.update(form);
     }
 
+
     handleDisplatTypeChange(event: any) {
         const form = {
             ...this.state.form,
@@ -58,7 +59,7 @@ class DocsDateTimeGraphForm extends React.Component<DocsDateTimeGraphProps, Docs
         this.update(form);
     }
 
-    update(form: DocsDateTimeGraphData) {
+    update(form: BarPieGadgetData) {
         this.props.onUpdate(form);
     }
 
@@ -75,14 +76,18 @@ class DocsDateTimeGraphForm extends React.Component<DocsDateTimeGraphProps, Docs
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Secondary Group:</Form.Label>
-                    <Form.Group>
-                        <Form.Label>Primary Group:</Form.Label>
-                        <GroupBySelect onUpdate={this.handleChangeSecondaryGroup.bind(this)} value={this.state.form.secondaryGroup}></GroupBySelect>
-                    </Form.Group>
+                    <GroupBySelect onUpdate={this.handleChangeSecondaryGroup.bind(this)} value={this.state.form.secondaryGroup}></GroupBySelect>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Display</Form.Label>
+                    <Form.Control name="secondaryGroup" value={this.state.form.displayType || BarPieGadgetDisplayType.bars} onChange={this.handleDisplatTypeChange.bind(this)} as="select">
+                        <option value="bars">Bars</option>
+                        <option value="pie">Pie</option>
+                    </Form.Control>
                 </Form.Group>
             </>
         );
     }
 }
 
-export default DocsDateTimeGraphForm;
+export default BarPieGadgetForm;

@@ -222,7 +222,7 @@ module.exports = {
       DEBUG: false
     }),
     new CopyWebpackPlugin([
-      { from: path.join(sourcePath, 'assets/favicon.ico'), to: outPath },
+      //{ from: path.join(sourcePath, 'assets/favicon.ico'), to: outPath },
       { from: path.join(sourcePath, 'assets/fonts'), to: path.join(outPath, 'assets/fonts') },
       { from: path.join(sourcePath, 'assets/images'), to: path.join(outPath, 'assets/images') },
       { from: path.join(sourcePath, 'assets/icons'), to: path.join(outPath, 'assets/icons') },

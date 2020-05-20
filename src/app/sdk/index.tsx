@@ -1,8 +1,8 @@
 import DashboardGadgetsSDK from "./DashboardGadgets";
-import DocsGraphForm from "app/components/Charts/DocsGraph/form";
-import DocsGraphGadget from "app/components/Charts/DocsGraph/graph";
-import DocsDateTimeGraphForm from "app/components/Charts/DateTimeChart/form";
-import DocsDateTimeGraph from "app/components/Charts/DateTimeChart/graph";
+import BarPieGadgetForm from "app/components/Dashboards/Gadgets/BarPieGadget/form";
+import BarPieGadgetGadget from "app/components/Dashboards/Gadgets/BarPieGadget/Gadget";
+import DocsDateTimeGraphForm from "app/components/Dashboards/Gadgets/DateTimeChart/form";
+import DocsDateTimeGraph from "app/components/Dashboards/Gadgets/DateTimeChart/graph";
 
 class AhoraSDK {
     private static instance: AhoraSDK;
@@ -22,12 +22,12 @@ class AhoraSDK {
     }
 }
 
-AhoraSDK.getInstance().dashboardGadgets.registerGadget("docsgraph", {
-    title: "Graph",
-    description: "Bar or Pie charts",
+AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraBarsPie", {
+    title: "Pir or Bars Chart",
+    description: "Displays the matching docs as pie or bars chart.",
     group: "General",
-    formComponent: DocsGraphForm,
-    gadgetComponent: DocsGraphGadget
+    formComponent: BarPieGadgetForm,
+    gadgetComponent: BarPieGadgetGadget
 });
 
 AhoraSDK.getInstance().dashboardGadgets.registerGadget("docsdatetimegraph", {

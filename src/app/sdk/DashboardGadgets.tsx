@@ -13,6 +13,10 @@ export default class DashboardGadgetsSDK {
         this.gadgetMap = new Map<string, DashboardGadgetConfiguration>();
     }
 
+    public getAllGadgets(): Map<string, DashboardGadgetConfiguration> {
+        return this.gadgetMap;
+    }
+
     public registerGadget(gadgetId: string, gadgetDef: DashboardGadgetConfiguration) {
         this.gadgetMap.set(gadgetId.toLowerCase(), gadgetDef);
     }

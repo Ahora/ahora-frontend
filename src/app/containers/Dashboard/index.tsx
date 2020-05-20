@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 import CurrentUser from "app/components/CurrentUser";
 import RootPageComponent from "app/pages/RootPage";
 import AddOrganizationPage from "app/pages/organizations/add";
-import Container from "react-bootstrap/Container";
 
 interface LoginParams { }
 
@@ -39,13 +38,11 @@ export class Dashboard extends React.Component<Props, State> {
     return (
       <>
         <Navbar bg="light">
-          <Container>
-            <Navbar.Brand>
-              <Link to="/">Ahora!</Link>
-            </Navbar.Brand>
-            <Nav className="mr-auto"></Nav>
-            <CurrentUser></CurrentUser>
-          </Container>
+          <Navbar.Brand>
+            <Link to="/">Ahora!</Link>
+          </Navbar.Brand>
+          <Nav className="mr-auto"></Nav>
+          <CurrentUser></CurrentUser>
         </Navbar>
         <Switch>
           <Route exact path="/" component={RootPageComponent} />

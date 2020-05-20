@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button';
 import { BasicDashboardGadget } from 'app/services/dashboardGadgets';
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import DashboardGadget from 'app/components/dashboards/DashboardGadget';
+import AddGadgetButton from 'app/components/Dashboards/AddGadgetButton';
 
 interface PageGadget {
     isNew: boolean;
@@ -72,9 +73,9 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
         });
     }
 
-    async addEmptyGadget() {
+    async addEmptyGadget(gadgetType: string) {
         this.setState({
-            gadgets: [{ isNew: true, gadget: { id: new Date().toISOString(), gadgetType: "AhoraBarsPie", metadata: {} } }, ...this.state.gadgets]
+            gadgets: [{ isNew: true, gadget: { id: new Date().toISOString(), gadgetType: gadgetType, metadata: {} } }, ...this.state.gadgets]
         });
     }
 
@@ -156,7 +157,7 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
                         <EditableHeader onChanged={this.onDescriptionChanged.bind(this)} value={dashboard.description}>{dashboard.description}</EditableHeader>
                         <Nav className="mb-3">
                             <Nav.Item>
-                                <Button onClick={this.addEmptyGadget.bind(this)} variant="primary" type="button">Add gadget</Button>
+                                <AddGadgetButton onSelect={this.addEmptyGadget.bind(this)}></AddGadgetButton>
                             </Nav.Item>
                             <Nav.Item>
                                 <Button onClick={this.remove.bind(this)} variant="danger" type="button">Delete dashboard</Button>
@@ -170,7 +171,7 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
                                         ref={provided.innerRef}
                                     >
                                         {this.state.gadgets.map((gadget, index) => (
-                                            <Draggable key={gadget.gadget.id} draggableId={gadget.gadget.id!.toString()} index={index}>
+                                            <Draggable key={gadget.gadget.id} draggableId={gadget.gadget.id.toString()} index={index}>
                                                 {(provided, snapshot) => (
                                                     <div key={gadget.gadget.id}
                                                         ref={provided.innerRef}

@@ -23,13 +23,13 @@ class AhoraSDK {
 }
 
 AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraBarsPie", {
-    title: "Pir or Bars Chart",
+    title: "Pie or Bars Chart",
     description: "Displays the matching docs as pie or bars chart.",
     group: "General",
     formComponent: BarPieGadgetForm,
     gadgetComponent: BarPieGadgetGadget
 });
-
+/*
 AhoraSDK.getInstance().dashboardGadgets.registerGadget("docsdatetimegraph", {
     title: "Over time Graph",
     description: "Lione Chart",
@@ -37,5 +37,5 @@ AhoraSDK.getInstance().dashboardGadgets.registerGadget("docsdatetimegraph", {
     formComponent: DocsDateTimeGraphForm,
     gadgetComponent: DocsDateTimeGraph
 });
-
+*/
 export default AhoraSDK;

@@ -7,9 +7,9 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import SelectUser from 'app/components/users/selectusers';
-import Spinner from 'react-bootstrap/Spinner';
 import { UserItem } from 'app/services/users';
 import EditableHeader from 'app/components/EditableHeader';
+import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 
 interface TeamsPageState {
     team: OrganizationTeam | null;
@@ -145,7 +145,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                                 }))}
                             </tbody>
                         </Table>
-                        : (<div className="text-center"><Spinner animation="border" variant="primary" /></div>)
+                        : (<AhoraSpinner />)
                     }
                     <div>
                         <h2>Sub Teams</h2>

@@ -7,10 +7,10 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { ApplicationState } from "app/store";
 import { setCurrentOrganization } from 'app/store/organizations/actions';
-import Spinner from 'react-bootstrap/Spinner';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { Status } from 'app/services/statuses';
 import { requestStatusesData } from 'app/store/statuses/actions';
+import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 
 interface EditOrganizationPageState {
     form: any;
@@ -121,7 +121,7 @@ class EditOrganizationPage extends React.Component<Props, EditOrganizationPageSt
             );
         }
         else {
-            return (<div className="text-center"><Spinner animation="border" variant="primary" /></div>);
+            return (<AhoraSpinner />);
         }
     };
 }

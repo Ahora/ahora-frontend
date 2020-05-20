@@ -8,8 +8,8 @@ import { PieChart, Pie, Tooltip, Cell, BarChart, XAxis, YAxis, Bar, CartesianGri
 import { RouteComponentProps } from 'react-router';
 import { Organization } from 'app/services/organizations';
 import { stringify } from "query-string";
-import Spinner from 'react-bootstrap/Spinner';
 import DocsGraphData, { DocsGraphDisplayType } from './data';
+import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 
 interface DocsGraphState {
     bars: string[],
@@ -103,9 +103,7 @@ class DocsGraph extends React.Component<AllProps, DocsGraphState> {
             <div>
                 {
                     this.state.loading ?
-                        <div className="text-center">
-                            <Spinner animation="border" variant="primary" />
-                        </div>
+                        <AhoraSpinner />
                         : this.state.chartData &&
                         <ResponsiveContainer width="100%" height={300}>
                             {this.props.data.displayType === DocsGraphDisplayType.pie ?

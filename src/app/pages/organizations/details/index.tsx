@@ -60,7 +60,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
           <p>{organization.description}</p>
           <Nav className="mb-3" variant="tabs" defaultActiveKey={this.props.match.params.section || "browse"}>
             <Nav.Item>
-              <Link className="nav-link" to={`/organizations/${organization.login}/dashboards`}>Dashboard</Link>
+              <Link className="nav-link" to={`/organizations/${organization.login}/dashboards`}>Dashboards</Link>
             </Nav.Item>
             <Nav.Item>
               <Link className="nav-link" to={`/organizations/${organization.login}/docs`}>Browse</Link>

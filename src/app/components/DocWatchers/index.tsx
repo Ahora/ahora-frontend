@@ -8,6 +8,7 @@ import { Dispatch } from 'redux';
 import { requestCurrentUserData } from 'app/store/currentuser/actions';
 import Button from 'react-bootstrap/Button';
 import { watchDoc, unwatchDoc } from 'app/services/docs';
+import AhoraSpinner from '../Forms/Basics/Spinner';
 
 interface injectedParams {
     currentUser?: User,
@@ -102,7 +103,7 @@ class DocWatchersComponent extends React.Component<DocWatcherProps, State> {
                             </div>
                         }
                     </>) :
-                    (<div className="text-center"><Spinner animation="border" variant="primary" /></div>)
+                    (<AhoraSpinner />)
                 }
             </div>
         );

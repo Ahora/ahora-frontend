@@ -6,7 +6,6 @@ import { addDashboard } from 'app/services/dashboard';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { Label } from 'app/services/labels';
 
 interface AddDashboardsPageState {
     form: any;
@@ -31,10 +30,6 @@ class AddDashboardPage extends React.Component<Props, AddDashboardsPageState> {
     }
 
     componentDidMount() {
-    }
-
-    onLabelsChanged(labels: Label[]) {
-        this.setState({ form: { ...this.state.form, labels: labels.map((label) => label.id) } });
     }
 
     handleEditorChange(text: any) {
@@ -66,6 +61,13 @@ class AddDashboardPage extends React.Component<Props, AddDashboardsPageState> {
                     <Form.Group controlId="exampleForm.description">
                         <Form.Label>Description</Form.Label>
                         <Form.Control name="description" onChange={this.handleChange.bind(this)} type="description" />
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>Type</Form.Label>
+                        <Form.Control name="dashboardType" onChange={this.handleChange.bind(this)} as="select">
+                            <option value="0">Public</option>
+                            <option value="1">Private</option>
+                        </Form.Control>
                     </Form.Group>
                     <Button variant="primary" type="submit">Add</Button>
                 </Form>

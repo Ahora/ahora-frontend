@@ -22,6 +22,7 @@ export interface Dashboard {
     title: string;
     description?: string;
     layout: DashboardLayout;
+    dashboardType: DashboardType;
     gadgets: BasicDashboardGadget[];
 }
 

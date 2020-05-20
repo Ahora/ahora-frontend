@@ -1,8 +1,8 @@
 import * as React from 'react';
 import MarkDownEditor from '../MarkDownEditor';
 import Button from 'react-bootstrap/Button';
-import Spinner from 'react-bootstrap/Spinner';
 import './style.scss';
+import AhoraSpinner from '../Forms/Basics/Spinner';
 
 interface EditableMarkDownParams {
     value: string;
@@ -68,7 +68,7 @@ export default class EditableMarkDown extends React.Component<EditableMarkDownPa
                     :
                     <>
                         {this.state.updating ?
-                            <div className="text-center"><Spinner animation="border" variant="primary" /></div> :
+                            <AhoraSpinner /> :
                             <div className="editablemarkdown">
                                 <div>
                                     {this.props.children}

@@ -9,11 +9,11 @@ import { requestStatusesData } from 'app/store/statuses/actions';
 import Moment from 'react-moment';
 import { SearchCriterias } from 'app/components/SearchDocsInput';
 import { Link } from 'react-router-dom';
-import Spinner from 'react-bootstrap/Spinner';
 import { DocType } from 'app/services/docTypes';
 import { requestDocTypesData } from 'app/store/docTypes/actions';
 import LabelsList from 'app/components/LabelsSelector/details';
 import { Organization } from 'app/services/organizations';
+import AhoraSpinner from '../Forms/Basics/Spinner';
 
 interface DocsPageState {
     docs: Doc[] | null;
@@ -116,9 +116,7 @@ class DocList extends React.Component<AllProps, DocsPageState> {
                         }
                     </> :
                     (
-                        <div className="text-center">
-                            <Spinner animation="border" variant="primary" />
-                        </div>
+                        <AhoraSpinner />
                     )}
             </div>
         );

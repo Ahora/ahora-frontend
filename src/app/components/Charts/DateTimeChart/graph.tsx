@@ -8,8 +8,8 @@ import { Cell, XAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, YAxis
 import { RouteComponentProps } from 'react-router';
 import { Organization } from 'app/services/organizations';
 import { stringify } from "query-string";
-import Spinner from 'react-bootstrap/Spinner';
 import DocsDateTimeGraphData from './data';
+import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 
 interface DocsDateTimeGraphState {
     bars: string[],
@@ -103,9 +103,7 @@ class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState
             <div>
                 {
                     this.state.loading ?
-                        <div className="text-center">
-                            <Spinner animation="border" variant="primary" />
-                        </div>
+                        <AhoraSpinner />
                         : this.state.chartData &&
                         <ResponsiveContainer width="100%" height={300}>
                             <LineChart width={500} height={300} data={this.state.chartData}>

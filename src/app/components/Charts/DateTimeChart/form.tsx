@@ -2,6 +2,7 @@ import * as React from 'react';
 import DocsDateTimeGraphData from './data';
 import SearchDocsInput, { SearchCriterias } from 'app/components/SearchDocsInput';
 import Form from 'react-bootstrap/Form';
+import GroupBySelect from 'app/components/Forms/Basics/GroupBySelect';
 
 interface DocsDateTimeGraphState {
     form: DocsDateTimeGraphData;
@@ -11,43 +12,6 @@ interface DocsDateTimeGraphProps {
     data: DocsDateTimeGraphData;
     onUpdate: (metadata: DocsDateTimeGraphData) => void;
 }
-
-const groupOptions: { name: string, value: string }[] = [
-    {
-        name: "",
-        value: ""
-    }, {
-        name: "Status",
-        value: "status"
-    },
-    {
-        name: "Type",
-        value: "docType"
-    }, {
-        name: "Repository",
-        value: "repo"
-    },
-    {
-        name: "label",
-        value: "label"
-    },
-    {
-        name: "reporter",
-        value: "reporter"
-    },
-    {
-        name: "assignee",
-        value: "assignee"
-    },
-    {
-        name: "createdAt",
-        value: "createdAt"
-    },
-    {
-        name: "updatedAt",
-        value: "updatedAt"
-    }];
-
 
 class DocsDateTimeGraphForm extends React.Component<DocsDateTimeGraphProps, DocsDateTimeGraphState> {
     constructor(props: DocsDateTimeGraphProps) {
@@ -67,19 +31,19 @@ class DocsDateTimeGraphForm extends React.Component<DocsDateTimeGraphProps, Docs
         this.update(form);
     }
 
-    handleChangePrimaryGroup(event: any) {
+    handleChangePrimaryGroup(value: string) {
         const form = {
             ...this.state.form,
-            primaryGroup: event.target.value
+            primaryGroup: value
         };
         this.setState({ form });
         this.update(form);
     }
 
-    handleChangeSecondaryGroup(event: any) {
+    handleChangeSecondaryGroup(value: string) {
         const form = {
             ...this.state.form,
-            secondaryGroup: event.target.value
+            secondaryGroup: value
         };
         this.setState({ form });
         this.update(form);
@@ -107,15 +71,14 @@ class DocsDateTimeGraphForm extends React.Component<DocsDateTimeGraphProps, Docs
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Primary Group:</Form.Label>
-                    <Form.Control name="primaryGroup" value={this.state.form.primaryGroup} onChange={this.handleChangePrimaryGroup.bind(this)} as="select">
-                        {groupOptions.map((groupOption) => <option key={groupOption.value} value={groupOption.value}>{groupOption.name}</option>)}
-                    </Form.Control>
+                    <GroupBySelect onUpdate={this.handleChangePrimaryGroup.bind(this)} value={this.state.form.primaryGroup}></GroupBySelect>
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Secondary Group:</Form.Label>
-                    <Form.Control name="secondaryGroup" value={this.state.form.secondaryGroup} onChange={this.handleChangeSecondaryGroup.bind(this)} as="select">
-                        {groupOptions.map((groupOption) => <option key={groupOption.value} value={groupOption.value}>{groupOption.name}</option>)}
-                    </Form.Control>
+                    <Form.Group>
+                        <Form.Label>Primary Group:</Form.Label>
+                        <GroupBySelect onUpdate={this.handleChangeSecondaryGroup.bind(this)} value={this.state.form.secondaryGroup}></GroupBySelect>
+                    </Form.Group>
                 </Form.Group>
             </>
         );

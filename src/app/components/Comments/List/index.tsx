@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Comment, getComments } from 'app/services/comments';
 import { CommentDetailsComponent } from '../Details';
 import { AddCommentComponent } from 'app/components/Comments/AddComment';
-import Spinner from 'react-bootstrap/Spinner';
+import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 
 interface CommentsProps {
     docId: number;
@@ -68,7 +68,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
                             </div>
                         }
                     </>) :
-                    (<div className="text-center"><Spinner animation="border" variant="primary" /></div>)
+                    (<AhoraSpinner />)
                 }
             </div>
         );

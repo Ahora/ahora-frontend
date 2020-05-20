@@ -27,7 +27,7 @@ interface injectedParams {
 }
 
 interface DocsPageProps extends injectedParams {
-    searchCriteria: SearchCriterias;
+    searchCriteria?: SearchCriterias;
 }
 
 
@@ -60,14 +60,29 @@ class DocList extends React.Component<AllProps, DocsPageState> {
 
     componentWillReceiveProps(nextProps: DocsPageProps) {
         if (nextProps.searchCriteria !== this.props.searchCriteria) {
-            this.loadData(nextProps.searchCriteria);
+            if (nextProps.searchCriteria) {
+                this.loadData(nextProps.searchCriteria);
+
+            }
+            else {
+                this.setState({
+                    docs: null
+                });
+            }
         }
     }
 
     async componentDidMount() {
         this.props.requestStatusesData();
         this.props.requestDocTypes();
-        //this.loadData(this.props.searchCriteria);
+        if (this.props.searchCriteria) {
+            this.loadData(this.props.searchCriteria);
+        }
+        else {
+            this.setState({
+                docs: []
+            });
+        }
     }
 
     render() {

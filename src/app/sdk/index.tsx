@@ -1,8 +1,8 @@
 import DashboardGadgetsSDK from "./DashboardGadgets";
 import BarPieGadgetForm from "app/components/Dashboards/Gadgets/BarPieGadget/form";
 import BarPieGadgetGadget from "app/components/Dashboards/Gadgets/BarPieGadget/Gadget";
-import DocsDateTimeGraphForm from "app/components/Dashboards/Gadgets/DateTimeChart/form";
-import DocsDateTimeGraph from "app/components/Dashboards/Gadgets/DateTimeChart/graph";
+import DocListGadgetForm from "app/components/Dashboards/Gadgets/DocListGadget/form";
+import DocListGadget from "app/components/Dashboards/Gadgets/DocListGadget/Gadget";
 
 class AhoraSDK {
     private static instance: AhoraSDK;
@@ -28,6 +28,14 @@ AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraBarsPie", {
     group: "General",
     formComponent: BarPieGadgetForm,
     gadgetComponent: BarPieGadgetGadget
+});
+
+AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraDocList", {
+    title: "List of docs",
+    description: "Displays list of matching docs.",
+    group: "General",
+    formComponent: DocListGadgetForm,
+    gadgetComponent: DocListGadget
 });
 /*
 AhoraSDK.getInstance().dashboardGadgets.registerGadget("docsdatetimegraph", {

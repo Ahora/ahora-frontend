@@ -172,7 +172,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
                                                 <tr>
                                                     <td>Github Issue Id: </td>
-                                                    <td><a target="_blank" href={doc.source.url}>{doc.docId}</a></td>
+                                                    <td><a target="_blank" href={doc.source.url}>{doc.sourceId}</a></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Repo</td>

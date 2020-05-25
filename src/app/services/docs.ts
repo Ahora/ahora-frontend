@@ -10,7 +10,8 @@ export interface Doc {
     description: string;
     docTypeId: number;
     userAlias: string;
-    docId?: number;
+    sourceId?: number;
+    docSourceId?: number;
     source?: {
         repo: string;
         organization: string;

@@ -26,25 +26,29 @@ const groupOptions: { name: string, value: string }[] = [
         value: "repo"
     },
     {
-        name: "label",
+        name: "Label",
         value: "label"
     },
     {
-        name: "reporter",
+        name: "Reporter",
         value: "reporter"
     },
     {
-        name: "assignee",
+        name: "Assignee",
         value: "assignee"
     },
     {
-        name: "createdAt",
+        name: "Created At",
         value: "createdAt"
     },
     {
-        name: "updatedAt",
+        name: "Updated At",
         value: "updatedAt"
-    }];
+    },
+    {
+        name: "Milestone",
+        value: "milestone"
+    },];
 
 
 class GroupBySelect extends React.Component<GroupBySelectStateProps, GroupBySelectState> {

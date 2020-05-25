@@ -28,6 +28,9 @@ export interface Doc {
     statusId: number;
     assignee?: UserItem
     reporter: UserItem,
+    milestone?: {
+        title: string;
+    }
     lastView: null | {
         updatedAt: Date
     }

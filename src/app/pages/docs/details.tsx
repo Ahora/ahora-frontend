@@ -153,6 +153,11 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                                 <td>Type: </td>
                                                 <td>{docType.name}</td>
                                             </tr>)}
+                                        {doc.milestone &&
+                                            (<tr>
+                                                <td>Milestone </td>
+                                                <td>{doc.milestone.title}</td>
+                                            </tr>)}
                                         <tr>
                                             <td>Views: </td>
                                             <td>{doc.views}</td>

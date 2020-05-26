@@ -74,7 +74,7 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
     render() {
         return (
             <div>
-                <h1>Add DocType</h1>
+                <h1>Add Doc</h1>
                 <Form onSubmit={this.onSubmit.bind(this)}>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Type</Form.Label>

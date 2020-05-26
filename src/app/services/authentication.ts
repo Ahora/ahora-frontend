@@ -7,6 +7,10 @@ export const canComment = (user: User | undefined | null): boolean => {
     return !!user;
 }
 
+export const canAddDashboard = (user: User | undefined | null): boolean => {
+    return !!user;
+}
+
 export const canAddDoc = (user: User | undefined | null): boolean => {
     return !!user;
 }

@@ -6,6 +6,7 @@ import Nav from 'react-bootstrap/Nav';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
+import CanAddDashboard from 'app/components/Authentication/CanAddDashboard';
 
 
 interface DashboardsPageState {
@@ -47,11 +48,13 @@ class DashboardsPage extends React.Component<AllProps, DashboardsPageState> {
         return (
             <div>
                 <Nav className="mb-3">
-                    <Nav.Item>
-                        <Link to={`/organizations/${this.props.match.params.login}/dashboards/add`}>
-                            <Button variant="primary" type="button">Add</Button>
-                        </Link>
-                    </Nav.Item>
+                    <CanAddDashboard>
+                        <Nav.Item>
+                            <Link to={`/organizations/${this.props.match.params.login}/dashboards/add`}>
+                                <Button variant="primary" type="button">Add dashboard</Button>
+                            </Link>
+                        </Nav.Item>
+                    </CanAddDashboard>
                 </Nav>
 
                 {this.state.dashboards ?

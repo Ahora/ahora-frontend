@@ -52,7 +52,7 @@ class AddDashboardPage extends React.Component<Props, AddDashboardsPageState> {
     render() {
         return (
             <div>
-                <h1>Add DashboardType</h1>
+                <h1>Add Dashboard</h1>
                 <Form onSubmit={this.onSubmit.bind(this)}>
                     <Form.Group controlId="exampleForm.title">
                         <Form.Label>Title</Form.Label>

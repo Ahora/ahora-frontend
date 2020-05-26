@@ -14,6 +14,7 @@ import { requestDocTypesData } from 'app/store/docTypes/actions';
 import { setSearchCriteria } from 'app/store/organizations/actions';
 import DocList from 'app/components/DocList';
 import { parseUrl, ParsedUrl } from "query-string";
+import CanAddDoc from 'app/components/Authentication/CanAddDoc';
 
 
 interface DocsPageState {
@@ -89,13 +90,15 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         return (
             <div>
                 <SearchDocsInput searchCriterias={this.state.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
-                <Nav className="mb-3">
-                    <Nav.Item>
-                        <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>
-                            <Button variant="primary" type="button">Add</Button>
-                        </Link>
-                    </Nav.Item>
-                </Nav>
+                <CanAddDoc>
+                    <Nav className="mb-3">
+                        <Nav.Item>
+                            <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>
+                                <Button variant="primary" type="button">Add</Button>
+                            </Link>
+                        </Nav.Item>
+                    </Nav>
+                </CanAddDoc>
                 <DocList searchCriteria={this.state.searchCriteria}>No Results</DocList>
             </div>
         );

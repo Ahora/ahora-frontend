@@ -19,10 +19,14 @@ import { DocType } from "app/services/docTypes";
 import { requestDocTypesData } from "app/store/docTypes/actions";
 import OrganizationTeamRootPage from "app/pages/teams/root";
 import DashboardsPage from "app/pages/dashboards";
+import { User } from "app/services/users";
+import { requestCurrentUserData } from "app/store/currentuser/actions";
+import AhoraSpinner from "app/components/Forms/Basics/Spinner";
 
 interface OrganizationDetailsPageProps {
   organization: Organization | null;
   docTypes?: DocType[];
+  currentUser?: User | undefined;
 }
 
 interface OrganizationPageParams {
@@ -33,6 +37,7 @@ interface OrganizationPageParams {
 interface DispatchProps {
   setOrganizationToState(organization: Organization | null): void;
   requestDocTypes(): void;
+  requestCurrentUser(): void;
 }
 
 interface Props extends RouteComponentProps<OrganizationPageParams>, DispatchProps, OrganizationDetailsPageProps {
@@ -45,15 +50,16 @@ class OrganizationDetailsPage extends React.Component<Props> {
   }
 
   async componentDidMount() {
-    const organization: Organization | null = await getOrganizationByLogin(
-      this.props.match.params.login
-    );
+    const organization: Organization | null = await getOrganizationByLogin(this.props.match.params.login);
     this.props.setOrganizationToState(organization);
     this.props.requestDocTypes();
+    this.props.requestCurrentUser();
   }
   render = () => {
     const organization = this.props.organization;
     if (organization) {
+      const canManageOrg: boolean = false;
+
       return (
         <Container fluid={true}>
           <h2>{organization.displayName}</h2>
@@ -65,12 +71,15 @@ class OrganizationDetailsPage extends React.Component<Props> {
             <Nav.Item>
               <Link className="nav-link" to={`/organizations/${organization.login}/docs`}>Browse</Link>
             </Nav.Item>
-            <Nav.Item>
+            <Nav.Item style={{ display: "none" }}>
               <Link className="nav-link" to={`/organizations/${organization.login}/teams`}>Teams</Link>
             </Nav.Item>
-            <Nav.Item>
-              <Link className="nav-link" to={`/organizations/${organization.login}/settings`}>Settings</Link>
-            </Nav.Item>
+            {
+              canManageOrg &&
+              <Nav.Item>
+                <Link className="nav-link" to={`/organizations/${organization.login}/settings`}>Settings</Link>
+              </Nav.Item>
+            }
           </Nav>
           <Switch>
             <Route path={`/organizations/:login/settings/:settingsSection?`} component={OrganizationSettingsPage} />
@@ -88,7 +97,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
         </Container>
       );
     } else {
-      return <div>Loading....</div>;
+      return <AhoraSpinner></AhoraSpinner>;
     }
   };
 }
@@ -96,14 +105,16 @@ class OrganizationDetailsPage extends React.Component<Props> {
 const mapStateToProps = (state: ApplicationState) => {
   return {
     organization: state.organizations.currentOrganization,
-    docTypes: state.docTypes.docTypes
+    docTypes: state.docTypes.docTypes,
+    currentUser: state.currentUser.user
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
     requestDocTypes: () => dispatch(requestDocTypesData()),
-    setOrganizationToState: (organization: Organization) => dispatch(setCurrentOrganization(organization))
+    setOrganizationToState: (organization: Organization) => dispatch(setCurrentOrganization(organization)),
+    requestCurrentUser: () => dispatch(requestCurrentUserData())
   };
 };
 

@@ -19,6 +19,7 @@ interface EditableGraphState {
 interface AllProps extends RouteComponentProps {
     info: BasicDashboardGadget;
     editMode: boolean;
+    canEdit: boolean;
     onUpdate: (info: BasicDashboardGadget) => Promise<void>;
     onDelete: (info: BasicDashboardGadget) => Promise<void>;
 }
@@ -92,10 +93,12 @@ class DashboardGadget extends React.Component<AllProps, EditableGraphState> {
             <Card>
                 <Card.Header>
                     {this.props.info.title}
-                    <DropdownButton id={`gadget-settings-${this.props.info.id}`} className="float-right" size="sm" title="Settings">
-                        <Dropdown.Item onClick={this.edit.bind(this)}>Edit</Dropdown.Item>
-                        <Dropdown.Item onClick={this.remove.bind(this)}>Remove</Dropdown.Item>
-                    </DropdownButton>
+                    {this.props.canEdit &&
+                        <DropdownButton id={`gadget-settings-${this.props.info.id}`} className="float-right" size="sm" title="Settings">
+                            <Dropdown.Item onClick={this.edit.bind(this)}>Edit</Dropdown.Item>
+                            <Dropdown.Item onClick={this.remove.bind(this)}>Remove</Dropdown.Item>
+                        </DropdownButton>
+                    }
                 </Card.Header>
                 <Card.Body>
                     {

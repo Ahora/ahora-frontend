@@ -9,10 +9,24 @@ import { BasicDashboardGadget } from 'app/services/dashboardGadgets';
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import DashboardGadget from 'app/components/dashboards/DashboardGadget';
 import AddGadgetButton from 'app/components/Dashboards/AddGadgetButton';
+import { User } from 'app/services/users';
+import { Dispatch } from 'redux';
+import { ApplicationState } from 'app/store';
+import { connect } from 'react-redux';
+import { requestCurrentUserData } from 'app/store/currentuser/actions';
+import { canEditDashboard } from 'app/services/authentication';
 
 interface PageGadget {
     isNew: boolean;
     gadget: BasicDashboardGadget
+}
+
+interface injectedParams {
+    currentUser: User | undefined | null;
+}
+
+interface DispatchProps {
+    requestCurrentUserData(): void;
 }
 
 interface DashboardsDetailsPageState {
@@ -25,12 +39,12 @@ interface DashboardsDetailsPageParams {
     id: string;
 }
 
-interface DashboardDetailsPageProps extends RouteComponentProps<DashboardsDetailsPageParams> {
+interface DashboardDetailsPageProps extends RouteComponentProps<DashboardsDetailsPageParams>, injectedParams {
 
 }
 
 
-interface AllProps extends DashboardDetailsPageProps {
+interface AllProps extends DashboardDetailsPageProps, DispatchProps {
 
 }
 
@@ -147,22 +161,30 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
 
     render() {
         const dashboard: Dashboard | null = this.state.dashboard;
+        let canEdit: boolean = false;
+        if (dashboard) {
+            canEdit = canEditDashboard(this.props.currentUser, dashboard);
+
+        }
+
         return (
             <Container fluid={true}>
                 {dashboard &&
                     <>
-                        <EditableHeader onChanged={this.onTitleChanged.bind(this)} value={dashboard.title}>
+                        <EditableHeader canEdit={canEdit} onChanged={this.onTitleChanged.bind(this)} value={dashboard.title}>
                             <h1>{dashboard.title}</h1>
                         </EditableHeader>
-                        <EditableHeader onChanged={this.onDescriptionChanged.bind(this)} value={dashboard.description}>{dashboard.description}</EditableHeader>
-                        <Nav className="mb-3">
-                            <Nav.Item>
-                                <AddGadgetButton onSelect={this.addEmptyGadget.bind(this)}></AddGadgetButton>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Button onClick={this.remove.bind(this)} variant="danger" type="button">Delete dashboard</Button>
-                            </Nav.Item>
-                        </Nav>
+                        <EditableHeader canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={dashboard.description}>{dashboard.description}</EditableHeader>
+                        {canEdit &&
+                            <Nav className="mb-3">
+                                <Nav.Item>
+                                    <AddGadgetButton onSelect={this.addEmptyGadget.bind(this)}></AddGadgetButton>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Button onClick={this.remove.bind(this)} variant="danger" type="button">Delete dashboard</Button>
+                                </Nav.Item>
+                            </Nav>
+                        }
                         <DragDropContext onDragEnd={this.onDragEnd.bind(this)}>
                             <Droppable droppableId="droppable">
                                 {(provided, snapshot) => (
@@ -171,14 +193,14 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
                                         ref={provided.innerRef}
                                     >
                                         {this.state.gadgets.map((gadget, index) => (
-                                            <Draggable key={gadget.gadget.id} draggableId={gadget.gadget.id.toString()} index={index}>
+                                            <Draggable isDragDisabled={!canEdit} key={gadget.gadget.id} draggableId={gadget.gadget.id.toString()} index={index}>
                                                 {(provided, snapshot) => (
                                                     <div key={gadget.gadget.id}
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
                                                         {...provided.dragHandleProps}
                                                     >
-                                                        <DashboardGadget key={gadget.gadget.id} editMode={gadget.isNew} onDelete={this.onGadgetDelete.bind(this)} onUpdate={this.onUpdate.bind(this)} info={gadget.gadget} match={this.props.match} location={this.props.location} history={this.props.history}></DashboardGadget>
+                                                        <DashboardGadget canEdit={canEdit} key={gadget.gadget.id} editMode={gadget.isNew} onDelete={this.onGadgetDelete.bind(this)} onUpdate={this.onUpdate.bind(this)} info={gadget.gadget} match={this.props.match} location={this.props.location} history={this.props.history}></DashboardGadget>
                                                     </div>
                                                 )}
                                             </Draggable>
@@ -195,4 +217,16 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
     };
 }
 
-export default DashboardDetailsPage; 
+
+const mapStateToProps = (state: ApplicationState): injectedParams => ({
+    currentUser: state.currentUser.user
+});
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+    return {
+        requestCurrentUserData: () => dispatch(requestCurrentUserData())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardDetailsPage as any);
+

@@ -12,6 +12,8 @@ export interface Doc {
     userAlias: string;
     sourceId?: number;
     docSourceId?: number;
+    reporterUserId?: number;
+    assigneeUserId?: number;
     source?: {
         repo: string;
         organization: string;

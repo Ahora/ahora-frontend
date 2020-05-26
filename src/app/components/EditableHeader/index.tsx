@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 
 interface EditableHeaderParams {
     value?: string;
+    canEdit: boolean;
     onChanged(value?: string): void;
 }
 
@@ -61,7 +62,10 @@ export default class EditableHeader extends React.Component<EditableHeaderParams
                         </InputGroup.Append>
                     </InputGroup>
                     :
-                    (<div onClick={this.startEdit.bind(this)}>{this.props.children}</div>)
+                    (<>{this.props.canEdit ?
+                        <div onClick={this.startEdit.bind(this)}>{this.props.children}</div> :
+                        <div>{this.props.children}</div>}
+                    </>)
                 }
             </>
         )

@@ -3,6 +3,7 @@ import { Comment, getComments } from 'app/services/comments';
 import { CommentDetailsComponent } from '../Details';
 import { AddCommentComponent } from 'app/components/Comments/AddComment';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
+import CanComment from 'app/components/Authentication/CanComment';
 
 interface CommentsProps {
     docId: number;
@@ -55,9 +56,12 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
                         </div>
                     </>)
                 }
-                <div className="mt-2 mb-2">
-                    <AddCommentComponent commentAdded={(comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.docId}></AddCommentComponent>
-                </div>
+                <CanComment>
+                    <div className="mt-2 mb-2">
+                        <AddCommentComponent commentAdded={(comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.docId}></AddCommentComponent>
+                    </div>
+                </CanComment>
+
                 {this.state.comments ?
                     (<>
                         {this.state.comments.length > 0 &&

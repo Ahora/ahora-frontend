@@ -15,7 +15,7 @@ import { Status } from 'app/services/statuses';
 import { Link } from 'react-router-dom';
 import LabelsList from 'app/components/LabelsSelector/details';
 import SelectUser from 'app/components/users/selectusers';
-import { UserItem } from 'app/services/users';
+import { UserItem, User } from 'app/services/users';
 import { DocType } from 'app/services/docTypes';
 import { requestDocTypesData } from 'app/store/docTypes/actions';
 import Table from 'react-bootstrap/Table';
@@ -23,6 +23,9 @@ import Moment from 'react-moment';
 import DocWatchersComponent from 'app/components/DocWatchers';
 import EditableHeader from 'app/components/EditableHeader';
 import EditableMarkDown from 'app/components/EditableMarkDown';
+import CanEdit from 'app/components/Authentication/CanEdit';
+import { canEditDoc } from 'app/services/authentication';
+import { requestCurrentUserData } from 'app/store/currentuser/actions';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -36,7 +39,9 @@ interface DocsDetailsPageParams {
 interface injectedParams {
     statuses: Status[],
     docTypes: Map<number, DocType>,
-    loading: boolean
+    loading: boolean;
+    currentUser: User | undefined | null;
+
 }
 
 interface DocDetailsPageProps extends RouteComponentProps<DocsDetailsPageParams>, injectedParams {
@@ -46,6 +51,7 @@ interface DocDetailsPageProps extends RouteComponentProps<DocsDetailsPageParams>
 interface DispatchProps {
     requestStatusesData(): void;
     requestDocTypeData(): void;
+    requestCurrentUserData(): void;
 }
 
 interface AllProps extends DocDetailsPageProps, DispatchProps {
@@ -72,6 +78,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
     async componentDidMount() {
         this.props.requestStatusesData();
+        this.props.requestCurrentUserData();
         this.props.requestDocTypeData();
         const doc: Doc = await getDoc(this.props.match.params.login, parseInt(this.props.match.params.id));
         this.setState({ doc });
@@ -100,8 +107,11 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
     render() {
         const doc: Doc | null = this.state.doc;
+        let canEdit: boolean = false;
         let docType: DocType | undefined;
         if (doc) {
+            canEdit = canEditDoc(this.props.currentUser, doc);
+
             docType = this.props.docTypes.get(doc.docTypeId);
 
         }
@@ -111,17 +121,19 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                     <>
                         <Row className="details">
                             <Col xs={12} md={8}>
-                                <EditableHeader onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h1>{doc.subject}</h1></EditableHeader>
-                                <ButtonGroup>
-                                    {this.props.statuses.map((status) => {
-                                        return <Button key={status.id} onClick={() => { this.changeStatus(status.id!); }} variant={(status.id === doc.statusId) ? "primary" : "light"} >{status.name}</Button>
-                                    })}
-                                </ButtonGroup>
-                                <Link to={`/organizations/${this.props.match.params.login}/docs/${doc.id}/edit`}><Button variant="warning" className="ml-4">Edit</Button></Link>
+                                <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h1>{doc.subject}</h1></EditableHeader>
+                                <CanEdit doc={doc}>
+                                    <ButtonGroup>
+                                        {this.props.statuses.map((status) => {
+                                            return <Button key={status.id} onClick={() => { this.changeStatus(status.id!); }} variant={(status.id === doc.statusId) ? "primary" : "light"} >{status.name}</Button>
+                                        })}
+                                    </ButtonGroup>
+                                    <Link to={`/organizations/${this.props.match.params.login}/docs/${doc.id}/edit`}><Button variant="warning" className="ml-4">Edit</Button></Link>
+                                </CanEdit>
 
                                 <div className="mt-2"><LabelsList defaultSelected={doc.labels}></LabelsList></div>
 
-                                <EditableMarkDown onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
+                                <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
                                     <p className="mt-4 markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
                                 </EditableMarkDown>
                                 <h2>Comments</h2>
@@ -219,14 +231,16 @@ const mapStateToProps = (state: ApplicationState): injectedParams => {
     return {
         docTypes: state.docTypes.mapById,
         statuses: state.statuses.statuses,
-        loading: state.statuses.loading
+        loading: state.statuses.loading,
+        currentUser: state.currentUser.user
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
         requestStatusesData: () => dispatch(requestStatusesData()),
-        requestDocTypeData: () => dispatch(requestDocTypesData())
+        requestDocTypeData: () => dispatch(requestDocTypesData()),
+        requestCurrentUserData: () => dispatch(requestCurrentUserData())
     }
 }
 

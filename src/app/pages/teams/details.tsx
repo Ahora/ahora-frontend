@@ -120,7 +120,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                 <div>
                     {this.state.team &&
                         <>
-                            <EditableHeader onChanged={this.onTeamNameChanged.bind(this)} value={this.state.team.name}><h2>Team: {this.state.team && this.state.team.name}</h2></EditableHeader>
+                            <EditableHeader canEdit={true} onChanged={this.onTeamNameChanged.bind(this)} value={this.state.team.name}><h2>Team: {this.state.team && this.state.team.name}</h2></EditableHeader>
                         </>
                     }
                     <h2>Members</h2>

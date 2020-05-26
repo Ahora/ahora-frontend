@@ -6,6 +6,7 @@ import AhoraSpinner from '../Forms/Basics/Spinner';
 
 interface EditableMarkDownParams {
     value: string;
+    canEdit: boolean;
     onChanged(value: string): Promise<void>;
 }
 
@@ -72,9 +73,11 @@ export default class EditableMarkDown extends React.Component<EditableMarkDownPa
                             <div className="editablemarkdown">
                                 <div>
                                     {this.props.children}
-                                    <Button className="editbutton" variant="outline-secondary" onClick={this.startEdit.bind(this)}>
-                                        <span className="fa fa-edit"></span>
-                                    </Button>
+                                    {this.props.canEdit &&
+                                        <Button className="editbutton" variant="outline-secondary" onClick={this.startEdit.bind(this)}>
+                                            <span className="fa fa-edit"></span>
+                                        </Button>
+                                    }
                                 </div>
                             </div>
                         }

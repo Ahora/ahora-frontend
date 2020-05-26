@@ -1,6 +1,11 @@
 
 import AhoraRestCollector from "./base";
 
+export enum TeamUserType {
+    Member = 0,
+    Owner = 1
+}
+
 export interface OrganizationTeam {
     id: number;
     parentId: number;
@@ -12,6 +17,7 @@ export interface OrganizationTeamUser {
     id: number;
     teamId: number;
     userId: number;
+    permissionType: TeamUserType,
     organizationId: number;
     user: {
         displayName: string;

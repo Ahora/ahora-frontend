@@ -2,13 +2,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
-import { User } from 'app/services/users';
 import { requestCurrentUserData } from 'app/store/currentuser/actions';
 import { canManageOrganization } from 'app/services/authentication';
 import { Organization } from 'app/services/organizations';
+import { OrganizationTeamUser } from 'app/services/organizationTeams';
 
 interface CanManageOrganizationProps {
-    currentUser: User | undefined | null;
+    currentOrgPermission?: OrganizationTeamUser;
 }
 
 interface DispatchProps {
@@ -31,7 +31,7 @@ class CanManageOrganization extends React.Component<AllProps> {
     render() {
         return (
             <>
-                {canManageOrganization(this.props.currentUser, this.props.organization) && <>{this.props.children}</>}
+                {canManageOrganization(this.props.currentOrgPermission) && <>{this.props.children}</>}
             </>
         );
     };
@@ -40,7 +40,7 @@ class CanManageOrganization extends React.Component<AllProps> {
 
 const mapStateToProps = (state: ApplicationState): CanManageOrganizationProps => {
     return {
-        currentUser: state.currentUser.user
+        currentOrgPermission: state.organizations.currentOrgPermission
     };
 };
 

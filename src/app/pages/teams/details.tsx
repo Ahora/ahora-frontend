@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { deleteOrganizationTeamMethod, OrganizationTeam, getTeamById, addOrganizationTeam, getTeams, OrganizationTeamUser, getUsersByTeam, addUser, deleteUserFromTeam, updateTeamName } from 'app/services/organizationTeams';
+import { deleteOrganizationTeamMethod, OrganizationTeam, getTeamById, addOrganizationTeam, getTeams, OrganizationTeamUser, getUsersByTeam, addUser, deleteUserFromTeam, updateTeamName, TeamUserType } from 'app/services/organizationTeams';
 import { RouteComponentProps } from 'react-router';
 import Table from 'react-bootstrap/Table';
 import { Link } from 'react-router-dom';
@@ -130,6 +130,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                             <thead>
                                 <tr>
                                     <th>User</th>
+                                    <th>Type</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -138,6 +139,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                                     return (
                                         <tr className="pt-3" key={user.id}>
                                             <td>{user.user.displayName} ({user.user.username})</td>
+                                            <td>{user.permissionType === TeamUserType.Member ? "Member" : "Owner"}</td>
                                             <td>
                                                 <Button variant="danger" onClick={() => { this.deleteUser(user); }}>Delete</Button>
                                             </td>

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps, Switch, Route } from "react-router";
-import { Organization, getOrganizationByLogin } from "../../../services/organizations";
+import { Organization, getOrganizationByLogin, OrganizationDetailsWithPermission } from "../../../services/organizations";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import DocsPage from "app/pages/docs";
@@ -22,10 +22,13 @@ import DashboardsPage from "app/pages/dashboards";
 import { User } from "app/services/users";
 import { requestCurrentUserData } from "app/store/currentuser/actions";
 import AhoraSpinner from "app/components/Forms/Basics/Spinner";
+import { OrganizationTeamUser } from "app/services/organizationTeams";
+import { canManageOrganization } from "app/services/authentication";
 
 interface OrganizationDetailsPageProps {
   organization: Organization | null;
   docTypes?: DocType[];
+  currentOrgPermission?: OrganizationTeamUser;
   currentUser?: User | undefined;
 }
 
@@ -35,7 +38,7 @@ interface OrganizationPageParams {
 }
 
 interface DispatchProps {
-  setOrganizationToState(organization: Organization | null): void;
+  setOrganizationToState(organization: Organization | null, permission?: OrganizationTeamUser): void;
   requestDocTypes(): void;
   requestCurrentUser(): void;
 }
@@ -50,16 +53,18 @@ class OrganizationDetailsPage extends React.Component<Props> {
   }
 
   async componentDidMount() {
-    const organization: Organization | null = await getOrganizationByLogin(this.props.match.params.login);
-    this.props.setOrganizationToState(organization);
+    const organization: OrganizationDetailsWithPermission | null = await getOrganizationByLogin(this.props.match.params.login);
+    if (organization) {
+      this.props.setOrganizationToState(organization, organization.permission);
+    }
     this.props.requestDocTypes();
     this.props.requestCurrentUser();
   }
   render = () => {
     const organization = this.props.organization;
     if (organization) {
-      const canManageOrg: boolean = false;
-
+      const canManageOrg: boolean = canManageOrganization(this.props.currentOrgPermission);
+      console.log(canManageOrg, this.props.currentOrgPermission);
       return (
         <Container fluid={true}>
           <h2>{organization.displayName}</h2>
@@ -105,6 +110,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
 const mapStateToProps = (state: ApplicationState) => {
   return {
     organization: state.organizations.currentOrganization,
+    currentOrgPermission: state.organizations.currentOrgPermission,
     docTypes: state.docTypes.docTypes,
     currentUser: state.currentUser.user
   };
@@ -113,7 +119,7 @@ const mapStateToProps = (state: ApplicationState) => {
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
     requestDocTypes: () => dispatch(requestDocTypesData()),
-    setOrganizationToState: (organization: Organization) => dispatch(setCurrentOrganization(organization)),
+    setOrganizationToState: (organization: Organization, permission?: OrganizationTeamUser) => dispatch(setCurrentOrganization(organization, permission)),
     requestCurrentUser: () => dispatch(requestCurrentUserData())
   };
 };

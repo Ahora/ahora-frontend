@@ -8,7 +8,7 @@ const initialState: OrganizationsState = {
 export function currentOrganizationsReducer(state = initialState, action: OrganizationsActionTypes): OrganizationsState {
     switch (action.type) {
         case SET_CURRENT_USER:
-            return { ...state, currentOrganization: action.data }
+            return { ...state, currentOrganization: action.data.currentOrganization, currentOrgPermission: action.data.currentOrgPermission }
         case SET_SEARCH_CRITERIAS:
             return { ...state, SearchCriterias: action.data }
         default:

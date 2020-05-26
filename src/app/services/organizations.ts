@@ -1,5 +1,6 @@
 
 import { RestCollectorClient } from "rest-collector";
+import { OrganizationTeamUser } from "./organizationTeams";
 
 export enum OrganizationType {
     Public = 0,
@@ -14,6 +15,11 @@ export interface Organization {
     description: string;
     orgType: OrganizationType
 }
+
+export interface OrganizationDetailsWithPermission extends Organization {
+    permission?: OrganizationTeamUser;
+}
+
 const docsClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{login}");
 
 export const addOrg = async (org: Organization): Promise<Organization> => {
@@ -42,7 +48,7 @@ export const deleteOrganization = async (organization: Organization): Promise<vo
     });
 }
 
-export const getOrganizationByLogin = async (login: string): Promise<Organization | null> => {
+export const getOrganizationByLogin = async (login: string): Promise<OrganizationDetailsWithPermission | null> => {
     const result = await docsClient.get({
         params: { login }
     });

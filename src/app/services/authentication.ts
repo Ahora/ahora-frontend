@@ -1,7 +1,7 @@
 import { User } from "./users";
 import { Doc } from "./docs";
 import { Dashboard } from "./dashboard";
-import { Organization } from "./organizations";
+import { OrganizationTeamUser, TeamUserType } from "./organizationTeams";
 
 export const canComment = (user: User | undefined | null): boolean => {
     return !!user;
@@ -23,8 +23,11 @@ export const canEditDashboard = (user: User | undefined | null, dashboard: Dashb
         (dashboard.userId === user.id)
 }
 
-export const canManageOrganization = (user: User | undefined | null, organization: Organization): boolean => {
-    //Check if the user is logged in and is assignee or reporter
-    return !!user && (!!organization)
+export const canManageOrganization = (permission?: OrganizationTeamUser): boolean => {
+    if (permission) {
+        return permission.permissionType === TeamUserType.Owner;
+    }
+    else {
+        return false;
+    }
 }
-

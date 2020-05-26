@@ -23,7 +23,6 @@ import Moment from 'react-moment';
 import DocWatchersComponent from 'app/components/DocWatchers';
 import EditableHeader from 'app/components/EditableHeader';
 import EditableMarkDown from 'app/components/EditableMarkDown';
-import CanEdit from 'app/components/Authentication/CanEdit';
 import { canEditDoc } from 'app/services/authentication';
 import { requestCurrentUserData } from 'app/store/currentuser/actions';
 
@@ -39,6 +38,7 @@ interface DocsDetailsPageParams {
 interface injectedParams {
     statuses: Status[],
     docTypes: Map<number, DocType>,
+    statusesMap: Map<number, Status>,
     loading: boolean;
     currentUser: User | undefined | null;
 
@@ -109,10 +109,14 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         const doc: Doc | null = this.state.doc;
         let canEdit: boolean = false;
         let docType: DocType | undefined;
+        let currentStatus: Status | undefined;
         if (doc) {
             canEdit = canEditDoc(this.props.currentUser, doc);
-
             docType = this.props.docTypes.get(doc.docTypeId);
+
+            if (doc.statusId) {
+                currentStatus = this.props.statusesMap.get(doc.statusId);
+            }
 
         }
         return (
@@ -122,14 +126,21 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                         <Row className="details">
                             <Col xs={12} md={8}>
                                 <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h1>{doc.subject}</h1></EditableHeader>
-                                <CanEdit doc={doc}>
-                                    <ButtonGroup>
-                                        {this.props.statuses.map((status) => {
-                                            return <Button key={status.id} onClick={() => { this.changeStatus(status.id!); }} variant={(status.id === doc.statusId) ? "primary" : "light"} >{status.name}</Button>
-                                        })}
-                                    </ButtonGroup>
-                                    <Link to={`/organizations/${this.props.match.params.login}/docs/${doc.id}/edit`}><Button variant="warning" className="ml-4">Edit</Button></Link>
-                                </CanEdit>
+                                {canEdit ?
+                                    <>
+                                        <ButtonGroup>
+                                            {this.props.statuses.map((status) => {
+                                                return <Button key={status.id} onClick={() => { this.changeStatus(status.id!); }} variant={(status.id === doc.statusId) ? "primary" : "light"} >{status.name}</Button>
+                                            })}
+                                        </ButtonGroup>
+                                        <Link to={`/organizations/${this.props.match.params.login}/docs/${doc.id}/edit`}><Button variant="warning" className="ml-4">Edit</Button></Link>
+                                    </>
+                                    : <div>
+                                        {
+                                            currentStatus && <div>{currentStatus.name}</div>
+                                        }
+                                    </div>
+                                }
 
                                 <div className="mt-2"><LabelsList defaultSelected={doc.labels}></LabelsList></div>
 
@@ -231,6 +242,7 @@ const mapStateToProps = (state: ApplicationState): injectedParams => {
     return {
         docTypes: state.docTypes.mapById,
         statuses: state.statuses.statuses,
+        statusesMap: state.statuses.map,
         loading: state.statuses.loading,
         currentUser: state.currentUser.user
     };

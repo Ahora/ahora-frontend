@@ -36,7 +36,6 @@ export default class AddOrganizationPage extends React.Component<Props, AddDocsP
             const addedOrg = await addOrg(this.state.form);
             this.props.history.replace(`/organizations/${addedOrg.login}`);
         } catch (error) {
-            console.log(error.status);
         }
     }
 

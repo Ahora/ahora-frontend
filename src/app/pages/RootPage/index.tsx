@@ -79,7 +79,7 @@ class RootPageComponent extends React.Component<AllProps> {
             </div>
             <div className="col-md-4">
               <Card>
-                <Card.Header>Free public repositoriess</Card.Header>
+                <Card.Header>Free public repositories</Card.Header>
                 <Card.Body className="text-center">
                   <div className="icon">
                     <i className="fas fa-dollar-sign"></i>

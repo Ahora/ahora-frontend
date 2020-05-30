@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Doc, getDocs } from 'app/services/docs';
+import { Doc, getDocs, SearchDocResult } from 'app/services/docs';
 import Table from 'react-bootstrap/Table';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
@@ -14,9 +14,12 @@ import { requestDocTypesData } from 'app/store/docTypes/actions';
 import LabelsList from 'app/components/LabelsSelector/details';
 import { Organization } from 'app/services/organizations';
 import AhoraSpinner from '../Forms/Basics/Spinner';
+import UltimatePagination from '../Paginations';
 
 interface DocsPageState {
     docs: Doc[] | null;
+    page: number;
+    totalPages: number;
 }
 
 interface injectedParams {
@@ -40,21 +43,28 @@ interface AllProps extends DocsPageProps, DispatchProps {
 
 }
 
+const limit = 30;
+
 class DocList extends React.Component<AllProps, DocsPageState> {
     constructor(props: AllProps) {
         super(props);
         this.state = {
-            docs: null
+            docs: null,
+            page: 1,
+            totalPages: 0
         }
     }
 
-    async loadData(searchCriteria: SearchCriterias) {
+    async loadData(searchCriteria: SearchCriterias, page?: number) {
         this.setState({
             docs: null
         });
-        const docs: Doc[] = await getDocs(searchCriteria);
+        page = page || this.state.page;
+        const searchResult: SearchDocResult = await getDocs(searchCriteria, limit * (page - 1), limit);
+        console.log(searchResult.totalCount);
         this.setState({
-            docs
+            docs: searchResult.docs,
+            totalPages: Math.ceil(searchResult.totalCount / limit)
         });
     }
 
@@ -82,6 +92,16 @@ class DocList extends React.Component<AllProps, DocsPageState> {
             this.setState({
                 docs: []
             });
+        }
+    }
+
+    onChange(newPage: number) {
+        this.setState({
+            page: newPage
+        });
+
+        if (this.props.searchCriteria) {
+            this.loadData(this.props.searchCriteria, newPage);
         }
     }
 
@@ -127,6 +147,7 @@ class DocList extends React.Component<AllProps, DocsPageState> {
                                         })}
                                     </tbody>
                                 </Table>
+                                <UltimatePagination onChange={this.onChange.bind(this)} currentPage={this.state.page} totalPages={this.state.totalPages}></UltimatePagination>
                             </div>) : <>{this.props.children}</>
                         }
                     </> :

@@ -64,7 +64,6 @@ class OrganizationDetailsPage extends React.Component<Props> {
     const organization = this.props.organization;
     if (organization) {
       const canManageOrg: boolean = canManageOrganization(this.props.currentOrgPermission);
-      console.log(canManageOrg, this.props.currentOrgPermission);
       return (
         <Container fluid={true}>
           <h2>{organization.displayName}</h2>

@@ -39,13 +39,21 @@ export interface Doc {
 
 }
 
+export interface SearchDocResult {
+    docs: Doc[],
+    totalCount: number;
+}
+
 const docsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}");
-export const getDocs = async (query?: SearchCriterias): Promise<Doc[]> => {
+export const getDocs = async (query?: SearchCriterias, offset: number = 0, limit: number = 30): Promise<SearchDocResult> => {
     const result = await docsClient.get({
-        query: query
+        query: { ...query, offset, limit }
     });
 
-    return result.data;
+    return {
+        docs: result.data,
+        totalCount: parseInt(result.headers["x-total-count"])
+    }
 }
 
 export const getDocGroup = async (group: string | string[], query?: SearchCriterias): Promise<any[]> => {

@@ -13,7 +13,7 @@ class DocListGadget extends React.Component<AllProps> {
     }
 
     render() {
-        return (<DocList searchCriteria={this.props.data.searchCriterias}></DocList>);
+        return (<DocList pageSize={this.props.data.numberofdocs} searchCriteria={this.props.data.searchCriterias}></DocList>);
     }
 }
 

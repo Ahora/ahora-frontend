@@ -31,6 +31,7 @@ interface injectedParams {
 
 interface DocsPageProps extends injectedParams {
     searchCriteria?: SearchCriterias;
+    pageSize?: number;
 }
 
 
@@ -42,9 +43,6 @@ interface DispatchProps {
 interface AllProps extends DocsPageProps, DispatchProps {
 
 }
-
-const limit = 30;
-
 class DocList extends React.Component<AllProps, DocsPageState> {
     constructor(props: AllProps) {
         super(props);
@@ -55,23 +53,23 @@ class DocList extends React.Component<AllProps, DocsPageState> {
         }
     }
 
-    async loadData(searchCriteria: SearchCriterias, page?: number) {
+    async loadData(searchCriteria: SearchCriterias, page: number, pageSize: number) {
         this.setState({
             docs: null
         });
         page = page || this.state.page;
-        const searchResult: SearchDocResult = await getDocs(searchCriteria, limit * (page - 1), limit);
-        console.log(searchResult.totalCount);
+        const searchResult: SearchDocResult = await getDocs(searchCriteria, pageSize * (page - 1), pageSize);
         this.setState({
             docs: searchResult.docs,
-            totalPages: Math.ceil(searchResult.totalCount / limit)
+            totalPages: Math.ceil(searchResult.totalCount / pageSize)
         });
     }
 
     componentWillReceiveProps(nextProps: DocsPageProps) {
-        if (nextProps.searchCriteria !== this.props.searchCriteria) {
+        if (nextProps.searchCriteria !== this.props.searchCriteria ||
+            nextProps.pageSize !== this.props.pageSize) {
             if (nextProps.searchCriteria) {
-                this.loadData(nextProps.searchCriteria);
+                this.loadData(nextProps.searchCriteria, 1, nextProps.pageSize || 30);
 
             }
             else {
@@ -86,7 +84,7 @@ class DocList extends React.Component<AllProps, DocsPageState> {
         this.props.requestStatusesData();
         this.props.requestDocTypes();
         if (this.props.searchCriteria) {
-            this.loadData(this.props.searchCriteria);
+            this.loadData(this.props.searchCriteria, 1, this.props.pageSize || 30);
         }
         else {
             this.setState({
@@ -101,7 +99,7 @@ class DocList extends React.Component<AllProps, DocsPageState> {
         });
 
         if (this.props.searchCriteria) {
-            this.loadData(this.props.searchCriteria, newPage);
+            this.loadData(this.props.searchCriteria, newPage, this.props.pageSize || 30);
         }
     }
 

@@ -145,7 +145,9 @@ class DocList extends React.Component<AllProps, DocsPageState> {
                                         })}
                                     </tbody>
                                 </Table>
-                                <UltimatePagination onChange={this.onChange.bind(this)} currentPage={this.state.page} totalPages={this.state.totalPages}></UltimatePagination>
+                                {this.state.totalPages > 1 &&
+                                    <UltimatePagination onChange={this.onChange.bind(this)} currentPage={this.state.page} totalPages={this.state.totalPages}></UltimatePagination>
+                                }
                             </div>) : <>{this.props.children}</>
                         }
                     </> :

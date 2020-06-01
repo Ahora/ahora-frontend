@@ -32,7 +32,7 @@ class RootPageComponent extends React.Component<AllProps> {
           <Container>
             <h1>Ahora! Extend your community</h1>
             <p className="lead text-muted">
-              Ahora is a free open source public repository solution.<br />
+              Ahora! is a free open source to track multiple Github repositories.<br />
               Through multiple repositories, better manage your communities by putting your teams and collaboration at the center.
               </p>
             <p>
@@ -68,6 +68,17 @@ class RootPageComponent extends React.Component<AllProps> {
             </div>
             <div className="col-md-4">
               <Card>
+                <Card.Header>Notifications</Card.Header>
+                <Card.Body className="text-center">
+                  <div className="icon">
+                    <i className="fas fa-bell"></i>
+                  </div>
+                  Custome and improved notifications <br />for Issues and Pull Requests
+                </Card.Body>
+              </Card>
+            </div>
+            <div className="col-md-4">
+              <Card>
                 <Card.Header>Discussions</Card.Header>
                 <Card.Body className="text-center">
                   <div className="icon">
@@ -84,7 +95,7 @@ class RootPageComponent extends React.Component<AllProps> {
                   <div className="icon">
                     <i className="fas fa-dollar-sign"></i>
                   </div>
-                  Use Ahora free of cost <br /> for public repositories
+                  Use Ahora! free of cost <br /> for public repositories
                   </Card.Body>
               </Card>
             </div>
@@ -95,7 +106,7 @@ class RootPageComponent extends React.Component<AllProps> {
                   <div className="icon">
                     <i className="fab fa-git-square"></i>
                   </div>
-                  Ahora will always be open source</Card.Body>
+                  Ahora! will always be open source</Card.Body>
               </Card>
             </div>
             <div className="col-md-4">

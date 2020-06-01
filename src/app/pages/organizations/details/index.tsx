@@ -24,6 +24,8 @@ import { requestCurrentUserData } from "app/store/currentuser/actions";
 import AhoraSpinner from "app/components/Forms/Basics/Spinner";
 import { OrganizationTeamUser } from "app/services/organizationTeams";
 import { canManageOrganization } from "app/services/authentication";
+import NotificationsPage from "app/pages/notifications";
+import MilestonesPage from "app/pages/milestones";
 
 interface OrganizationDetailsPageProps {
   organization: Organization | null;
@@ -94,6 +96,8 @@ class OrganizationDetailsPage extends React.Component<Props> {
             <Route path={`/organizations/:login/dashboards/add`} component={AddDashboardPage} />
             <Route path={`/organizations/:login/dashboards/:id`} component={DashboardDetailsPage} />
             <Route path={`/organizations/:login/dashboards`} component={DashboardsPage} />
+            <Route path={`/organizations/:login/notifications`} component={NotificationsPage} />
+            <Route path={`/organizations/:login/milestones`} component={MilestonesPage} />
             <Route path={`/organizations/:login/teams`} component={OrganizationTeamRootPage} />
             <Route path={`/organizations/:login`} component={DashboardsPage}>
             </Route>

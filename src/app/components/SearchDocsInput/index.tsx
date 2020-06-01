@@ -29,6 +29,31 @@ interface State {
     searchCriterias?: SearchCriterias;
 }
 
+const printTextOfQuery = (field: string, val: string | string[]): string => {
+    if (typeof (val) === "string") {
+        return `${field}:${val}`;
+    }
+    else {
+        return val.map((itemVal) => `${field}:${itemVal}`).join(" ");
+
+    }
+}
+
+export const SearchCriteriasToText = (searchCriterias?: SearchCriterias): string => {
+    let text: string = "";
+    if (searchCriterias && searchOptions.keywords) {
+        const searchCriteriasAsAny: any = searchCriterias;
+
+
+        searchOptions.keywords.forEach((option) => {
+            if (searchCriteriasAsAny[option]) {
+                text += " " + printTextOfQuery(option, searchCriteriasAsAny[option]);
+            }
+        });
+    }
+    return text;
+}
+
 export default class SearchDocsInput extends React.Component<Props, State> {
 
     constructor(props: Props) {
@@ -50,32 +75,9 @@ export default class SearchDocsInput extends React.Component<Props, State> {
         }
     }
 
-
-    printTextOfQuery(field: string, val: string | string[]): string {
-        if (typeof (val) === "string") {
-            return `${field}:${val}`;
-        }
-        else {
-            return val.map((itemVal) => `${field}:${itemVal}`).join(" ");
-
-        }
-    }
-
     reloadData(searchCriterias?: SearchCriterias) {
-        let text: string = "";
-        if (searchCriterias && searchOptions.keywords) {
-            const searchCriteriasAsAny: any = searchCriterias;
-
-
-            searchOptions.keywords.forEach((option) => {
-                if (searchCriteriasAsAny[option]) {
-                    text += " " + this.printTextOfQuery(option, searchCriteriasAsAny[option]);
-                }
-            });
-        }
-
         this.setState({
-            searchCriteriaText: text
+            searchCriteriaText: SearchCriteriasToText(searchCriterias)
         });
     }
 

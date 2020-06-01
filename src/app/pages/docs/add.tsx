@@ -64,7 +64,7 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
         this.setState({ form: { ...this.state.form, [fieldName]: fleldVal } });
     }
 
-    async onSubmit(even: any) {
+    async onSubmit(event: any) {
         event!.preventDefault();
 
         const addedDoc = await addDoc(this.props.match.params.login, this.state.form);

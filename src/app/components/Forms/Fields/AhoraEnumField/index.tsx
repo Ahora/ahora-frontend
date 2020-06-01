@@ -44,8 +44,7 @@ class AhoraEnumField extends React.Component<GroupBySelectStateProps, GroupBySel
         return (
             <div>
                 {this.state.enumValues.map((key) => {
-                    return (
-                        <Form.Check onChange={this.onCheckChange.bind(this)} name={key} checked={(this.state.value & this.props.fieldData.settings!.enum[key]) === this.props.fieldData.settings!.enum[key]} key={key} label={key} type="checkbox" id={`inline-checkbox-${key}`} />);
+                    return (<Form.Check onChange={this.onCheckChange.bind(this)} name={key} checked={(this.state.value & this.props.fieldData.settings!.enum[key]) === this.props.fieldData.settings!.enum[key]} key={key} label={key} type="checkbox" id={`inline-checkbox-${key}`} />);
                 })}
             </div>)
     }

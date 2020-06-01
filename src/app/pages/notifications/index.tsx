@@ -8,7 +8,7 @@ import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
 import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
 import Button from 'react-bootstrap/Button';
 import { SearchCriteriasToText } from 'app/components/SearchDocsInput';
-
+import TriggerNotification from 'app/components/Notifications/TriggerNotification';
 
 interface NotificationsPageState {
     notifications?: OrganizationNotification[];
@@ -122,6 +122,7 @@ class NotificationsPage extends React.Component<AllProps, NotificationsPageState
                             <tr>
                                 <th>Title</th>
                                 <th>Description</th>
+                                <th>Trigger</th>
                                 <th>Search criteria</th>
                                 <th></th>
                             </tr>
@@ -132,6 +133,9 @@ class NotificationsPage extends React.Component<AllProps, NotificationsPageState
                                     <tr className="pt-3" key={notification.id}>
                                         <td>{notification.title}</td>
                                         <td>{notification.description}</td>
+                                        <td>
+                                            <TriggerNotification value={notification.notificationTrigger}></TriggerNotification>
+                                        </td>
                                         <td>{SearchCriteriasToText(notification.searchCriteria)}</td>
                                         <td><Button variant="danger" onClick={() => { this.deleteOrganization(notification) }}>Delete</Button></td>
                                     </tr>);

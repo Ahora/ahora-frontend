@@ -20,7 +20,7 @@ export interface OrganizationNotification {
     title: string;
     description: string | null;
     searchCriteria: SearchCriterias;
-    trigger: NotificationTrigger;
+    notificationTrigger: NotificationTrigger;
     owner: UserItem
 }
 

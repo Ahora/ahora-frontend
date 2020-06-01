@@ -109,7 +109,7 @@ export default class SearchDocsInput extends React.Component<Props, State> {
             this.props.searchSelected(result, this.state.searchCriteriaText);
         }
         else {
-            this.props.searchSelected();
+            this.props.searchSelected({});
         }
     }
 
@@ -133,6 +133,7 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                     <InputGroup>
                         <Form.Control
                             type="text"
+                            required={true}
                             value={this.state.searchCriteriaText}
                             onChange={this.onTextChange.bind(this)}
                             placeholder="enter your search criteria"

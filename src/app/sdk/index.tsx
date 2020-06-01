@@ -9,6 +9,7 @@ import AhoraSearchCriteriasField from "app/components/Forms/Fields/SearchCriteri
 import AhoraNumberField from "app/components/Forms/Fields/AhoraNumberField";
 import AhoraDateField from "app/components/Forms/Fields/AhoraDateField";
 import AhoraEnumField from "app/components/Forms/Fields/AhoraEnumField";
+import { RouteComponentProps } from "react-router";
 
 class AhoraSDK {
     private static instance: AhoraSDK;
@@ -26,7 +27,7 @@ class AhoraSDK {
 
     constructor() {
         this.dashboardGadgets = new DashboardGadgetsSDK();
-        this.formComponents = new RegisterComponent<any>();
+        this.formComponents = new RegisterComponent<React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>>();
     }
 }
 

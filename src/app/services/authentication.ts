@@ -11,6 +11,11 @@ export const canAddDashboard = (user: User | undefined | null): boolean => {
     return !!user;
 }
 
+export const canManageNotifications = (user: User | undefined | null): boolean => {
+    return !!user;
+}
+
+
 export const canAddDoc = (user: User | undefined | null): boolean => {
     return !!user;
 }
@@ -20,6 +25,7 @@ export const canEditDoc = (user: User | undefined | null, doc: Doc): boolean => 
     return !!user &&
         (doc.reporterUserId === user.id || doc.assigneeUserId === user.id)
 }
+
 
 export const canEditDashboard = (user: User | undefined | null, dashboard: Dashboard): boolean => {
     //Check if the user is logged in and is assignee or reporter

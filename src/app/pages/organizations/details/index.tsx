@@ -23,7 +23,7 @@ import { User } from "app/services/users";
 import { requestCurrentUserData } from "app/store/currentuser/actions";
 import AhoraSpinner from "app/components/Forms/Basics/Spinner";
 import { OrganizationTeamUser } from "app/services/organizationTeams";
-import { canManageOrganization } from "app/services/authentication";
+import { canManageOrganization, canManageNotifications } from "app/services/authentication";
 import NotificationsPage from "app/pages/notifications";
 import MilestonesPage from "app/pages/milestones";
 
@@ -66,6 +66,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
     const organization = this.props.organization;
     if (organization) {
       const canManageOrg: boolean = canManageOrganization(this.props.currentOrgPermission);
+      const canManageNotificationsBool: boolean = canManageNotifications(this.props.currentUser);
       return (
         <Container fluid={true}>
           <h2>{organization.displayName}</h2>
@@ -80,11 +81,22 @@ class OrganizationDetailsPage extends React.Component<Props> {
             <Nav.Item style={{ display: "none" }}>
               <Link className="nav-link" to={`/organizations/${organization.login}/teams`}>Teams</Link>
             </Nav.Item>
+            <Nav.Item>
+              <Link className="nav-link" to={`/organizations/${organization.login}/milestones`}>Milestones</Link>
+            </Nav.Item>
+            {
+              canManageNotificationsBool &&
+              <Nav.Item>
+                <Link className="nav-link" to={`/organizations/${organization.login}/notifications`}>Notifications</Link>
+              </Nav.Item>
+            }
             {
               canManageOrg &&
-              <Nav.Item>
-                <Link className="nav-link" to={`/organizations/${organization.login}/settings`}>Settings</Link>
-              </Nav.Item>
+              <>
+                <Nav.Item>
+                  <Link className="nav-link" to={`/organizations/${organization.login}/settings`}>Settings</Link>
+                </Nav.Item>
+              </>
             }
           </Nav>
           <Switch>

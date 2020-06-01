@@ -3,11 +3,11 @@ import { RouteComponentProps } from 'react-router';
 import { OrganizationMilestone, getMilestones, addMilestone, deleteMilestone, reopenMilestone, MilestoneStatus, closeMilestone } from 'app/services/OrganizationMilestones';
 import Table from 'react-bootstrap/Table';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
-import CanAddMilestone from 'app/components/Authentication/CanAddDashboard';
 import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
 import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
 import Button from 'react-bootstrap/Button';
 import Moment from 'react-moment';
+import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 
 interface MilestonesPageState {
     milestones?: OrganizationMilestone[];
@@ -109,13 +109,13 @@ class MilestonesPage extends React.Component<AllProps, MilestonesPageState> {
     render() {
         return (
             <div>
-                <CanAddMilestone>
+                <CanManageOrganization>
                     {this.state.form ?
                         <AhoraForm fields={this.state.fields} data={this.state.form} onCancel={this.cancelAdd.bind(this)} onSumbit={this.onSubmit.bind(this)} />
                         :
                         <Button onClick={this.openAddForm.bind(this)}>Add milestone</Button>
                     }
-                </CanAddMilestone>
+                </CanManageOrganization>
 
                 {this.state.milestones ?
                     <Table>
@@ -125,7 +125,9 @@ class MilestonesPage extends React.Component<AllProps, MilestonesPageState> {
                                 <th>Description</th>
                                 <th>Closed At</th>
                                 <th>Due On</th>
-                                <th></th>
+                                <CanManageOrganization>
+                                    <th></th>
+                                </CanManageOrganization>
                             </tr>
                         </thead>
                         <tbody>
@@ -136,13 +138,15 @@ class MilestonesPage extends React.Component<AllProps, MilestonesPageState> {
                                         <td>{milestone.description}</td>
                                         <td>{milestone.closedAt && <Moment date={milestone.closedAt} format="D MMM YYYY"></Moment>}</td>
                                         <td>{milestone.dueOn && <Moment date={milestone.dueOn} format="D MMM YYYY"></Moment>}</td>
-                                        <td>
-                                            {milestone.state === MilestoneStatus.open ?
-                                                <Button variant="primary" onClick={() => { this.close(milestone, index) }}>Close</Button>
-                                                : <Button variant="primary" onClick={() => { this.reopen(milestone, index) }}>Open</Button>
-                                            }
-                                        </td>
-                                        <td><Button variant="danger" onClick={() => { this.deleteOrganization(milestone) }}>Delete</Button></td>
+                                        <CanManageOrganization>
+
+                                            <td>
+                                                {milestone.state === MilestoneStatus.open ?
+                                                    <Button variant="primary" onClick={() => { this.close(milestone, index) }}>Close</Button>
+                                                    : <Button variant="primary" onClick={() => { this.reopen(milestone, index) }}>Open</Button>
+                                                }
+                                                <Button variant="danger" onClick={() => { this.deleteOrganization(milestone) }}>Delete</Button></td>
+                                        </CanManageOrganization>
                                     </tr>);
                             }))}
                         </tbody>

@@ -8,6 +8,7 @@ import AhoraTextField from "app/components/Forms/Fields/AhoraTextField";
 import AhoraSearchCriteriasField from "app/components/Forms/Fields/SearchCriteriaField";
 import AhoraNumberField from "app/components/Forms/Fields/AhoraNumberField";
 import AhoraDateField from "app/components/Forms/Fields/AhoraDateField";
+import AhoraEnumField from "app/components/Forms/Fields/AhoraEnumField";
 
 class AhoraSDK {
     private static instance: AhoraSDK;
@@ -34,6 +35,7 @@ AhoraSDK.getInstance().formComponents.register("text", AhoraTextField);
 AhoraSDK.getInstance().formComponents.register("number", AhoraNumberField);
 AhoraSDK.getInstance().formComponents.register("searchcriteria", AhoraSearchCriteriasField);
 AhoraSDK.getInstance().formComponents.register("date", AhoraDateField);
+AhoraSDK.getInstance().formComponents.register("enum", AhoraEnumField);
 
 AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraBarsPie", {
     title: "Pie or Bars Chart",

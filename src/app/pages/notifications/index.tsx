@@ -47,12 +47,27 @@ class NotificationsPage extends React.Component<AllProps, NotificationsPageState
                 displayName: "Search criteria",
                 fieldName: "searchCriteria",
                 fieldType: "searchcriteria"
+            },
+            {
+                displayName: "Trigger",
+                fieldName: "notificationTrigger",
+                fieldType: "enum",
+                settings: {
+                    enum: NotificationTrigger, keys:
+                        [
+                            "OnCreate",
+                            "OnEdit",
+                            "onStatusChanged",
+                            "OnUpdate",
+                            "OnComment",
+                            "OnClose"
+                        ]
+                }
             }]
         }
     }
 
     async onSubmit(data: any) {
-        data.notificationTrigger = NotificationTrigger.OnCreate;
         const addedNotification = await addNotification(data);
 
         this.setState({
@@ -68,7 +83,9 @@ class NotificationsPage extends React.Component<AllProps, NotificationsPageState
 
     public openAddForm() {
         this.setState({
-            form: {}
+            form: {
+                searchCriteria: {}
+            }
         });
     }
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import { OrganizationNotification, getNotifications, addNotification, NotificationTrigger, deleteNotification } from 'app/services/OrganizationNotification';
+import { OrganizationNotification, getNotifications, addNotification, NotificationTrigger, deleteNotification, updateNotification } from 'app/services/OrganizationNotification';
 import Table from 'react-bootstrap/Table';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import CanAddNotification from 'app/components/Authentication/CanAddDashboard';
@@ -8,7 +8,10 @@ import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
 import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
 import Button from 'react-bootstrap/Button';
 import { SearchCriteriasToText } from 'app/components/SearchDocsInput';
+//import TriggerNotification from 'app/components/Notifications/TriggerNotification';
+import ViewEdit from 'app/components/ViewEdit';
 import TriggerNotification from 'app/components/Notifications/TriggerNotification';
+import AhoraTriggerNotificationField from 'app/components/Notifications/AhoraTriggerNotificationField';
 
 interface NotificationsPageState {
     notifications?: OrganizationNotification[];
@@ -89,6 +92,24 @@ class NotificationsPage extends React.Component<AllProps, NotificationsPageState
         });
     }
 
+    async onTriggerUpdate(notificationIndex: number, notificationTrigger: number): Promise<void> {
+        if (this.state.notifications) {
+            let notification = this.state.notifications[notificationIndex];
+            notification = {
+                ...notification,
+                notificationTrigger
+            };
+
+            const updatedNotification = await updateNotification(notification.id!, notification);
+            const newOrganizationArray = [...this.state.notifications];
+            newOrganizationArray[notificationIndex] = updatedNotification;
+
+            this.setState({
+                notifications: newOrganizationArray
+            });
+        }
+    }
+
     cancelAdd() {
         this.setState({
             form: undefined
@@ -128,13 +149,16 @@ class NotificationsPage extends React.Component<AllProps, NotificationsPageState
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.notifications && (this.state.notifications.map((notification: OrganizationNotification) => {
+                            {this.state.notifications && (this.state.notifications.map((notification: OrganizationNotification, index: number) => {
                                 return (
                                     <tr className="pt-3" key={notification.id}>
                                         <td>{notification.title}</td>
                                         <td>{notification.description}</td>
                                         <td>
-                                            <TriggerNotification value={notification.notificationTrigger}></TriggerNotification>
+                                            <ViewEdit onUpdate={async (notificationTrigger) => { await this.onTriggerUpdate(index, notificationTrigger); }}
+                                                viewComponent={() => { return <TriggerNotification value={notification.notificationTrigger}></TriggerNotification> }}
+                                                editComponent={(props: any) => <AhoraTriggerNotificationField onUpdate={props.onUpdate} value={notification.notificationTrigger} />
+                                                } />
                                         </td>
                                         <td>{SearchCriteriasToText(notification.searchCriteria)}</td>
                                         <td><Button variant="danger" onClick={() => { this.deleteOrganization(notification) }}>Delete</Button></td>

@@ -1,13 +1,16 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
+import AhoraSpinner from '../Forms/Basics/Spinner';
 
 interface Props {
-    viewComponent: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>;
-    editComponent?: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>;
+    onUpdate(value: any): Promise<void>;
+    viewComponent: React.ComponentType<any>;
+    editComponent: any & { onUpdate: (value?: any) => void };
+    canEdit?: boolean;
 }
 
 interface State {
     editMode: boolean;
+    loading: boolean;
 }
 
 class ViewEdit extends React.Component<Props, State> {
@@ -15,16 +18,48 @@ class ViewEdit extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            editMode: true
+            editMode: false,
+            loading: false,
         }
     }
 
+    onClick() {
+        this.setState({
+            editMode: true
+        })
+    }
+
+    async onUpdate(value?: any) {
+        this.setState({
+            loading: true
+        });
+        await this.props.onUpdate(value);
+        this.setState({
+            loading: false,
+            editMode: false,
+        });
+    }
+
     render() {
-        if (this.state.editMode) {
-            return this.props.editComponent;
+        const ViewComponent = this.props.viewComponent;
+        const EditComponent = this.props.editComponent;
+        if (this.state.loading) {
+
+            return <AhoraSpinner />
+
+        } else if (this.state.editMode) {
+            return <EditComponent onUpdate={this.onUpdate.bind(this)}></EditComponent>;
         }
         else {
-            return this.props.viewComponent;
+            if (this.props.canEdit) {
+                return <div onClick={this.onClick.bind(this)}>
+                    <ViewComponent></ViewComponent>
+                </div>;
+            }
+            else {
+                return <ViewComponent></ViewComponent>;
+            }
+
         }
 
     }

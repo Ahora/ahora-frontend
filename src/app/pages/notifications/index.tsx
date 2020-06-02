@@ -155,7 +155,7 @@ class NotificationsPage extends React.Component<AllProps, NotificationsPageState
                                         <td>{notification.title}</td>
                                         <td>{notification.description}</td>
                                         <td>
-                                            <ViewEdit onUpdate={async (notificationTrigger) => { await this.onTriggerUpdate(index, notificationTrigger); }}
+                                            <ViewEdit canEdit={true} onUpdate={async (notificationTrigger) => { await this.onTriggerUpdate(index, notificationTrigger); }}
                                                 viewComponent={() => { return <TriggerNotification value={notification.notificationTrigger}></TriggerNotification> }}
                                                 editComponent={(props: any) => <AhoraTriggerNotificationField onUpdate={props.onUpdate} value={notification.notificationTrigger} />
                                                 } />

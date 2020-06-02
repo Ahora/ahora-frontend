@@ -27,7 +27,7 @@ interface StatusPageProps {
 }
 
 interface DispatchProps {
-    requestLabelsData(): void;
+    requestStatusData(): void;
     addStatusToState(status: Status): void,
     updateStatusToState(status: Status): void,
     removeStatusFromState(id: number): void
@@ -44,7 +44,7 @@ class StatusesPage extends React.Component<AllProps, StatusesPageState> {
     }
 
     async componentDidMount() {
-        this.props.requestLabelsData();
+        this.props.requestStatusData();
     }
 
     public markAsEditable(statusRow: StatusRow) {
@@ -179,7 +179,7 @@ const mapStateToProps = (state: ApplicationState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        requestLabelsData: () => dispatch(requestStatusesData()),
+        requestStatusData: () => dispatch(requestStatusesData()),
         addStatusToState: (status: Status) => { dispatch(addStatusFromState(status)) },
         removeStatusFromState: (id: number) => { dispatch(deleteStatusFromState(id)) },
         updateStatusToState: (status: Status) => { dispatch(updateStatusToState(status)) }

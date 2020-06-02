@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
-import { OrganizationMilestone, getMilestones, addMilestone, deleteMilestone, reopenMilestone, MilestoneStatus, closeMilestone } from 'app/services/OrganizationMilestones';
+import { OrganizationMilestone, addMilestone, deleteMilestone, reopenMilestone, closeMilestone, MilestoneStatus } from 'app/services/OrganizationMilestones';
 import Table from 'react-bootstrap/Table';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
@@ -8,27 +7,36 @@ import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
 import Button from 'react-bootstrap/Button';
 import Moment from 'react-moment';
 import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
+import { ApplicationState } from 'app/store';
+import { requestMilestonesData, addMilestoneFromState, deleteMilestoneFromState, updateMilestoneToState } from 'app/store/milestones/actions';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
 
 interface MilestonesPageState {
-    milestones?: OrganizationMilestone[];
     form?: any;
     fields: AhoraFormField[];
 }
 
 interface MilestonesPageParams {
-    login: string;
+    milestones?: OrganizationMilestone[];
+    loading: boolean;
+    organizationId: string;
 }
 
-interface MilestonesPageProps extends RouteComponentProps<MilestonesPageParams> {
+interface DispatchProps {
+    requestMilestoneData(): void;
+    addMilestoneToState(milestone: OrganizationMilestone): void,
+    updateMilestoneToState(milestone: OrganizationMilestone): void,
+    removeMilestoneFromState(id: number): void
+}
+
+
+interface MilestonesPageProps extends MilestonesPageParams, DispatchProps {
 
 }
 
-interface AllProps extends MilestonesPageProps {
-
-}
-
-class MilestonesPage extends React.Component<AllProps, MilestonesPageState> {
-    constructor(props: AllProps) {
+class MilestonesPage extends React.Component<MilestonesPageProps, MilestonesPageState> {
+    constructor(props: MilestonesPageProps) {
         super(props);
         this.state = {
             fields: [{
@@ -52,16 +60,11 @@ class MilestonesPage extends React.Component<AllProps, MilestonesPageState> {
 
     async onSubmit(data: any) {
         const addedMilestone = await addMilestone(data);
-
-        this.setState({
-            milestones: [addedMilestone, ...this.state.milestones],
-            form: undefined
-        });
+        this.props.addMilestoneToState(addedMilestone);
     }
 
     async componentDidMount() {
-        const milestones = await getMilestones();
-        this.setState({ milestones });
+        this.props.requestMilestoneData();
     }
 
     public openAddForm() {
@@ -79,31 +82,17 @@ class MilestonesPage extends React.Component<AllProps, MilestonesPageState> {
 
     async deleteOrganization(milestone: OrganizationMilestone) {
         await deleteMilestone(milestone.id!);
-        if (this.state.milestones) {
-            this.setState({
-                milestones: this.state.milestones.filter((currentMilestone) => currentMilestone.id !== milestone.id)
-            });
-        }
+        this.props.removeMilestoneFromState(milestone.id!);
     }
 
-    async reopen(milestone: OrganizationMilestone, index: number) {
+    async reopen(milestone: OrganizationMilestone) {
         const updatedMilestone = await reopenMilestone(milestone.id!);
-        const milestones = [...this.state.milestones];
-        milestones[index] = updatedMilestone;
-
-        this.setState({
-            milestones
-        });
+        this.props.updateMilestoneToState(updatedMilestone);
     }
 
-    async close(milestone: OrganizationMilestone, index: number) {
+    async close(milestone: OrganizationMilestone) {
         const updatedMilestone = await closeMilestone(milestone.id!);
-        const milestones = [...this.state.milestones];
-        milestones[index] = updatedMilestone;
-
-        this.setState({
-            milestones
-        });
+        this.props.updateMilestoneToState(updatedMilestone);
     }
 
     render() {
@@ -117,7 +106,7 @@ class MilestonesPage extends React.Component<AllProps, MilestonesPageState> {
                     }
                 </CanManageOrganization>
 
-                {this.state.milestones ?
+                {!this.props.loading ?
                     <Table>
                         <thead>
                             <tr>
@@ -131,7 +120,7 @@ class MilestonesPage extends React.Component<AllProps, MilestonesPageState> {
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.milestones && (this.state.milestones.map((milestone: OrganizationMilestone, index: number) => {
+                            {this.props.milestones && (this.props.milestones.map((milestone: OrganizationMilestone, index: number) => {
                                 return (
                                     <tr className="pt-3" key={milestone.id}>
                                         <td>{milestone.title}</td>
@@ -139,11 +128,10 @@ class MilestonesPage extends React.Component<AllProps, MilestonesPageState> {
                                         <td>{milestone.closedAt && <Moment date={milestone.closedAt} format="D MMM YYYY"></Moment>}</td>
                                         <td>{milestone.dueOn && <Moment date={milestone.dueOn} format="D MMM YYYY"></Moment>}</td>
                                         <CanManageOrganization>
-
                                             <td>
                                                 {milestone.state === MilestoneStatus.open ?
-                                                    <Button variant="primary" onClick={() => { this.close(milestone, index) }}>Close</Button>
-                                                    : <Button variant="primary" onClick={() => { this.reopen(milestone, index) }}>Open</Button>
+                                                    <Button variant="primary" onClick={() => { this.close(milestone) }}>Close</Button>
+                                                    : <Button variant="primary" onClick={() => { this.reopen(milestone) }}>Open</Button>
                                                 }
                                                 <Button variant="danger" onClick={() => { this.deleteOrganization(milestone) }}>Delete</Button></td>
                                         </CanManageOrganization>
@@ -159,4 +147,22 @@ class MilestonesPage extends React.Component<AllProps, MilestonesPageState> {
     };
 }
 
-export default MilestonesPage; 
+
+const mapStateToProps = (state: ApplicationState): MilestonesPageParams => {
+    return {
+        organizationId: state.organizations.currentOrganization!.login,
+        milestones: state.milestones.milestones,
+        loading: state.milestones.loading
+    };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+    return {
+        requestMilestoneData: () => dispatch(requestMilestonesData()),
+        addMilestoneToState: (status: OrganizationMilestone) => { dispatch(addMilestoneFromState(status)) },
+        removeMilestoneFromState: (id: number) => { dispatch(deleteMilestoneFromState(id)) },
+        updateMilestoneToState: (status: OrganizationMilestone) => { dispatch(updateMilestoneToState(status)) }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MilestonesPage as any); 

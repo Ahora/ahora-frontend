@@ -3,7 +3,7 @@ import { FETCH_CURRENT_USER } from './types';
 import { receiveCurrentUserData } from "./actions";
 import { getCurrentUser } from 'app/services/users';
 
-function* getLabelsFromServer(action: any) {
+function* getUserFromServer(action: any) {
     try {
         const data = yield call(getCurrentUser);
         yield put(receiveCurrentUserData(data));
@@ -20,7 +20,7 @@ function* getLabelsFromServer(action: any) {
   and only the latest one will be run.
 */
 function* mySaga() {
-    yield takeLatest(FETCH_CURRENT_USER, getLabelsFromServer);
+    yield takeLatest(FETCH_CURRENT_USER, getUserFromServer);
 }
 
 export default mySaga;

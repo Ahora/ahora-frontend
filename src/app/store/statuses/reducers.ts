@@ -27,7 +27,7 @@ export function statusesReducer(state = initialState, action: StatusActionTypes)
         case UPDATE_STATUS:
             return {
                 ...state,
-                statuses: state.statuses.map((status, i) => i === action.payload.id ? action.payload : status)
+                statuses: state.statuses.map((status) => status.id === action.payload.id ? action.payload : status)
             }
         default:
             return state

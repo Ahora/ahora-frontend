@@ -1,12 +1,12 @@
 import { call, put, takeLatest } from 'redux-saga/effects'
-import { FETCH_DOCTYPES } from './types';
-import { receiveDocTypesData } from "./actions";
-import { getList } from "../../services/docTypes";
+import { FETCH_MILESTONES } from './types';
+import { receiveMilestonesData } from "./actions";
+import { getMilestones } from "../../services/OrganizationMilestones";
 
-function* getLabelsFromServer(action: any) {
+function* getMilestonesFromServer(action: any) {
     try {
-        const data = yield call(getList);
-        yield put(receiveDocTypesData(data));
+        const data = yield call(getMilestones);
+        yield put(receiveMilestonesData(data));
     } catch (e) {
         console.log(e);
     }
@@ -20,7 +20,7 @@ function* getLabelsFromServer(action: any) {
   and only the latest one will be run.
 */
 function* mySaga() {
-    yield takeLatest(FETCH_DOCTYPES, getLabelsFromServer);
+    yield takeLatest(FETCH_MILESTONES, getMilestonesFromServer);
 }
 
 export default mySaga;

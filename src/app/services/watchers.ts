@@ -5,7 +5,7 @@ export interface DocWatcher {
     id: number;
     docId: number;
     userId: number;
-    user: {
+    watcher: {
         username: string;
         displayName?: string;
     }

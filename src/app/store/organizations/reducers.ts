@@ -2,7 +2,7 @@ import { OrganizationsState, OrganizationsActionTypes, SET_CURRENT_USER, SET_SEA
 
 const initialState: OrganizationsState = {
     currentOrganization: undefined,
-    SearchCriterias: { status: ["opened"] }
+    searchCriterias: { status: ["opened"] }
 }
 
 export function currentOrganizationsReducer(state = initialState, action: OrganizationsActionTypes): OrganizationsState {
@@ -10,7 +10,7 @@ export function currentOrganizationsReducer(state = initialState, action: Organi
         case SET_CURRENT_USER:
             return { ...state, currentOrganization: action.data.currentOrganization, currentOrgPermission: action.data.currentOrgPermission }
         case SET_SEARCH_CRITERIAS:
-            return { ...state, SearchCriterias: action.data }
+            return { ...state, searchCriterias: action.data }
         default:
             return state
     }

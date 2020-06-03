@@ -26,12 +26,11 @@ class AhoraNumberField extends React.Component<GroupBySelectStateProps, GroupByS
     handleChange(event: any) {
         this.setState({ value: event.target.value });
         this.props.onUpdate(event.target.value);
-
     }
 
     render() {
         return (
-            <Form.Control required={this.props.fieldData.required} type="number" value={this.state.value} onChange={this.handleChange.bind(this)} />
+            <Form.Control className="mb-2 mr-sm-2" required={this.props.fieldData.required} type="number" value={this.state.value} onChange={this.handleChange.bind(this)} />
         );
     }
 }

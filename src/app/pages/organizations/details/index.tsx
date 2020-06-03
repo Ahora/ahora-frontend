@@ -8,7 +8,6 @@ import DocsDetailsPage from "app/pages/docs/details";
 import DashboardDetailsPage from "app/pages/dashboards/details";
 import AddDocPage from "app/pages/docs/add";
 import AddDashboardPage from "app/pages/dashboards/add";
-import EditDocPage from "app/pages/docs/edit";
 import OrganizationSettingsPage from "../settings";
 import { Dispatch } from "redux";
 import { setCurrentOrganization } from "app/store/organizations/actions";
@@ -26,6 +25,9 @@ import { OrganizationTeamUser } from "app/services/organizationTeams";
 import { canManageOrganization, canManageNotifications } from "app/services/authentication";
 import NotificationsPage from "app/pages/notifications";
 import MilestonesPage from "app/pages/milestones";
+import { requestMilestonesData } from "app/store/milestones/actions";
+import { requestLabelsData } from "app/store/labels/actions";
+import { requestStatusesData } from "app/store/statuses/actions";
 
 interface OrganizationDetailsPageProps {
   organization: Organization | null;
@@ -42,6 +44,9 @@ interface OrganizationPageParams {
 interface DispatchProps {
   setOrganizationToState(organization: Organization | null, permission?: OrganizationTeamUser): void;
   requestDocTypes(): void;
+  requestLabels(): void;
+  requestStatuses(): void;
+  requestMilestones(): void;
   requestCurrentUser(): void;
 }
 
@@ -60,6 +65,9 @@ class OrganizationDetailsPage extends React.Component<Props> {
       this.props.setOrganizationToState(organization, organization.permission);
     }
     this.props.requestDocTypes();
+    this.props.requestMilestones();
+    this.props.requestLabels();
+    this.props.requestStatuses();
     this.props.requestCurrentUser();
   }
   render = () => {
@@ -102,7 +110,6 @@ class OrganizationDetailsPage extends React.Component<Props> {
           <Switch>
             <Route path={`/organizations/:login/settings/:settingsSection?`} component={OrganizationSettingsPage} />
             <Route path={`/organizations/:login/docs/add`} component={AddDocPage} />
-            <Route path={`/organizations/:login/docs/:id/edit`} component={EditDocPage} />
             <Route path={`/organizations/:login/docs/:id`} component={DocsDetailsPage} />
             <Route path={`/organizations/:login/docs`} component={DocsPage} />
             <Route path={`/organizations/:login/dashboards/add`} component={AddDashboardPage} />
@@ -134,6 +141,9 @@ const mapStateToProps = (state: ApplicationState) => {
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
     requestDocTypes: () => dispatch(requestDocTypesData()),
+    requestMilestones: () => dispatch(requestMilestonesData()),
+    requestStatuses: () => dispatch(requestStatusesData()),
+    requestLabels: () => dispatch(requestLabelsData()),
     setOrganizationToState: (organization: Organization, permission?: OrganizationTeamUser) => dispatch(setCurrentOrganization(organization, permission)),
     requestCurrentUser: () => dispatch(requestCurrentUserData())
   };

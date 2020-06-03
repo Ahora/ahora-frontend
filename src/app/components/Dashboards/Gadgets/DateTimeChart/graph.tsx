@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
-import { Dispatch } from 'redux';
-import { requestLabelsData } from 'app/store/labels/actions';
 import { getDocGroup } from 'app/services/docs';
 import { Cell, XAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, YAxis } from 'recharts';
 import { RouteComponentProps } from 'react-router';
@@ -24,11 +22,8 @@ interface InjectedProps {
     organization: Organization | undefined;
 }
 
-interface DispatchProps {
-    requestLabels(): void;
-}
 
-interface AllProps extends RouteComponentProps<DocsDateTimeGraphProps>, DispatchProps, InjectedProps {
+interface AllProps extends RouteComponentProps<DocsDateTimeGraphProps>, InjectedProps {
     data: DocsDateTimeGraphData;
 }
 
@@ -136,10 +131,5 @@ const mapStateToProps = (state: ApplicationState): InjectedProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-    return {
-        requestLabels: () => dispatch(requestLabelsData())
-    }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocsDateTimeGraph as any)
+export default connect(mapStateToProps, null)(DocsDateTimeGraph as any)

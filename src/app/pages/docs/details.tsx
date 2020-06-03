@@ -1,30 +1,25 @@
 import * as React from 'react';
-import { Doc, getDoc, updateDoc, assignDoc, updateDocSubject, updateDocDescription } from 'app/services/docs';
+import { Doc, getDoc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
 import { CommentListComponent } from 'app/components/Comments/List';
-import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Container from 'react-bootstrap/Container';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
-import { Dispatch } from 'redux';
-import { requestStatusesData } from 'app/store/statuses/actions';
 import { Status } from 'app/services/statuses';
-import { Link } from 'react-router-dom';
-import LabelsList from 'app/components/LabelsSelector/details';
 import SelectUser from 'app/components/users/selectusers';
 import { UserItem, User } from 'app/services/users';
 import { DocType } from 'app/services/docTypes';
-import { requestDocTypesData } from 'app/store/docTypes/actions';
 import Table from 'react-bootstrap/Table';
 import Moment from 'react-moment';
 import DocWatchersComponent from 'app/components/DocWatchers';
 import EditableHeader from 'app/components/EditableHeader';
 import EditableMarkDown from 'app/components/EditableMarkDown';
 import { canEditDoc } from 'app/services/authentication';
-import { requestCurrentUserData } from 'app/store/currentuser/actions';
+import DocStatusViewEdit from 'app/components/Doc/DocStatusViewEdit';
+import DocLabelViewEdit from 'app/components/Doc/DocLabelsViewEdit';
+import Button from 'react-bootstrap/Button';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -48,13 +43,7 @@ interface DocDetailsPageProps extends RouteComponentProps<DocsDetailsPageParams>
 
 }
 
-interface DispatchProps {
-    requestStatusesData(): void;
-    requestDocTypeData(): void;
-    requestCurrentUserData(): void;
-}
-
-interface AllProps extends DocDetailsPageProps, DispatchProps {
+interface AllProps extends DocDetailsPageProps {
 
 }
 
@@ -69,19 +58,25 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     }
 
     async changeStatus(statusId: number) {
-        const doc = { ...this.state.doc!, statusId: statusId };
-        const updatedDoc = await updateDoc(this.props.match.params.login, doc.id, doc);
-        this.setState({
-            doc: updatedDoc
-        });
+        if (statusId !== this.state.doc!.statusId) {
+            const doc = { ...this.state.doc!, statusId: statusId };
+            const updatedDoc = await updateDoc(this.props.match.params.login, doc.id, doc);
+            this.setState({
+                doc: updatedDoc
+            });
+        }
     }
 
     async componentDidMount() {
-        this.props.requestStatusesData();
-        this.props.requestCurrentUserData();
-        this.props.requestDocTypeData();
         const doc: Doc = await getDoc(this.props.match.params.login, parseInt(this.props.match.params.id));
         this.setState({ doc });
+    }
+
+    async onLabelsUpdate(labels: number[]): Promise<void> {
+        await updateDocLabels(this.props.match.params.login, parseInt(this.props.match.params.id), labels);
+        this.setState({
+            doc: { ...this.state.doc!, labels }
+        });
     }
 
     async onAssigneeSelect(user: UserItem) {
@@ -96,6 +91,13 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         this.setState({
             doc: { ...this.state.doc!, subject: value },
         });
+    }
+
+    async delete() {
+        if (this.state.doc) {
+            await deleteDoc(this.props.match.params.login, this.state.doc.id!);
+            this.props.history.replace(`/organizations/${this.props.match.params.login}/docs`);
+        }
     }
 
     async onDescriptionChanged(value: string) {
@@ -127,14 +129,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                             <Col xs={12} md={8}>
                                 <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h1>{doc.subject}</h1></EditableHeader>
                                 {canEdit ?
-                                    <>
-                                        <ButtonGroup>
-                                            {this.props.statuses.map((status) => {
-                                                return <Button key={status.id} onClick={() => { this.changeStatus(status.id!); }} variant={(status.id === doc.statusId) ? "primary" : "light"} >{status.name}</Button>
-                                            })}
-                                        </ButtonGroup>
-                                        <Link to={`/organizations/${this.props.match.params.login}/docs/${doc.id}/edit`}><Button variant="warning" className="ml-4">Edit</Button></Link>
-                                    </>
+                                    <DocStatusViewEdit status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
                                     : <div>
                                         {
                                             currentStatus && <div>{currentStatus.name}</div>
@@ -142,7 +137,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                     </div>
                                 }
 
-                                <div className="mt-2"><LabelsList defaultSelected={doc.labels}></LabelsList></div>
+                                <DocLabelViewEdit canEdit={canEdit} onUpdate={this.onLabelsUpdate.bind(this)} labels={doc.labels}></DocLabelViewEdit>
 
                                 <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
                                     <p className="mt-4 markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
@@ -229,6 +224,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                             </tr>)}
                                     </tbody>
                                 </Table>
+                                {canEdit && <Button variant="danger" onClick={this.delete.bind(this)}>Delete Doc</Button>}
                             </Col>
                         </Row>
                     </>
@@ -248,12 +244,4 @@ const mapStateToProps = (state: ApplicationState): injectedParams => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-    return {
-        requestStatusesData: () => dispatch(requestStatusesData()),
-        requestDocTypeData: () => dispatch(requestDocTypesData()),
-        requestCurrentUserData: () => dispatch(requestCurrentUserData())
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DocsDetailsPage as any); 
+export default connect(mapStateToProps, null)(DocsDetailsPage as any); 

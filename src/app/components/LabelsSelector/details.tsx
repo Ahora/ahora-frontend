@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
-import { Dispatch } from 'redux';
 import { Label } from 'app/services/labels';
-import { requestLabelsData } from 'app/store/labels/actions';
 import Badge from 'react-bootstrap/Badge';
 
 interface LabelsSelectorState {
@@ -14,11 +12,7 @@ interface LabelsSelectorProps {
     labelMap: Map<number, Label>;
 }
 
-interface DispatchProps {
-    requestLabels(): void;
-}
-
-interface AllProps extends LabelsSelectorProps, DispatchProps {
+interface AllProps extends LabelsSelectorProps {
     onChange(labels: Label[]): void;
     defaultSelected?: number[];
 }
@@ -30,7 +24,7 @@ class LabelsList extends React.Component<AllProps, LabelsSelectorState> {
         this.state = {};
     }
 
-    componentDidUpdate() {
+    componentDidMount() {
         if (this.props.defaultSelected && this.props.labelMap && !this.state.selectedLabels) {
             let selectedLabels: Label[] = [];
             if (this.props.labelMap && this.props.defaultSelected) {
@@ -44,12 +38,6 @@ class LabelsList extends React.Component<AllProps, LabelsSelectorState> {
 
             this.setState({ selectedLabels });
         }
-
-    }
-
-    async componentDidMount() {
-        this.props.requestLabels();
-
     }
 
     onChange(labels: Label[]) {
@@ -61,12 +49,12 @@ class LabelsList extends React.Component<AllProps, LabelsSelectorState> {
 
     render() {
         return (
-            <div>
+            <>
                 {this.state.selectedLabels && this.state.selectedLabels.map((label: Label) => {
                     return <Badge className="mr-2" variant="primary" style={{ backgroundColor: "#" + label.color }} key={label.id}>{label.name}</Badge>;
                 })}
 
-            </div>
+            </>
         );
     }
 }
@@ -77,10 +65,4 @@ const mapStateToProps = (state: ApplicationState, ): LabelsSelectorProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-    return {
-        requestLabels: () => dispatch(requestLabelsData())
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LabelsList as any); 
+export default connect(mapStateToProps, null)(LabelsList as any); 

@@ -1,10 +1,8 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { ApplicationState } from "app/store";
 import { DocType } from "app/services/docTypes";
-import { requestDocTypesData } from "app/store/docTypes/actions";
 import { Organization } from "app/services/organizations";
 import DocList from "app/components/DocList";
 import { Link } from "react-router-dom";
@@ -25,11 +23,7 @@ interface OrganizationPageParams {
   section: string;
 }
 
-interface DispatchProps {
-  requestDocTypes(): void;
-}
-
-interface Props extends RouteComponentProps<OrganizationPageParams>, DispatchProps, OrganizationDashboardPageProps {
+interface Props extends RouteComponentProps<OrganizationPageParams>, OrganizationDashboardPageProps {
 
 }
 
@@ -88,13 +82,8 @@ const mapStateToProps = (state: ApplicationState) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    requestDocTypes: () => dispatch(requestDocTypesData()),
-  };
-};
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(OrganizationDashboardPage as any);

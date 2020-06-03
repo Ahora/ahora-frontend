@@ -45,7 +45,7 @@ class ViewEdit extends React.Component<Props, State> {
         const EditComponent = this.props.editComponent;
         if (this.state.loading) {
 
-            return <AhoraSpinner />
+            return <AhoraSpinner inline={true} />
 
         } else if (this.state.editMode) {
             return <EditComponent onUpdate={this.onUpdate.bind(this)}></EditComponent>;

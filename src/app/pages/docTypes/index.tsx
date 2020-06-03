@@ -7,7 +7,7 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
-import { requestDocTypesData, addDocTypeFromState, deleteDocTypeFromState, updateDocTypeToState } from 'app/store/docTypes/actions';
+import { addDocTypeFromState, deleteDocTypeFromState, updateDocTypeToState } from 'app/store/docTypes/actions';
 
 interface DocTypeRow {
     docType: DocType;
@@ -28,7 +28,6 @@ interface DocTypePageProps {
 }
 
 interface DispatchProps {
-    requestDocTypes(): void;
     addDocTypeToState(docType: DocType): void,
     updateDocTypeToState(docType: DocType): void,
     removeDocTypeFromState(id: number): void
@@ -42,10 +41,6 @@ class DocTypesPage extends React.Component<AllProps, DocTypeesPageState> {
     constructor(props: AllProps) {
         super(props);
         this.state = {};
-    }
-
-    async componentDidMount() {
-        this.props.requestDocTypes();
     }
 
     public markAsEditable(docTypeRow: DocTypeRow) {
@@ -190,7 +185,6 @@ const mapStateToProps = (state: ApplicationState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        requestDocTypes: () => dispatch(requestDocTypesData()),
         addDocTypeToState: (docType: DocType) => { dispatch(addDocTypeFromState(docType)) },
         removeDocTypeFromState: (id: number) => { dispatch(deleteDocTypeFromState(id)) },
         updateDocTypeToState: (docType: DocType) => { dispatch(updateDocTypeToState(docType)) }

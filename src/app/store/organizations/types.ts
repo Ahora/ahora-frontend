@@ -5,7 +5,7 @@ import { OrganizationTeamUser } from "app/services/organizationTeams";
 export interface OrganizationsState {
     currentOrganization: Organization | undefined,
     currentOrgPermission?: OrganizationTeamUser;
-    SearchCriterias: SearchCriterias
+    searchCriterias: SearchCriterias
 }
 
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';

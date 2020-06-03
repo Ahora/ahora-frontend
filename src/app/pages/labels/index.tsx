@@ -4,7 +4,7 @@ import NavItem from 'react-bootstrap/NavItem';
 import { Label, addLabel, deleteLabel, editLabel } from 'app/services/labels';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
-import { requestLabelsData, addLabelFromState, deleteLabelFromState, updateLabelToState } from 'app/store/labels/actions';
+import { addLabelFromState, deleteLabelFromState, updateLabelToState } from 'app/store/labels/actions';
 import { connect } from 'react-redux';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
@@ -28,7 +28,6 @@ interface LabelPageProps {
 }
 
 interface DispatchProps {
-    requestLabelsData(): void;
     addLabelToState(label: Label): void,
     updateLabelToState(label: Label): void,
     removeLabelFromState(id: number): void
@@ -42,10 +41,6 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
     constructor(props: AllProps) {
         super(props);
         this.state = {};
-    }
-
-    async componentDidMount() {
-        this.props.requestLabelsData();
     }
 
     public markAsEditable(labelRow: LabelRow) {
@@ -187,7 +182,6 @@ const mapStateToProps = (state: ApplicationState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        requestLabelsData: () => dispatch(requestLabelsData()),
         addLabelToState: (label: Label) => { dispatch(addLabelFromState(label)) },
         removeLabelFromState: (id: number) => { dispatch(deleteLabelFromState(id)) },
         updateLabelToState: (label: Label) => { dispatch(updateLabelToState(label)) }

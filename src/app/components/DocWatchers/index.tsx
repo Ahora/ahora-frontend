@@ -41,7 +41,7 @@ class DocWatchersComponent extends React.Component<DocWatcherProps, State> {
         if (this.props.currentUser) {
 
             const myWatch: DocWatcher = await watchDoc(this.props.login, this.props.docId);
-            myWatch.user = {
+            myWatch.watcher = {
                 username: this.props.currentUser.username,
                 displayName: this.props.currentUser.displayName
             }
@@ -97,7 +97,7 @@ class DocWatchersComponent extends React.Component<DocWatcherProps, State> {
                         {this.state.watchers.length > 0 &&
                             <div className="list mt-2">
                                 {this.state.watchers.map((watcher) => {
-                                    return (<div key={watcher.id}><i className="fas fa-user mr-2"></i>{watcher.user.displayName || watcher.user.username}</div>);
+                                    return (<div key={watcher.id}><i className="fas fa-user mr-2"></i>{watcher.watcher.displayName || watcher.watcher.username}</div>);
                                 })}
                             </div>
                         }

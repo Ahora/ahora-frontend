@@ -6,11 +6,9 @@ import { ApplicationState } from 'app/store';
 import { Status } from 'app/services/statuses';
 import { Dispatch } from 'redux';
 import Nav from "react-bootstrap/Nav";
-import { requestStatusesData } from 'app/store/statuses/actions';
 import SearchDocsInput, { SearchCriterias } from 'app/components/SearchDocsInput';
 import { Link } from 'react-router-dom';
 import { DocType } from 'app/services/docTypes';
-import { requestDocTypesData } from 'app/store/docTypes/actions';
 import { setSearchCriteria } from 'app/store/organizations/actions';
 import DocList from 'app/components/DocList';
 import { parseUrl, ParsedUrl } from "query-string";
@@ -42,9 +40,7 @@ interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedPar
 
 
 interface DispatchProps {
-    requestStatusesData(): void;
-    requestDocTypes(): void;
-    setSearchCriterias(data?: string): void;
+    setSearchCriterias(data?: SearchCriterias): void;
 }
 
 interface AllProps extends DocsPageProps, DispatchProps {
@@ -69,17 +65,20 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     }
 
     async componentDidMount() {
-        this.props.requestStatusesData();
-        this.props.requestDocTypes();
-
-        const parsedUrl: ParsedUrl = parseUrl(this.props.location.search);
-        const searchCriterias: SearchCriterias = parsedUrl.query;
-        this.searchSelected(searchCriterias);
-
+        if (this.props.location.search.length > 0) {
+            const parsedUrl: ParsedUrl = parseUrl(this.props.location.search);
+            const searchCriterias: SearchCriterias = parsedUrl.query;
+            this.searchSelected(searchCriterias);
+        }
+        else if (this.props.searchCriteria) {
+            this.searchSelected(this.props.searchCriteria);
+        } else {
+            this.searchSelected({});
+        }
     }
 
-    async searchSelected(searchCriterias: SearchCriterias, searchCriteriasText?: string) {
-        this.props.setSearchCriterias(searchCriteriasText);
+    async searchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string) {
+        this.props.setSearchCriterias(searchCriterias);
         this.setState({
             searchCriteria: searchCriterias,
             searchCriteriasText
@@ -110,15 +109,13 @@ const mapStateToProps = (state: ApplicationState): injectedParams => {
         statuses: state.statuses.map,
         docTypes: state.docTypes.mapById,
         loading: state.statuses.loading,
-        searchCriteria: state.organizations.SearchCriterias
+        searchCriteria: state.organizations.searchCriterias
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        setSearchCriterias: (data: string) => dispatch(setSearchCriteria(data)),
-        requestStatusesData: () => dispatch(requestStatusesData()),
-        requestDocTypes: () => dispatch(requestDocTypesData())
+        setSearchCriterias: (data: SearchCriterias) => dispatch(setSearchCriteria(data))
     }
 }
 

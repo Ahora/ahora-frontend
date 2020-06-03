@@ -6,13 +6,8 @@ import { addDoc } from 'app/services/docs';
 import MarkDownEditor from 'app/components/MarkDownEditor';
 import LabelsSelector from 'app/components/LabelsSelector';
 import { ApplicationState } from 'app/store';
-import { Dispatch } from 'redux';
-import { requestDocTypesData } from 'app/store/docTypes/actions';
 import { connect } from 'react-redux';
 import { DocType } from 'app/services/docTypes';
-import { Label } from 'app/services/labels';
-
-
 
 interface AddDocsPageState {
     form: any;
@@ -22,11 +17,7 @@ interface AddDocsPageParams {
     login: string;
 }
 
-interface DispatchProps {
-    requestDocTypes(): void;
-}
-
-interface Props extends RouteComponentProps<AddDocsPageParams>, DispatchProps {
+interface Props extends RouteComponentProps<AddDocsPageParams> {
     docTypes: DocType[];
 }
 
@@ -38,10 +29,6 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
         }
     }
 
-    componentDidMount() {
-        this.props.requestDocTypes();
-    }
-
     componentWillReceiveProps(nextProps: Props) {
         if (nextProps !== this.props && nextProps.docTypes.length > 0) {
             this.setState({
@@ -50,8 +37,8 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
         }
     }
 
-    onLabelsChanged(labels: Label[]) {
-        this.setState({ form: { ...this.state.form, labels: labels.map((label) => label.id) } });
+    onLabelsChanged(labels: number[]) {
+        this.setState({ form: { ...this.state.form, labels } });
     }
 
     handleEditorChange(text: any) {
@@ -111,10 +98,4 @@ const mapStateToProps = (state: ApplicationState) => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-    return {
-        requestDocTypes: () => dispatch(requestDocTypesData()),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddDocPage as any);
+export default connect(mapStateToProps, null)(AddDocPage as any);

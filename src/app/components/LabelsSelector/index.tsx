@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
-import { Dispatch } from 'redux';
 import { Label } from 'app/services/labels';
-import { requestLabelsData } from 'app/store/labels/actions';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
 interface LabelsSelectorState {
@@ -15,13 +13,10 @@ interface LabelsSelectorProps {
     labelMap: Map<number, Label>;
 }
 
-interface DispatchProps {
-    requestLabels(): void;
-}
-
-interface AllProps extends LabelsSelectorProps, DispatchProps {
-    onChange(labels: Label[]): void;
+interface AllProps extends LabelsSelectorProps {
+    onChange(labels: number[]): void;
     defaultSelected?: number[];
+    autoFocus?: boolean;
 }
 
 class LabelsSelector extends React.Component<AllProps, LabelsSelectorState> {
@@ -31,7 +26,7 @@ class LabelsSelector extends React.Component<AllProps, LabelsSelectorState> {
         this.state = {};
     }
 
-    componentDidUpdate() {
+    componentDidMount() {
         if (this.props.defaultSelected && this.props.labelMap && !this.state.selectedLabels) {
             let selectedLabels: Label[] = [];
             if (this.props.labelMap && this.props.defaultSelected) {
@@ -48,20 +43,23 @@ class LabelsSelector extends React.Component<AllProps, LabelsSelectorState> {
 
     }
 
-    async componentDidMount() {
-        this.props.requestLabels();
-
+    onBlur() {
+        if (this.state.selectedLabels) {
+            this.props.onChange(this.state.selectedLabels!.map((label) => label.id!));
+        }
+        else {
+            this.props.onChange([]);
+        }
     }
 
     onChange(labels: Label[]) {
-        this.props.onChange(labels);
         this.setState({
             selectedLabels: labels
         })
     }
 
     render() {
-        return (<Typeahead multiple={true} selected={this.state.selectedLabels} onChange={this.onChange.bind(this)} labelKey="name" options={this.props.labels}></Typeahead>);
+        return (<Typeahead autoFocus={this.props.autoFocus} onBlur={this.onBlur.bind(this)} multiple={true} selected={this.state.selectedLabels} onChange={this.onChange.bind(this)} labelKey="name" options={this.props.labels}></Typeahead>);
     }
 }
 
@@ -72,10 +70,5 @@ const mapStateToProps = (state: ApplicationState, ): LabelsSelectorProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-    return {
-        requestLabels: () => dispatch(requestLabelsData())
-    }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(LabelsSelector as any); 
+export default connect(mapStateToProps, null)(LabelsSelector as any); 

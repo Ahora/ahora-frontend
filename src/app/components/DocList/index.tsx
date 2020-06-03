@@ -4,13 +4,10 @@ import Table from 'react-bootstrap/Table';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Status } from 'app/services/statuses';
-import { Dispatch } from 'redux';
-import { requestStatusesData } from 'app/store/statuses/actions';
 import Moment from 'react-moment';
 import { SearchCriterias } from 'app/components/SearchDocsInput';
 import { Link } from 'react-router-dom';
 import { DocType } from 'app/services/docTypes';
-import { requestDocTypesData } from 'app/store/docTypes/actions';
 import LabelsList from 'app/components/LabelsSelector/details';
 import { Organization } from 'app/services/organizations';
 import AhoraSpinner from '../Forms/Basics/Spinner';
@@ -34,13 +31,7 @@ interface DocsPageProps extends injectedParams {
     pageSize?: number;
 }
 
-
-interface DispatchProps {
-    requestStatusesData(): void;
-    requestDocTypes(): void;
-}
-
-interface AllProps extends DocsPageProps, DispatchProps {
+interface AllProps extends DocsPageProps {
 
 }
 class DocList extends React.Component<AllProps, DocsPageState> {
@@ -81,8 +72,6 @@ class DocList extends React.Component<AllProps, DocsPageState> {
     }
 
     async componentDidMount() {
-        this.props.requestStatusesData();
-        this.props.requestDocTypes();
         if (this.props.searchCriteria) {
             this.loadData(this.props.searchCriteria, 1, this.props.pageSize || 30);
         }
@@ -132,9 +121,9 @@ class DocList extends React.Component<AllProps, DocsPageState> {
                                                 <tr className="pt-3" key={doc.id!}>
                                                     <td>{currentDocType && currentDocType.name}</td>
                                                     <td>
-                                                        <div></div><Link to={`/organizations/${this.props.currentOrganization!.login}/docs/${doc.id}`}>{doc.subject}</Link>
-                                                        <LabelsList defaultSelected={doc.labels}></LabelsList></td>
-
+                                                        <Link to={`/organizations/${this.props.currentOrganization!.login}/docs/${doc.id}`}>{doc.subject}</Link>
+                                                        <div><LabelsList defaultSelected={doc.labels}></LabelsList></div>
+                                                    </td>
                                                     <td>{(doc.assignee) && doc.assignee.username}</td>
                                                     <td>{(currentStatus) ? currentStatus.name : ""}</td>
                                                     <td>{doc.commentsNumber}</td>
@@ -168,11 +157,5 @@ const mapStateToProps = (state: ApplicationState): injectedParams => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-    return {
-        requestStatusesData: () => dispatch(requestStatusesData()),
-        requestDocTypes: () => dispatch(requestDocTypesData())
-    }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocList as any); 
+export default connect(mapStateToProps, null)(DocList as any); 

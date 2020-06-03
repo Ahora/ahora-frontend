@@ -126,6 +126,14 @@ export const updateDocDescription = async (login: string, id: number, descriptio
     return result.data;
 }
 
+export const updateDocLabels = async (login: string, id: number, labels?: number[]): Promise<Doc> => {
+    const result = await docsClient.put({
+        params: { id, login },
+        data: { labels }
+    });
+    return result.data;
+}
+
 export const deleteDoc = async (login: string, id: number): Promise<void> => {
     await docsClient.delete({
         params: { login, id }

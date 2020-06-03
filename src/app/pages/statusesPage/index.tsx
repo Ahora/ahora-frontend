@@ -4,7 +4,7 @@ import NavItem from 'react-bootstrap/NavItem';
 import { Status, add, deleteStatus, editStatus } from 'app/services/statuses';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
-import { requestStatusesData, addStatusFromState, deleteStatusFromState, updateStatusToState } from 'app/store/statuses/actions';
+import { addStatusFromState, deleteStatusFromState, updateStatusToState } from 'app/store/statuses/actions';
 import { connect } from 'react-redux';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
@@ -27,7 +27,6 @@ interface StatusPageProps {
 }
 
 interface DispatchProps {
-    requestStatusData(): void;
     addStatusToState(status: Status): void,
     updateStatusToState(status: Status): void,
     removeStatusFromState(id: number): void
@@ -41,10 +40,6 @@ class StatusesPage extends React.Component<AllProps, StatusesPageState> {
     constructor(props: AllProps) {
         super(props);
         this.state = {};
-    }
-
-    async componentDidMount() {
-        this.props.requestStatusData();
     }
 
     public markAsEditable(statusRow: StatusRow) {
@@ -179,7 +174,6 @@ const mapStateToProps = (state: ApplicationState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        requestStatusData: () => dispatch(requestStatusesData()),
         addStatusToState: (status: Status) => { dispatch(addStatusFromState(status)) },
         removeStatusFromState: (id: number) => { dispatch(deleteStatusFromState(id)) },
         updateStatusToState: (status: Status) => { dispatch(updateStatusToState(status)) }

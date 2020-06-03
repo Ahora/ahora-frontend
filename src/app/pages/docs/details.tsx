@@ -153,10 +153,9 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                             <Col xs={12} md={8}>
                                 <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h1>{doc.subject}</h1></EditableHeader>
 
-                                <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
-                                <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
-
-                                <DocLabelViewEdit canEdit={canEdit} onUpdate={this.onLabelsUpdate.bind(this)} labels={doc.labels}></DocLabelViewEdit>
+                                <div><DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit></div>
+                                <div><DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit></div>
+                                <div><DocLabelViewEdit canEdit={canEdit} onUpdate={this.onLabelsUpdate.bind(this)} labels={doc.labels}></DocLabelViewEdit></div>
 
                                 <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
                                     <p className="mt-4 markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>

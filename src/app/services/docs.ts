@@ -28,6 +28,7 @@ export interface Doc {
     closedAt: number;
     htmlDescription: string;
     statusId: number;
+    milestoneId?: number;
     assignee?: UserItem
     reporter: UserItem,
     milestone?: {

@@ -12,6 +12,7 @@ interface State {
 interface Props {
     status?: Status;
     onUpdate: (value: number) => Promise<void>;
+    canEdit?: boolean;
 }
 
 class DocStatusViewEdit extends React.Component<Props, State> {
@@ -22,7 +23,7 @@ class DocStatusViewEdit extends React.Component<Props, State> {
     render() {
         const status = this.props.status;
         return (
-            <ViewEdit canEdit={true} onUpdate={this.props.onUpdate.bind(this)}
+            <ViewEdit canEdit={this.props.canEdit} onUpdate={this.props.onUpdate.bind(this)}
                 viewComponent={() => { return <>Status: <Badge variant="primary">{status ? status.name : "Empty"}</Badge></> }}
                 editComponent={(props: any) =>
                     <Form inline>

@@ -20,6 +20,8 @@ import { canEditDoc } from 'app/services/authentication';
 import DocStatusViewEdit from 'app/components/Doc/DocStatusViewEdit';
 import DocLabelViewEdit from 'app/components/Doc/DocLabelsViewEdit';
 import Button from 'react-bootstrap/Button';
+import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
+import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -34,6 +36,7 @@ interface injectedParams {
     statuses: Status[],
     docTypes: Map<number, DocType>,
     statusesMap: Map<number, Status>,
+    milestonesMap: Map<number, OrganizationMilestone>,
     loading: boolean;
     currentUser: User | undefined | null;
 
@@ -59,10 +62,26 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
     async changeStatus(statusId: number) {
         if (statusId !== this.state.doc!.statusId) {
-            const doc = { ...this.state.doc!, statusId: statusId };
+            const doc = { ...this.state.doc!, statusId };
             const updatedDoc = await updateDoc(this.props.match.params.login, doc.id, doc);
             this.setState({
-                doc: updatedDoc
+                doc: {
+                    ...this.state.doc,
+                    ...updatedDoc
+                }
+            });
+        }
+    }
+
+    async changeMilestone(milestoneId?: number) {
+        if (milestoneId !== this.state.doc!.milestoneId) {
+            const doc = { ...this.state.doc!, milestoneId };
+            const updatedDoc = await updateDoc(this.props.match.params.login, doc.id, doc);
+            this.setState({
+                doc: {
+                    ...this.state.doc,
+                    ...updatedDoc
+                }
             });
         }
     }
@@ -112,12 +131,17 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         let canEdit: boolean = false;
         let docType: DocType | undefined;
         let currentStatus: Status | undefined;
+        let currentMilestone: OrganizationMilestone | undefined;
         if (doc) {
             canEdit = canEditDoc(this.props.currentUser, doc);
             docType = this.props.docTypes.get(doc.docTypeId);
 
             if (doc.statusId) {
                 currentStatus = this.props.statusesMap.get(doc.statusId);
+            }
+
+            if (doc.milestoneId) {
+                currentMilestone = this.props.milestonesMap.get(doc.milestoneId);
             }
 
         }
@@ -128,14 +152,9 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                         <Row className="details">
                             <Col xs={12} md={8}>
                                 <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h1>{doc.subject}</h1></EditableHeader>
-                                {canEdit ?
-                                    <DocStatusViewEdit status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
-                                    : <div>
-                                        {
-                                            currentStatus && <div>{currentStatus.name}</div>
-                                        }
-                                    </div>
-                                }
+
+                                <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
+                                <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
 
                                 <DocLabelViewEdit canEdit={canEdit} onUpdate={this.onLabelsUpdate.bind(this)} labels={doc.labels}></DocLabelViewEdit>
 
@@ -238,6 +257,7 @@ const mapStateToProps = (state: ApplicationState): injectedParams => {
     return {
         docTypes: state.docTypes.mapById,
         statuses: state.statuses.statuses,
+        milestonesMap: state.milestones.map,
         statusesMap: state.statuses.map,
         loading: state.statuses.loading,
         currentUser: state.currentUser.user

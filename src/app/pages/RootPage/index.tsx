@@ -109,20 +109,37 @@ class RootPageComponent extends React.Component<AllProps> {
                   Ahora! will always be open source</Card.Body>
               </Card>
             </div>
-            <div className="col-md-4">
-              <Card>
-                <Card.Header>Advanced team support</Card.Header>
-                <Card.Body className="text-center">
-                  <div className="icon">
-                    <i className="fas fa-user-friends"></i>
-                  </div>
-                  Search issues by specific team<br />
-                  Visualize dependencies between teams<br />
-                </Card.Body>
-              </Card>
-            </div>
+            {
+              false && <div className="col-md-4">
+                <Card>
+                  <Card.Header>Advanced team support</Card.Header>
+                  <Card.Body className="text-center">
+                    <div className="icon">
+                      <i className="fas fa-user-friends"></i>
+                    </div>
+                    Search issues by specific team<br />
+                    Visualize dependencies between teams<br />
+                  </Card.Body>
+                </Card>
+              </div>
+            }
+
           </Row>
         </Container>
+        <Jumbotron>
+          <Container className="main">
+            <h4>Explore Organizations</h4>
+            <Row className="mt-4">
+              <div className="col-md-6 text-center">
+                <Link to="/organizations/kubernetes/dashboards/11"><img style={{ width: "80%" }} src="https://kubernetes.io/images/kubernetes-horizontal-color.png" /></Link>
+              </div>
+              <div className="col-md-6 text-center">
+                <Link to="/organizations/openshiftdashboards/12"><img style={{ width: "80%" }} src="https://cdn.clipart.email/7720df34fc7a33defec737254b4b62e8_openshift-development-and-production-in-clouds-techboardio_1197-231.png" /></Link>
+              </div>
+            </Row>
+
+          </Container>
+        </Jumbotron>
       </>
     );
   };

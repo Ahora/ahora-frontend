@@ -101,7 +101,7 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
                                 <span className="fa fa-check"></span>
                             </span>
                         }
-                        {this.props.comment.user.username} | <Moment titleFormat="D MMM YYYY hh:mm" withTitle fromNow date={this.props.comment.createdAt}></Moment>:
+                        {this.props.comment.author.username} | <Moment titleFormat="D MMM YYYY hh:mm" withTitle fromNow date={this.props.comment.createdAt}></Moment>:
                     </span>
                     <div className="justifyend">
                         <DropdownButton size="sm" variant="light" as={ButtonGroup} title="" id="bg-nested-dropdown">

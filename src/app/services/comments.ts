@@ -8,7 +8,7 @@ export interface Comment {
     htmlComment: string;
     createdAt: Date;
     pinned: boolean;
-    user: {
+    author: {
         username: string;
         displayName?: string;
     }

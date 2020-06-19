@@ -14,6 +14,7 @@ interface StatusRow {
     editable: boolean;
     name?: string;
     description?: string;
+    organizationId?: number;
 }
 
 interface StatusesPageState {
@@ -152,8 +153,14 @@ class StatusesPage extends React.Component<AllProps, StatusesPageState> {
                                             </>)
                                             :
                                             (<>
-                                                <Button onClick={() => { this.markAsEditable(statusRow); }}>Edit</Button>
-                                                <Button variant="danger" onClick={() => { this.onDeleteStatus(statusRow); }}>Delete</Button></>)}
+                                                {(statusRow.organizationId || statusRow.editable) &&
+                                                    <>
+                                                        <Button onClick={() => { this.markAsEditable(statusRow); }}>Edit</Button>
+                                                        <Button variant="danger" onClick={() => { this.onDeleteStatus(statusRow); }}>Delete</Button>
+                                                    </>}
+                                            </>)}
+
+
                                     </td>
                                 </tr>);
                         }))}

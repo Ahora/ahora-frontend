@@ -28,6 +28,7 @@ import MilestonesPage from "app/pages/milestones";
 import { requestMilestonesData } from "app/store/milestones/actions";
 import { requestLabelsData } from "app/store/labels/actions";
 import { requestStatusesData } from "app/store/statuses/actions";
+import OrganizationNew from "./new";
 
 interface OrganizationDetailsPageProps {
   organization: Organization | null;
@@ -74,7 +75,8 @@ class OrganizationDetailsPage extends React.Component<Props> {
     const organization = this.props.organization;
     if (organization) {
       const canManageOrg: boolean = canManageOrganization(this.props.currentOrgPermission);
-      const canManageNotificationsBool: boolean = canManageNotifications(this.props.currentUser);
+      let canManageNotificationsBool: boolean = canManageNotifications(this.props.currentUser);
+      canManageNotificationsBool = false; //Notifications are not ready, yet
       return (
         <Container fluid={true}>
           <h2>{organization.displayName}</h2>
@@ -110,6 +112,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
           <Switch>
             <Route path={`/organizations/:login/settings/:settingsSection?`} component={OrganizationSettingsPage} />
             <Route path={`/organizations/:login/docs/add`} component={AddDocPage} />
+            <Route path={`/organizations/:login/new`} component={OrganizationNew} />
             <Route path={`/organizations/:login/docs/:id`} component={DocsDetailsPage} />
             <Route path={`/organizations/:login/docs`} component={DocsPage} />
             <Route path={`/organizations/:login/dashboards/add`} component={AddDashboardPage} />

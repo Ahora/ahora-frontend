@@ -10,6 +10,8 @@ import AhoraNumberField from "app/components/Forms/Fields/AhoraNumberField";
 import AhoraDateField from "app/components/Forms/Fields/AhoraDateField";
 import AhoraEnumField from "app/components/Forms/Fields/AhoraEnumField";
 import { RouteComponentProps } from "react-router";
+import AhoraRepistoryAutoCompleteField from "app/components/Forms/Fields/RepositoryAutoComplete";
+import AhoraOrganizationAutoCompleteField from "app/components/Forms/Fields/OrganizationAutoComplete";
 
 class AhoraSDK {
     private static instance: AhoraSDK;
@@ -37,6 +39,12 @@ AhoraSDK.getInstance().formComponents.register("number", AhoraNumberField);
 AhoraSDK.getInstance().formComponents.register("searchcriteria", AhoraSearchCriteriasField);
 AhoraSDK.getInstance().formComponents.register("date", AhoraDateField);
 AhoraSDK.getInstance().formComponents.register("enum", AhoraEnumField);
+AhoraSDK.getInstance().formComponents.register("githubrepository", AhoraRepistoryAutoCompleteField);
+AhoraSDK.getInstance().formComponents.register("githuborganization", AhoraOrganizationAutoCompleteField);
+
+
+
+
 
 AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraBarsPie", {
     title: "Pie or Bars Chart",

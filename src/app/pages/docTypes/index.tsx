@@ -15,6 +15,7 @@ interface DocTypeRow {
     name?: string;
     description?: string;
     code?: string;
+    organizationId?: number;
 }
 
 interface DocTypeesPageState {
@@ -163,8 +164,16 @@ class DocTypesPage extends React.Component<AllProps, DocTypeesPageState> {
                                             </>)
                                             :
                                             (<>
-                                                <Button onClick={() => { this.markAsEditable(docTypeRow); }}>Edit</Button>
-                                                <Button variant="danger" onClick={() => { this.onDeleteDocType(docTypeRow); }}>Delete</Button></>)}
+                                                {(docTypeRow.organizationId || docTypeRow.editable) &&
+                                                    <>
+                                                        <Button onClick={() => { this.markAsEditable(docTypeRow); }}>Edit</Button>
+                                                        <Button variant="danger" onClick={() => { this.onDeleteDocType(docTypeRow); }}>Delete</Button>
+                                                    </>
+                                                }
+                                            </>
+                                            )
+                                        }
+
                                     </td>
                                 </tr>);
                         }))}

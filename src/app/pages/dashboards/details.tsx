@@ -81,7 +81,7 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
     }
 
     async onTitleChanged(value: string) {
-        await updateDashboardTitle(this.state.dashboard!.id, value);
+        await updateDashboardTitle(this.state.dashboard!.id!, value);
         this.setState({
             dashboard: { ...this.state.dashboard!, title: value },
         });
@@ -104,14 +104,14 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
         });
 
         if (this.state.dashboard) {
-            await updateDashboard(this.state.dashboard.id, {
+            await updateDashboard(this.state.dashboard.id!, {
                 ...this.state.dashboard, gadgets: gadgets.map((g) => { return g.gadget; })
             });
         }
     }
 
     async onDescriptionChanged(value: string) {
-        await updateDashboardDescription(this.state.dashboard!.id, value);
+        await updateDashboardDescription(this.state.dashboard!.id!, value);
         this.setState({
             dashboard: { ...this.state.dashboard!, description: value },
         });
@@ -123,7 +123,7 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
         if (index !== -1 && this.state.dashboard) {
             gadgets.splice(index, 1);
             this.setState({ gadgets });
-            await updateDashboard(this.state.dashboard.id, {
+            await updateDashboard(this.state.dashboard.id!, {
                 ...this.state.dashboard, gadgets: gadgets.map((g) => { return g.gadget; })
             });
         }
@@ -147,14 +147,14 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
             });
 
             if (this.state.dashboard) {
-                updateDashboard(this.state.dashboard?.id, { ...this.state.dashboard, gadgets: gadgets.map((g) => { return g.gadget; }) });
+                updateDashboard(this.state.dashboard?.id!, { ...this.state.dashboard, gadgets: gadgets.map((g) => { return g.gadget; }) });
             }
         }
     }
 
     async remove() {
         if (this.state.dashboard) {
-            await deleteDashboard(this.state.dashboard!.id);
+            await deleteDashboard(this.state.dashboard!.id!);
             this.props.history.replace(`/organizations/${this.props.match.params.login}/dashboards`);
         }
     }

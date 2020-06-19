@@ -27,6 +27,7 @@ interface Props {
 interface State {
     searchCriteriaText?: string;
     searchCriterias?: SearchCriterias;
+    isFocused: boolean;
 }
 
 const printTextOfQuery = (field: string, val: string | string[]): string => {
@@ -61,7 +62,8 @@ export default class SearchDocsInput extends React.Component<Props, State> {
 
         this.state = {
             searchCriteriaText: this.props.searchCriteriaText,
-            searchCriterias: this.props.searchCriterias
+            searchCriterias: this.props.searchCriterias,
+            isFocused: false
         }
     }
 
@@ -113,8 +115,13 @@ export default class SearchDocsInput extends React.Component<Props, State> {
         }
     }
 
+    handleFocus() {
+        this.setState({ isFocused: true });
+    }
+
     handleBlur() {
         this.search();
+        this.setState({ isFocused: false });
     }
 
     handleKeyDown(e: any) {
@@ -134,7 +141,8 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                         <Form.Control
                             type="text"
                             required={true}
-                            value={this.state.searchCriteriaText}
+                            onFocus={this.handleFocus.bind(this)}
+                            value={this.props.searchCriteriaText}
                             onChange={this.onTextChange.bind(this)}
                             placeholder="enter your search criteria"
                             aria-describedby="inputGroupPrepend"
@@ -145,6 +153,7 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                             <Button type="button" onClick={this.search.bind(this)} color="primary" variant="primary">Search</Button>
                         </InputGroup.Append>
                     </InputGroup>
+                    <div><a target="_blank" href="https://ahora.dev/organizations/ahora/docs/25216">Search syntax documentation</a></div>
                 </Form.Group>
             </div>
         );

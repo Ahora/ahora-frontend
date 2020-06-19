@@ -14,11 +14,11 @@ export enum DashboardType {
 }
 
 export interface Dashboard {
-    id: number;
-    organizationId: number;
-    teamId: number;
-    userId: number;
-    user: UserItem;
+    id?: number;
+    organizationId?: number;
+    teamId?: number;
+    userId?: number;
+    user?: UserItem;
     title: string;
     description?: string;
     layout: DashboardLayout;

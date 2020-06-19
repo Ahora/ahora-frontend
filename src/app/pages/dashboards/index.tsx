@@ -78,7 +78,7 @@ class DashboardsPage extends React.Component<AllProps, DashboardsPageState> {
                                         </td>
                                         <td>{dashboard.description}</td>
                                         <td>{dashboard.dashboardType === DashboardType.Public ? "Public" : "Private"}</td>
-                                        <td>{dashboard.user.displayName}</td>
+                                        <td>{dashboard.user!.displayName}</td>
                                     </tr>);
                             }))}
                         </tbody>

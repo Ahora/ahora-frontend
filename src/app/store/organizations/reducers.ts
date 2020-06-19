@@ -2,7 +2,7 @@ import { OrganizationsState, OrganizationsActionTypes, SET_CURRENT_USER, SET_SEA
 
 const initialState: OrganizationsState = {
     currentOrganization: undefined,
-    searchCriterias: { status: ["opened"] }
+    searchCriterias: { status: ["open"] }
 }
 
 export function currentOrganizationsReducer(state = initialState, action: OrganizationsActionTypes): OrganizationsState {

@@ -71,8 +71,7 @@ class OrganizationNew extends React.Component<AllProps, DashboardsPageState> {
         return (
             <div>
                 <p>
-                    Hi, Thank you for using <strong>Ahora!</strong>.<br />
-                    Please add your favorite repositories.
+                    Please add your favorite Github repositories.
                 </p>
                 <div className="mb-4">
                     <AddDocSourceForm onDocSourceAdded={this.docSourceAdded.bind(this)}></AddDocSourceForm>
@@ -81,6 +80,7 @@ class OrganizationNew extends React.Component<AllProps, DashboardsPageState> {
                 {this.state.docSources.length > 0 &&
                     <div>
                         <Button onClick={this.addDashboards.bind(this)} variant="success">Continue &amp; create a dashboard</Button>
+                        <p>*It may take several minutes to see imported information available.</p>
                     </div>
                 }
             </div>

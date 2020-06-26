@@ -57,13 +57,6 @@ export default class AddOrganizationPage extends React.Component<Props, AddDocsP
                             <Form.Control name="login" onChange={this.handleChange.bind(this)} type="text" />
                         </InputGroup>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>Type</Form.Label>
-                        <Form.Control name="orgType" onChange={this.handleChange.bind(this)} as="select">
-                            <option value="0">Public</option>
-                            <option value="1">Private</option>
-                        </Form.Control>
-                    </Form.Group>
                     <Form.Group controlId="exampleForm.ControlTextarea1">
                         <Form.Label>Description</Form.Label>
                         <Form.Control name="description" onChange={this.handleChange.bind(this)} as="textarea" rows="10" />

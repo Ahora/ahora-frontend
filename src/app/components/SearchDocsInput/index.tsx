@@ -142,7 +142,7 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                             type="text"
                             required={true}
                             onFocus={this.handleFocus.bind(this)}
-                            value={this.props.searchCriteriaText}
+                            value={this.state.searchCriteriaText}
                             onChange={this.onTextChange.bind(this)}
                             placeholder="enter your search criteria"
                             aria-describedby="inputGroupPrepend"

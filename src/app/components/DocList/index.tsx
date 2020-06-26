@@ -103,6 +103,7 @@ class DocList extends React.Component<AllProps, DocsPageState> {
                                     <thead>
                                         <tr>
                                             <th>Doc Type</th>
+                                            <th>Repository</th>
                                             <th>Name</th>
                                             <th>Assignee</th>
                                             <th>Status</th>
@@ -120,6 +121,7 @@ class DocList extends React.Component<AllProps, DocsPageState> {
 
                                                 <tr className="pt-3" key={doc.id!}>
                                                     <td>{currentDocType && currentDocType.name}</td>
+                                                    <td>{doc.source && doc.source.repo}</td>
                                                     <td>
                                                         <Link to={`/organizations/${this.props.currentOrganization!.login}/docs/${doc.id}`}>{doc.subject}</Link>
                                                         <div><LabelsList defaultSelected={doc.labels}></LabelsList></div>

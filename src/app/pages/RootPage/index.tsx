@@ -28,12 +28,12 @@ class RootPageComponent extends React.Component<AllProps> {
   render = () => {
     return (
       <>
+
         <Jumbotron>
           <Container>
-            <h1>Ahora! Extend your community</h1>
+            <h1>Ahora! Enhance your community.</h1>
             <p className="lead text-muted">
-              Ahora! is a free open source to track multiple Github repositories.<br />
-              Through multiple repositories, better manage your communities by putting your teams and collaboration at the center.
+              Ahora! is a free, open source public repository solution. <br />Provides you tools to better manage repositories, putting communication and collaboration at the center of your organization.
               </p>
             <p>
               {this.props.currentUser ?
@@ -53,7 +53,8 @@ class RootPageComponent extends React.Component<AllProps> {
                   <div className="icon">
                     <i className="fab fa-github"></i>
                   </div>
-                  Utilize smart graphs to display <br />issues and pull requests                </Card.Body>
+                  Utilize smart graphs to display <br />Issues and Pull Requests
+                </Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
@@ -123,23 +124,8 @@ class RootPageComponent extends React.Component<AllProps> {
                 </Card>
               </div>
             }
-
           </Row>
         </Container>
-        <Jumbotron>
-          <Container className="main">
-            <h4>Explore Organizations</h4>
-            <Row className="mt-4">
-              <div className="col-md-6 text-center">
-                <Link to="/organizations/kubernetes/dashboards/11"><img style={{ width: "80%" }} src="https://kubernetes.io/images/kubernetes-horizontal-color.png" /></Link>
-              </div>
-              <div className="col-md-6 text-center">
-                <Link to="/organizations/openshiftdashboards/12"><img style={{ width: "80%" }} src="https://cdn.clipart.email/7720df34fc7a33defec737254b4b62e8_openshift-development-and-production-in-clouds-techboardio_1197-231.png" /></Link>
-              </div>
-            </Row>
-
-          </Container>
-        </Jumbotron>
       </>
     );
   };

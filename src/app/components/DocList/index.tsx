@@ -105,33 +105,34 @@ class DocList extends React.Component<AllProps, DocsPageState> {
                                             <th>Doc Type</th>
                                             <th>Repository</th>
                                             <th>Name</th>
+                                            <th>Reporter</th>
                                             <th>Assignee</th>
                                             <th>Status</th>
                                             <th>Comments</th>
                                             <th>Views</th>
                                             <th>Updated At</th>
-                                            <th>Created At</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {this.props.currentOrganization && this.state.docs.map((doc) => {
                                             const currentStatus: Status | undefined = this.props.statuses.get(doc.statusId);
-                                            const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId)
+                                            const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId);
+                                            const isViewed: boolean = (doc.lastView !== null && doc.lastView.updatedAt > doc.updatedAt) ? true : false;
                                             return (
 
-                                                <tr className="pt-3" key={doc.id!}>
+                                                <tr className={`pt-3 ${!isViewed && "font-weight-bold"}`} key={doc.id!}>
                                                     <td>{currentDocType && currentDocType.name}</td>
                                                     <td>{doc.source && doc.source.repo}</td>
                                                     <td>
                                                         <Link to={`/organizations/${this.props.currentOrganization!.login}/docs/${doc.id}`}>{doc.subject}</Link>
                                                         <div><LabelsList defaultSelected={doc.labels}></LabelsList></div>
                                                     </td>
+                                                    <td>{(doc.reporter) && doc.reporter.username}</td>
                                                     <td>{(doc.assignee) && doc.assignee.username}</td>
                                                     <td>{(currentStatus) ? currentStatus.name : ""}</td>
                                                     <td>{doc.commentsNumber}</td>
                                                     <td>{doc.views}</td>
                                                     <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.updatedAt}></Moment></td>
-                                                    <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.createdAt}></Moment></td>
                                                 </tr>);
                                         })}
                                     </tbody>

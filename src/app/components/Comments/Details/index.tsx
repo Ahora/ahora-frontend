@@ -10,6 +10,7 @@ import MarkDownEditor from 'app/components/MarkDownEditor';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import Card from 'react-bootstrap/Card';
 
 interface CommentsProps {
     comment: Comment;
@@ -93,38 +94,41 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
     render() {
         const disablePost: boolean = !(!!this.state.newCommentText && this.state.newCommentText.trim().length > 0);
         return (
-            <div>
-                <div className="commentTitle">
-                    <span className="authoranddate font-weight-bold">
-                        {this.state.pinned &&
-                            <span className="pinned">
-                                <span className="fa fa-check"></span>
-                            </span>
-                        }
-                        {this.props.comment.author.username} | <Moment titleFormat="D MMM YYYY hh:mm" withTitle fromNow date={this.props.comment.createdAt}></Moment>:
-                    </span>
-                    <div className="justifyend">
-                        <DropdownButton size="sm" variant="light" as={ButtonGroup} title="" id="bg-nested-dropdown">
-                            <Dropdown.Item eventKey="1" onClick={this.editMode.bind(this)}>Edit</Dropdown.Item>
-                            <Dropdown.Item eventKey="1" onClick={this.deleteCommentHandle.bind(this)}>Delete</Dropdown.Item>
-                            <Dropdown.Item eventKey="1" onClick={this.pinToggle.bind(this)}>{this.state.pinned ? "Unpin Comment" : "Pin Comment"}</Dropdown.Item>
-                        </DropdownButton>
+            <Card className="mb-2">
+                <Card.Header>
+                    <div className="commentTitle">
+                        <span className="authoranddate font-weight-bold">
+                            {this.state.pinned &&
+                                <span className="pinned">
+                                    <span className="fa fa-check"></span>
+                                </span>
+                            }
+                            {this.props.comment.author.username} | <Moment titleFormat="D MMM YYYY hh:mm" withTitle fromNow format="D MMM YYYY hh:mm" date={this.props.comment.createdAt}></Moment>
+                        </span>
+                        <div className="justifyend">
+                            <DropdownButton size="sm" variant="light" as={ButtonGroup} title="" id="bg-nested-dropdown">
+                                <Dropdown.Item eventKey="1" onClick={this.editMode.bind(this)}>Edit</Dropdown.Item>
+                                <Dropdown.Item eventKey="1" onClick={this.deleteCommentHandle.bind(this)}>Delete</Dropdown.Item>
+                                <Dropdown.Item eventKey="1" onClick={this.pinToggle.bind(this)}>{this.state.pinned ? "Unpin Comment" : "Pin Comment"}</Dropdown.Item>
+                            </DropdownButton>
+                        </div>
                     </div>
-                </div>
-                {this.state.editMode ?
-                    <div>
-                        <MarkDownEditor value={this.props.comment.comment} onChange={this.onCommentChange.bind(this)}></MarkDownEditor>
-                        <Nav className="justify-content-end mt-2">
-                            <Button variant="success" disabled={disablePost || this.state.submittingComment} onClick={this.post.bind(this)}>
-                                {this.state.submittingComment ? <Spinner animation="border" /> : <>Update Comment</>}
-                            </Button>
-                            <Button variant="danger" onClick={this.cancelEdit.bind(this)}>Cancel</Button>
-                        </Nav>
-                    </div> :
-                    <p className="markdown-body" dangerouslySetInnerHTML={{ __html: this.state.comment.htmlComment }}></p>
-                }
-
-            </ div>
+                </Card.Header>
+                <Card.Body>
+                    {this.state.editMode ?
+                        <div>
+                            <MarkDownEditor value={this.props.comment.comment} onChange={this.onCommentChange.bind(this)}></MarkDownEditor>
+                            <Nav className="justify-content-end mt-2">
+                                <Button variant="success" disabled={disablePost || this.state.submittingComment} onClick={this.post.bind(this)}>
+                                    {this.state.submittingComment ? <Spinner animation="border" /> : <>Update Comment</>}
+                                </Button>
+                                <Button variant="danger" onClick={this.cancelEdit.bind(this)}>Cancel</Button>
+                            </Nav>
+                        </div> :
+                        <p className="markdown-body" dangerouslySetInnerHTML={{ __html: this.state.comment.htmlComment }}></p>
+                    }
+                </Card.Body>
+            </Card>
         );
     }
 }

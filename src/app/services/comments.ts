@@ -8,6 +8,8 @@ export interface Comment {
     htmlComment: string;
     createdAt: Date;
     pinned: boolean;
+    authorUserId: number;
+    parentId?: number;
     author: {
         username: string;
         displayName?: string;
@@ -35,11 +37,12 @@ export const getDoc = async (login: string, docId: number): Promise<Comment> => 
     return result.data;
 }
 
-export const addComment = async (login: string, docId: number, comment: string): Promise<Comment> => {
+export const addComment = async (login: string, docId: number, comment: string, parentId?: number): Promise<Comment> => {
     const result = await commentsClient.post({
         params: { login, docId },
         data: {
-            comment
+            comment,
+            parentId
         }
     });
     return result.data;
@@ -62,10 +65,17 @@ export const deleteComment = async (login: string, comment: Comment): Promise<Co
     return result.data;
 }
 
-export const togglePinComment = async (login: string, comment: Comment, pinned: boolean = false): Promise<Comment> => {
-    const result = await commentsClient.put({
+export const pinComment = async (login: string, comment: Comment): Promise<Comment> => {
+    const result = await commentsClient.post({
+        url: `/api/organizations/${login}/docs/${comment.docId}/comments/${comment.id}/pin`,
         params: { login, docId: comment.docId, id: comment.id },
-        data: { pinned }
+    });
+    return result.data;
+}
+
+export const unpinComment = async (login: string, comment: Comment): Promise<Comment> => {
+    const result = await commentsClient.post({
+        url: `/api/organizations/${login}/docs/${comment.docId}/comments/${comment.id}/unpin`,
     });
     return result.data;
 }

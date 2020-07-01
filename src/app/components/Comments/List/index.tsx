@@ -4,15 +4,17 @@ import { CommentDetailsComponent } from '../Details';
 import { AddCommentComponent } from 'app/components/Comments/AddComment';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import CanComment from 'app/components/Authentication/CanComment';
+import { Doc } from 'app/services/docs';
 
 interface CommentsProps {
-    docId: number;
+    doc: Doc;
     login: string;
 }
 
 interface State {
     comments?: Comment[];
     pinnedComments?: Comment[];
+    qouteComment?: Comment;
 }
 
 export class CommentListComponent extends React.Component<CommentsProps, State> {
@@ -31,12 +33,17 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
     commentAdded(comment: Comment): void {
         const comments: Comment[] = [comment, ...this.state.comments];
         this.setState({
-            comments
+            comments,
+            qouteComment: undefined
         });
     }
 
+    async onQueue(comment: Comment) {
+        this.setState({ qouteComment: comment });
+    }
+
     async componentDidMount() {
-        const comments: Comment[] = await getComments(this.props.login, this.props.docId);
+        const comments: Comment[] = await getComments(this.props.login, this.props.doc.id);
         this.setState({
             comments,
             pinnedComments: comments.filter(comment => comment.pinned)
@@ -48,17 +55,16 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
             <div>
                 {this.state.pinnedComments && this.state.pinnedComments.length > 0 &&
                     (<>
-                        <h3>Pinned Comments</h3>
                         <div className="list">
                             {this.state.pinnedComments.map((comment: Comment) => {
-                                return (<CommentDetailsComponent onDelete={this.onDeleteComment.bind(this)} login={this.props.login} key={comment.id} comment={comment}></CommentDetailsComponent>);
+                                return (<CommentDetailsComponent onQoute={this.onQueue.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} key={comment.id} comment={comment}></CommentDetailsComponent>);
                             })}
                         </div>
                     </>)
                 }
                 <CanComment>
                     <div className="mt-2 mb-2">
-                        <AddCommentComponent commentAdded={(comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.docId}></AddCommentComponent>
+                        <AddCommentComponent qouteComment={this.state.qouteComment} commentAdded={(comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.doc.id}></AddCommentComponent>
                     </div>
                 </CanComment>
 
@@ -67,7 +73,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
                         {this.state.comments.length > 0 &&
                             <div className="list">
                                 {this.state.comments.map((comment: Comment) => {
-                                    return (<CommentDetailsComponent onDelete={this.onDeleteComment.bind(this)} login={this.props.login} key={comment.id} comment={comment}></CommentDetailsComponent>);
+                                    return (<CommentDetailsComponent onQoute={this.onQueue.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} key={comment.id} comment={comment}></CommentDetailsComponent>);
                                 })}
                             </div>
                         }

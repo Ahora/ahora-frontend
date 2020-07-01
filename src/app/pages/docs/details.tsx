@@ -160,9 +160,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
                                     <p className="mt-4 markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
                                 </EditableMarkDown>
-                                <h2>Comments</h2>
-                                <CommentListComponent docId={doc.id} login={this.props.match.params.login}></CommentListComponent>
-
+                                <CommentListComponent doc={doc} login={this.props.match.params.login}></CommentListComponent>
                             </Col>
                             <Col xs={12} md={4}>
                                 <h2>People</h2>

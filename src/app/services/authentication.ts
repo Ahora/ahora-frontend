@@ -1,10 +1,29 @@
 import { User } from "./users";
 import { Doc } from "./docs";
+import { Comment } from "./comments";
 import { Dashboard } from "./dashboard";
 import { OrganizationTeamUser, TeamUserType } from "./organizationTeams";
 
 export const canComment = (user: User | undefined | null): boolean => {
     return !!user;
+}
+
+export const canEditOrDeleteComment = (comment: Comment, user: User | undefined | null): boolean => {
+    if (!user) {
+        return false;
+    } else {
+        console.log(comment);
+        return comment.authorUserId === user.id;
+    }
+}
+
+export const canPinComment = (doc: Doc, user: User | undefined | null): boolean => {
+    if (!user) {
+        return false;
+    }
+    else {
+        return doc.assigneeUserId === user.id || doc.reporterUserId === user.id;
+    }
 }
 
 export const canAddDashboard = (user: User | undefined | null): boolean => {

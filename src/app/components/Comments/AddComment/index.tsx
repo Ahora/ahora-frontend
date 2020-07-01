@@ -9,6 +9,7 @@ import Nav from 'react-bootstrap/Nav';
 interface CommentsProps {
     docId: number;
     login: string;
+    qouteComment?: Comment;
     commentAdded: (comment: Comment) => void;
 }
 
@@ -28,13 +29,26 @@ export class AddCommentComponent extends React.Component<CommentsProps, State> {
         }
     }
 
+    componentDidUpdate(prevProps: CommentsProps) {
+        if (prevProps.qouteComment !== this.props.qouteComment && this.props.qouteComment) {
+            const commentRows = this.props.qouteComment.comment.split("\n");
+            for (let index = 0; index < commentRows.length; index++) {
+                commentRows[index] = ">" + commentRows[index];
+            }
+
+            this.setState({
+                comment: commentRows.join("\n") + "\n\n"
+            });
+        }
+    }
+
     post() {
         return async () => {
             if (this.state.comment) {
                 this.setState({
                     submittingComment: true
                 });
-                const newComment: Comment = await addComment(this.props.login, this.props.docId, this.state.comment);
+                const newComment: Comment = await addComment(this.props.login, this.props.docId, this.state.comment, this.props.qouteComment && this.props.qouteComment.id);
                 this.setState({
                     comment: undefined,
                     submittingComment: false

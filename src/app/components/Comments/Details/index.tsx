@@ -1,21 +1,25 @@
 import * as React from 'react';
-import { Comment, togglePinComment, updateComment, deleteComment } from 'app/services/comments';
+import { Comment, updateComment, deleteComment, pinComment, unpinComment } from 'app/services/comments';
 import Moment from 'react-moment';
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from 'react-bootstrap/Dropdown';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-
 import './style.scss';
 import MarkDownEditor from 'app/components/MarkDownEditor';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Card from 'react-bootstrap/Card';
+import CanEditOrDeleteComment from 'app/components/Authentication/CanEditOrDeleteComment';
+import CanPinComment from 'app/components/Authentication/CanPinComment';
+import { Doc } from 'app/services/docs';
 
 interface CommentsProps {
     comment: Comment;
     login: string;
+    doc: Doc;
     onDelete(id: number): void;
+    onQoute(comment: Comment): void;
 }
 
 interface State {
@@ -61,7 +65,7 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
             newCommentText: undefined,
             submittingComment: false,
             editMode: false
-        })
+        });
     }
 
     async post() {
@@ -79,16 +83,16 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
         }
     }
     async pinToggle() {
+        if (this.state.pinned) {
+            await unpinComment(this.props.login, this.props.comment);
+        }
+        else {
+            await pinComment(this.props.login, this.props.comment);
+
+        }
         this.setState({
             pinned: !this.state.pinned
         });
-        try {
-            await togglePinComment(this.props.login, this.props.comment, !this.state.pinned);
-        } catch (error) {
-            this.setState({
-                pinned: this.state.pinned
-            });
-        }
     }
 
     render() {
@@ -106,10 +110,15 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
                             {this.props.comment.author.username} | <Moment titleFormat="D MMM YYYY hh:mm" withTitle fromNow format="D MMM YYYY hh:mm" date={this.props.comment.createdAt}></Moment>
                         </span>
                         <div className="justifyend">
-                            <DropdownButton size="sm" variant="light" as={ButtonGroup} title="" id="bg-nested-dropdown">
-                                <Dropdown.Item eventKey="1" onClick={this.editMode.bind(this)}>Edit</Dropdown.Item>
-                                <Dropdown.Item eventKey="1" onClick={this.deleteCommentHandle.bind(this)}>Delete</Dropdown.Item>
-                                <Dropdown.Item eventKey="1" onClick={this.pinToggle.bind(this)}>{this.state.pinned ? "Unpin Comment" : "Pin Comment"}</Dropdown.Item>
+                            <DropdownButton alignRight title="" size="sm" variant="light" as={ButtonGroup} id="bg-nested-dropdown">
+                                <CanEditOrDeleteComment comment={this.props.comment}>
+                                    <Dropdown.Item eventKey="1" onClick={this.editMode.bind(this)}>Edit</Dropdown.Item>
+                                    <Dropdown.Item eventKey="2" onClick={this.deleteCommentHandle.bind(this)}>Delete</Dropdown.Item>
+                                </CanEditOrDeleteComment>
+                                <CanPinComment doc={this.props.doc} comment={this.props.comment}>
+                                    <Dropdown.Item eventKey="3" onClick={this.pinToggle.bind(this)}>{this.state.pinned ? "Unpin Comment" : "Pin Comment"}</Dropdown.Item>
+                                </CanPinComment>
+                                <Dropdown.Item eventKey="4" onClick={this.props.onQoute.bind(this, this.props.comment)}>Quote comment</Dropdown.Item>
                             </DropdownButton>
                         </div>
                     </div>

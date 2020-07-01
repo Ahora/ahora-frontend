@@ -32,7 +32,7 @@ class BarPieGadget extends React.Component<AllProps, BarPieGadgetState> {
 
         this.state = {
             bars: [],
-            loading: true
+            loading: false
         };
     }
 
@@ -46,34 +46,36 @@ class BarPieGadget extends React.Component<AllProps, BarPieGadgetState> {
     }
 
     async updateGraph(props: AllProps) {
-        this.setState({
-            loading: true
-        });
-        const rawData: any[] = await getDocGroup([props.data.primaryGroup!, props.data.secondaryGroup!], props.data.searchCriterias);
-        this.setState({
-            loading: false
-        });
-        const chartData: any[] = [];
-        const bars: string[] = [];
-        if (rawData.length > 0) {
-            const firstItem: any = rawData[0].criteria;
-
-            let barTitle = "";
-            for (const key in firstItem) {
-                barTitle += `${key} `;
-            }
-            //remove last space!
-            barTitle = barTitle.substr(0, barTitle.length - 1)
-            bars.push(barTitle);
-        }
-
-        rawData.forEach((LabelRow) => {
-            chartData.push({
-                ...LabelRow,
-                name: LabelRow.values.join("-")
+        if (props.data.primaryGroup || props.data.secondaryGroup) {
+            this.setState({
+                loading: true
             });
-        });
-        this.setState({ chartData, bars, loading: false });
+            const rawData: any[] = await getDocGroup([props.data.primaryGroup!, props.data.secondaryGroup!], props.data.searchCriterias);
+            this.setState({
+                loading: false
+            });
+            const chartData: any[] = [];
+            const bars: string[] = [];
+            if (rawData.length > 0) {
+                const firstItem: any = rawData[0].criteria;
+
+                let barTitle = "";
+                for (const key in firstItem) {
+                    barTitle += `${key} `;
+                }
+                //remove last space!
+                barTitle = barTitle.substr(0, barTitle.length - 1)
+                bars.push(barTitle);
+            }
+
+            rawData.forEach((LabelRow) => {
+                chartData.push({
+                    ...LabelRow,
+                    name: LabelRow.values.join("-")
+                });
+            });
+            this.setState({ chartData, bars, loading: false });
+        }
     }
 
     async componentDidMount() {
@@ -100,7 +102,7 @@ class BarPieGadget extends React.Component<AllProps, BarPieGadgetState> {
                         : this.state.chartData &&
                         <ResponsiveContainer width="100%" height={300}>
                             {this.props.data.displayType === BarPieGadgetDisplayType.pie ?
-                                <PieChart>
+                                <PieChart onClick={this.onClick.bind(this)}>
                                     <Pie dataKey="count" isAnimationActive={false} data={this.state.chartData} fill="#8884d8" label >
                                         {
                                             this.state.chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)

@@ -42,6 +42,10 @@ const groupOptions: { name: string, value: string }[] = [
         value: "createdAt"
     },
     {
+        name: "Closed At",
+        value: "closedAt"
+    },
+    {
         name: "Updated At",
         value: "updatedAt"
     },

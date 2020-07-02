@@ -12,6 +12,9 @@ import AhoraEnumField from "app/components/Forms/Fields/AhoraEnumField";
 import { RouteComponentProps } from "react-router";
 import AhoraRepistoryAutoCompleteField from "app/components/Forms/Fields/RepositoryAutoComplete";
 import AhoraOrganizationAutoCompleteField from "app/components/Forms/Fields/OrganizationAutoComplete";
+import DocsDateTimeGraphForm from "app/components/Dashboards/Gadgets/DateTimeChart/form";
+import DocsDateTimeGraph from "app/components/Dashboards/Gadgets/DateTimeChart/graph";
+
 
 class AhoraSDK {
     private static instance: AhoraSDK;
@@ -61,13 +64,13 @@ AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraDocList", {
     formComponent: DocListGadgetForm,
     gadgetComponent: DocListGadget
 });
-/*
-AhoraSDK.getInstance().dashboardGadgets.registerGadget("docsdatetimegraph", {
-    title: "Over time Graph",
-    description: "Lione Chart",
+
+AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraClosedCreated", {
+    title: "Closed & Created over time Graph",
+    description: "Line Chart",
     group: "General",
     formComponent: DocsDateTimeGraphForm,
     gadgetComponent: DocsDateTimeGraph
 });
-*/
+
 export default AhoraSDK;

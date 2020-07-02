@@ -19,6 +19,7 @@ export interface SearchCriterias {
 
 
 interface Props {
+    required?: boolean;
     searchCriteriaText?: string;
     searchCriterias?: SearchCriterias;
     searchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string): void
@@ -140,7 +141,7 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                     <InputGroup>
                         <Form.Control
                             type="text"
-                            required={true}
+                            required={this.props.required === undefined ? true : this.props.required}
                             onFocus={this.handleFocus.bind(this)}
                             value={this.state.searchCriteriaText}
                             onChange={this.onTextChange.bind(this)}

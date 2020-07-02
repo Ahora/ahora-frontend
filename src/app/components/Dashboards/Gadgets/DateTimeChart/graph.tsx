@@ -2,16 +2,17 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { getDocGroup } from 'app/services/docs';
-import { Cell, XAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, YAxis } from 'recharts';
+import { XAxis, ResponsiveContainer, LineChart, Line, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { RouteComponentProps } from 'react-router';
 import { Organization } from 'app/services/organizations';
 import { stringify } from "query-string";
 import DocsDateTimeGraphData from './data';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
+import moment from "moment";
 
 interface DocsDateTimeGraphState {
     bars: string[],
-    chartData?: any[];
+    chartData?: any;
     loading: boolean;
 }
 
@@ -27,6 +28,40 @@ interface AllProps extends RouteComponentProps<DocsDateTimeGraphProps>, Injected
     data: DocsDateTimeGraphData;
 }
 
+function joinObjects(arrayone: any[], arrayTwo: any[]): any {
+    const arrays = [arrayone, arrayTwo];
+    var map: Map<any, any> = new Map();
+    for (var i = 0; i < arrays.length; i++) {
+        // Iterate over individual argument arrays (aka json1, json2)
+        for (var j = 0; j < arrays[i].length; j++) {
+            var currentTime = arrays[i][j]['values'][0];
+            if (currentTime != null) {
+                let mapVal = map.get(currentTime);
+                if (!mapVal) {
+                    mapVal = { closed: 0, created: 0 };
+                }
+
+                mapVal[`${i == 0 ? "closed" : "created"}`] = arrays[i][j].count;
+                map.set(currentTime, mapVal);
+            }
+        }
+    }
+
+    var newArray = [] as any;
+    const keys1 = [...map.keys()];
+    for (const keyItem in keys1) {
+
+        const item = {
+            ...map.get(keys1[keyItem]),
+            name: keys1[keyItem]
+        };
+
+        newArray.push(item);
+    }
+    return newArray;
+}
+
+
 class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState> {
     constructor(props: AllProps) {
         super(props);
@@ -40,42 +75,26 @@ class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState
     componentWillReceiveProps(nextProps: AllProps) {
         //TODO: Compare arrays better!
         if (nextProps.data.searchCriterias !== this.props.data.searchCriterias
-            || nextProps.data.primaryGroup !== this.props.data.primaryGroup
-            || nextProps.data.secondaryGroup !== this.props.data.secondaryGroup) {
+            || nextProps.data.closedAtTrend !== this.props.data.closedAtTrend
+            || nextProps.data.createdAtTrend !== this.props.data.createdAtTrend) {
             this.updateGraph(nextProps);
         }
     }
+
+
 
     async updateGraph(props: AllProps) {
         this.setState({
             loading: true
         });
-        const rawData: any[] = await getDocGroup([props.data.primaryGroup!, props.data.secondaryGroup!], props.data.searchCriterias);
-        this.setState({
-            loading: false
-        });
-        const chartData: any[] = [];
-        const bars: string[] = [];
-        if (rawData.length > 0) {
-            const firstItem: any = rawData[0].criteria;
+        const [closedAtData, createdAtData] = await Promise.all([
+            getDocGroup(["closedAt"], props.data.searchCriterias, "closedAt"),
+            getDocGroup(["createdAt"], props.data.searchCriterias, "createdAt"),
+        ]);
 
-            let barTitle = "";
-            for (const key in firstItem) {
-                barTitle += `${key} `;
-            }
-            //remove last space!
-            barTitle = barTitle.substr(0, barTitle.length - 1)
-            bars.push(barTitle);
-
-        }
-
-        rawData.forEach((LabelRow) => {
-            chartData.push({
-                ...LabelRow,
-                name: LabelRow.values.join("-")
-            });
-        });
-        this.setState({ chartData, bars, loading: false });
+        const chartData = joinObjects(closedAtData, createdAtData);
+        const sortedActivities = chartData.sort((a: any, b: any) => { return a.name - b.name });
+        this.setState({ chartData: sortedActivities, loading: false });
     }
 
     async componentDidMount() {
@@ -93,7 +112,6 @@ class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState
     }
 
     render() {
-        const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
         return (
             <div>
                 {
@@ -102,19 +120,14 @@ class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState
                         : this.state.chartData &&
                         <ResponsiveContainer width="100%" height={300}>
                             <LineChart width={500} height={300} data={this.state.chartData}>
-                                <XAxis
-                                    scale='time'
-                                    type="number"
-                                    dataKey="name" />
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis type="number" domain={['dataMin', 'dataMax']} dataKey="name" tickFormatter={(value: any) => { return moment(value).format("DD/MM/YY"); }} />
                                 <YAxis />
-                                <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-                                {
-                                    this.state.bars.map((bar) => <Line key={bar} type="monotone" dataKey="count" stroke="#8884d8">
-                                        {
-                                            this.state.chartData!.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                                        }
-                                    </Line>)
-                                }
+                                <Tooltip labelFormatter={(value: any) => { return moment(value).format("DD/MM/YY"); }} />
+                                <Legend />
+                                <Line type="monotone" dataKey="closed" connectNulls={true} stroke="#0088FE" activeDot={{ r: 8 }} />
+                                <Line type="monotone" dataKey="created" stroke="#00C49F" activeDot={{ r: 8 }} />
+
                             </LineChart>
                         </ResponsiveContainer>
 

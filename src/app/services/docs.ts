@@ -57,9 +57,9 @@ export const getDocs = async (query?: SearchCriterias, offset: number = 0, limit
     }
 }
 
-export const getDocGroup = async (group: string | string[], query?: SearchCriterias): Promise<any[]> => {
+export const getDocGroup = async (group: string | string[], query?: SearchCriterias, sort?: string): Promise<any[]> => {
     const result = await docsClient.get({
-        query: { ...query, group }
+        query: { ...query, group, sort: sort }
     });
 
     return result.data;

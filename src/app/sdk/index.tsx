@@ -16,6 +16,8 @@ import DocsDateTimeGraphForm from "app/components/Dashboards/Gadgets/DateTimeCha
 import DocsDateTimeGraph from "app/components/Dashboards/Gadgets/DateTimeChart/graph";
 import AhoraTextAreaField from "app/components/Forms/Fields/AhoraTextAreaField";
 import AhoraOrganizationUrlField from "app/components/Forms/Fields/AhoraOrganizationUrlField";
+import AhoraContentForm from "app/components/Dashboards/Gadgets/Content/form";
+import AhoraContentGadget from "app/components/Dashboards/Gadgets/Content/graph";
 
 
 class AhoraSDK {
@@ -76,5 +78,15 @@ AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraClosedCreated", {
     formComponent: DocsDateTimeGraphForm,
     gadgetComponent: DocsDateTimeGraph
 });
+
+
+AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraCustomContent", {
+    title: "Custom content",
+    description: "Displays custom html content",
+    group: "General",
+    formComponent: AhoraContentForm,
+    gadgetComponent: AhoraContentGadget
+});
+
 
 export default AhoraSDK;

@@ -92,7 +92,7 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
                         <thead>
                             <tr>
                                 <th>Repo</th>
-                                <th>Organization</th>
+                                <th>Organization/User</th>
                                 <th>Last Updated</th>
                                 <th>Syncing</th>
                                 <CanManageOrganization>
@@ -101,7 +101,7 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.docSources.map((docSource: DocSource, ) => {
+                            {this.state.docSources.map((docSource: DocSource,) => {
                                 return (
                                     <tr className="pt-3" key={docSource.id}>
                                         <td>
@@ -109,7 +109,7 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
                                         </td>
                                         <td>{docSource.organization}</td>
                                         <td>{docSource.lastUpdated && <Moment date={docSource.lastUpdated} format="D MMM YYYY hh:mm"></Moment>}</td>
-                                        <td>{docSource.syncing.toString()}</td>
+                                        <td>{docSource.syncing!.toString()}</td>
                                         <CanManageOrganization>
                                             <td>
                                                 <Button variant="danger" onClick={() => { this.deleteSource(docSource) }}>Delete</Button>

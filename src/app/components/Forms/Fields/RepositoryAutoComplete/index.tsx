@@ -51,15 +51,30 @@ export default class AhoraRepistoryAutoCompleteField extends React.Component<Gro
         this.setState({
             isLoading: true,
         });
+        let repositoriesResult: any;
 
-        const repositoriesResult = await githubRepoClient.get({
-            query: { q: `org:${this.props.formData.organization} ${query} in:name` }
-        })
+        if (this.props.formData.organization.isOrg) {
+            repositoriesResult = await githubRepoClient.get({
+                query: { q: `org:${this.props.formData.organization.login} ${query} in:name` }
+            });
 
-        this.setState({
-            repositories: repositoriesResult.data.items,
-            isLoading: false,
-        });
+            this.setState({
+                repositories: repositoriesResult.data.items,
+                isLoading: false
+            });
+        }
+        else {
+            repositoriesResult = await githubRepoClient.get({
+                url: `https://api.github.com/users/${this.props.formData.organization.login}/repos`
+            });
+
+            this.setState({
+                repositories: repositoriesResult.data,
+                isLoading: false,
+            });
+        }
+
+
     }
 
     render() {

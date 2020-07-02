@@ -6,7 +6,7 @@ export interface DocSource {
   organization: string;
   repo: string;
   lastUpdated?: Date;
-  syncing: boolean;
+  syncing?: boolean;
   startSyncTime?: Date;
 }
 

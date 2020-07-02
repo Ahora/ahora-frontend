@@ -3,6 +3,11 @@ import { AhoraFormField } from '../../AhoraForm/data';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { RestCollectorClient } from 'rest-collector';
 
+export interface OrgValue {
+    login: string;
+    isOrg: boolean;
+}
+
 interface GroupBySelectState {
     value: string;
     organizations: any[],
@@ -13,7 +18,7 @@ interface GroupBySelectStateProps {
     value?: string;
     fieldData: AhoraFormField;
     formData: any;
-    onUpdate: (value: string) => void;
+    onUpdate: (value: OrgValue) => void;
 }
 
 const githubRepoClient: RestCollectorClient = new RestCollectorClient("https://api.github.com/search/users");
@@ -31,7 +36,10 @@ export default class AhoraOrganizationAutoCompleteField extends React.Component<
 
     onChange(orgs: any[]) {
         if (orgs.length > 0) {
-            this.props.onUpdate(orgs[0].login);
+            this.props.onUpdate({
+                login: orgs[0].login,
+                isOrg: (orgs[0].type === "Organization")
+            });
         }
     }
 
@@ -41,7 +49,7 @@ export default class AhoraOrganizationAutoCompleteField extends React.Component<
         });
 
         const repositoriesResult = await githubRepoClient.get({
-            query: { q: `type:org ${query} in:login` }
+            query: { q: `${query} in:login` }
         })
 
         this.setState({

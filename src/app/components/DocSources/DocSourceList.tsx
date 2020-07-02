@@ -37,14 +37,14 @@ class DocSourceList extends React.Component<MilestonesPageProps> {
                         <thead>
                             <tr>
                                 <th>Repo</th>
-                                <th>Organization</th>
+                                <th>Organization or User</th>
                                 <CanManageOrganization>
                                     <th></th>
                                 </CanManageOrganization>
                             </tr>
                         </thead>
                         <tbody>
-                            {this.props.docSources.map((docSource: DocSource, ) => {
+                            {this.props.docSources.map((docSource: DocSource,) => {
                                 return (
                                     <tr className="pt-3" key={docSource.id}>
                                         <td>

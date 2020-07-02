@@ -20,7 +20,7 @@ export class AddDocSourceForm extends React.Component<AddDocSourceFormProps, Sta
             form: {},
             fields: [
                 {
-                    displayName: "Organization",
+                    displayName: "Organization or User",
                     fieldName: "organization",
                     fieldType: "githuborganization"
                 }, {
@@ -39,7 +39,7 @@ export class AddDocSourceForm extends React.Component<AddDocSourceFormProps, Sta
     }
 
     async onSubmit(data: any) {
-        const addedDocSource = await addDocSource(data);
+        const addedDocSource = await addDocSource({ organization: data.organization.login, repo: data.repo });
         this.props.onDocSourceAdded(addedDocSource);
         this.setState({
             form: { ...data, repo: "" }

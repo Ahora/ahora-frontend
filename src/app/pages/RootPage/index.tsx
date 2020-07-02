@@ -10,10 +10,15 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
+import { Organization, getOrganizations } from 'app/services/organizations';
 require('./styles.scss')
 
 interface RootPageProps {
   currentUser: User | undefined;
+}
+
+interface State {
+  organizations?: Organization[];
 }
 
 interface DispatchProps {
@@ -24,7 +29,18 @@ interface AllProps extends RootPageProps, DispatchProps {
 
 }
 
-class RootPageComponent extends React.Component<AllProps> {
+class RootPageComponent extends React.Component<AllProps, State> {
+
+  constructor(props: any) {
+    super(props);
+    this.state = {};
+  }
+
+  async componentDidMount() {
+    const organizations: Organization[] = await getOrganizations();
+    this.setState({ organizations });
+  }
+
   render = () => {
     return (
       <>
@@ -34,11 +50,21 @@ class RootPageComponent extends React.Component<AllProps> {
             <h1>Ahora! Enhance your community.</h1>
             <p className="lead text-muted">
               Ahora! is a free, open source public repository solution. <br />Provides you tools to better manage repositories, putting communication and collaboration at the center of your organization.
-              </p>
+                </p>
             <p>
-              {this.props.currentUser ?
-                <Link to="/organizations"><Button variant="success">Continue to Organizations</Button></Link> :
-                <Button variant="success" href="/auth/github">Login with GitHub</Button>
+              {
+                this.state.organizations &&
+                <>
+                  {this.props.currentUser ?
+                    <>
+                      {(this.state.organizations.length > 0) ?
+                        <Link to="/organizations"><Button variant="success">Continue to Organizations</Button></Link> :
+                        <Link to="/organizations/add"><Button variant="primary">Create Organization</Button></Link>
+                      }
+                    </> :
+                    <Button variant="success" href="/auth/github">Login with GitHub</Button>
+                  }
+                </>
               }
             </p>
           </Container>
@@ -53,8 +79,8 @@ class RootPageComponent extends React.Component<AllProps> {
                   <div className="icon">
                     <i className="fab fa-github"></i>
                   </div>
-                  Utilize smart graphs to display <br />Issues and Pull Requests
-                </Card.Body>
+                    Utilize smart graphs to display <br />Issues and Pull Requests
+                  </Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
@@ -64,7 +90,7 @@ class RootPageComponent extends React.Component<AllProps> {
                   <div className="icon">
                     <i className="fas fa-code-branch"></i>
                   </div>
-                  Manage your cross organization's repositories in a single place</Card.Body>
+                    Manage your cross organization's repositories in a single place</Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
@@ -74,8 +100,8 @@ class RootPageComponent extends React.Component<AllProps> {
                   <div className="icon">
                     <i className="fas fa-bell"></i>
                   </div>
-                  Custome and improved notifications <br />for Issues and Pull Requests
-                </Card.Body>
+                    Custome and improved notifications <br />for Issues and Pull Requests
+                  </Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
@@ -85,8 +111,8 @@ class RootPageComponent extends React.Component<AllProps> {
                   <div className="icon">
                     <i className="far fa-comments"></i>
                   </div>
-                  Share ideas and feedback<br /> easily with others
-                </Card.Body>
+                    Share ideas and feedback<br /> easily with others
+                  </Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
@@ -96,8 +122,8 @@ class RootPageComponent extends React.Component<AllProps> {
                   <div className="icon">
                     <i className="fas fa-dollar-sign"></i>
                   </div>
-                  Use Ahora! free of cost <br /> for public repositories
-                  </Card.Body>
+                    Use Ahora! free of cost <br /> for public repositories
+                    </Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
@@ -107,7 +133,7 @@ class RootPageComponent extends React.Component<AllProps> {
                   <div className="icon">
                     <i className="fab fa-git-square"></i>
                   </div>
-                  Ahora! will always be open source</Card.Body>
+                    Ahora! will always be open source</Card.Body>
               </Card>
             </div>
             {
@@ -118,8 +144,8 @@ class RootPageComponent extends React.Component<AllProps> {
                     <div className="icon">
                       <i className="fas fa-user-friends"></i>
                     </div>
-                    Search issues by specific team<br />
-                    Visualize dependencies between teams<br />
+                      Search issues by specific team<br />
+                      Visualize dependencies between teams<br />
                   </Card.Body>
                 </Card>
               </div>

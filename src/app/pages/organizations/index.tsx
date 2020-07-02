@@ -21,9 +21,7 @@ export default class OrganizationsPage extends React.Component<any, Organization
 
     async componentDidMount() {
         const organizations: Organization[] = await getOrganizations();
-        this.setState({
-            organizations
-        });
+        this.setState({ organizations });
     }
     render = () => {
         if (this.state.organizations) {

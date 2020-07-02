@@ -1,20 +1,17 @@
 import * as React from 'react';
 import Table from 'react-bootstrap/Table';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
-import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
-import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
-import Button from 'react-bootstrap/Button';
 import Moment from 'react-moment';
 import { ApplicationState } from 'app/store';
-
 import { connect } from 'react-redux';
-import { addDocSource, getDocSources, DocSource, deleteDocSource } from 'app/services/docSources';
+import { getDocSources, DocSource, deleteDocSource } from 'app/services/docSources';
 import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 import { Link } from 'react-router-dom';
+import { AddDocSourceForm } from 'app/components/DocSources/AddDocSourceForm';
+import Button from 'react-bootstrap/Button';
 
 interface MilestonesPageState {
     form?: any;
-    fields: AhoraFormField[];
     docSources?: DocSource[];
 }
 
@@ -29,24 +26,10 @@ interface MilestonesPageProps extends MilestonesPageParams {
 class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPageState> {
     constructor(props: MilestonesPageProps) {
         super(props);
-        this.state = {
-            fields: [{
-                displayName: "Repo",
-                fieldName: "repo",
-                fieldType: "text",
-                required: true
-            },
-            {
-                displayName: "Organization",
-                fieldName: "organization",
-                fieldType: "text"
-            }]
-        }
+        this.state = {};
     }
 
-    async onSubmit(data: any) {
-        const addedDocSource = await addDocSource(data);
-
+    async docSourceAdded(addedDocSource: DocSource) {
         this.setState({
             docSources: [addedDocSource, ...this.state.docSources || []]
         });
@@ -74,6 +57,12 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
 
     async deleteSource(docSource: DocSource) {
         await deleteDocSource(docSource.id!);
+
+        if (this.state.docSources) {
+            this.setState({
+                docSources: this.state.docSources.filter((source) => source.id !== docSource.id)
+            })
+        }
     }
 
     render() {
@@ -81,7 +70,7 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
             <div>
                 <CanManageOrganization>
                     {this.state.form ?
-                        <AhoraForm fields={this.state.fields} data={this.state.form} onCancel={this.cancelAdd.bind(this)} onSumbit={this.onSubmit.bind(this)} />
+                        <AddDocSourceForm onDocSourceAdded={this.docSourceAdded.bind(this)}></AddDocSourceForm>
                         :
                         <Button onClick={this.openAddForm.bind(this)}>Add docSource</Button>
                     }

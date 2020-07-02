@@ -117,7 +117,7 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
         }
         return (
             <div>
-                <h2>Labeles</h2>
+                <h2>Labels</h2>
                 <Nav>
                     <NavItem>
                         <Button onClick={this.addnewLabel.bind(this)}>Add new label</Button>

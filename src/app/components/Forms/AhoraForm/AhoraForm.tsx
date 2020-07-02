@@ -4,12 +4,12 @@ import AhoraSDK from 'app/sdk';
 import { AhoraFormStateField, AhoraFormField } from './data';
 import Button from 'react-bootstrap/Button';
 
-interface GroupBySelectState {
+interface AhoraFormState {
     form: any;
     fields: AhoraFormStateField[];
 }
 
-interface GroupBySelectStateProps {
+interface AhoraFormProps {
     data?: any;
     submitButtonText?: string;
     fields: AhoraFormField[],
@@ -18,8 +18,8 @@ interface GroupBySelectStateProps {
 }
 
 
-class AhoraForm extends React.Component<GroupBySelectStateProps, GroupBySelectState> {
-    constructor(props: GroupBySelectStateProps) {
+class AhoraForm extends React.Component<AhoraFormProps, AhoraFormState> {
+    constructor(props: AhoraFormProps) {
         super(props);
 
         this.state = {
@@ -41,9 +41,8 @@ class AhoraForm extends React.Component<GroupBySelectStateProps, GroupBySelectSt
         this.props.onSumbit(this.state.form);
     }
 
-    componentDidUpdate(prevProps: GroupBySelectStateProps) {
+    componentDidUpdate(prevProps: AhoraFormProps) {
         if (this.props.data !== prevProps.data) {
-            console.log("updated for with new state! someone changed it from outside!");
             this.setState({
                 form: { ...this.props.data }
             });

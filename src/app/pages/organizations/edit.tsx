@@ -72,7 +72,7 @@ class EditOrganizationPage extends React.Component<Props, EditOrganizationPageSt
     async onDelete(even: any) {
         event!.preventDefault();
 
-        await deleteOrganization(this.state.form.id);
+        await deleteOrganization(this.state.form.login);
         this.props.history.replace(`/organizations`)
     }
 

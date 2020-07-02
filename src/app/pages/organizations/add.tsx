@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
 import { addOrg } from 'app/services/organizations';
-import InputGroup from 'react-bootstrap/InputGroup';
 import Container from 'react-bootstrap/Container';
+import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
+import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
 
 interface AddDocsPageState {
     form: any;
+    fields: AhoraFormField[];
 }
 
 interface Props extends RouteComponentProps {
@@ -19,7 +19,25 @@ export default class AddOrganizationPage extends React.Component<Props, AddDocsP
     constructor(props: Props) {
         super(props);
         this.state = {
-            form: {}
+            form: {},
+            fields: [
+                {
+                    displayName: "Organization Name",
+                    fieldType: "text",
+                    fieldName: "displayName",
+                },
+                {
+                    displayName: "Url",
+                    fieldType: "organizationurl",
+                    fieldName: "login",
+                    required: true
+                },
+                {
+                    displayName: "Description",
+                    fieldType: "textarea",
+                    fieldName: "description"
+                }
+            ]
         }
     }
 
@@ -29,11 +47,11 @@ export default class AddOrganizationPage extends React.Component<Props, AddDocsP
         this.setState({ form: { ...this.state.form, [fieldName]: fleldVal } })
     }
 
-    async onSubmit(even: any) {
+    async onSubmit(orgData: any) {
         event!.preventDefault();
 
         try {
-            const addedOrg = await addOrg(this.state.form);
+            const addedOrg = await addOrg(orgData);
             this.props.history.replace(`/organizations/${addedOrg.login}/new`);
         } catch (error) {
         }
@@ -43,26 +61,7 @@ export default class AddOrganizationPage extends React.Component<Props, AddDocsP
         return (
             <Container>
                 <h1>Add Organization</h1>
-                <Form onSubmit={this.onSubmit.bind(this)}>
-                    <Form.Group controlId="exampleForm.ControlInput1">
-                        <Form.Label>Organization Name</Form.Label>
-                        <Form.Control name="displayName" onChange={this.handleChange.bind(this)} type="text" />
-                    </Form.Group>
-                    <Form.Group controlId="validationCustomUsername">
-                        <Form.Label>Url</Form.Label>
-                        <InputGroup>
-                            <InputGroup.Prepend>
-                                <InputGroup.Text id="inputGroupPrepend">https://ahora.dev/organizations/</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Form.Control name="login" onChange={this.handleChange.bind(this)} type="text" />
-                        </InputGroup>
-                    </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlTextarea1">
-                        <Form.Label>Description</Form.Label>
-                        <Form.Control name="description" onChange={this.handleChange.bind(this)} as="textarea" rows="10" />
-                    </Form.Group>
-                    <Button variant="primary" type="submit">Add</Button>
-                </Form>
+                <AhoraForm submitButtonText="Add" data={this.state.form} onSumbit={this.onSubmit.bind(this)} fields={this.state.fields} />
             </Container>
         );
     };

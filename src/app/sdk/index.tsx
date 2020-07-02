@@ -14,6 +14,8 @@ import AhoraRepistoryAutoCompleteField from "app/components/Forms/Fields/Reposit
 import AhoraOrganizationAutoCompleteField from "app/components/Forms/Fields/OrganizationAutoComplete";
 import DocsDateTimeGraphForm from "app/components/Dashboards/Gadgets/DateTimeChart/form";
 import DocsDateTimeGraph from "app/components/Dashboards/Gadgets/DateTimeChart/graph";
+import AhoraTextAreaField from "app/components/Forms/Fields/AhoraTextAreaField";
+import AhoraOrganizationUrlField from "app/components/Forms/Fields/AhoraOrganizationUrlField";
 
 
 class AhoraSDK {
@@ -38,8 +40,10 @@ class AhoraSDK {
 
 AhoraSDK.getInstance().formComponents.register("default", AhoraTextField);
 AhoraSDK.getInstance().formComponents.register("text", AhoraTextField);
+AhoraSDK.getInstance().formComponents.register("textarea", AhoraTextAreaField);
 AhoraSDK.getInstance().formComponents.register("number", AhoraNumberField);
 AhoraSDK.getInstance().formComponents.register("searchcriteria", AhoraSearchCriteriasField);
+AhoraSDK.getInstance().formComponents.register("organizationurl", AhoraOrganizationUrlField);
 AhoraSDK.getInstance().formComponents.register("date", AhoraDateField);
 AhoraSDK.getInstance().formComponents.register("enum", AhoraEnumField);
 AhoraSDK.getInstance().formComponents.register("githubrepository", AhoraRepistoryAutoCompleteField);

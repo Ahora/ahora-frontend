@@ -21,6 +21,7 @@ export interface OrganizationDetailsWithPermission extends Organization {
 }
 
 const docsClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{login}");
+const availableorgClient: RestCollectorClient = new RestCollectorClient("/api/availableorg/{login}");
 
 export const addOrg = async (org: Organization): Promise<Organization> => {
     const result = await docsClient.post({
@@ -42,10 +43,17 @@ export const updateOrganization = async (orgName: string, organization: Organiza
     return result.data;
 }
 
-export const deleteOrganization = async (organization: Organization): Promise<void> => {
+export const deleteOrganization = async (login: string): Promise<void> => {
     await docsClient.delete({
-        params: { login: organization.login }
+        params: { login }
     });
+}
+
+export const checkOrgAvailability = async (orgLogin: string): Promise<boolean> => {
+    const result = await availableorgClient.get({
+        params: { login: orgLogin }
+    });
+    return result.data;
 }
 
 export const getOrganizationByLogin = async (login: string): Promise<OrganizationDetailsWithPermission | null> => {

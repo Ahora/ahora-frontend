@@ -138,7 +138,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                                 {(this.state.users.map((user) => {
                                     return (
                                         <tr className="pt-3" key={user.id}>
-                                            <td>{user.user.displayName} ({user.user.username})</td>
+                                            <td>{user.User.displayName} ({user.User.username})</td>
                                             <td>{user.permissionType === TeamUserType.Member ? "Member" : "Owner"}</td>
                                             <td>
                                                 <Button variant="danger" onClick={() => { this.deleteUser(user); }}>Delete</Button>

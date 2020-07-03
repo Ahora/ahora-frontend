@@ -19,7 +19,7 @@ export interface OrganizationTeamUser {
     userId: number;
     permissionType: TeamUserType,
     organizationId: number;
-    user: {
+    User: {
         displayName: string;
         username: string;
     }

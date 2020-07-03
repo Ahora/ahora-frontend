@@ -34,6 +34,10 @@ const groupOptions: { name: string, value: string }[] = [
         value: "reporter"
     },
     {
+        name: "Team",
+        value: "team"
+    },
+    {
         name: "Assignee",
         value: "assignee"
     },

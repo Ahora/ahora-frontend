@@ -88,7 +88,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
             <Nav.Item>
               <Link className="nav-link" to={`/organizations/${organization.login}/docs`}>Browse</Link>
             </Nav.Item>
-            <Nav.Item style={{ display: "none" }}>
+            <Nav.Item>
               <Link className="nav-link" to={`/organizations/${organization.login}/teams`}>Teams</Link>
             </Nav.Item>
             <Nav.Item>

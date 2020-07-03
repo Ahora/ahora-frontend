@@ -33,10 +33,18 @@ interface State {
 
 const printTextOfQuery = (field: string, val: string | string[]): string => {
     if (typeof (val) === "string") {
-        return `${field}:${val}`;
+        //Wrap values with space in "".
+        if (val.indexOf(" ") > -1) {
+            return `${field}:"${val}"`;
+        }
+        else {
+            return `${field}:${val}`;
+
+        }
     }
     else {
-        return val.map((itemVal) => `${field}:${itemVal}`).join(" ");
+        //Wrap values with space in "".
+        return val.map((itemVal) => itemVal.indexOf(" ") > -1 ? `"${itemVal}"` : itemVal).map((itemVal) => `${field}:${itemVal}`).join(" ");
 
     }
 }

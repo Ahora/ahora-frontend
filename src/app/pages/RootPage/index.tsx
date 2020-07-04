@@ -133,7 +133,7 @@ class RootPageComponent extends React.Component<AllProps, State> {
                   <div className="icon">
                     <i className="fab fa-git-square"></i>
                   </div>
-                    Ahora! will always be open source</Card.Body>
+                    Ahora! will always be <a href="https://github.com/ahora">open source</a></Card.Body>
               </Card>
             </div>
             {

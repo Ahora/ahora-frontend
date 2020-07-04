@@ -18,6 +18,8 @@ import AhoraTextAreaField from "app/components/Forms/Fields/AhoraTextAreaField";
 import AhoraOrganizationUrlField from "app/components/Forms/Fields/AhoraOrganizationUrlField";
 import AhoraContentForm from "app/components/Dashboards/Gadgets/Content/form";
 import AhoraContentGadget from "app/components/Dashboards/Gadgets/Content/graph";
+import AhoraUserField from "app/components/Forms/Fields/AhoraUserField";
+import AhoraTeamUserPermissionField from "app/components/Forms/Fields/AhoraTeamUserPermission";
 
 
 class AhoraSDK {
@@ -50,9 +52,8 @@ AhoraSDK.getInstance().formComponents.register("date", AhoraDateField);
 AhoraSDK.getInstance().formComponents.register("enum", AhoraEnumField);
 AhoraSDK.getInstance().formComponents.register("githubrepository", AhoraRepistoryAutoCompleteField);
 AhoraSDK.getInstance().formComponents.register("githuborganization", AhoraOrganizationAutoCompleteField);
-
-
-
+AhoraSDK.getInstance().formComponents.register("user", AhoraUserField);
+AhoraSDK.getInstance().formComponents.register("teamuserpermission", AhoraTeamUserPermissionField);
 
 
 AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraBarsPie", {

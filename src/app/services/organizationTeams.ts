@@ -71,10 +71,10 @@ export const updateTeamName = async (name: string, id: number): Promise<Organiza
     return result.data;
 }
 
-export const addUser = async (userId: number, teamId: number | null = null): Promise<OrganizationTeamUser> => {
+export const addUser = async (userId: number, teamId: number | null = null, permissionType: TeamUserType): Promise<OrganizationTeamUser> => {
     const result = await orgTeamsUsersClient.post({
         params: { teamId },
-        data: { userId }
+        data: { userId, permissionType }
     });
 
     return result.data;

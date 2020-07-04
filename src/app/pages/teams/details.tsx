@@ -1,16 +1,15 @@
 import * as React from 'react';
-import { deleteOrganizationTeamMethod, OrganizationTeam, getTeamById, addOrganizationTeam, getTeams, OrganizationTeamUser, getUsersByTeam, addUser, deleteUserFromTeam, updateTeamName, TeamUserType } from 'app/services/organizationTeams';
+import { deleteOrganizationTeamMethod, OrganizationTeam, getTeamById, addOrganizationTeam, getTeams, OrganizationTeamUser, getUsersByTeam, deleteUserFromTeam, updateTeamName, TeamUserType } from 'app/services/organizationTeams';
 import { RouteComponentProps } from 'react-router';
 import Table from 'react-bootstrap/Table';
 import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
-import SelectUser from 'app/components/users/selectusers';
-import { UserItem } from 'app/services/users';
 import EditableHeader from 'app/components/EditableHeader';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
+import { AddTeamMemberForm } from 'app/components/Teams/AddTeamMemberForm';
 
 interface TeamsPageState {
     team: OrganizationTeam | null;
@@ -99,8 +98,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
         }
     }
 
-    async addUserToTeam(user: UserItem) {
-        const addedUser: OrganizationTeamUser = await addUser(user.id!, this.state.team ? this.state.team.id : null);
+    onUserAdded(addedUser: OrganizationTeamUser) {
         this.setState({
             users: [addedUser, ...this.state.users]
         });
@@ -134,7 +132,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                     }
                     <h2>Members</h2>
                     <CanManageOrganization>
-                        <SelectUser editMode={true} onSelect={this.addUserToTeam.bind(this)} ></SelectUser>
+                        <AddTeamMemberForm teamId={this.state.team ? this.state.team.id : null} onUserAdded={this.onUserAdded.bind(this)} />
                     </CanManageOrganization>
                     {this.state.users ?
                         <>

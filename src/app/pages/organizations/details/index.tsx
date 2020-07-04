@@ -31,10 +31,13 @@ import { requestStatusesData } from "app/store/statuses/actions";
 import OrganizationNew from "./new";
 
 interface OrganizationDetailsPageProps {
-  organization: Organization | null;
   docTypes?: DocType[];
   currentOrgPermission?: OrganizationTeamUser;
   currentUser?: User | undefined;
+}
+
+interface OrganizationDetailsPageState {
+  organization: Organization | null;
 }
 
 interface OrganizationPageParams {
@@ -55,15 +58,18 @@ interface Props extends RouteComponentProps<OrganizationPageParams>, DispatchPro
 
 }
 
-class OrganizationDetailsPage extends React.Component<Props> {
+class OrganizationDetailsPage extends React.Component<Props, OrganizationDetailsPageState> {
   constructor(props: Props) {
     super(props);
+
+    this.state = { organization: null };
   }
 
   async componentDidMount() {
     const organization: OrganizationDetailsWithPermission | null = await getOrganizationByLogin(this.props.match.params.login);
     if (organization) {
       this.props.setOrganizationToState(organization, organization.permission);
+      this.setState({ organization });
     }
     this.props.requestDocTypes();
     this.props.requestMilestones();
@@ -72,7 +78,7 @@ class OrganizationDetailsPage extends React.Component<Props> {
     this.props.requestCurrentUser();
   }
   render = () => {
-    const organization = this.props.organization;
+    const organization = this.state.organization;
     if (organization) {
       const canManageOrg: boolean = canManageOrganization(this.props.currentOrgPermission);
       let canManageNotificationsBool: boolean = canManageNotifications(this.props.currentUser);
@@ -134,7 +140,6 @@ class OrganizationDetailsPage extends React.Component<Props> {
 
 const mapStateToProps = (state: ApplicationState) => {
   return {
-    organization: state.organizations.currentOrganization,
     currentOrgPermission: state.organizations.currentOrgPermission,
     docTypes: state.docTypes.docTypes,
     currentUser: state.currentUser.user

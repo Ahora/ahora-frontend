@@ -10,6 +10,7 @@ import SelectUser from 'app/components/users/selectusers';
 import { UserItem } from 'app/services/users';
 import EditableHeader from 'app/components/EditableHeader';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
+import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 
 interface TeamsPageState {
     team: OrganizationTeam | null;
@@ -49,6 +50,14 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
     }
 
     async componentDidMount() {
+
+        this.setState({
+            team: null,
+            subTeams: null,
+            users: null,
+            teamNameVal: undefined
+        });
+
         const currentTeamId: number | null = this.props.match.params.id ? parseInt(this.props.match.params.id) : null;
         if (currentTeamId) {
             const team = await getTeamById(currentTeamId);
@@ -58,12 +67,12 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
             this.setState({ team: null })
         }
 
-        const subTeams = await getTeams(currentTeamId);
-        this.setState({ subTeams });
+        const [subTeams, users] = await Promise.all([
+            getTeams(currentTeamId),
+            getUsersByTeam(currentTeamId)
+        ])
 
-        const users = await getUsersByTeam(currentTeamId);
-        this.setState({ users });
-
+        this.setState({ subTeams, users });
     }
 
     teamNameChanged(event: any) {
@@ -124,70 +133,93 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                         </>
                     }
                     <h2>Members</h2>
-                    <SelectUser editMode={true} onSelect={this.addUserToTeam.bind(this)} ></SelectUser>
+                    <CanManageOrganization>
+                        <SelectUser editMode={true} onSelect={this.addUserToTeam.bind(this)} ></SelectUser>
+                    </CanManageOrganization>
                     {this.state.users ?
-                        <Table className="mt-2">
-                            <thead>
-                                <tr>
-                                    <th>User</th>
-                                    <th>Type</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {(this.state.users.map((user) => {
-                                    return (
-                                        <tr className="pt-3" key={user.id}>
-                                            <td>{user.User.displayName} ({user.User.username})</td>
-                                            <td>{user.permissionType === TeamUserType.Member ? "Member" : "Owner"}</td>
-                                            <td>
-                                                <Button variant="danger" onClick={() => { this.deleteUser(user); }}>Delete</Button>
-                                            </td>
-                                        </tr>);
-                                }))}
-                            </tbody>
-                        </Table>
+                        <>
+                            {this.state.users.length > 0 ?
+                                <Table className="mt-2">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Type</th>
+                                            <CanManageOrganization>
+                                                <th>Actions</th>
+                                            </CanManageOrganization>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {(this.state.users.map((user) => {
+                                            return (
+                                                <tr className="pt-3" key={user.id}>
+                                                    <td>{user.User.displayName} ({user.User.username})</td>
+                                                    <td>{user.permissionType === TeamUserType.Member ? "Member" : "Owner"}</td>
+                                                    <CanManageOrganization>
+                                                        <td>
+                                                            <Button variant="danger" onClick={() => { this.deleteUser(user); }}>Delete</Button>
+                                                        </td>
+                                                    </CanManageOrganization>
+                                                </tr>);
+                                        }))}
+                                    </tbody>
+                                </Table> :
+                                <p>No members</p>
+                            }
+                        </>
                         : (<AhoraSpinner />)
                     }
                     <div>
                         <h2>Sub Teams</h2>
-                        <Form onSubmit={this.submitForm.bind(this)}>
-                            <Form.Group>
-                                <Form.Label>Add Team</Form.Label>
-                                <InputGroup>
-                                    <Form.Control value={this.state.teamNameVal} onChange={this.teamNameChanged.bind(this)} placeholder="Enter team name" />
-                                    <InputGroup.Append>
-                                        <Button type="submit" variant="primary">Add</Button>
-                                    </InputGroup.Append>
-                                </InputGroup>
-                            </Form.Group>
-                        </Form>
+                        <CanManageOrganization>
+                            <Form onSubmit={this.submitForm.bind(this)}>
+                                <Form.Group>
+                                    <Form.Label>Add Team</Form.Label>
+                                    <InputGroup>
+                                        <Form.Control value={this.state.teamNameVal} onChange={this.teamNameChanged.bind(this)} placeholder="Enter team name" />
+                                        <InputGroup.Append>
+                                            <Button type="submit" variant="primary">Add</Button>
+                                        </InputGroup.Append>
+                                    </InputGroup>
+                                </Form.Group>
+                            </Form>
+                        </CanManageOrganization>
                     </div>
-                    {this.state.subTeams &&
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {(this.state.subTeams.map((team) => {
-                                    return (
-                                        <tr className="pt-3" key={team.id}>
-                                            <td><Link to={`/organizations/${this.props.match.params.login}/teams/${team.id}`}>{team.name}</Link></td>
-                                        </tr>);
-                                }))}
-                            </tbody>
-                        </Table>
+                    {this.state.subTeams ?
+                        <>
+                            {this.state.subTeams.length > 0 ?
+
+                                < Table >
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {(this.state.subTeams.map((team) => {
+                                            return (
+                                                <tr className="pt-3" key={team.id}>
+                                                    <td><Link to={`/organizations/${this.props.match.params.login}/teams/${team.id}`}>{team.name}</Link></td>
+                                                </tr>);
+                                        }))}
+                                    </tbody>
+                                </Table> : <p>No teams</p>
+                            }
+                        </>
+                        : (<AhoraSpinner />)
                     }
-                    {this.state.team &&
-                        <div>
-                            <h2>Danger Zone</h2>
-                            <Button type="button" onClick={this.deleteTeam.bind(this)} variant="danger">Delete Team</Button>
-                        </div>
-                    }
+                    <CanManageOrganization>
+                        {this.state.team &&
+                            <div>
+                                <h2>Danger Zone</h2>
+                                <Button type="button" onClick={this.deleteTeam.bind(this)} variant="danger">Delete Team</Button>
+                            </div>
+                        }
+                    </CanManageOrganization>
+
                 </div>
-            </div>
+            </div >
         );
     };
 }

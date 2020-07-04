@@ -5,6 +5,7 @@ import { DocSource, getDocSources } from 'app/services/docSources';
 import DocSourceList from 'app/components/DocSources/DocSourceList';
 import Button from 'react-bootstrap/Button';
 import { addDashboard, DashboardType, DashboardLayout } from 'app/services/dashboard';
+import SyncOrganization from 'app/components/DocSources/SyncOrganization';
 
 interface DashboardsPageState {
     docSources: DocSource[]
@@ -73,6 +74,10 @@ class OrganizationNew extends React.Component<AllProps, DashboardsPageState> {
                 <p>
                     Please add your favorite Github repositories.
                 </p>
+                <div style={{ display: "none" }}>
+                    <SyncOrganization></SyncOrganization>
+                </div>
+
                 <div className="mb-4">
                     <AddDocSourceForm onDocSourceAdded={this.docSourceAdded.bind(this)}></AddDocSourceForm>
                 </div>

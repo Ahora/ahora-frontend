@@ -55,7 +55,7 @@ export default class AhoraRepistoryAutoCompleteField extends React.Component<Gro
 
         if (this.props.formData.organization.isOrg) {
             repositoriesResult = await githubRepoClient.get({
-                query: { q: `org:${this.props.formData.organization.login} ${query} in:name` }
+                query: { q: `org:${this.props.formData.organization.login} ${query} in:name fork:true` }
             });
 
             this.setState({

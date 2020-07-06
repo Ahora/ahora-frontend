@@ -4,7 +4,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import { parse, SearchParserOptions, } from "search-query-parser";
 
-var searchOptions: SearchParserOptions = { keywords: ['assignee', 'reporter', 'label', 'status', 'docType', "repo", "milestone", "team"], alwaysArray: true }
+var searchOptions: SearchParserOptions = { keywords: ['status', 'docType', 'assignee', 'reporter', 'label', "repo", "milestone", "team", "createdAt", "closedAt"], alwaysArray: true }
 
 export interface SearchCriterias {
     assignee?: string[];

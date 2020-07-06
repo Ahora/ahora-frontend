@@ -39,7 +39,7 @@ class AddGadgetButton extends React.Component<Props, GroupBySelectState> {
                     <>
                         {[...this.state.gadgets.keys()].map((key) => {
                             const currentGadget: DashboardGadgetConfiguration = this.state.gadgets!.get(key)!;
-                            return <Dropdown.Item onClick={this.onClick.bind(this, key)}>{currentGadget.title}</Dropdown.Item>
+                            return <Dropdown.Item key={key} onClick={this.onClick.bind(this, key)}>{currentGadget.title}</Dropdown.Item>
                         })}
                     </>
                 }

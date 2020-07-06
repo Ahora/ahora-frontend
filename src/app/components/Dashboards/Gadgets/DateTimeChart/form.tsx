@@ -2,6 +2,7 @@ import * as React from 'react';
 import DocsDateTimeGraphData from './data';
 import SearchDocsInput, { SearchCriterias } from 'app/components/SearchDocsInput';
 import Form from 'react-bootstrap/Form';
+import GroupBySelect from 'app/components/Forms/Basics/GroupBySelect';
 
 interface DocsDateTimeGraphState {
     form: DocsDateTimeGraphData;
@@ -39,24 +40,6 @@ class DocsDateTimeGraphForm extends React.Component<DocsDateTimeGraphProps, Docs
         this.update(form);
     }
 
-    handleChangeSecondaryGroup(value: string) {
-        const form = {
-            ...this.state.form,
-            secondaryGroup: value
-        };
-        this.setState({ form });
-        this.update(form);
-    }
-
-    handleDisplatTypeChange(event: any) {
-        const form = {
-            ...this.state.form,
-            displayType: event.target.value
-        };
-        this.setState({ form });
-        this.update(form);
-    }
-
     update(form: DocsDateTimeGraphData) {
         this.props.onUpdate(form);
     }
@@ -67,6 +50,10 @@ class DocsDateTimeGraphForm extends React.Component<DocsDateTimeGraphProps, Docs
                 <Form.Group>
                     <Form.Label>query:</Form.Label>
                     <SearchDocsInput required={false} searchCriterias={this.state.form.searchCriterias} searchSelected={this.searchSelected.bind(this)} ></SearchDocsInput>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Primary Group:</Form.Label>
+                    <GroupBySelect onUpdate={this.handleChangePrimaryGroup.bind(this)} value={this.state.form.primaryGroup}></GroupBySelect>
                 </Form.Group>
             </>
         );

@@ -5,15 +5,17 @@ import { getDocGroup } from 'app/services/docs';
 import { XAxis, ResponsiveContainer, LineChart, Line, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { RouteComponentProps } from 'react-router';
 import { Organization } from 'app/services/organizations';
-import { stringify } from "query-string";
 import DocsDateTimeGraphData from './data';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import moment from "moment";
+import { stringify } from "query-string";
+
 
 interface DocsDateTimeGraphState {
     bars: string[],
     chartData?: any;
     loading: boolean;
+    lines?: string[];
 }
 
 interface DocsDateTimeGraphProps {
@@ -29,6 +31,7 @@ interface AllProps extends RouteComponentProps<DocsDateTimeGraphProps>, Injected
 }
 
 function joinObjects(arrayone: any[], arrayTwo: any[]): any {
+    const distinctLines: Map<string, any> = new Map<string, any>();
     const arrays = [arrayone, arrayTwo];
     var map: Map<any, any> = new Map();
     for (var i = 0; i < arrays.length; i++) {
@@ -38,10 +41,15 @@ function joinObjects(arrayone: any[], arrayTwo: any[]): any {
             if (currentTime != null) {
                 let mapVal = map.get(currentTime);
                 if (!mapVal) {
-                    mapVal = { closed: 0, created: 0 };
+                    mapVal = {};
                 }
 
-                mapVal[`${i == 0 ? "closed" : "created"}`] = arrays[i][j].count;
+                const values = (arrays[i][j]['values'] as Array<any>).slice(1).join(" ");
+                distinctLines.set(values, {});
+
+                mapVal[`${i == 0 ? `${values}-closed` : `${values}-created`}`] = arrays[i][j].count;
+                mapVal[`${i == 0 ? `${values}-closed-value` : `${values}-created-value`}`] = arrays[i][j].criteria;
+
                 map.set(currentTime, mapVal);
             }
         }
@@ -49,16 +57,27 @@ function joinObjects(arrayone: any[], arrayTwo: any[]): any {
 
     var newArray = [] as any;
     const keys1 = [...map.keys()];
+    const possibleGroups = [...distinctLines.keys()];
+
+    const deaultValue: any = {};
+    possibleGroups.forEach((line) => {
+        deaultValue[`${line}-closed`] = 0;
+        deaultValue[`${line}-created`] = 0;
+    });
+
+
     for (const keyItem in keys1) {
 
         const item = {
+            ...deaultValue,
             ...map.get(keys1[keyItem]),
+            date: keys1[keyItem],
             name: keys1[keyItem]
         };
 
         newArray.push(item);
     }
-    return newArray;
+    return { values: newArray, lines: [...distinctLines.keys()] };
 }
 
 
@@ -72,29 +91,29 @@ class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState
         };
     }
 
-    componentWillReceiveProps(nextProps: AllProps) {
+    componentDidUpdate(prevProps: AllProps) {
         //TODO: Compare arrays better!
-        if (nextProps.data.searchCriterias !== this.props.data.searchCriterias
-            || nextProps.data.closedAtTrend !== this.props.data.closedAtTrend
-            || nextProps.data.createdAtTrend !== this.props.data.createdAtTrend) {
-            this.updateGraph(nextProps);
+        if (prevProps.data.searchCriterias !== this.props.data.searchCriterias
+            || prevProps.data.closedAtTrend !== this.props.data.closedAtTrend
+            || prevProps.data.primaryGroup !== this.props.data.primaryGroup
+            || prevProps.data.createdAtTrend !== this.props.data.createdAtTrend) {
+            this.updateGraph(this.props);
         }
     }
-
-
 
     async updateGraph(props: AllProps) {
         this.setState({
             loading: true
         });
         const [closedAtData, createdAtData] = await Promise.all([
-            getDocGroup(["closedAt"], props.data.searchCriterias, "closedAt"),
-            getDocGroup(["createdAt"], props.data.searchCriterias, "createdAt"),
+            getDocGroup(["closedAt", this.props.data.primaryGroup!], props.data.searchCriterias, "closedAt"),
+            getDocGroup(["createdAt", this.props.data.primaryGroup!], props.data.searchCriterias, "createdAt"),
         ]);
 
-        const chartData = joinObjects(closedAtData, createdAtData);
-        const sortedActivities = chartData.sort((a: any, b: any) => { return a.name - b.name });
-        this.setState({ chartData: sortedActivities, loading: false });
+        const graphData = joinObjects(closedAtData, createdAtData);
+        const chartData = graphData.values;
+        const sortedActivities = chartData.sort((a: any, b: any) => { return a.date - b.date });
+        this.setState({ chartData: sortedActivities, loading: false, lines: graphData.lines });
     }
 
     async componentDidMount() {
@@ -102,13 +121,16 @@ class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState
     }
 
     onClick(e: any) {
+        const dataKey = e.dataKey;
+
         this.props.history.push({
             pathname: `/organizations/${this.props.organization!.login}/docs/`,
             search: "?" + stringify({
                 ...this.props.data.searchCriterias as any,
-                ...e.activePayload[0].payload.criteria
+                ...e.payload[`${dataKey}-value`]
             })
         });
+
     }
 
     render() {
@@ -121,12 +143,20 @@ class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState
                         <ResponsiveContainer width="100%" height={300}>
                             <LineChart width={500} height={300} data={this.state.chartData}>
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis type="number" domain={['dataMin', 'dataMax']} dataKey="name" tickFormatter={(value: any) => { return moment(value).format("DD/MM/YY"); }} />
+                                <XAxis type="number" domain={['dataMin', 'dataMax']} dataKey="date" tickFormatter={(value: any) => { return moment(value).format("DD/MM/YY"); }} />
                                 <YAxis />
                                 <Tooltip labelFormatter={(value: any) => { return moment(value).format("DD/MM/YY"); }} />
                                 <Legend />
-                                <Line type="monotone" dataKey="closed" connectNulls={true} stroke="#0088FE" activeDot={{ r: 8 }} />
-                                <Line type="monotone" dataKey="created" stroke="#00C49F" activeDot={{ r: 8 }} />
+                                {
+                                    this.state.lines && this.state.lines.map((line) =>
+                                        <Line activeDot={{ onClick: this.onClick.bind(this) }} dot={true} key={`${line}-created`} type="monotone" display={`${line} created`} dataKey={`${line}-created`} stroke="#00C49F" />
+                                    )
+                                }
+                                {
+                                    this.state.lines && this.state.lines.map((line) =>
+                                        <Line activeDot={{ onClick: this.onClick.bind(this) }} dot={true} key={`${line}-closed`} type="monotone" display={`${line} closed`} dataKey={`${line}-closed`} stroke="#0088FE" />
+                                    )
+                                }
 
                             </LineChart>
                         </ResponsiveContainer>

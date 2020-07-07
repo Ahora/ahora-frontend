@@ -10,7 +10,7 @@ import AddDocPage from "app/pages/docs/add";
 import AddDashboardPage from "app/pages/dashboards/add";
 import OrganizationSettingsPage from "../settings";
 import { Dispatch } from "redux";
-import { setCurrentOrganization } from "app/store/organizations/actions";
+import { setCurrentOrganization, setSearchCriteria } from "app/store/organizations/actions";
 import { connect } from "react-redux";
 import { ApplicationState } from "app/store";
 import { Link } from "react-router-dom";
@@ -29,6 +29,7 @@ import { requestMilestonesData } from "app/store/milestones/actions";
 import { requestLabelsData } from "app/store/labels/actions";
 import { requestStatusesData } from "app/store/statuses/actions";
 import OrganizationNew from "./new";
+import { SearchCriterias } from "app/components/SearchDocsInput";
 
 interface OrganizationDetailsPageProps {
   docTypes?: DocType[];
@@ -47,6 +48,7 @@ interface OrganizationPageParams {
 
 interface DispatchProps {
   setOrganizationToState(organization: Organization | null, permission?: OrganizationTeamUser): void;
+  setSearchCriterias(data?: SearchCriterias): void;
   requestDocTypes(): void;
   requestLabels(): void;
   requestStatuses(): void;
@@ -69,6 +71,7 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
     const organization: OrganizationDetailsWithPermission | null = await getOrganizationByLogin(this.props.match.params.login);
     if (organization) {
       this.props.setOrganizationToState(organization, organization.permission);
+      this.props.setSearchCriterias({ status: ["open"] });
       this.setState({ organization });
     }
     this.props.requestDocTypes();
@@ -152,6 +155,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     requestMilestones: () => dispatch(requestMilestonesData()),
     requestStatuses: () => dispatch(requestStatusesData()),
     requestLabels: () => dispatch(requestLabelsData()),
+    setSearchCriterias: (data: SearchCriterias) => dispatch(setSearchCriteria(data)),
     setOrganizationToState: (organization: Organization, permission?: OrganizationTeamUser) => dispatch(setCurrentOrganization(organization, permission)),
     requestCurrentUser: () => dispatch(requestCurrentUserData())
   };

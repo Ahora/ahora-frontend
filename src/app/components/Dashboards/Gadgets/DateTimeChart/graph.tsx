@@ -122,15 +122,15 @@ class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState
 
     onClick(e: any) {
         const dataKey = e.dataKey;
-
-        this.props.history.push({
-            pathname: `/organizations/${this.props.organization!.login}/docs/`,
-            search: "?" + stringify({
-                ...this.props.data.searchCriterias as any,
-                ...e.payload[`${dataKey}-value`]
-            })
-        });
-
+        if (e.payload[dataKey] > 0) {
+            this.props.history.push({
+                pathname: `/organizations/${this.props.organization!.login}/docs/`,
+                search: "?" + stringify({
+                    ...this.props.data.searchCriterias as any,
+                    ...e.payload[`${dataKey}-value`]
+                })
+            });
+        }
     }
 
     render() {

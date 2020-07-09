@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Doc, getDoc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc } from 'app/services/docs';
+import { Doc, getDoc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc, updateDocStatus } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
 import { CommentListComponent } from 'app/components/Comments/List';
 import Row from 'react-bootstrap/Row';
@@ -62,12 +62,11 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
     async changeStatus(statusId: number) {
         if (statusId !== this.state.doc!.statusId) {
-            const doc = { ...this.state.doc!, statusId };
-            const updatedDoc = await updateDoc(this.props.match.params.login, doc.id, doc);
+            await updateDocStatus(this.props.match.params.login, this.state.doc!.id, statusId);
             this.setState({
                 doc: {
-                    ...this.state.doc,
-                    ...updatedDoc
+                    ...this.state.doc!,
+                    statusId
                 }
             });
         }

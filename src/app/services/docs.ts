@@ -25,7 +25,7 @@ export interface Doc {
     updatedAt: Date;
     commentsNumber: number;
     views: number;
-    closedAt: number;
+    closedAt?: Date;
     htmlDescription: string;
     statusId: number;
     milestoneId?: number;
@@ -109,6 +109,15 @@ export const updateDoc = async (login: string, id: number, doc: Doc): Promise<Do
         data: doc
     });
     return result.data;
+}
+
+export const updateDocStatus = async (login: string, docId: number, statusId: number): Promise<void> => {
+    const result = await docsClient.post({
+        url: `/api/organizations/${login}/docs/${docId}/status`,
+        data: { statusId }
+    });
+    return result.data;
+
 }
 
 export const updateDocSubject = async (login: string, id: number, subject: string): Promise<Doc> => {

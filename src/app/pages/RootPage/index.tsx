@@ -95,13 +95,14 @@ class RootPageComponent extends React.Component<AllProps, State> {
             </div>
             <div className="col-md-4">
               <Card>
-                <Card.Header>Notifications</Card.Header>
+                <Card.Header>Advanced team support</Card.Header>
                 <Card.Body className="text-center">
                   <div className="icon">
-                    <i className="fas fa-bell"></i>
+                    <i className="fas fa-user-friends"></i>
                   </div>
-                    Custome and improved notifications <br />for Issues and Pull Requests
-                  </Card.Body>
+                      Search issues by specific team<br />
+                      Visualize content by teams<br />
+                </Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
@@ -139,13 +140,12 @@ class RootPageComponent extends React.Component<AllProps, State> {
             {
               false && <div className="col-md-4">
                 <Card>
-                  <Card.Header>Advanced team support</Card.Header>
+                  <Card.Header>Notifications</Card.Header>
                   <Card.Body className="text-center">
                     <div className="icon">
-                      <i className="fas fa-user-friends"></i>
+                      <i className="fas fa-bell"></i>
                     </div>
-                      Search issues by specific team<br />
-                      Visualize dependencies between teams<br />
+                    Custome and improved notifications <br />for Issues and Pull Requests
                   </Card.Body>
                 </Card>
               </div>

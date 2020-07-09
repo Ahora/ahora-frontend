@@ -31,6 +31,15 @@ class DocsDateTimeGraphForm extends React.Component<DocsDateTimeGraphProps, Docs
         this.update(form);
     }
 
+    handleChange(event: any) {
+        const form = {
+            ...this.state.form,
+            isCompulative: !this.state.form.isCompulative
+        };
+        this.setState({ form });
+        this.update(form);
+    }
+
     handleChangePrimaryGroup(value: string) {
         const form = {
             ...this.state.form,
@@ -54,6 +63,9 @@ class DocsDateTimeGraphForm extends React.Component<DocsDateTimeGraphProps, Docs
                 <Form.Group>
                     <Form.Label>Primary Group:</Form.Label>
                     <GroupBySelect onUpdate={this.handleChangePrimaryGroup.bind(this)} value={this.state.form.primaryGroup}></GroupBySelect>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Check type="checkbox" checked={this.state.form.isCompulative} onChange={this.handleChange.bind(this)} label="Is Compulative?" />
                 </Form.Group>
             </>
         );

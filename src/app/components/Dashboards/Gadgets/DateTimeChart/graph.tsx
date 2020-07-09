@@ -94,9 +94,8 @@ class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState
     componentDidUpdate(prevProps: AllProps) {
         //TODO: Compare arrays better!
         if (prevProps.data.searchCriterias !== this.props.data.searchCriterias
-            || prevProps.data.closedAtTrend !== this.props.data.closedAtTrend
-            || prevProps.data.primaryGroup !== this.props.data.primaryGroup
-            || prevProps.data.createdAtTrend !== this.props.data.createdAtTrend) {
+            || prevProps.data.isCompulative !== this.props.data.isCompulative
+            || prevProps.data.primaryGroup !== this.props.data.primaryGroup) {
             this.updateGraph(this.props);
         }
     }
@@ -112,7 +111,19 @@ class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState
 
         const graphData = joinObjects(closedAtData, createdAtData);
         const chartData = graphData.values;
-        const sortedActivities = chartData.sort((a: any, b: any) => { return a.date - b.date });
+        let sortedActivities = chartData.sort((a: any, b: any) => { return a.date - b.date });
+        if (sortedActivities.length > 2 && this.props.data.isCompulative) {
+            for (let index = 1; index < sortedActivities.length; index++) {
+                const currentItem = sortedActivities[index];
+                const prevItem = sortedActivities[index - 1];
+                graphData.lines.forEach((line: string) => {
+                    currentItem[`${line}-closed`] = currentItem[`${line}-closed`] + prevItem[`${line}-closed`]
+                    currentItem[`${line}-created`] = currentItem[`${line}-created`] + prevItem[`${line}-created`]
+                });
+            }
+
+        }
+
         this.setState({ chartData: sortedActivities, loading: false, lines: graphData.lines });
     }
 
@@ -141,7 +152,7 @@ class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState
                         <AhoraSpinner />
                         : this.state.chartData &&
                         <ResponsiveContainer width="100%" height={300}>
-                            <LineChart width={500} height={300} data={this.state.chartData}>
+                            <LineChart data={this.state.chartData}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis type="number" domain={['dataMin', 'dataMax']} dataKey="date" tickFormatter={(value: any) => { return moment(value).format("DD/MM/YY"); }} />
                                 <YAxis />

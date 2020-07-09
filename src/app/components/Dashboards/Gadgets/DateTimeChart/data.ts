@@ -4,6 +4,5 @@ export default interface DocsDateTimeGraphData {
     id?: number;
     searchCriterias?: SearchCriterias;
     primaryGroup?: string;
-    createdAtTrend?: boolean;
-    closedAtTrend?: boolean;
+    isCompulative: boolean;
 }

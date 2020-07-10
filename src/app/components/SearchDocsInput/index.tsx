@@ -162,7 +162,6 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                             <Button type="button" onClick={this.search.bind(this)} color="primary" variant="primary">Search</Button>
                         </InputGroup.Append>
                     </InputGroup>
-                    <div><a target="_blank" href="https://ahora.dev/organizations/ahora/docs/25216">Search syntax documentation</a></div>
                 </Form.Group>
             </div>
         );

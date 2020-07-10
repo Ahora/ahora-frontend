@@ -1,5 +1,5 @@
 import * as React from 'react';
-import AhoraEnumField from '../Forms/Fields/AhoraEnumField';
+import AhoraEnumField from '../Forms/Fields/AhoraBitwiseEnumField';
 import { AhoraFormField } from '../Forms/AhoraForm/data';
 import { NotificationTrigger } from 'app/services/OrganizationNotification';
 import Button from 'react-bootstrap/Button';
@@ -24,7 +24,7 @@ class AhoraTriggerNotificationField extends React.Component<GroupBySelectStatePr
             fieldData: {
                 displayName: "Trigger",
                 fieldName: "notificationTrigger",
-                fieldType: "enum",
+                fieldType: "enumbitwise",
                 settings: {
                     enum: NotificationTrigger, keys:
                         [

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import { addOrg } from 'app/services/organizations';
+import { addOrg, OrganizationType } from 'app/services/organizations';
 import Container from 'react-bootstrap/Container';
 import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
 import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
@@ -31,6 +31,19 @@ export default class AddOrganizationPage extends React.Component<Props, AddDocsP
                     fieldType: "organizationurl",
                     fieldName: "login",
                     required: true
+                },
+                {
+                    displayName: "Type:",
+                    fieldType: "enum",
+                    fieldName: "orgType",
+                    required: true,
+                    settings: {
+                        enum: OrganizationType,
+                        keys: [
+                            "Public",
+                            "Private"
+                        ]
+                    }
                 },
                 {
                     displayName: "Description",

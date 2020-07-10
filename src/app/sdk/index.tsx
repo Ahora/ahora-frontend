@@ -8,7 +8,7 @@ import AhoraTextField from "app/components/Forms/Fields/AhoraTextField";
 import AhoraSearchCriteriasField from "app/components/Forms/Fields/SearchCriteriaField";
 import AhoraNumberField from "app/components/Forms/Fields/AhoraNumberField";
 import AhoraDateField from "app/components/Forms/Fields/AhoraDateField";
-import AhoraEnumField from "app/components/Forms/Fields/AhoraEnumField";
+import AhoraBitwiseEnumField from "app/components/Forms/Fields/AhoraBitwiseEnumField";
 import { RouteComponentProps } from "react-router";
 import AhoraRepistoryAutoCompleteField from "app/components/Forms/Fields/RepositoryAutoComplete";
 import AhoraOrganizationAutoCompleteField from "app/components/Forms/Fields/OrganizationAutoComplete";
@@ -20,6 +20,7 @@ import AhoraContentForm from "app/components/Dashboards/Gadgets/Content/form";
 import AhoraContentGadget from "app/components/Dashboards/Gadgets/Content/graph";
 import AhoraUserField from "app/components/Forms/Fields/AhoraUserField";
 import AhoraTeamUserPermissionField from "app/components/Forms/Fields/AhoraTeamUserPermission";
+import AhoraEnumField from "app/components/Forms/Fields/AhoraEnumField";
 
 
 class AhoraSDK {
@@ -49,6 +50,7 @@ AhoraSDK.getInstance().formComponents.register("number", AhoraNumberField);
 AhoraSDK.getInstance().formComponents.register("searchcriteria", AhoraSearchCriteriasField);
 AhoraSDK.getInstance().formComponents.register("organizationurl", AhoraOrganizationUrlField);
 AhoraSDK.getInstance().formComponents.register("date", AhoraDateField);
+AhoraSDK.getInstance().formComponents.register("enumbitwise", AhoraBitwiseEnumField);
 AhoraSDK.getInstance().formComponents.register("enum", AhoraEnumField);
 AhoraSDK.getInstance().formComponents.register("githubrepository", AhoraRepistoryAutoCompleteField);
 AhoraSDK.getInstance().formComponents.register("githuborganization", AhoraOrganizationAutoCompleteField);

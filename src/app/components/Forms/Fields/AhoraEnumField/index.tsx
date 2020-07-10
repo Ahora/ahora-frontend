@@ -4,7 +4,6 @@ import { AhoraFormField } from '../../AhoraForm/data';
 
 interface GroupBySelectState {
     value: number;
-    enumValues: string[];
 }
 
 interface GroupBySelectStateProps {
@@ -14,40 +13,27 @@ interface GroupBySelectStateProps {
 }
 
 
-class AhoraEnumField extends React.Component<GroupBySelectStateProps, GroupBySelectState> {
+export default class AhoraEnumField extends React.Component<GroupBySelectStateProps, GroupBySelectState> {
     constructor(props: GroupBySelectStateProps) {
         super(props);
 
         this.state = {
-            value: this.props.value || 0,
-            enumValues: this.props.fieldData.settings!.keys
+            value: this.props.value || 0
         };
     }
 
     onCheckChange(event: any) {
-        const checked: boolean = event.target.checked;
-        const key: string = event.target.name;
-
-        let value = 0
-
-        if (checked) {
-            value = this.state.value | this.props.fieldData.settings!.enum[key];
-        }
-        else {
-            value = this.state.value & ~this.props.fieldData.settings!.enum[key];
-        }
+        const value = event.target.value;
         this.setState({ value });
         this.props.onUpdate(value);
     }
 
     render() {
         return (
-            <div>
-                {this.state.enumValues.map((key) => {
-                    return (<Form.Check onChange={this.onCheckChange.bind(this)} name={key} checked={(this.state.value & this.props.fieldData.settings!.enum[key]) === this.props.fieldData.settings!.enum[key]} key={key} label={key} type="checkbox" id={`inline-checkbox-${key}`} />);
+            <Form.Control value={this.props.value ? this.props.value.toString() : undefined} onChange={this.onCheckChange.bind(this)} as="select">
+                {this.props.fieldData.settings!.keys.map((key: string) => {
+                    return (<option key={key} value={this.props.fieldData.settings!.enum[key]}>{key}</option>);
                 })}
-            </div>)
+            </Form.Control>)
     }
 }
-
-export default AhoraEnumField;

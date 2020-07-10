@@ -54,17 +54,17 @@ class NotificationsPage extends React.Component<AllProps, NotificationsPageState
             {
                 displayName: "Trigger",
                 fieldName: "notificationTrigger",
-                fieldType: "enum",
+                fieldType: "enumbitwise",
                 settings: {
-                    enum: NotificationTrigger, keys:
-                        [
-                            "OnCreate",
-                            "OnEdit",
-                            "onStatusChanged",
-                            "OnUpdate",
-                            "OnComment",
-                            "OnClose"
-                        ]
+                    enum: NotificationTrigger,
+                    keys: [
+                        "OnCreate",
+                        "OnEdit",
+                        "onStatusChanged",
+                        "OnUpdate",
+                        "OnComment",
+                        "OnClose"
+                    ]
                 }
             }]
         }

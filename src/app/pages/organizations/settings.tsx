@@ -8,6 +8,7 @@ import docTypesPage from "app/pages/docTypes";
 import LabelsPage from "app/pages/labels";
 import DocSourcesPage from "app/pages/docSources";
 import EditOrganizationPage from "app/pages/organizations/edit";
+import PaymentPage from "app/pages/organizations/details/payment";
 
 interface SettingsPageState {
   organization: Organization | null;
@@ -46,6 +47,9 @@ export default class OrganizationSettingsPage extends React.Component<
               <Link className={(!this.props.match.params.settingsSection) ? "nav-link active" : "nav-link"} to={`/organizations/${organization.login}/settings`}>Home</Link>
             </Nav.Item>
             <Nav.Item>
+              <Link className={(this.props.match.params.settingsSection === "payment") ? "nav-link active" : "nav-link"} to={`/organizations/${organization.login}/settings/payment`}>Payment</Link>
+            </Nav.Item>
+            <Nav.Item>
               <Link className={(this.props.match.params.settingsSection === "statuses") ? "nav-link active" : "nav-link"} to={`/organizations/${organization.login}/settings/statuses`}>Statuses</Link>
             </Nav.Item>
             <Nav.Item>
@@ -63,6 +67,7 @@ export default class OrganizationSettingsPage extends React.Component<
             <Route path={`/organizations/:login/settings/doctypes`} component={docTypesPage} />
             <Route path={`/organizations/:login/settings/labels`} component={LabelsPage} />
             <Route path={`/organizations/:login/settings/docsources`} component={DocSourcesPage} />
+            <Route path={`/organizations/:login/settings/payment`} component={PaymentPage} />
             <Route exactpath={`/organizations/:login/settings`} component={EditOrganizationPage} />
           </Switch>
         </div>

@@ -13,7 +13,8 @@ export interface Organization {
     login: string;
     displayName: string;
     description: string;
-    orgType: OrganizationType
+    orgType: OrganizationType;
+    hasPayment: boolean;
 }
 
 export interface OrganizationDetailsWithPermission extends Organization {

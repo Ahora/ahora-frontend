@@ -12,7 +12,6 @@ export const canEditOrDeleteComment = (comment: Comment, user: User | undefined 
     if (!user) {
         return false;
     } else {
-        console.log(comment);
         return comment.authorUserId === user.id;
     }
 }

@@ -6,13 +6,23 @@ import DocSourceList from 'app/components/DocSources/DocSourceList';
 import Button from 'react-bootstrap/Button';
 import { addDashboard, DashboardType, DashboardLayout } from 'app/services/dashboard';
 import SyncOrganization from 'app/components/DocSources/SyncOrganization';
+import PaymentForm from 'app/components/payments/paymentForm';
+import { PaymentData, setOrgPaymentData } from 'app/services/payments';
+import { ApplicationState } from 'app/store';
+import { connect } from 'react-redux';
+import { Organization, OrganizationType } from 'app/services/organizations';
 
 interface DashboardsPageState {
-    docSources: DocSource[]
+    docSources: DocSource[];
+    paymentInfoReceived: boolean;
 }
 
 interface DashboardsPageParams {
     login: string;
+}
+
+interface ReduxProps {
+    organization?: Organization;
 }
 
 interface DashboardsPageProps extends RouteComponentProps<DashboardsPageParams> {
@@ -24,7 +34,7 @@ interface DispatchProps {
 
 }
 
-interface AllProps extends DashboardsPageProps, DispatchProps {
+interface AllProps extends DashboardsPageProps, DispatchProps, ReduxProps {
 
 }
 
@@ -32,7 +42,8 @@ class OrganizationNew extends React.Component<AllProps, DashboardsPageState> {
     constructor(props: AllProps) {
         super(props);
         this.state = {
-            docSources: []
+            docSources: [],
+            paymentInfoReceived: false
         }
     }
 
@@ -41,6 +52,17 @@ class OrganizationNew extends React.Component<AllProps, DashboardsPageState> {
         this.setState({
             docSources
         });
+    }
+
+    componentDidUpdate(prevProps: AllProps) {
+        if (this.props.organization !== prevProps.organization) {
+            if (this.props.organization) {
+                this.setState({ paymentInfoReceived: this.props.organization.hasPayment });
+            }
+            else {
+                this.setState({ paymentInfoReceived: false });
+            }
+        }
     }
 
     async addDashboards() {
@@ -62,6 +84,13 @@ class OrganizationNew extends React.Component<AllProps, DashboardsPageState> {
         });
     }
 
+    async onPaymentDataReceived(data: PaymentData) {
+        await setOrgPaymentData(data);
+        this.setState({
+            paymentInfoReceived: true
+        })
+    }
+
     onDocSourceDeleted(docSourceId: number) {
         this.setState({
             docSources: this.state.docSources.filter((docSource) => docSource.id !== docSourceId)
@@ -71,26 +100,44 @@ class OrganizationNew extends React.Component<AllProps, DashboardsPageState> {
     render() {
         return (
             <div>
-                <p>
-                    Please add your favorite Github repositories.
-                </p>
-                <div style={{ display: "none" }}>
-                    <SyncOrganization></SyncOrganization>
-                </div>
+                {
 
-                <div className="mb-4">
-                    <AddDocSourceForm onDocSourceAdded={this.docSourceAdded.bind(this)}></AddDocSourceForm>
-                </div>
-                <DocSourceList onDocSourceDeleted={this.onDocSourceDeleted.bind(this)} docSources={this.state.docSources}></DocSourceList>
-                {this.state.docSources.length > 0 &&
-                    <div>
-                        <Button onClick={this.addDashboards.bind(this)} variant="success">Continue &amp; create a dashboard</Button>
-                        <p>*It may take several minutes to see imported information available.</p>
-                    </div>
+                    (this.props.organization && (this.props.organization.orgType === OrganizationType.Public || (this.state.paymentInfoReceived || this.props.organization.hasPayment))) ?
+                        <>
+                            <p>
+                                Please add your favorite Github repositories.
+                </p>
+                            <div style={{ display: "none" }}>
+                                <SyncOrganization></SyncOrganization>
+                            </div>
+
+                            <div className="mb-4">
+                                <AddDocSourceForm onDocSourceAdded={this.docSourceAdded.bind(this)}></AddDocSourceForm>
+                            </div>
+                            <DocSourceList onDocSourceDeleted={this.onDocSourceDeleted.bind(this)} docSources={this.state.docSources}></DocSourceList>
+                            {this.state.docSources.length > 0 &&
+                                <div>
+                                    <Button onClick={this.addDashboards.bind(this)} variant="success">Continue &amp; create a dashboard</Button>
+                                    <p>*It may take several minutes to see imported information available.</p>
+                                </div>
+                            }
+                        </> :
+                        <div>
+                            <p>You choose to create private organization. <br />
+                            Please add payment method for monthly billing (10$ / user)</p>
+                            <PaymentForm submitted={this.onPaymentDataReceived.bind(this)}></PaymentForm>
+                        </div>
                 }
             </div>
         );
     };
 }
 
-export default OrganizationNew; 
+const mapStateToProps = (state: ApplicationState): ReduxProps => {
+    return {
+        organization: state.organizations.currentOrganization
+    };
+};
+
+export default connect(mapStateToProps)(OrganizationNew as any);
+

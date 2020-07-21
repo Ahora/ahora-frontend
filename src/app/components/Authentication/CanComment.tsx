@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
-import { Dispatch } from 'redux';
 import { User } from 'app/services/users';
-import { requestCurrentUserData } from 'app/store/currentuser/actions';
 import { canComment } from 'app/services/authentication';
 
 interface CanCommentProps {
@@ -23,10 +21,6 @@ class CanCommnet extends React.Component<AllProps> {
         super(props);
     }
 
-    async componentDidMount() {
-        this.props.requestCurrentUser();
-    }
-
     render() {
         return (
             <>
@@ -43,10 +37,5 @@ const mapStateToProps = (state: ApplicationState): CanCommentProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-    return {
-        requestCurrentUser: () => dispatch(requestCurrentUserData())
-    }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(CanCommnet as any); 
+export default connect(mapStateToProps)(CanCommnet as any); 

@@ -4,3 +4,17 @@
 @import "github-markdown-css/github-markdown.css";
 @import 'react-bootstrap-typeahead/css/Typeahead.css';
 @import 'react-bootstrap-typeahead/css/Typeahead-bs4.css';
+
+@import 'antd/dist/antd.css';
+
+Header * {
+    color: #FFFFFF;
+}
+
+.site-layout-content {
+    background-color: #FFFFFF;
+    padding: 10px;
+}
+.ant-layout-header {
+    padding: 0px 25px;
+}

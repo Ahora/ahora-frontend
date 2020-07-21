@@ -1,0 +1,35 @@
+.doc-list {
+    .ant-list-items {
+        margin: 0px -10px;
+    }
+
+    .active {
+        background: #e6f7ff;
+
+        .ant-card {
+            background: #e6f7ff;
+        }
+    }
+
+    .ant-card-head {
+        border-bottom: 0px;
+    }
+    
+    .doc-list-item {
+
+        .item-wrapper {
+            width:100%;
+            padding: 10px;
+        }
+        .extra {
+            padding: 0px 10px;
+            float: right;
+            text-align: right;
+
+            .tags {
+                text-align: right;
+                margin-right: -8px;
+            }
+        }
+    }
+}

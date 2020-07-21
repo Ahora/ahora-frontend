@@ -1,0 +1,10 @@
+.scrollable {
+    overflow-y: scroll;
+    
+}
+
+.height100 {
+    background-color: red;
+    flex-direction: column;
+    display: flex !important;
+}

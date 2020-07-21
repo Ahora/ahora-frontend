@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Label } from 'app/services/labels';
-import Badge from 'react-bootstrap/Badge';
+import { Tag } from 'antd';
 
 interface LabelsSelectorState {
     selectedLabels?: Label[];
@@ -51,7 +51,7 @@ class LabelsList extends React.Component<AllProps, LabelsSelectorState> {
         return (
             <>
                 {this.state.selectedLabels && this.state.selectedLabels.map((label: Label) => {
-                    return <Badge className="mr-2" variant="primary" style={{ backgroundColor: "#" + label.color }} key={label.id}>{label.name}</Badge>;
+                    return <Tag color={`#${label.color}`} key={label.id}>{label.name}</Tag>;
                 })}
 
             </>
@@ -59,7 +59,7 @@ class LabelsList extends React.Component<AllProps, LabelsSelectorState> {
     }
 }
 
-const mapStateToProps = (state: ApplicationState, ): LabelsSelectorProps => {
+const mapStateToProps = (state: ApplicationState,): LabelsSelectorProps => {
     return {
         labelMap: state.labels.mapById
     };

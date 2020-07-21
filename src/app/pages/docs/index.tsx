@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, Route, Switch } from 'react-router';
 import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
@@ -13,17 +13,25 @@ import { setSearchCriteria } from 'app/store/organizations/actions';
 import DocList from 'app/components/DocList';
 import { parseUrl, ParsedUrl } from "query-string";
 import CanAddDoc from 'app/components/Authentication/CanAddDoc';
+import { Row, Col } from 'antd';
+import DocsDetailsPage from "app/pages/docs/details";
+import AddDocPage from "app/pages/docs/add";
+import { Doc } from 'app/services/docs';
+require('./styles.scss')
 
 
 interface DocsPageState {
     searchCriteria?: SearchCriterias;
     searchCriteriasText?: string;
-    chart?: any[];
+    currentDocId?: number;
+    currentDoc?: Doc;
+    docs?: Doc[]
 }
 
 interface DocsPageParams {
     docTypeCode: string;
     login: string;
+    docId: string;
 }
 
 
@@ -75,6 +83,13 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         } else {
             this.searchSelected({});
         }
+
+        const docId: number = parseInt(this.props.match.params.docId);
+        if (!isNaN(docId)) {
+            this.setState({
+                currentDocId: isNaN(docId) ? undefined : docId
+            });
+        }
     }
 
     async searchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string) {
@@ -85,21 +100,55 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         });
     }
 
+    onDocListUpdated(docs: Doc[]) {
+        this.setState({ docs });
+    }
+
+    async componentDidUpdate(PrevProps: AllProps) {
+        if (this.props.match.params.docId !== PrevProps.match.params.docId) {
+
+            const docId: number = parseInt(this.props.match.params.docId);
+            if (!isNaN(docId) && this.state.docs) {
+                const currentDoc: Doc | undefined = this.state.docs.find((doc) => doc.id === docId);
+                this.setState({
+                    currentDoc,
+                    currentDocId: isNaN(docId) ? undefined : docId
+                });
+            }
+        }
+
+    }
+
     render() {
         return (
-            <div>
-                <SearchDocsInput searchCriterias={this.state.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
-                <CanAddDoc>
-                    <Nav className="mb-3">
-                        <Nav.Item>
-                            <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>
-                                <Button variant="primary" type="button">Add</Button>
-                            </Link>
-                        </Nav.Item>
-                    </Nav>
-                </CanAddDoc>
-                <DocList searchCriteria={this.state.searchCriteria}>No Results</DocList>
-            </div>
+            <>
+                <div className="height100">
+                    ds
+                </div>
+                <div style={{ display: "none" }}>
+                    <SearchDocsInput searchCriterias={this.state.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
+                    <CanAddDoc>
+                        <Nav className="mb-3">
+                            <Nav.Item>
+                                <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>
+                                    <Button variant="primary" type="button">Add</Button>
+                                </Link>
+                            </Nav.Item>
+                        </Nav>
+                    </CanAddDoc>
+                    <Row>
+                        <Col className="scrollable" span={8}>
+                            <DocList onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>No Results</DocList>
+                        </Col>
+                        <Col span={16} className="site-layout-content">
+                            <Switch>
+                                <Route path={`/organizations/:login/docs/add`} component={AddDocPage} />
+                                <Route path={`/organizations/:login/docs/:docId`} component={(props: any) => { return <DocsDetailsPage doc={this.state.currentDoc} {...props}></DocsDetailsPage> }} />
+                            </Switch>
+                        </Col>
+                    </Row>
+                </div>
+            </>
         );
     };
 }

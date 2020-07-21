@@ -1,13 +1,11 @@
 import * as React from "react";
 import { RouteComponentProps, Switch, Route } from "react-router";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
 import OrganizationsPage from "app/pages/organizations";
 import OrganizationDetailsPage from "app/pages/organizations/details";
-import { Link } from "react-router-dom";
 import CurrentUser from "app/components/CurrentUser";
 import RootPageComponent from "app/pages/RootPage";
 import AddOrganizationPage from "app/pages/organizations/add";
+import { Layout } from 'antd';
 
 interface LoginParams { }
 
@@ -18,7 +16,6 @@ interface Props extends RouteComponentProps<LoginParams> {
 }
 
 interface State {
-  user: any;
 }
 
 export class Dashboard extends React.Component<Props, State> {
@@ -26,7 +23,12 @@ export class Dashboard extends React.Component<Props, State> {
 
   constructor(props: Props, context?: any) {
     super(props, context);
+
+    this.state = {
+    };
   }
+
+
 
   openChangePassword = () => {
     return <></>;
@@ -35,24 +37,37 @@ export class Dashboard extends React.Component<Props, State> {
   async componentDidMount() { }
 
   render = () => {
+    const { Header, Content, Footer } = Layout;
     return (
       <>
-        <Navbar bg="light">
-          <Navbar.Brand>
-            <Link to="/">Ahora!</Link>
-          </Navbar.Brand>
-          <Nav className="mr-auto"></Nav>
-          <CurrentUser></CurrentUser>
-        </Navbar>
-        <Switch>
-          <Route exact path="/" component={RootPageComponent} />
-          <Route path="/organizations/add" component={AddOrganizationPage} />
-          <Route
-            path="/organizations/:login"
-            component={OrganizationDetailsPage}
-          />
-          <Route path="/organizations" component={OrganizationsPage} />
-        </Switch>
+        <Layout style={{ minHeight: '100vh' }}>
+          <Layout className="site-layout">
+            <Header className="site-layout-background" >
+              <div className="logo" style={{
+                width: "120px",
+                height: "31px",
+                background: "rgba(255, 255, 255, 0.2)",
+                margin: "16px 24px 16px 0",
+                float: "left"
+              }}>
+                <a href="/">Ahora!</a>
+              </div>
+              <CurrentUser style={{ float: 'right' }} ></CurrentUser>
+            </Header>
+            <Content>
+              <Switch>
+                <Route exact path="/" component={RootPageComponent} />
+                <Route path="/organizations/add" component={AddOrganizationPage} />
+                <Route
+                  path="/organizations/:login/:section?"
+                  component={OrganizationDetailsPage}
+                />
+                <Route path="/organizations" component={OrganizationsPage} />
+              </Switch>
+            </Content>
+            <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+          </Layout>
+        </Layout>
       </>
     );
   };

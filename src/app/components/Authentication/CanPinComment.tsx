@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
-import { Dispatch } from 'redux';
 import { User } from 'app/services/users';
 import { Comment } from 'app/services/comments';
-import { requestCurrentUserData } from 'app/store/currentuser/actions';
 import { canPinComment } from 'app/services/authentication';
 import { Doc } from 'app/services/docs';
 
@@ -17,21 +15,13 @@ interface CanCommentProps {
     currentUser: User | undefined | null;
 }
 
-interface DispatchProps {
-    requestCurrentUser(): void;
-}
-
-interface AllProps extends CanCommentProps, DispatchProps, Props {
+interface AllProps extends CanCommentProps, Props {
 
 }
 
 class CanPingComment extends React.Component<AllProps> {
     constructor(props: AllProps) {
         super(props);
-    }
-
-    async componentDidMount() {
-        this.props.requestCurrentUser();
     }
 
     render() {
@@ -50,10 +40,4 @@ const mapStateToProps = (state: ApplicationState): CanCommentProps => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-    return {
-        requestCurrentUser: () => dispatch(requestCurrentUserData())
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CanPingComment as any); 
+export default connect(mapStateToProps)(CanPingComment as any); 

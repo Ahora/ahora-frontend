@@ -1,12 +1,8 @@
 import * as React from "react";
 import { RouteComponentProps, Switch, Route } from "react-router";
 import { Organization, getOrganizationByLogin, OrganizationDetailsWithPermission } from "../../../services/organizations";
-import Nav from "react-bootstrap/Nav";
-import Container from "react-bootstrap/Container";
 import DocsPage from "app/pages/docs";
-import DocsDetailsPage from "app/pages/docs/details";
 import DashboardDetailsPage from "app/pages/dashboards/details";
-import AddDocPage from "app/pages/docs/add";
 import AddDashboardPage from "app/pages/dashboards/add";
 import OrganizationSettingsPage from "../settings";
 import { Dispatch } from "redux";
@@ -22,7 +18,7 @@ import { User } from "app/services/users";
 import { requestCurrentUserData } from "app/store/currentuser/actions";
 import AhoraSpinner from "app/components/Forms/Basics/Spinner";
 import { OrganizationTeamUser } from "app/services/organizationTeams";
-import { canManageOrganization, canManageNotifications } from "app/services/authentication";
+import { canManageOrganization } from "app/services/authentication";
 import NotificationsPage from "app/pages/notifications";
 import MilestonesPage from "app/pages/milestones";
 import { requestMilestonesData } from "app/store/milestones/actions";
@@ -30,6 +26,9 @@ import { requestLabelsData } from "app/store/labels/actions";
 import { requestStatusesData } from "app/store/statuses/actions";
 import OrganizationNew from "./new";
 import { SearchCriterias } from "app/components/SearchDocsInput";
+import { Layout, Menu } from 'antd';
+import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined } from '@ant-design/icons';
+
 
 interface OrganizationDetailsPageProps {
   docTypes?: DocType[];
@@ -39,6 +38,7 @@ interface OrganizationDetailsPageProps {
 
 interface OrganizationDetailsPageState {
   organization: Organization | null;
+  collapsed: boolean;
 }
 
 interface OrganizationPageParams {
@@ -64,7 +64,7 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
   constructor(props: Props) {
     super(props);
 
-    this.state = { organization: null };
+    this.state = { organization: null, collapsed: false };
   }
 
   async componentDidMount() {
@@ -80,60 +80,52 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
     this.props.requestStatuses();
     this.props.requestCurrentUser();
   }
+
+  onCollapse(collapsed: boolean) {
+    this.setState({ collapsed });
+  };
+
   render = () => {
+    const { Content, Sider } = Layout;
     const organization = this.state.organization;
     if (organization) {
       const canManageOrg: boolean = canManageOrganization(this.props.currentOrgPermission);
-      let canManageNotificationsBool: boolean = canManageNotifications(this.props.currentUser);
-      canManageNotificationsBool = false; //Notifications are not ready, yet
       return (
-        <Container fluid={true}>
-          <h2>{organization.displayName}</h2>
-          <p>{organization.description}</p>
-          <Nav className="mb-3" variant="tabs" defaultActiveKey={this.props.match.params.section || "browse"}>
-            <Nav.Item>
-              <Link className="nav-link" to={`/organizations/${organization.login}/dashboards`}>Dashboards</Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link className="nav-link" to={`/organizations/${organization.login}/docs`}>Browse</Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link className="nav-link" to={`/organizations/${organization.login}/teams`}>Teams</Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link className="nav-link" to={`/organizations/${organization.login}/milestones`}>Milestones</Link>
-            </Nav.Item>
-            {
-              canManageNotificationsBool &&
-              <Nav.Item>
-                <Link className="nav-link" to={`/organizations/${organization.login}/notifications`}>Notifications</Link>
-              </Nav.Item>
-            }
-            {
-              canManageOrg &&
-              <>
-                <Nav.Item>
-                  <Link className="nav-link" to={`/organizations/${organization.login}/settings`}>Settings</Link>
-                </Nav.Item>
-              </>
-            }
-          </Nav>
-          <Switch>
-            <Route path={`/organizations/:login/settings/:settingsSection?`} component={OrganizationSettingsPage} />
-            <Route path={`/organizations/:login/docs/add`} component={AddDocPage} />
-            <Route path={`/organizations/:login/new`} component={OrganizationNew} />
-            <Route path={`/organizations/:login/docs/:id`} component={DocsDetailsPage} />
-            <Route path={`/organizations/:login/docs`} component={DocsPage} />
-            <Route path={`/organizations/:login/dashboards/add`} component={AddDashboardPage} />
-            <Route path={`/organizations/:login/dashboards/:id`} component={DashboardDetailsPage} />
-            <Route path={`/organizations/:login/dashboards`} component={DashboardsPage} />
-            <Route path={`/organizations/:login/notifications`} component={NotificationsPage} />
-            <Route path={`/organizations/:login/milestones`} component={MilestonesPage} />
-            <Route path={`/organizations/:login/teams`} component={OrganizationTeamRootPage} />
-            <Route path={`/organizations/:login`} component={DashboardsPage}>
-            </Route>
-          </Switch>
-        </Container>
+        <Layout style={{ minHeight: '100vh' }}>
+          <Sider theme="light" breakpoint="md"
+            collapsedWidth="0" reverseArrow={true} collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
+            <Menu
+              mode="vertical"
+              selectedKeys={[this.props.match.params.section || "dashboards"]}
+              style={{ height: '100%' }}
+            >
+              <Menu.Item icon={<PieChartOutlined />} key="dashboards"><Link to={`/organizations/${organization.login}/dashboards`}>Dashboards</Link></Menu.Item>
+              <Menu.Item icon={<UnorderedListOutlined />} key="docs"><Link to={`/organizations/${organization.login}/docs`}>Browse</Link></Menu.Item>
+              <Menu.Item icon={<TeamOutlined />} key="teams"><Link to={`/organizations/${organization.login}/teams`}>Teams</Link></Menu.Item>
+              <Menu.Item icon={<FlagOutlined />} key="milestones"><Link to={`/organizations/${organization.login}/milestones`}>Milestones</Link></Menu.Item>
+              {canManageOrg && <Menu.Item icon={<SettingOutlined />} key="settings"><Link to={`/organizations/${organization.login}/settings`}>Settings</Link></Menu.Item>}
+            </Menu>
+          </Sider>
+          <Layout className="site-layout-content">
+            <Content>
+              <Switch>
+                <Route path={`/organizations/:login/settings/:settingsSection?`} component={OrganizationSettingsPage} />
+                <Route path={`/organizations/:login/new`} component={OrganizationNew} />
+                <Route path={`/organizations/:login/docs/:docId?`} component={DocsPage} />
+                <Route path={`/organizations/:login/dashboards/add`} component={AddDashboardPage} />
+                <Route path={`/organizations/:login/dashboards/:id`} component={DashboardDetailsPage} />
+                <Route path={`/organizations/:login/dashboards`} component={DashboardsPage} />
+                <Route path={`/organizations/:login/notifications`} component={NotificationsPage} />
+                <Route path={`/organizations/:login/milestones`} component={MilestonesPage} />
+                <Route path={`/organizations/:login/teams`} component={OrganizationTeamRootPage} />
+                <Route path={`/organizations/:login`} component={DashboardsPage}>
+                </Route>
+              </Switch>
+            </Content>
+          </Layout>
+        </Layout>
+
+
       );
     } else {
       return <AhoraSpinner></AhoraSpinner>;

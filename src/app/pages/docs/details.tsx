@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { Doc, getDoc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc, updateDocStatus } from 'app/services/docs';
+import { Doc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc, updateDocStatus, getDoc } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
 import { CommentListComponent } from 'app/components/Comments/List';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Status } from 'app/services/statuses';
@@ -13,7 +12,6 @@ import { UserItem, User } from 'app/services/users';
 import { DocType } from 'app/services/docTypes';
 import Table from 'react-bootstrap/Table';
 import Moment from 'react-moment';
-import DocWatchersComponent from 'app/components/DocWatchers';
 import EditableHeader from 'app/components/EditableHeader';
 import EditableMarkDown from 'app/components/EditableMarkDown';
 import { canEditDoc } from 'app/services/authentication';
@@ -22,6 +20,7 @@ import DocLabelViewEdit from 'app/components/Doc/DocLabelsViewEdit';
 import Button from 'react-bootstrap/Button';
 import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
+import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -29,7 +28,7 @@ interface DocsDetailsPageState {
 
 interface DocsDetailsPageParams {
     login: string;
-    id: string;
+    docId: string;
 }
 
 interface injectedParams {
@@ -43,7 +42,7 @@ interface injectedParams {
 }
 
 interface DocDetailsPageProps extends RouteComponentProps<DocsDetailsPageParams>, injectedParams {
-
+    doc?: Doc;
 }
 
 interface AllProps extends DocDetailsPageProps {
@@ -56,7 +55,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     constructor(props: AllProps) {
         super(props);
         this.state = {
-            doc: null
+            doc: this.props.doc ? this.props.doc : null
         }
     }
 
@@ -86,19 +85,21 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     }
 
     async componentDidMount() {
-        const doc: Doc = await getDoc(this.props.match.params.login, parseInt(this.props.match.params.id));
-        this.setState({ doc });
+        if (!this.state.doc) {
+            const doc: Doc = await getDoc(this.props.match.params.login, parseInt(this.props.match.params.docId));
+            this.setState({ doc });
+        }
     }
 
     async onLabelsUpdate(labels: number[]): Promise<void> {
-        await updateDocLabels(this.props.match.params.login, parseInt(this.props.match.params.id), labels);
+        await updateDocLabels(this.props.match.params.login, parseInt(this.props.match.params.docId), labels);
         this.setState({
             doc: { ...this.state.doc!, labels }
         });
     }
 
     async onAssigneeSelect(user: UserItem) {
-        const addedUserItem: UserItem = await assignDoc(this.props.match.params.login, parseInt(this.props.match.params.id), user.username);
+        const addedUserItem: UserItem = await assignDoc(this.props.match.params.login, parseInt(this.props.match.params.docId), user.username);
         this.setState({
             doc: { ...this.state.doc!, assignee: addedUserItem },
         });
@@ -118,6 +119,18 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         }
     }
 
+    async componentDidUpdate(PrevProps: AllProps) {
+        console.log(this.props.doc);
+        const prevDocId: number | undefined = PrevProps.doc ? PrevProps.doc.id : undefined;
+        if (this.props.doc && this.props.doc.id !== prevDocId) {
+
+            console.log(this.props.doc.id);
+            this.setState({
+                doc: this.props.doc
+            });
+
+        }
+    }
     async onDescriptionChanged(value: string) {
         const newDoc = await updateDocDescription(this.props.match.params.login, this.state.doc!.id, value);
         this.setState({
@@ -145,12 +158,12 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
         }
         return (
-            <Container fluid={true}>
-                {doc &&
+            <>
+                {doc ?
                     <>
                         <Row className="details">
                             <Col xs={12} md={8}>
-                                <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h1>{doc.subject}</h1></EditableHeader>
+                                <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h4>{doc.subject}</h4></EditableHeader>
 
                                 <div><DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit></div>
                                 <div><DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit></div>
@@ -223,8 +236,6 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                             </>)}
                                     </tbody>
                                 </Table>
-                                <h2>Watchers</h2>
-                                <DocWatchersComponent docId={doc.id} login={this.props.match.params.login}></DocWatchersComponent>
                                 <h2 className="mt-3">Times</h2>
                                 <Table>
                                     <tbody>
@@ -243,8 +254,9 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                             </Col>
                         </Row>
                     </>
+                    : <AhoraSpinner />
                 }
-            </Container>
+            </>
         );
     };
 }

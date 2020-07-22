@@ -161,16 +161,19 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
             <>
                 {doc ?
                     <>
-                        <Row className="details">
+                        <div className="doc-header">
+                            <div className="extra">
+                                <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
+                                <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
+                            </div>
+                            <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h1>{doc.subject}</h1></EditableHeader>
+                            <DocLabelViewEdit canEdit={canEdit} onUpdate={this.onLabelsUpdate.bind(this)} labels={doc.labels}></DocLabelViewEdit>
+
+                        </div>
+                        <Row className="doc-details">
                             <Col xs={12} md={8}>
-                                <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h4>{doc.subject}</h4></EditableHeader>
-
-                                <div><DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit></div>
-                                <div><DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit></div>
-                                <div><DocLabelViewEdit canEdit={canEdit} onUpdate={this.onLabelsUpdate.bind(this)} labels={doc.labels}></DocLabelViewEdit></div>
-
                                 <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
-                                    <p className="mt-4 markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
+                                    <p className="markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
                                 </EditableMarkDown>
                                 <CommentListComponent doc={doc} login={this.props.match.params.login}></CommentListComponent>
                             </Col>

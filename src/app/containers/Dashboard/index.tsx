@@ -37,7 +37,7 @@ export class Dashboard extends React.Component<Props, State> {
   async componentDidMount() { }
 
   render = () => {
-    const { Header, Content, Footer } = Layout;
+    const { Header } = Layout;
     return (
       <>
         <Layout style={{ minHeight: '100vh' }}>
@@ -54,7 +54,7 @@ export class Dashboard extends React.Component<Props, State> {
               </div>
               <CurrentUser style={{ float: 'right' }} ></CurrentUser>
             </Header>
-            <Content>
+            <Layout className="site-layout">
               <Switch>
                 <Route exact path="/" component={RootPageComponent} />
                 <Route path="/organizations/add" component={AddOrganizationPage} />
@@ -64,8 +64,7 @@ export class Dashboard extends React.Component<Props, State> {
                 />
                 <Route path="/organizations" component={OrganizationsPage} />
               </Switch>
-            </Content>
-            <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+            </Layout>
           </Layout>
         </Layout>
       </>

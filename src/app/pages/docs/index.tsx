@@ -1,22 +1,20 @@
 import * as React from 'react';
-import { RouteComponentProps, Route, Switch } from 'react-router';
-import Button from 'react-bootstrap/Button';
+import { RouteComponentProps, Switch, Route } from 'react-router';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Status } from 'app/services/statuses';
 import { Dispatch } from 'redux';
-import Nav from "react-bootstrap/Nav";
 import SearchDocsInput, { SearchCriterias } from 'app/components/SearchDocsInput';
-import { Link } from 'react-router-dom';
 import { DocType } from 'app/services/docTypes';
 import { setSearchCriteria } from 'app/store/organizations/actions';
-import DocList from 'app/components/DocList';
 import { parseUrl, ParsedUrl } from "query-string";
-import CanAddDoc from 'app/components/Authentication/CanAddDoc';
-import { Row, Col } from 'antd';
+import { Doc } from 'app/services/docs';
+import DocList from 'app/components/DocList';
 import DocsDetailsPage from "app/pages/docs/details";
 import AddDocPage from "app/pages/docs/add";
-import { Doc } from 'app/services/docs';
+import CanAddDoc from 'app/components/Authentication/CanAddDoc';
+import { Link } from 'react-router-dom';
+import { Button } from 'antd';
 require('./styles.scss')
 
 
@@ -121,34 +119,45 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     render() {
         return (
-            <>
-                <div className="height100">
-                    ds
-                </div>
-                <div style={{ display: "none" }}>
+            <section style={{ height: "100%" }} className="ant-layout site-layout">
+                <div className="docsheader">
                     <SearchDocsInput searchCriterias={this.state.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
-                    <CanAddDoc>
-                        <Nav className="mb-3">
-                            <Nav.Item>
-                                <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>
-                                    <Button variant="primary" type="button">Add</Button>
-                                </Link>
-                            </Nav.Item>
-                        </Nav>
-                    </CanAddDoc>
-                    <Row>
-                        <Col className="scrollable" span={8}>
-                            <DocList onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>No Results</DocList>
-                        </Col>
-                        <Col span={16} className="site-layout-content">
-                            <Switch>
-                                <Route path={`/organizations/:login/docs/add`} component={AddDocPage} />
-                                <Route path={`/organizations/:login/docs/:docId`} component={(props: any) => { return <DocsDetailsPage doc={this.state.currentDoc} {...props}></DocsDetailsPage> }} />
-                            </Switch>
-                        </Col>
-                    </Row>
                 </div>
-            </>
+                <section className="ant-layout site-layout">
+                    <div className="ant-layout">
+                        <div className="ant-layout site-layout-content">
+                            <div className="content-wrapper">
+                                <div className="content">
+                                    <div className="main-content">
+                                        <div className="content-wrapper">
+                                            <div className="content">
+                                                <div className="left-side">
+                                                    <CanAddDoc>
+                                                        <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>
+                                                            <Button className="add-button" block type="dashed">Add doc</Button>
+                                                        </Link>
+                                                    </CanAddDoc>
+                                                    <div className="doc-list-wrapper scrollable">
+                                                        <DocList onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>No Results</DocList>
+                                                    </div>
+                                                </div>
+                                                <div className="main-content">
+                                                    <div className="scrollable">
+                                                        <Switch>
+                                                            <Route path={`/organizations/:login/docs/add`} component={AddDocPage} />
+                                                            <Route path={`/organizations/:login/docs/:docId`} component={(props: any) => { return <DocsDetailsPage doc={this.state.currentDoc} {...props}></DocsDetailsPage> }} />
+                                                        </Switch>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
         );
     };
 }

@@ -7,13 +7,17 @@
 
 @import 'antd/dist/antd.css';
 
+#root {
+    height: 100%;
+    display: flex;
+}
+
 Header * {
     color: #FFFFFF;
 }
 
 .site-layout-content {
     background-color: #FFFFFF;
-    padding: 10px;
 }
 .ant-layout-header {
     padding: 0px 25px;

@@ -3,8 +3,7 @@ import ViewEdit from 'app/components/ViewEdit';
 import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
 import { Status } from 'app/services/statuses';
 import AhoraDocStatusField from 'app/components/Forms/Fields/AhoraDocStatusField';
-import Badge from 'react-bootstrap/Badge';
-import Form from 'react-bootstrap/Form';
+import { Form, Tag } from 'antd';
 
 interface State {
     fieldData: AhoraFormField;
@@ -24,9 +23,9 @@ class DocStatusViewEdit extends React.Component<Props, State> {
         const status = this.props.status;
         return (
             <ViewEdit canEdit={this.props.canEdit} onUpdate={this.props.onUpdate.bind(this)}
-                viewComponent={() => { return <>Status: <Badge variant="primary">{status ? status.name : "Empty"}</Badge></> }}
+                viewComponent={() => <Tag color="processing">{status ? status.name : "Empty"}</Tag>}
                 editComponent={(props: any) =>
-                    <Form inline>
+                    <Form>
                         <AhoraDocStatusField autoFocus={true} onUpdate={props.onUpdate} value={this.props.status ? this.props.status.id : undefined} />
                     </Form>
                 } />

@@ -27,7 +27,7 @@ class DocLabelViewEdit extends React.Component<Props, State> {
     render() {
         return (
             <ViewEdit canEdit={this.props.canEdit} onUpdate={this.onUpdate.bind(this)}
-                viewComponent={() => { return <>labels: <LabelsList defaultSelected={this.props.labels}></LabelsList></> }}
+                viewComponent={() => { return <LabelsList defaultSelected={this.props.labels}></LabelsList> }}
                 editComponent={(props: any) =>
                     <LabelsSelector autoFocus={false} defaultSelected={this.props.labels} onChange={props.onUpdate}></LabelsSelector>
                 } />

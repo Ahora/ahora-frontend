@@ -4,6 +4,7 @@ import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
 import Form from 'react-bootstrap/Form';
 import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import AhoraDocMilestoneField from 'app/components/Forms/Fields/AhoraDocMilestoneField';
+import { Tag } from 'antd';
 
 interface State {
     fieldData: AhoraFormField;
@@ -23,7 +24,7 @@ class DocMilestoneViewEdit extends React.Component<Props, State> {
         const milestone = this.props.milestone;
         return (
             <ViewEdit canEdit={this.props.canEdit} onUpdate={this.props.onUpdate.bind(this)}
-                viewComponent={() => { return <>Milestone: {milestone ? milestone.title : "Empty"}</> }}
+                viewComponent={() => { return <Tag>{milestone ? milestone.title : "No milestone"}</Tag> }}
                 editComponent={(props: any) =>
                     <Form inline>
                         <AhoraDocMilestoneField autoFocus={true} onUpdate={props.onUpdate} value={this.props.milestone ? this.props.milestone.id : undefined} />

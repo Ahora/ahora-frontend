@@ -40,7 +40,8 @@ export class AddCommentComponent extends React.Component<CommentsProps, State> {
             }
 
             this.setState({
-                comment: commentRows.join("\n") + "\n\n"
+                comment: commentRows.join("\n") + "\n\n",
+                editMode: true
             });
         }
     }
@@ -94,7 +95,7 @@ export class AddCommentComponent extends React.Component<CommentsProps, State> {
                                 <Button type="primary" disabled={disablePost} onClick={this.post()}>
                                     {this.state.submittingComment ?
                                         <AhoraSpinner /> :
-                                        <>Comment</>
+                                        <>Post</>
                                     }
                                 </Button>
                             </Nav>

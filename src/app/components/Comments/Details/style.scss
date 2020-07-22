@@ -1,4 +1,17 @@
 
+.comment {
+    border: 1px solid #f0f0f0;
+    margin-bottom: 5px;
+    padding: 0px 10px;
+
+    .pinned {
+        margin-right: 5px;
+        top: -3px;
+        position: relative;
+        color: green;
+    }
+}
+
 .commentTitle {
     display: flex;
 

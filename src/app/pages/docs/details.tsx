@@ -2,25 +2,22 @@ import * as React from 'react';
 import { Doc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc, updateDocStatus, getDoc } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
 import { CommentListComponent } from 'app/components/Comments/List';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Status } from 'app/services/statuses';
 import SelectUser from 'app/components/users/selectusers';
 import { UserItem, User } from 'app/services/users';
 import { DocType } from 'app/services/docTypes';
-import Table from 'react-bootstrap/Table';
 import Moment from 'react-moment';
 import EditableHeader from 'app/components/EditableHeader';
 import EditableMarkDown from 'app/components/EditableMarkDown';
 import { canEditDoc } from 'app/services/authentication';
 import DocStatusViewEdit from 'app/components/Doc/DocStatusViewEdit';
 import LabelsList from 'app/components/LabelsSelector/details';
-import Button from 'react-bootstrap/Button';
 import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
+import { Comment, Descriptions, Button } from 'antd';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -43,6 +40,8 @@ interface injectedParams {
 
 interface DocDetailsPageProps extends RouteComponentProps<DocsDetailsPageParams>, injectedParams {
     doc?: Doc;
+    onDocUpdated: (doc: Doc) => void;
+    onDocDeleted?: (doc: Doc) => void;
 }
 
 interface AllProps extends DocDetailsPageProps {
@@ -61,13 +60,10 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
     async changeStatus(statusId: number) {
         if (statusId !== this.state.doc!.statusId) {
+            const updatedDoc = { ...this.state.doc!, statusId };
+            this.props.onDocUpdated(updatedDoc);
             await updateDocStatus(this.props.match.params.login, this.state.doc!.id, statusId);
-            this.setState({
-                doc: {
-                    ...this.state.doc!,
-                    statusId
-                }
-            });
+            this.setState({ doc: updatedDoc });
         }
     }
 
@@ -76,40 +72,56 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
             const doc = { ...this.state.doc!, milestoneId };
             const updatedDoc = await updateDoc(this.props.match.params.login, doc.id, doc);
             this.setState({
-                doc: {
-                    ...this.state.doc,
-                    ...updatedDoc
-                }
+                doc: updatedDoc
             });
+            this.props.onDocUpdated(updatedDoc);
+
+        }
+    }
+
+    async componentDidUpdate(PrevProps: AllProps) {
+        const prevDocId: number | undefined = PrevProps.doc ? PrevProps.doc.id : undefined;
+        if (this.props.doc && this.props.doc.id !== prevDocId) {
+            this.setState({ doc: this.props.doc });
         }
     }
 
     async componentDidMount() {
-        if (!this.state.doc) {
+        if (!this.props.doc && !this.state.doc) {
             const doc: Doc = await getDoc(this.props.match.params.login, parseInt(this.props.match.params.docId));
             this.setState({ doc });
+        }
+        else {
+            if (this.props.doc) {
+                this.setState({ doc: this.props.doc });
+            }
         }
     }
 
     async onLabelsUpdate(labels: number[]): Promise<void> {
+        const updatedDoc = { ...this.state.doc!, labels };
+        this.props.onDocUpdated(updatedDoc);
         await updateDocLabels(this.props.match.params.login, parseInt(this.props.match.params.docId), labels);
-        this.setState({
-            doc: { ...this.state.doc!, labels }
-        });
+        this.setState({ doc: updatedDoc });
     }
 
     async onAssigneeSelect(user: UserItem) {
         const addedUserItem: UserItem = await assignDoc(this.props.match.params.login, parseInt(this.props.match.params.docId), user.username);
+        const updatedDoc = { ...this.state.doc!, assignee: addedUserItem };
         this.setState({
-            doc: { ...this.state.doc!, assignee: addedUserItem },
+            doc: updatedDoc,
         });
+        this.props.onDocUpdated(updatedDoc);
     }
 
     async onSubjectChanged(value: string) {
+        const updatedDoc = { ...this.state.doc!, subject: value };
         await updateDocSubject(this.props.match.params.login, this.state.doc!.id, value);
         this.setState({
-            doc: { ...this.state.doc!, subject: value },
+            doc: updatedDoc
         });
+
+        this.props.onDocUpdated(updatedDoc);
     }
 
     async delete() {
@@ -119,21 +131,14 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         }
     }
 
-    async componentDidUpdate(PrevProps: AllProps) {
-        const prevDocId: number | undefined = PrevProps.doc ? PrevProps.doc.id : undefined;
-        if (this.props.doc && this.props.doc.id !== prevDocId) {
-
-            this.setState({
-                doc: this.props.doc
-            });
-
-        }
-    }
     async onDescriptionChanged(value: string) {
+        const updatedDoc = { ...this.state.doc!, description: value };
         const newDoc = await updateDocDescription(this.props.match.params.login, this.state.doc!.id, value);
         this.setState({
             doc: newDoc,
         });
+        this.props.onDocUpdated(updatedDoc);
+
     }
 
     render() {
@@ -159,100 +164,53 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
             <>
                 {doc ?
                     <>
-                        <div className="doc-header">
+                        <div className="doc-details">
                             <div className="extra">
                                 <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
                                 <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
                             </div>
-                            <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h1>{doc.subject}</h1></EditableHeader>
+                            <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
+                                <h1>{doc.subject}</h1>
+                            </EditableHeader>
                             <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
+                            <Descriptions title="Details">
+                                <Descriptions.Item label="Assignee">
+                                    <SelectUser editMode={false} defaultSelected={doc.assignee && [doc.assignee]} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
+                                </Descriptions.Item>
+                                {docType && <Descriptions.Item label="Type"><>{docType.name}</></Descriptions.Item>}
+                                {doc.closedAt && <Descriptions.Item label="Closed At"><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.closedAt}></Moment></Descriptions.Item>}
+                                {doc.lastView && <Descriptions.Item label="Last viewd by me">
+                                    <Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.lastView.updatedAt}></Moment>
+                                </Descriptions.Item>
+                                }
+                                {doc.source &&
+                                    <>
+                                        <Descriptions.Item label="Github Issue Id">
+                                            <a target="_blank" href={doc.source.url}>{doc.sourceId}</a>
+                                        </Descriptions.Item>
+                                        <Descriptions.Item label="Repo">{doc.source.repo}</Descriptions.Item>
+                                        <Descriptions.Item label="Organization">{doc.source.organization}</Descriptions.Item>
+                                    </>
+                                }
+                                <Descriptions.Item label="Views">{doc.views}</Descriptions.Item>
+                            </Descriptions>
+                            <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
+                                <Comment className="description"
+                                    datetime={
+                                        <Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.createdAt}></Moment>
+                                    }
+                                    author={
+                                        <>{doc.reporter.displayName} ({doc.reporter.username})</>
+                                    }
+                                    content={
+                                        <p className="markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
+                                    }>
+
+                                </Comment>
+                            </EditableMarkDown>
+                            <CommentListComponent doc={doc} login={this.props.match.params.login}></CommentListComponent>
+                            {canEdit && <Button danger onClick={this.delete.bind(this)}>Delete Doc</Button>}
                         </div>
-                        <Row className="doc-details">
-                            <Col xs={12} md={8}>
-                                <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
-                                    <p className="markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
-                                </EditableMarkDown>
-                                <CommentListComponent doc={doc} login={this.props.match.params.login}></CommentListComponent>
-                            </Col>
-                            <Col xs={12} md={4}>
-                                <h2>People</h2>
-                                <Table>
-                                    <tbody>
-                                        <tr>
-                                            <td>Assignee:</td>
-                                            <td><SelectUser editMode={false} defaultSelected={doc.assignee && [doc.assignee]} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser></td>
-                                        </tr>
-                                        {doc.reporter &&
-
-                                            <tr>
-                                                <td>Reporter:</td>
-                                                <td>{doc.reporter.displayName} ({doc.reporter.username})</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </Table>
-                                <h2>More</h2>
-                                <Table>
-                                    <tbody>
-                                        {docType &&
-                                            (<tr>
-                                                <td>Type: </td>
-                                                <td>{docType.name}</td>
-                                            </tr>)}
-                                        {doc.milestone &&
-                                            (<tr>
-                                                <td>Milestone </td>
-                                                <td>{doc.milestone.title}</td>
-                                            </tr>)}
-                                        <tr>
-                                            <td>Views: </td>
-                                            <td>{doc.views}</td>
-                                        </tr>
-                                        {doc.closedAt &&
-                                            (<tr>
-                                                <td>Closed At: </td>
-                                                <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.closedAt}></Moment></td>
-                                            </tr>)}
-                                        {doc.lastView &&
-                                            (<tr>
-                                                <td>Last viewd by me: </td>
-                                                <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.lastView.updatedAt}></Moment></td>
-                                            </tr>)}
-                                        {doc.source &&
-                                            (<>
-
-                                                <tr>
-                                                    <td>Github Issue Id: </td>
-                                                    <td><a target="_blank" href={doc.source.url}>{doc.sourceId}</a></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Repo</td>
-                                                    <td>{doc.source.repo}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Organization</td>
-                                                    <td>{doc.source.organization}</td>
-                                                </tr>
-                                            </>)}
-                                    </tbody>
-                                </Table>
-                                <h2 className="mt-3">Times</h2>
-                                <Table>
-                                    <tbody>
-                                        <tr>
-                                            <td>Created At:</td>
-                                            <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.createdAt}></Moment></td>
-                                        </tr>
-                                        {doc.updatedAt &&
-                                            (<tr>
-                                                <td>updated At: </td>
-                                                <td><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.updatedAt}></Moment></td>
-                                            </tr>)}
-                                    </tbody>
-                                </Table>
-                                {canEdit && <Button variant="danger" onClick={this.delete.bind(this)}>Delete Doc</Button>}
-                            </Col>
-                        </Row>
                     </>
                     : <AhoraSpinner />
                 }

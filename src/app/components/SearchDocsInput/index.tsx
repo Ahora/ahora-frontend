@@ -1,8 +1,6 @@
 import * as React from 'react';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Button from 'react-bootstrap/Button';
 import { parse, SearchParserOptions, } from "search-query-parser";
+import { Input } from 'antd';
 
 var searchOptions: SearchParserOptions = { keywords: ['status', 'docType', 'assignee', 'reporter', 'label', "repo", "milestone", "team", "createdAt", "closedAt"], alwaysArray: true }
 
@@ -145,25 +143,18 @@ export default class SearchDocsInput extends React.Component<Props, State> {
     render = () => {
         return (
             <div>
-                <Form.Group>
-                    <InputGroup>
-                        <Form.Control
-                            type="text"
-                            required={this.props.required === undefined ? true : this.props.required}
-                            onFocus={this.handleFocus.bind(this)}
-                            value={this.state.searchCriteriaText}
-                            onChange={this.onTextChange.bind(this)}
-                            placeholder="enter your search criteria"
-                            aria-describedby="inputGroupPrepend"
-                            onKeyDown={this.handleKeyDown.bind(this)}
-                            onBlur={this.handleBlur.bind(this)}
-                        />
-                        <InputGroup.Append>
-                            <Button type="button" onClick={this.search.bind(this)} color="primary" variant="primary">Search</Button>
-                        </InputGroup.Append>
-                    </InputGroup>
-                </Form.Group>
-            </div>
+                <Input.Search
+                    type="text"
+                    required={this.props.required === undefined ? true : this.props.required}
+                    onFocus={this.handleFocus.bind(this)}
+                    value={this.state.searchCriteriaText}
+                    onChange={this.onTextChange.bind(this)}
+                    placeholder="enter your search criteria"
+                    onKeyDown={this.handleKeyDown.bind(this)}
+                    onBlur={this.handleBlur.bind(this)}
+                    enterButton="Search"
+                />
+            </div >
         );
     };
 }

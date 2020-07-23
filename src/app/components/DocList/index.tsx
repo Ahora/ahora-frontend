@@ -17,6 +17,7 @@ interface DocListProps {
     searchCriteria?: SearchCriterias;
     pageSize?: number;
     activeDocId?: number;
+    docs?: Doc[],
     onDocListUpdated?: (docs: Doc[]) => void;
 }
 
@@ -58,6 +59,10 @@ class DocList extends React.Component<DocListProps, DocsPageState> {
                     docs: null
                 });
             }
+        }
+
+        if (this.props.docs && this.props.docs != this.state.docs) {
+            this.setState({ docs: this.props.docs });
         }
     }
 

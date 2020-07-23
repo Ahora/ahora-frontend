@@ -44,6 +44,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
 
     async componentDidUpdate(prevProps: CommentsProps) {
         if (this.props.doc.id !== prevProps.doc.id) {
+            this.setState({ comments: undefined, pinnedComments: [] });
             const comments: Comment[] = await getComments(this.props.login, this.props.doc.id);
             this.setState({
                 comments,
@@ -72,7 +73,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
                         </div>
                     </>)
                 }
-                <div className="mt-2 mb-2">
+                <div style={{ margin: "5px 0px" }}>
                     <AddCommentComponent qouteComment={this.state.qouteComment} commentAdded={(comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.doc.id}></AddCommentComponent>
                 </div>
 

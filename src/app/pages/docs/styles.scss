@@ -6,12 +6,17 @@
     }
 }
 
-.doc-header {
-    border-bottom: 1px solid #f0f0f0;
+.doc-details {
     padding: 10px;
     h1 {
         font-size: medium;
         font-weight: bold;
+    }
+    
+    .description {
+        border: 1px solid #f0f0f0;
+        margin-bottom: 5px;
+        padding: 0px 10px;
     }
 
     .extra {
@@ -67,13 +72,12 @@
         }
 
          .scrollable {
-                overflow: auto;
-                overflow-x: hidden;
-                height: 100%;
-                background-color: var(--framework-fill-base);
-            }
+            overflow: auto;
+            overflow-x: hidden;
+            height: 100%;
+            background-color: var(--framework-fill-base);
+        }
     }
-
 }
 
 .add-button {

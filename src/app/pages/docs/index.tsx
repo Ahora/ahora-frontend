@@ -113,8 +113,21 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                     currentDocId: isNaN(docId) ? undefined : docId
                 });
             }
+            else {
+                this.setState({
+                    currentDoc: undefined,
+                    currentDocId: undefined
+                });
+            }
         }
+    }
 
+    onDocUpdated(updatedDoc: Doc) {
+        if (this.state.docs) {
+            this.setState({
+                docs: [...this.state.docs.map((doc) => (doc.id === updatedDoc.id) ? updatedDoc : doc)]
+            })
+        }
     }
 
     render() {
@@ -138,15 +151,18 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                         </Link>
                                                     </CanAddDoc>
                                                     <div className="doc-list-wrapper scrollable">
-                                                        <DocList onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>No Results</DocList>
+                                                        <DocList docs={this.state.docs} onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>No Results</DocList>
                                                     </div>
                                                 </div>
                                                 <div className="main-content">
                                                     <div className="scrollable">
-                                                        <Switch>
-                                                            <Route path={`/organizations/:login/docs/add`} component={AddDocPage} />
-                                                            <Route path={`/organizations/:login/docs/:docId`} component={(props: any) => { return <DocsDetailsPage doc={this.state.currentDoc} {...props}></DocsDetailsPage> }} />
-                                                        </Switch>
+                                                        {this.state.currentDocId ?
+                                                            <DocsDetailsPage onDocUpdated={this.onDocUpdated.bind(this)} doc={this.state.currentDoc} {...this.props}></DocsDetailsPage>
+                                                            :
+                                                            <Switch>
+                                                                <Route path={`/organizations/:login/docs/add`} component={AddDocPage} />
+                                                            </Switch>
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>

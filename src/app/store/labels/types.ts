@@ -3,7 +3,9 @@ import { Label } from "app/services/labels";
 export interface LabelsState {
     labels: Label[],
     loading: boolean,
-    mapById: Map<number, Label>
+    mapById: Map<number, Label>,
+    mapByName: Map<string, Label>
+
 }
 
 // src/store/chat/types.ts

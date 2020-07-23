@@ -2,57 +2,119 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Label } from 'app/services/labels';
-import { Tag } from 'antd';
+import { Tag, Select } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
 interface LabelsSelectorState {
     selectedLabels?: Label[];
+    selectedLabelsMap: Map<number, Label>;
+    isDropDownOpened: boolean;
+    labeldropdown?: string;
 }
 
 interface LabelsSelectorProps {
     labelMap: Map<number, Label>;
+    labelByNameMap: Map<string, Label>;
+    possibleLabels: Label[];
 }
 
 interface AllProps extends LabelsSelectorProps {
-    onChange(labels: Label[]): void;
+    onChange(labels: number[]): void;
     defaultSelected?: number[];
+    canEdit?: boolean;
+
 }
 
 class LabelsList extends React.Component<AllProps, LabelsSelectorState> {
+
+    private selectboxElement: any;
     constructor(props: AllProps) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            isDropDownOpened: false,
+            selectedLabelsMap: new Map()
+        };
     }
 
     componentDidMount() {
         if (this.props.defaultSelected && this.props.labelMap && !this.state.selectedLabels) {
             let selectedLabels: Label[] = [];
+            const selectedLabelsMap = this.state.selectedLabelsMap;
             if (this.props.labelMap && this.props.defaultSelected) {
                 this.props.defaultSelected.forEach((id) => {
                     const label: Label | undefined = this.props.labelMap.get(id);
                     if (label) {
+                        selectedLabelsMap.set(label.id!, label);
                         selectedLabels.push(label);
                     }
                 });
             }
 
-            this.setState({ selectedLabels });
+            this.setState({ selectedLabels, selectedLabelsMap });
         }
     }
 
+    onClose(deletedLabel: Label) {
+        if (this.state.selectedLabels) {
+            const labels = this.state.selectedLabels.filter((label) => label.id !== deletedLabel.id);
+            const map = this.state.selectedLabelsMap;
+            map.delete(deletedLabel.id!);
+            this.setState({ selectedLabels: labels, selectedLabelsMap: map });
+            this.onChange(labels);
+        }
+
+    }
+
     onChange(labels: Label[]) {
-        this.props.onChange(labels);
-        this.setState({
-            selectedLabels: labels
-        })
+        this.props.onChange(labels.map((label) => label.id!));
+    }
+
+    onLabelAdded(value: any) {
+        const selectedLabel: Label | undefined = this.props.labelByNameMap.get(value)
+        const map = this.state.selectedLabelsMap;
+        if (selectedLabel) {
+            const labels: Label[] = this.state.selectedLabels ? [...this.state.selectedLabels!, selectedLabel] : [selectedLabel];
+            map.set(selectedLabel.id!, selectedLabel);
+
+            this.setState({
+                labeldropdown: "",
+                selectedLabelsMap: map,
+                selectedLabels: labels
+            });
+            this.onChange(labels);
+            this.selectboxElement.focus();
+        }
+    }
+
+    openDropDown() {
+        this.setState({ isDropDownOpened: true });
     }
 
     render() {
         return (
             <>
                 {this.state.selectedLabels && this.state.selectedLabels.map((label: Label) => {
-                    return <Tag color={`#${label.color}`} key={label.id}>{label.name}</Tag>;
+                    return <Tag onClose={this.onClose.bind(this, label)} closable={this.props.canEdit} color={`#${label.color}`} key={label.id}>{label.name}</Tag>;
                 })}
+                {
+                    this.props.canEdit &&
+                    <>
+                        {
+                            this.state.isDropDownOpened ?
+                                <Select ref={this.selectboxElement} value={this.state.labeldropdown} autoFocus={true} onSelect={this.onLabelAdded.bind(this)} style={{ width: "200px" }} showSearch>
+                                    {this.props.possibleLabels.filter((label) => !this.state.selectedLabelsMap.has(label.id!)).map((label) =>
+                                        <option value={label.name} key={label.id}>
+                                            <Tag color={`#${label.color}`} key={label.id}>{label.name}</Tag>
+                                        </option>)}
+                                </Select> :
+                                <Tag className="site-tag-plus" onClick={this.openDropDown.bind(this)}>
+                                    <PlusOutlined /> New Label
+                                </Tag>
+                        }
+                    </>
+                }
+
 
             </>
         );
@@ -61,7 +123,9 @@ class LabelsList extends React.Component<AllProps, LabelsSelectorState> {
 
 const mapStateToProps = (state: ApplicationState,): LabelsSelectorProps => {
     return {
-        labelMap: state.labels.mapById
+        labelMap: state.labels.mapById,
+        labelByNameMap: state.labels.mapByName,
+        possibleLabels: state.labels.labels
     };
 };
 

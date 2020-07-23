@@ -1,5 +1,5 @@
 import * as React from "react";
-import Spinner from "react-bootstrap/Spinner";
+import { Spin } from 'antd';
 
 interface Props {
     inline?: boolean;
@@ -7,7 +7,7 @@ interface Props {
 
 const AhoraSpinner = (props: Props) => (
     <div className={`${props.inline && 'd-inline'} text-center`}>
-        <Spinner animation="border" variant="primary" />
+        <Spin />
     </div>
 );
 

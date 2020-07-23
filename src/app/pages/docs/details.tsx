@@ -16,7 +16,7 @@ import EditableHeader from 'app/components/EditableHeader';
 import EditableMarkDown from 'app/components/EditableMarkDown';
 import { canEditDoc } from 'app/services/authentication';
 import DocStatusViewEdit from 'app/components/Doc/DocStatusViewEdit';
-import DocLabelViewEdit from 'app/components/Doc/DocLabelsViewEdit';
+import LabelsList from 'app/components/LabelsSelector/details';
 import Button from 'react-bootstrap/Button';
 import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
@@ -120,11 +120,9 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     }
 
     async componentDidUpdate(PrevProps: AllProps) {
-        console.log(this.props.doc);
         const prevDocId: number | undefined = PrevProps.doc ? PrevProps.doc.id : undefined;
         if (this.props.doc && this.props.doc.id !== prevDocId) {
 
-            console.log(this.props.doc.id);
             this.setState({
                 doc: this.props.doc
             });
@@ -167,8 +165,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
                             </div>
                             <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}><h1>{doc.subject}</h1></EditableHeader>
-                            <DocLabelViewEdit canEdit={canEdit} onUpdate={this.onLabelsUpdate.bind(this)} labels={doc.labels}></DocLabelViewEdit>
-
+                            <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
                         </div>
                         <Row className="doc-details">
                             <Col xs={12} md={8}>

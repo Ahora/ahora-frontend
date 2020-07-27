@@ -26,12 +26,8 @@ interface AllProps extends LabelsSelectorProps {
 }
 
 class LabelsList extends React.Component<AllProps, LabelsSelectorState> {
-
-    private selectEl: Select<string> | null;
-
     constructor(props: AllProps) {
         super(props);
-        this.selectEl = null;
         this.state = {
             isDropDownOpened: false,
             selectedLabelsMap: new Map()

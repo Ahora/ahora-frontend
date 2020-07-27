@@ -92,13 +92,15 @@ class DocList extends React.Component<DocListProps, DocsPageState> {
             <div>
                 {this.state.docs ?
                     <>
-                        {this.state.docs.length > 0 &&
+                        {this.state.docs.length > 0 ?
                             <List
                                 className="doc-list"
                                 itemLayout="horizontal"
                                 dataSource={this.state.docs}
                                 renderItem={doc => <DocListItem isActive={doc.id === this.props.activeDocId} doc={doc}></DocListItem>}></List>
-                        }
+                            :
+                            <> {this.props.children}</>}
+
                         {this.state.totalPages > 1 &&
                             <UltimatePagination onChange={this.onChange.bind(this)} currentPage={this.state.page} totalPages={this.state.totalPages}></UltimatePagination>
                         }

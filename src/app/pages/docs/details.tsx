@@ -17,7 +17,7 @@ import LabelsList from 'app/components/LabelsSelector/details';
 import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
-import { Comment, Descriptions, Button } from 'antd';
+import { Comment, Descriptions, Button, Space } from 'antd';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -167,10 +167,10 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                 {doc ?
                     <>
                         <div className="doc-details">
-                            <div className="extra">
+                            <Space className="extra">
                                 <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
                                 <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
-                            </div>
+                            </Space>
                             <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
                                 <h1>{doc.subject}</h1>
                             </EditableHeader>

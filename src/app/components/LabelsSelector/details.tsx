@@ -110,7 +110,7 @@ class LabelsList extends React.Component<AllProps, LabelsSelectorState> {
                     <>
 
                         <div style={{ display: this.state.isDropDownOpened ? "inline-block" : "none" }}>
-                            <Select defaultOpen={true} ref={r => this.selectEl = r} value={this.state.labeldropdown} autoFocus={true} onSelect={this.onLabelAdded.bind(this)} style={{ width: "200px" }} showSearch>
+                            <Select defaultOpen={true} value={this.state.labeldropdown} autoFocus={true} onSelect={this.onLabelAdded.bind(this)} style={{ width: "200px" }} showSearch>
                                 {possibleLabelsToAdd.map((label) =>
                                     <Select.Option value={label.name} key={label.id}>
                                         <Tag color={`#${label.color}`} key={label.id}>{label.name}</Tag>

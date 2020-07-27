@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { OrganizationMilestone, addMilestone, deleteMilestone, reopenMilestone, closeMilestone, MilestoneStatus } from 'app/services/OrganizationMilestones';
-import Table from 'react-bootstrap/Table';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
 import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
-import Button from 'react-bootstrap/Button';
 import Moment from 'react-moment';
 import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 import { ApplicationState } from 'app/store';
 import { requestMilestonesData, addMilestoneFromState, deleteMilestoneFromState, updateMilestoneToState } from 'app/store/milestones/actions';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import { Button, Table, Typography } from 'antd';
 
 interface MilestonesPageState {
     form?: any;
@@ -98,6 +97,7 @@ class MilestonesPage extends React.Component<MilestonesPageProps, MilestonesPage
     render() {
         return (
             <div>
+                <Typography.Title>Milestones</Typography.Title>
                 <CanManageOrganization>
                     {this.state.form ?
                         <AhoraForm fields={this.state.fields} data={this.state.form} onCancel={this.cancelAdd.bind(this)} onSumbit={this.onSubmit.bind(this)} />
@@ -130,10 +130,10 @@ class MilestonesPage extends React.Component<MilestonesPageProps, MilestonesPage
                                         <CanManageOrganization>
                                             <td>
                                                 {milestone.state === MilestoneStatus.open ?
-                                                    <Button variant="primary" onClick={() => { this.close(milestone) }}>Close</Button>
-                                                    : <Button variant="primary" onClick={() => { this.reopen(milestone) }}>Open</Button>
+                                                    <Button type="primary" onClick={() => { this.close(milestone) }}>Close</Button>
+                                                    : <Button type="primary" onClick={() => { this.reopen(milestone) }}>Open</Button>
                                                 }
-                                                <Button variant="danger" onClick={() => { this.deleteOrganization(milestone) }}>Delete</Button></td>
+                                                <Button danger onClick={() => { this.deleteOrganization(milestone) }}>Delete</Button></td>
                                         </CanManageOrganization>
                                     </tr>);
                             }))}

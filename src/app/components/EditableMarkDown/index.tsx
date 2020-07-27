@@ -2,7 +2,7 @@ import * as React from 'react';
 import MarkDownEditor from '../MarkDownEditor';
 import './style.scss';
 import AhoraSpinner from '../Forms/Basics/Spinner';
-import { Button } from 'antd';
+import { Button, Space } from 'antd';
 
 interface EditableMarkDownParams {
     value: string;
@@ -63,8 +63,10 @@ export default class EditableMarkDown extends React.Component<EditableMarkDownPa
                 {this.state.editMode ?
                     <>
                         <MarkDownEditor height="400px" value={this.state.value} onChange={this.valueChanged.bind(this)} />
-                        <Button type="primary" onClick={this.close.bind(this)}>Save</Button>
-                        <Button danger onClick={this.cancel.bind(this)}>Cancel</Button>
+                        <Space className="editablecontent-buttons">
+                            <Button type="primary" onClick={this.close.bind(this)}>Save</Button>
+                            <Button danger onClick={this.cancel.bind(this)}>Cancel</Button>
+                        </Space>
                     </>
                     :
                     <>

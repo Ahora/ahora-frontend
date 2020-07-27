@@ -21,6 +21,8 @@ import AhoraContentGadget from "app/components/Dashboards/Gadgets/Content/graph"
 import AhoraUserField from "app/components/Forms/Fields/AhoraUserField";
 import AhoraTeamUserPermissionField from "app/components/Forms/Fields/AhoraTeamUserPermission";
 import AhoraEnumField from "app/components/Forms/Fields/AhoraEnumField";
+import AhoraDocTypeField from "app/components/Forms/Fields/AhoraDocTypeField";
+import AhoraLabelsField from "app/components/Forms/Fields/AhoraLabelsField";
 
 
 class AhoraSDK {
@@ -42,23 +44,25 @@ class AhoraSDK {
         this.formComponents = new RegisterComponent<React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>>();
     }
 }
+const sdkInstance = AhoraSDK.getInstance();
+sdkInstance.formComponents.register("default", AhoraTextField);
+sdkInstance.formComponents.register("text", AhoraTextField);
+sdkInstance.formComponents.register("textarea", AhoraTextAreaField);
+sdkInstance.formComponents.register("number", AhoraNumberField);
+sdkInstance.formComponents.register("searchcriteria", AhoraSearchCriteriasField);
+sdkInstance.formComponents.register("organizationurl", AhoraOrganizationUrlField);
+sdkInstance.formComponents.register("date", AhoraDateField);
+sdkInstance.formComponents.register("enumbitwise", AhoraBitwiseEnumField);
+sdkInstance.formComponents.register("enum", AhoraEnumField);
+sdkInstance.formComponents.register("githubrepository", AhoraRepistoryAutoCompleteField);
+sdkInstance.formComponents.register("githuborganization", AhoraOrganizationAutoCompleteField);
+sdkInstance.formComponents.register("user", AhoraUserField);
+sdkInstance.formComponents.register("teamuserpermission", AhoraTeamUserPermissionField);
+sdkInstance.formComponents.register("doctype", AhoraDocTypeField);
+sdkInstance.formComponents.register("labels", AhoraLabelsField);
 
-AhoraSDK.getInstance().formComponents.register("default", AhoraTextField);
-AhoraSDK.getInstance().formComponents.register("text", AhoraTextField);
-AhoraSDK.getInstance().formComponents.register("textarea", AhoraTextAreaField);
-AhoraSDK.getInstance().formComponents.register("number", AhoraNumberField);
-AhoraSDK.getInstance().formComponents.register("searchcriteria", AhoraSearchCriteriasField);
-AhoraSDK.getInstance().formComponents.register("organizationurl", AhoraOrganizationUrlField);
-AhoraSDK.getInstance().formComponents.register("date", AhoraDateField);
-AhoraSDK.getInstance().formComponents.register("enumbitwise", AhoraBitwiseEnumField);
-AhoraSDK.getInstance().formComponents.register("enum", AhoraEnumField);
-AhoraSDK.getInstance().formComponents.register("githubrepository", AhoraRepistoryAutoCompleteField);
-AhoraSDK.getInstance().formComponents.register("githuborganization", AhoraOrganizationAutoCompleteField);
-AhoraSDK.getInstance().formComponents.register("user", AhoraUserField);
-AhoraSDK.getInstance().formComponents.register("teamuserpermission", AhoraTeamUserPermissionField);
 
-
-AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraBarsPie", {
+sdkInstance.dashboardGadgets.registerGadget("AhoraBarsPie", {
     title: "Pie or Bars Chart",
     description: "Displays the matching docs as pie or bars chart.",
     group: "General",
@@ -66,7 +70,7 @@ AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraBarsPie", {
     gadgetComponent: BarPieGadgetGadget
 });
 
-AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraDocList", {
+sdkInstance.dashboardGadgets.registerGadget("AhoraDocList", {
     title: "List of docs",
     description: "Displays list of matching docs.",
     group: "General",
@@ -74,7 +78,7 @@ AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraDocList", {
     gadgetComponent: DocListGadget
 });
 
-AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraClosedCreated", {
+sdkInstance.dashboardGadgets.registerGadget("AhoraClosedCreated", {
     title: "Closed & Created over time Graph",
     description: "Line Chart",
     group: "General",
@@ -83,7 +87,7 @@ AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraClosedCreated", {
 });
 
 
-AhoraSDK.getInstance().dashboardGadgets.registerGadget("AhoraCustomContent", {
+sdkInstance.dashboardGadgets.registerGadget("AhoraCustomContent", {
     title: "Custom content",
     description: "Displays custom html content",
     group: "General",

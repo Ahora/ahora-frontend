@@ -65,7 +65,8 @@
         .left-side {
             display: flex;
             flex-direction: column;
-            width: 33%;
+            max-width: 450px;
+            width:33%;
             overflow: hidden;
             position: relative;
             flex: 0 0 auto;

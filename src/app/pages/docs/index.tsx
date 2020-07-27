@@ -15,6 +15,7 @@ import AddDocPage from "app/pages/docs/add";
 import CanAddDoc from 'app/components/Authentication/CanAddDoc';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 require('./styles.scss')
 
 
@@ -107,7 +108,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
             const docId: number = parseInt(this.props.match.params.docId);
             if (!isNaN(docId) && this.state.docs) {
-                const currentDoc: Doc | undefined = this.state.docs.find((doc) => doc.id === docId);
+                const currentDoc: Doc | undefined = this.state.docs.find((doc) => doc.id === docId && doc.reporter);
                 this.setState({
                     currentDoc,
                     currentDocId: isNaN(docId) ? undefined : docId
@@ -122,12 +123,26 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         }
     }
 
+    onDocDeleted(updatedDoc: Doc) {
+        if (this.state.docs) {
+            this.setState({
+                docs: this.state.docs.filter((doc) => doc.id !== updatedDoc.id)
+            });
+            this.props.history.replace(`/organizations/${this.props.match.params.login}/docs`);
+        }
+    }
+
     onDocUpdated(updatedDoc: Doc) {
         if (this.state.docs) {
             this.setState({
                 docs: [...this.state.docs.map((doc) => (doc.id === updatedDoc.id) ? updatedDoc : doc)]
             })
         }
+    }
+
+    onDocAdded(addedDoc: Doc) {
+        this.setState({ docs: [addedDoc, ...this.state.docs] });
+        this.props.history.replace(`/organizations/${this.props.match.params.login}/docs/${addedDoc.id}`)
     }
 
     render() {
@@ -147,7 +162,8 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                 <div className="left-side">
                                                     <CanAddDoc>
                                                         <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>
-                                                            <Button className="add-button" block type="dashed">Add doc</Button>
+                                                            <Button className="add-button" block type="primary">
+                                                                <PlusOutlined />Add doc</Button>
                                                         </Link>
                                                     </CanAddDoc>
                                                     <div className="doc-list-wrapper scrollable">
@@ -157,10 +173,10 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                 <div className="main-content">
                                                     <div className="scrollable">
                                                         {this.state.currentDocId ?
-                                                            <DocsDetailsPage onDocUpdated={this.onDocUpdated.bind(this)} doc={this.state.currentDoc} {...this.props}></DocsDetailsPage>
+                                                            <DocsDetailsPage onDocDeleted={this.onDocDeleted.bind(this)} onDocUpdated={this.onDocUpdated.bind(this)} doc={this.state.currentDoc} {...this.props}></DocsDetailsPage>
                                                             :
                                                             <Switch>
-                                                                <Route path={`/organizations/:login/docs/add`} component={AddDocPage} />
+                                                                <Route path={`/organizations/:login/docs/add`} component={(props: any) => <AddDocPage {...props} onDocAdded={this.onDocAdded.bind(this)} />} />
                                                             </Switch>
                                                         }
                                                     </div>

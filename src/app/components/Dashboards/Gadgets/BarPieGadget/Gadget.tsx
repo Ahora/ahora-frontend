@@ -36,14 +36,15 @@ class BarPieGadget extends React.Component<AllProps, BarPieGadgetState> {
         };
     }
 
-    componentWillReceiveProps(nextProps: AllProps) {
-        if (nextProps.data.displayType !== this.props.data.displayType
-            || nextProps.data.searchCriterias !== this.props.data.searchCriterias
-            || nextProps.data.primaryGroup !== this.props.data.primaryGroup
-            || nextProps.data.secondaryGroup !== this.props.data.secondaryGroup) {
-            this.updateGraph(nextProps);
+    componentDidUpdate(prevPropse: AllProps) {
+        if (prevPropse.data.displayType !== this.props.data.displayType
+            || prevPropse.data.searchCriterias !== this.props.data.searchCriterias
+            || prevPropse.data.primaryGroup !== this.props.data.primaryGroup
+            || prevPropse.data.secondaryGroup !== this.props.data.secondaryGroup) {
+            this.updateGraph(this.props);
         }
     }
+
 
     async updateGraph(props: AllProps) {
         if (props.data.primaryGroup || props.data.secondaryGroup) {

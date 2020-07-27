@@ -27,13 +27,16 @@ interface AllProps extends LabelsSelectorProps {
 
 class LabelsList extends React.Component<AllProps, LabelsSelectorState> {
 
+    private selectEl: Select<string> | null;
+
     constructor(props: AllProps) {
         super(props);
-
+        this.selectEl = null;
         this.state = {
             isDropDownOpened: false,
             selectedLabelsMap: new Map()
         };
+
     }
 
     initData() {
@@ -109,16 +112,18 @@ class LabelsList extends React.Component<AllProps, LabelsSelectorState> {
                 {
                     (this.props.canEdit && possibleLabelsToAdd.length > 0) &&
                     <>
-                        {
-                            this.state.isDropDownOpened ?
-                                <Select value={this.state.labeldropdown} autoFocus={true} onSelect={this.onLabelAdded.bind(this)} style={{ width: "200px" }} showSearch>
-                                    {possibleLabelsToAdd.map((label) =>
-                                        <Select.Option value={label.name} key={label.id}>
-                                            <Tag color={`#${label.color}`} key={label.id}>{label.name}</Tag>
-                                        </Select.Option>)}
-                                </Select> :
-                                <Tag className="site-tag-plus" onClick={this.openDropDown.bind(this)}>
-                                    <PlusOutlined /> New Label
+
+                        <div style={{ display: this.state.isDropDownOpened ? "inline-block" : "none" }}>
+                            <Select defaultOpen={true} ref={r => this.selectEl = r} value={this.state.labeldropdown} autoFocus={true} onSelect={this.onLabelAdded.bind(this)} style={{ width: "200px" }} showSearch>
+                                {possibleLabelsToAdd.map((label) =>
+                                    <Select.Option value={label.name} key={label.id}>
+                                        <Tag color={`#${label.color}`} key={label.id}>{label.name}</Tag>
+                                    </Select.Option>)}
+                            </Select>
+                        </div>
+                        {!this.state.isDropDownOpened &&
+                            <Tag className="site-tag-plus" onClick={this.openDropDown.bind(this)}>
+                                <PlusOutlined /> New Label
                                 </Tag>
                         }
                     </>

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Form from 'react-bootstrap/Form';
 import { AhoraFormField } from '../../AhoraForm/data';
+import { Input } from 'antd';
 
 interface GroupBySelectState {
     value: string;
@@ -23,15 +23,14 @@ class AhoraTextAreaField extends React.Component<GroupBySelectStateProps, GroupB
     }
 
 
-    handleChange(event: any) {
+    onChange(event: any) {
         this.setState({ value: event.target.value });
         this.props.onUpdate(event.target.value);
-
     }
 
     render() {
         return (
-            <Form.Control rows="10" as="textarea" required={this.props.fieldData.required} type="text" value={this.props.value} onChange={this.handleChange.bind(this)} />
+            <Input.TextArea rows={6} allowClear onChange={this.onChange.bind(this)}>{this.props.value}</Input.TextArea>
         );
     }
 }

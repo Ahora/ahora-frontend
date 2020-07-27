@@ -33,12 +33,9 @@ class DocListItem extends React.Component<AllProps> {
 
     render() {
         const doc = this.props.doc;
-
-        console.log(doc);
-
         const currentStatus: Status | undefined = this.props.statuses.get(doc.statusId);
         const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId);
-        const isViewed: boolean = (doc.lastView !== null && doc.lastView.updatedAt > doc.updatedAt) ? true : false;
+        const isViewed: boolean = (doc.lastView && doc.lastView.updatedAt > doc.updatedAt) ? true : false;
 
         return (
             <List.Item className={`${this.props.isActive ? "active" : ""} doc-list-item`}>

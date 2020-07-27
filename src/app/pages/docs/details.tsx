@@ -41,7 +41,7 @@ interface injectedParams {
 interface DocDetailsPageProps extends RouteComponentProps<DocsDetailsPageParams>, injectedParams {
     doc?: Doc;
     onDocUpdated: (doc: Doc) => void;
-    onDocDeleted?: (doc: Doc) => void;
+    onDocDeleted: (doc: Doc) => void;
 }
 
 interface AllProps extends DocDetailsPageProps {
@@ -126,8 +126,10 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
     async delete() {
         if (this.state.doc) {
+            if (this.props.onDocDeleted) {
+                this.props.onDocDeleted(this.state.doc);
+            }
             await deleteDoc(this.props.match.params.login, this.state.doc.id!);
-            this.props.history.replace(`/organizations/${this.props.match.params.login}/docs`);
         }
     }
 

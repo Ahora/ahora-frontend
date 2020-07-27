@@ -1,13 +1,13 @@
 import * as React from 'react';
-import Form from 'react-bootstrap/Form';
 import { AhoraFormField } from '../../AhoraForm/data';
+import { DatePicker } from 'antd';
 
 interface GroupBySelectState {
     value?: Date;
 }
 
 interface GroupBySelectStateProps {
-    value?: Date;
+    value: any;
     fieldData: AhoraFormField;
     onUpdate: (value: string) => void;
 }
@@ -23,16 +23,15 @@ class AhoraDateField extends React.Component<GroupBySelectStateProps, GroupBySel
     }
 
 
-    handleChange(event: any) {
-        this.setState({ value: event.target.value });
-        this.props.onUpdate(event.target.value);
+    handleChange(value: any) {
+        this.setState({ value });
+        this.props.onUpdate(value);
 
     }
 
     render() {
         return (
-            <Form.Control required={this.props.fieldData.required} type="date" value={this.props.value as any} onChange={this.handleChange.bind(this)} />
-        );
+            <DatePicker value={this.props.value} style={{ width: "100%" }} onChange={this.handleChange.bind(this)} />);
     }
 }
 

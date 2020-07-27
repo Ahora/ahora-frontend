@@ -23,11 +23,10 @@ export default class MarkDownEditor extends React.Component<MarkDownEditorProps,
         this.state = { value: props.value || "" };
     }
 
-
-    componentWillReceiveProps(nextProps: MarkDownEditorProps) {
-        if (this.props.value !== nextProps.value) {
+    componentDidUpdate(prevPropse: MarkDownEditorProps) {
+        if (this.props.value !== prevPropse.value) {
             this.setState({
-                value: nextProps.value || ""
+                value: this.props.value || ""
             });
         }
     }

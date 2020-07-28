@@ -33,8 +33,10 @@ class DocList extends React.Component<DocListProps, DocsPageState> {
 
     async loadData(searchCriteria: SearchCriterias, page: number, pageSize: number) {
         this.setState({
-            docs: null
+            docs: null,
+            totalPages: 0
         });
+
         page = page || this.state.page;
         const searchResult: SearchDocResult = await getDocs(searchCriteria, pageSize * (page - 1), pageSize);
 
@@ -50,14 +52,12 @@ class DocList extends React.Component<DocListProps, DocsPageState> {
     componentDidUpdate(prevProps: DocListProps) {
         if (prevProps.searchCriteria !== this.props.searchCriteria ||
             prevProps.pageSize !== this.props.pageSize) {
+            this.setState({
+                docs: null,
+                totalPages: 0
+            });
             if (this.props.searchCriteria) {
                 this.loadData(this.props.searchCriteria, 1, this.props.pageSize || 30);
-
-            }
-            else {
-                this.setState({
-                    docs: null
-                });
             }
         }
 

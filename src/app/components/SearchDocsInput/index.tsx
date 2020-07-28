@@ -152,6 +152,7 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                     placeholder="enter your search criteria"
                     onKeyDown={this.handleKeyDown.bind(this)}
                     onBlur={this.handleBlur.bind(this)}
+                    onSearch={this.search.bind(this)}
                     enterButton="Search"
                 />
             </div >

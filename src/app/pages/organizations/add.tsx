@@ -61,8 +61,6 @@ export default class AddOrganizationPage extends React.Component<Props, AddDocsP
     }
 
     async onSubmit(orgData: any) {
-        event!.preventDefault();
-
         try {
             const addedOrg = await addOrg(orgData);
             this.props.history.replace(`/organizations/${addedOrg.login}/new`);

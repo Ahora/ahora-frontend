@@ -1,10 +1,7 @@
 import * as React from 'react';
 import { Dashboard, getDashboard, updateDashboardDescription, updateDashboardTitle, updateDashboard, deleteDashboard } from 'app/services/dashboard';
 import { RouteComponentProps } from 'react-router';
-import Container from 'react-bootstrap/Container';
 import EditableHeader from 'app/components/EditableHeader';
-import Nav from 'react-bootstrap/Nav';
-import Button from 'react-bootstrap/Button';
 import { BasicDashboardGadget } from 'app/services/dashboardGadgets';
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import DashboardGadget from 'app/components/dashboards/DashboardGadget';
@@ -15,6 +12,7 @@ import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { requestCurrentUserData } from 'app/store/currentuser/actions';
 import { canEditDashboard } from 'app/services/authentication';
+import { Menu, Button, Space, Popconfirm, Typography } from 'antd';
 
 interface PageGadget {
     isNew: boolean;
@@ -168,22 +166,22 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
         }
 
         return (
-            <Container fluid={true}>
+            <div className="main-content">
                 {dashboard &&
                     <>
                         <EditableHeader canEdit={canEdit} onChanged={this.onTitleChanged.bind(this)} value={dashboard.title}>
-                            <h1>{dashboard.title}</h1>
+                            <Typography.Title>{dashboard.title}</Typography.Title>
                         </EditableHeader>
                         <EditableHeader canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={dashboard.description}>{dashboard.description}</EditableHeader>
                         {canEdit &&
-                            <Nav className="mb-3">
-                                <Nav.Item>
+                            <Menu className="navbar-menu" mode="horizontal">
+                                <Space>
                                     <AddGadgetButton onSelect={this.addEmptyGadget.bind(this)}></AddGadgetButton>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Button onClick={this.remove.bind(this)} variant="danger" type="button">Delete dashboard</Button>
-                                </Nav.Item>
-                            </Nav>
+                                    <Popconfirm onConfirm={this.remove.bind(this)} title="Are you sure?">
+                                        <Button danger type="primary">Delete dashboard</Button>
+                                    </Popconfirm>
+                                </Space>
+                            </Menu>
                         }
                         <DragDropContext onDragEnd={this.onDragEnd.bind(this)}>
                             <Droppable droppableId="droppable">
@@ -212,7 +210,7 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
                         </DragDropContext>
                     </>
                 }
-            </Container>
+            </div>
         );
     };
 }

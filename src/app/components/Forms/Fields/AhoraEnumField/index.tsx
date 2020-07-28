@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Form from 'react-bootstrap/Form';
 import { AhoraFormField } from '../../AhoraForm/data';
+import { Select } from 'antd';
 
 interface GroupBySelectState {
     value: number;
@@ -22,18 +22,17 @@ export default class AhoraEnumField extends React.Component<GroupBySelectStatePr
         };
     }
 
-    onCheckChange(event: any) {
-        const value = event.target.value;
+    onCheckChange(value: any) {
         this.setState({ value });
         this.props.onUpdate(value);
     }
 
     render() {
         return (
-            <Form.Control value={this.props.value ? this.props.value.toString() : undefined} onChange={this.onCheckChange.bind(this)} as="select">
+            <Select value={this.props.value ? this.props.value.toString() : undefined} onChange={this.onCheckChange.bind(this)}>
                 {this.props.fieldData.settings!.keys.map((key: string) => {
-                    return (<option key={key} value={this.props.fieldData.settings!.enum[key]}>{key}</option>);
+                    return (<Select.Option key={key} value={this.props.fieldData.settings!.enum[key]}>{key}</Select.Option>);
                 })}
-            </Form.Control>)
+            </Select>)
     }
 }

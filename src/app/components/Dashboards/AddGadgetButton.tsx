@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { DashboardGadgetConfiguration } from 'app/sdk/DashboardGadgets';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import AhoraSDK from 'app/sdk';
-import Dropdown from 'react-bootstrap/Dropdown';
+import { Menu, Dropdown, Button } from 'antd';
 
 interface GroupBySelectState {
     gadgets?: Map<string, DashboardGadgetConfiguration>;
@@ -12,7 +11,7 @@ interface Props {
     onSelect: (gadgetType: string) => void;
 }
 
-class AddGadgetButton extends React.Component<Props, GroupBySelectState> {
+export default class AddGadgetButton extends React.Component<Props, GroupBySelectState> {
     constructor(props: Props) {
         super(props);
 
@@ -27,25 +26,24 @@ class AddGadgetButton extends React.Component<Props, GroupBySelectState> {
 
     onClick(gadgetType: string) {
         this.props.onSelect(gadgetType);
-
     }
 
-
     render() {
+        const menu = (
+
+            this.state.gadgets ?
+                <Menu>
+                    {[...this.state.gadgets.keys()].map((key) => {
+                        const currentGadget: DashboardGadgetConfiguration = this.state.gadgets!.get(key)!;
+                        return <Menu.Item key={key} onClick={this.onClick.bind(this, key)}>
+                            <Button type="text">{currentGadget.title}</Button></Menu.Item>
+                    })}
+                </Menu>
+                : <></>
+        );
+
         return (
-            <DropdownButton id={`add-gadget-button`} title="Add gadget">
-                {
-                    this.state.gadgets &&
-                    <>
-                        {[...this.state.gadgets.keys()].map((key) => {
-                            const currentGadget: DashboardGadgetConfiguration = this.state.gadgets!.get(key)!;
-                            return <Dropdown.Item key={key} onClick={this.onClick.bind(this, key)}>{currentGadget.title}</Dropdown.Item>
-                        })}
-                    </>
-                }
-            </DropdownButton>
+            <Dropdown overlay={menu}><Button type="primary">Add gadget</Button></Dropdown>
         );
     }
 }
-
-export default AddGadgetButton;

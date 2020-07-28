@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import { addDashboard } from 'app/services/dashboard';
+import { addDashboard, DashboardType } from 'app/services/dashboard';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import { Typography } from 'antd';
+import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
+import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
 
 interface AddDashboardsPageState {
-    form: any;
+    fields: AhoraFormField[];
 }
 
 interface AddDashboardsPageParams {
@@ -25,52 +26,48 @@ class AddDashboardPage extends React.Component<Props, AddDashboardsPageState> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            form: { description: "", title: "" }
+            fields: [
+                {
+                    displayName: "Title",
+                    fieldName: "title",
+                    required: true,
+                    fieldType: "text"
+                },
+                {
+                    displayName: "Description",
+                    fieldName: "description",
+                    fieldType: "text"
+                },
+                {
+                    displayName: "Type",
+                    fieldName: "Type",
+                    fieldType: "enum",
+                    settings: {
+                        enum: DashboardType,
+                        keys: [
+                            "Public",
+                            "Private"
+                        ]
+                    }
+                }
+            ]
         }
     }
 
     componentDidMount() {
     }
 
-    handleEditorChange(text: any) {
-        this.setState({ form: { ...this.state.form, description: text } });
-    }
 
-    handleChange(event: any) {
-        let fieldName = event.target.name;
-        let fleldVal = event.target.value;
-        this.setState({ form: { ...this.state.form, [fieldName]: fleldVal } });
-    }
-
-    async onSubmit(even: any) {
-        event!.preventDefault();
-
-        const addedDashboard = await addDashboard(this.state.form);
+    async onSubmit(data: any) {
+        const addedDashboard = await addDashboard(data);
         this.props.history.replace(`/organizations/${this.props.match.params.login}/dashboards/${addedDashboard.id}`)
     }
 
     render() {
         return (
-            <div>
-                <h1>Add Dashboard</h1>
-                <Form onSubmit={this.onSubmit.bind(this)}>
-                    <Form.Group controlId="exampleForm.title">
-                        <Form.Label>Title</Form.Label>
-                        <Form.Control name="title" onChange={this.handleChange.bind(this)} type="subject" />
-                    </Form.Group>
-                    <Form.Group controlId="exampleForm.description">
-                        <Form.Label>Description</Form.Label>
-                        <Form.Control name="description" onChange={this.handleChange.bind(this)} type="description" />
-                    </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlSelect1">
-                        <Form.Label>Type</Form.Label>
-                        <Form.Control name="dashboardType" onChange={this.handleChange.bind(this)} as="select">
-                            <option value="0">Public</option>
-                            <option value="1">Private</option>
-                        </Form.Control>
-                    </Form.Group>
-                    <Button variant="primary" type="submit">Add</Button>
-                </Form>
+            <div className="main-content">
+                <Typography.Title>Add Dashboard</Typography.Title>
+                <AhoraForm data={{}} fields={this.state.fields} onSumbit={this.onSubmit.bind(this)}></AhoraForm>
             </div>
         );
     };

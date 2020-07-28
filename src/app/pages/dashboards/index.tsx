@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Dashboard, getDashboards, DashboardType } from 'app/services/dashboard';
-import Table from 'react-bootstrap/Table';
-import Nav from 'react-bootstrap/Nav';
 import { Link } from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import CanAddDashboard from 'app/components/Authentication/CanAddDashboard';
+import { Button, Table, Menu } from 'antd';
 
 
 interface DashboardsPageState {
@@ -46,49 +44,38 @@ class DashboardsPage extends React.Component<AllProps, DashboardsPageState> {
 
     render() {
         return (
-            <div>
-                <Nav className="mb-3">
+            <>
+                <Menu className="navbar-menu" mode="horizontal">
                     <CanAddDashboard>
-                        <Nav.Item>
-                            <Link to={`/organizations/${this.props.match.params.login}/dashboards/add`}>
-                                <Button variant="primary" type="button">Add dashboard</Button>
-                            </Link>
-                        </Nav.Item>
+                        <Link to={`/organizations/${this.props.match.params.login}/dashboards/add`}>
+                            <Button type="primary">Add dashboard</Button>
+                        </Link>
                     </CanAddDashboard>
-                </Nav>
+                </Menu>
+                <div>
+                    {this.state.dashboards ?
+                        <Table rowKey="id" dataSource={this.state.dashboards}>
 
-                {this.state.dashboards ?
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Type</th>
-                                <th>User</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.dashboards && (this.state.dashboards.map((dashboard: Dashboard) => {
-                                return (
-                                    <tr className="pt-3" key={dashboard.id}>
-                                        <td>
-                                            <Link to={`/organizations/${this.props.match.params.login}/dashboards/${dashboard.id}`}>
-                                                {dashboard.title}
-                                            </Link>
-                                        </td>
-                                        <td>{dashboard.description}</td>
-                                        <td>{dashboard.dashboardType === DashboardType.Public ? "Public" : "Private"}</td>
-                                        <td>{dashboard.user!.displayName}</td>
-                                    </tr>);
-                            }))}
-                        </tbody>
-                    </Table>
-                    :
-                    <AhoraSpinner />
-                }
-            </div>
+                            <Table.Column title="Title" dataIndex="title" key="title" render={(text, dashboard: Dashboard) => (
+                                <Link to={`/organizations/${this.props.match.params.login}/dashboards/${dashboard.id}`}>
+                                    {text}
+                                </Link>
+                            )} />
+                            <Table.Column title="Description" dataIndex="user!.displayName" key="user!.displayName" />
+                            <Table.Column title="User" dataIndex="description" key="description" />
+
+                            <Table.Column title="Type" dataIndex="dashboardType" key="dashboardType" render={(dashboardType: any) =>
+                                <>{dashboardType === DashboardType.Public ? "Public" : "Private"}</>
+                            } />
+                        </Table>
+                        :
+                        <AhoraSpinner />
+                    }
+                </div>
+            </>
         );
-    };
+
+    }
 }
 
 export default DashboardsPage; 

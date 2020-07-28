@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Form from 'react-bootstrap/Form';
+import { Select } from 'antd';
 
 interface GroupBySelectState {
     value: string;
@@ -69,17 +69,16 @@ class GroupBySelect extends React.Component<GroupBySelectStateProps, GroupBySele
     }
 
 
-    handleChange(event: any) {
-        this.setState({ value: event.target.value });
-        this.props.onUpdate(event.target.value);
-
+    handleChange(value: string) {
+        this.setState({ value });
+        this.props.onUpdate(value);
     }
 
     render() {
         return (
-            <Form.Control value={this.state.value} onChange={this.handleChange.bind(this)} as="select">
-                {groupOptions.map((groupOption) => <option key={groupOption.value} value={groupOption.value}>{groupOption.name}</option>)}
-            </Form.Control>
+            <Select value={this.state.value} onChange={this.handleChange.bind(this)}>
+                {groupOptions.map((groupOption) => <Select.Option key={groupOption.value} value={groupOption.value}>{groupOption.name}</Select.Option>)}
+            </Select>
         );
     }
 }

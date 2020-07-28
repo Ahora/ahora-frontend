@@ -30,7 +30,7 @@ class AhoraTextField extends React.Component<GroupBySelectStateProps, GroupBySel
 
     render() {
         return (
-            <Input value={this.props.value} onChange={this.handleChange.bind(this)} ></Input>
+            <Input value={this.state.value} onChange={this.handleChange.bind(this)} ></Input>
         );
     }
 }

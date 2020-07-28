@@ -13,18 +13,19 @@ interface AhoraFormState {
 interface AhoraFormProps {
     data?: any;
     submitButtonText?: string;
-    fields: AhoraFormField[],
+    fields: AhoraFormField[];
+    onUpdate?: (data: any) => void;
     onSumbit: (data: any) => Promise<void>;
     onCancel?: () => void;
 }
 
 
-class AhoraForm extends React.Component<AhoraFormProps, AhoraFormState> {
+export default class AhoraForm extends React.Component<AhoraFormProps, AhoraFormState> {
     constructor(props: AhoraFormProps) {
         super(props);
 
         this.state = {
-            form: this.props.data,
+            form: { ...this.props.data } || {},
             isSubmitting: false,
             fields: this.props.fields.map((field) => this.convertField(field))
         };
@@ -54,12 +55,18 @@ class AhoraForm extends React.Component<AhoraFormProps, AhoraFormState> {
 
 
     handleChange(fieldName: string, value: any) {
-        this.setState({
-            form: {
-                ...this.state.form,
-                [fieldName]: value
-            }
-        });
+        const form = {
+            ...this.state.form,
+            [fieldName]: value
+        };
+
+        if (this.props.onUpdate) {
+            this.props.onUpdate(form);
+        }
+
+        this.setState({ form });
+
+
     }
 
     cancel() {
@@ -70,16 +77,15 @@ class AhoraForm extends React.Component<AhoraFormProps, AhoraFormState> {
 
     render() {
         return (
-            <Form layout="vertical" onFinish={this.onSubmit.bind(this)}>
+            <Form layout="vertical" initialValues={this.props.data} onFinish={this.onSubmit.bind(this)}>
                 {this.state.fields.map((field) => {
                     return <Form.Item key={field.fieldName} name={field.fieldName} required={field.required} label={field.displayName}>
                         {
                             field.instance && React.createElement(field.instance, {
-                                key: field.fieldName,
                                 fieldData: field,
                                 formData: this.state.form,
                                 onUpdate: (value: any) => { this.handleChange(field.fieldName, value); },
-                                value: this.state.form[field.fieldName]
+                                value: this.state.form && this.state.form[field.fieldName]
                             })
                         }
                     </Form.Item>
@@ -98,5 +104,3 @@ class AhoraForm extends React.Component<AhoraFormProps, AhoraFormState> {
         );
     }
 }
-
-export default AhoraForm;

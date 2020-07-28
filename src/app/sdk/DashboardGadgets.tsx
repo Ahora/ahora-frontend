@@ -1,8 +1,10 @@
+import { AhoraFormField } from "app/components/Forms/AhoraForm/data";
+
 export interface DashboardGadgetConfiguration {
     group: string;
     title: string;
     description: string;
-    formComponent: any;
+    formComponent: { fields?: AhoraFormField[] };
     gadgetComponent: any;
 }
 

@@ -29,7 +29,7 @@ class AhoraSearchCriteriasField extends React.Component<GroupBySelectStateProps,
 
     render() {
         return (
-            <SearchDocsInput searchCriterias={this.state.value} searchSelected={this.onSearchSelected.bind(this)} ></SearchDocsInput>);
+            <SearchDocsInput required={false} searchCriterias={this.state.value} searchSelected={this.onSearchSelected.bind(this)} ></SearchDocsInput>);
     }
 }
 

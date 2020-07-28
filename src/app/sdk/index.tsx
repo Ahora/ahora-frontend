@@ -1,7 +1,5 @@
 import DashboardGadgetsSDK from "./DashboardGadgets";
 import BarPieGadgetGadget from "app/components/Dashboards/Gadgets/BarPieGadget/Gadget";
-//import DocListGadgetForm from "app/components/Dashboards/Gadgets/DocListGadget/form";
-//import DocListGadget from "app/components/Dashboards/Gadgets/DocListGadget/Gadget";
 import RegisterComponent from "./RegisterComponent";
 import AhoraTextField from "app/components/Forms/Fields/AhoraTextField";
 import AhoraSearchCriteriasField from "app/components/Forms/Fields/SearchCriteriaField";
@@ -11,12 +9,9 @@ import AhoraBitwiseEnumField from "app/components/Forms/Fields/AhoraBitwiseEnumF
 import { RouteComponentProps } from "react-router";
 import AhoraRepistoryAutoCompleteField from "app/components/Forms/Fields/RepositoryAutoComplete";
 import AhoraOrganizationAutoCompleteField from "app/components/Forms/Fields/OrganizationAutoComplete";
-//import DocsDateTimeGraphForm from "app/components/Dashboards/Gadgets/DateTimeChart/form";
-//import DocsDateTimeGraph from "app/components/Dashboards/Gadgets/DateTimeChart/graph";
+import DocsDateTimeGraph from "app/components/Dashboards/Gadgets/DateTimeChart/graph";
 import AhoraTextAreaField from "app/components/Forms/Fields/AhoraTextAreaField";
 import AhoraOrganizationUrlField from "app/components/Forms/Fields/AhoraOrganizationUrlField";
-//import AhoraContentForm from "app/components/Dashboards/Gadgets/Content/form";
-//import AhoraContentGadget from "app/components/Dashboards/Gadgets/Content/graph";
 import AhoraUserField from "app/components/Forms/Fields/AhoraUserField";
 import AhoraTeamUserPermissionField from "app/components/Forms/Fields/AhoraTeamUserPermission";
 import AhoraEnumField from "app/components/Forms/Fields/AhoraEnumField";
@@ -25,6 +20,7 @@ import AhoraLabelsField from "app/components/Forms/Fields/AhoraLabelsField";
 import AhoraGroupDocField from "app/components/Forms/Fields/AhoraGroupDocField";
 import { BarPieGadgetDisplayType } from "app/components/Dashboards/Gadgets/BarPieGadget/data";
 import AhoraContentGadget from "app/components/Dashboards/Gadgets/Content/graph";
+import DocListGadget from "app/components/Dashboards/Gadgets/DocListGadget/Gadget";
 
 
 class AhoraSDK {
@@ -100,12 +96,24 @@ sdkInstance.dashboardGadgets.registerGadget("AhoraBarsPie", {
     },
     gadgetComponent: BarPieGadgetGadget
 });
-/*
+
 sdkInstance.dashboardGadgets.registerGadget("AhoraDocList", {
     title: "List of docs",
     description: "Displays list of matching docs.",
     group: "General",
-    formComponent: DocListGadgetForm,
+    formComponent: {
+        fields: [{
+            displayName: "Query",
+            fieldName: "searchCriterias",
+            fieldType: "searchcriteria",
+            required: false
+        },
+        {
+            displayName: "Number of Docs:",
+            fieldName: "numberofdocs",
+            fieldType: "number",
+        }]
+    },
     gadgetComponent: DocListGadget
 });
 
@@ -113,11 +121,23 @@ sdkInstance.dashboardGadgets.registerGadget("AhoraClosedCreated", {
     title: "Closed & Created over time Graph",
     description: "Line Chart",
     group: "General",
-    formComponent: DocsDateTimeGraphForm,
+    formComponent: {
+        fields: [{
+            displayName: "Query",
+            fieldName: "searchCriterias",
+            fieldType: "searchcriteria",
+            required: false
+        },
+        {
+            displayName: "Primary Group",
+            fieldName: "primaryGroup",
+            fieldType: "docsgroup",
+        }]
+    },
     gadgetComponent: DocsDateTimeGraph
 });
 
-*/
+
 sdkInstance.dashboardGadgets.registerGadget("AhoraCustomContent", {
     title: "Custom content",
     description: "Displays custom html content",

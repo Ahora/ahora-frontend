@@ -1,15 +1,15 @@
 import * as React from 'react';
-import Form from 'react-bootstrap/Form';
 import { AhoraFormField } from '../../AhoraForm/data';
+import { InputNumber } from 'antd';
 
 interface GroupBySelectState {
-    value: string;
+    value?: any;
 }
 
 interface GroupBySelectStateProps {
-    value?: number;
+    value?: any;
     fieldData: AhoraFormField;
-    onUpdate: (value: string) => void;
+    onUpdate: (value: number) => void;
 }
 
 
@@ -18,19 +18,19 @@ class AhoraNumberField extends React.Component<GroupBySelectStateProps, GroupByS
         super(props);
 
         this.state = {
-            value: this.props.value ? this.props.value.toString() : ""
+            value: this.props.value
         };
     }
 
 
-    handleChange(event: any) {
-        this.setState({ value: event.target.value });
-        this.props.onUpdate(event.target.value);
+    handleChange(value: any) {
+        this.setState({ value });
+        this.props.onUpdate(value);
     }
 
     render() {
         return (
-            <Form.Control className="mb-2 mr-sm-2" required={this.props.fieldData.required} type="number" value={this.state.value} onChange={this.handleChange.bind(this)} />
+            <InputNumber min={1} max={100} defaultValue={this.props.value || 30} onChange={this.handleChange.bind(this)} />
         );
     }
 }

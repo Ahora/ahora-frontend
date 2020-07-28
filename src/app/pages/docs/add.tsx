@@ -20,6 +20,7 @@ interface AddDocsPageParams {
 interface Props extends RouteComponentProps<AddDocsPageParams> {
     docTypes: DocType[];
     onDocAdded: (doc: Doc) => void;
+    onCancel: () => void;
 }
 
 class AddDocPage extends React.Component<Props, AddDocsPageState> {
@@ -58,11 +59,15 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
         this.props.onDocAdded(addedDoc);
     }
 
+    onCancel() {
+        this.props.onCancel();
+    }
+
     render() {
         return (
             <div style={{ padding: "8px" }}>
                 <Typography.Title>Add Doc</Typography.Title>
-                <AhoraForm fields={this.state.fields} data={this.state.form} onSumbit={this.onSubmit.bind(this)} />
+                <AhoraForm onCancel={this.onCancel.bind(this)} fields={this.state.fields} data={this.state.form} onSumbit={this.onSubmit.bind(this)} />
             </div>
         );
     };

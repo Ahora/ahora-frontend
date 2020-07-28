@@ -140,6 +140,16 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         }
     }
 
+    onAddCancel() {
+        if (this.props.history.length <= 2) {
+            this.props.history.push(`/organizations/${this.props.match.params.login}/docs`)
+
+        }
+        else {
+            this.props.history.goBack();
+        }
+    }
+
     onDocAdded(addedDoc: Doc) {
         this.setState({ docs: [addedDoc, ...this.state.docs] });
         this.props.history.replace(`/organizations/${this.props.match.params.login}/docs/${addedDoc.id}`)
@@ -176,7 +186,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                             <DocsDetailsPage onDocDeleted={this.onDocDeleted.bind(this)} onDocUpdated={this.onDocUpdated.bind(this)} doc={this.state.currentDoc} {...this.props}></DocsDetailsPage>
                                                             :
                                                             <Switch>
-                                                                <Route path={`/organizations/:login/docs/add`} component={(props: any) => <AddDocPage {...props} onDocAdded={this.onDocAdded.bind(this)} />} />
+                                                                <Route path={`/organizations/:login/docs/add`} component={(props: any) => <AddDocPage {...props} onCancel={this.onAddCancel.bind(this)} onDocAdded={this.onDocAdded.bind(this)} />} />
                                                             </Switch>
                                                         }
                                                     </div>

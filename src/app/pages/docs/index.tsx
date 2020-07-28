@@ -95,7 +95,8 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         this.props.setSearchCriterias(searchCriterias);
         this.setState({
             searchCriteria: searchCriterias,
-            searchCriteriasText
+            searchCriteriasText,
+            docs: undefined
         });
     }
 
@@ -177,7 +178,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                         </Link>
                                                     </CanAddDoc>
                                                     <div className="doc-list-wrapper scrollable">
-                                                        <DocList onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>No Results</DocList>
+                                                        <DocList docs={this.state.docs} onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>No Results</DocList>
                                                     </div>
                                                 </div>
                                                 <div className="main-content">

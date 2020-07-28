@@ -107,7 +107,7 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
                     {this.props.comment.author.username}
                 </>
             }
-            datetime={<Moment titleFormat="D MMM YYYY hh:mm" withTitle fromNow format="D MMM YYYY hh:mm" date={this.props.comment.createdAt}></Moment>}
+            datetime={<Moment titleFormat="YYYY-MM-DD HH:mm" withTitle fromNow format="YYYY-MM-DD HH:mm" date={this.props.comment.createdAt}></Moment>}
             actions={[
                 <span key="comment-basic-reply-to" onClick={this.props.onQoute.bind(this, this.props.comment)}>Quote</span>,
                 <CanEditOrDeleteComment comment={this.props.comment}>

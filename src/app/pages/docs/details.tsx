@@ -17,7 +17,7 @@ import LabelsList from 'app/components/LabelsSelector/details';
 import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
-import { Comment, Descriptions, Button, Space } from 'antd';
+import { Comment, Descriptions, Button, Space, Popconfirm } from 'antd';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -180,9 +180,9 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                     <SelectUser editMode={false} defaultSelected={doc.assignee && [doc.assignee]} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
                                 </Descriptions.Item>
                                 {docType && <Descriptions.Item label="Type"><>{docType.name}</></Descriptions.Item>}
-                                {doc.closedAt && <Descriptions.Item label="Closed At"><Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.closedAt}></Moment></Descriptions.Item>}
+                                {doc.closedAt && <Descriptions.Item label="Closed At"><Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.closedAt}></Moment></Descriptions.Item>}
                                 {doc.lastView && <Descriptions.Item label="Last viewd by me">
-                                    <Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.lastView.updatedAt}></Moment>
+                                    <Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.lastView.updatedAt}></Moment>
                                 </Descriptions.Item>
                                 }
                                 {doc.source &&
@@ -199,7 +199,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                             <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
                                 <Comment className="description"
                                     datetime={
-                                        <Moment titleFormat="D MMM YYYY hh:mm" withTitle format="D MMM YYYY hh:mm" date={doc.createdAt}></Moment>
+                                        <Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.createdAt}></Moment>
                                     }
                                     author={
                                         <>{doc.reporter.displayName} ({doc.reporter.username})</>
@@ -211,7 +211,10 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 </Comment>
                             </EditableMarkDown>
                             <CommentListComponent doc={doc} login={this.props.match.params.login}></CommentListComponent>
-                            {canEdit && <Button danger onClick={this.delete.bind(this)}>Delete Doc</Button>}
+                            {canEdit &&
+                                <Popconfirm onConfirm={this.delete.bind(this)} title="Are you sure?">
+                                    <Button danger>Delete Doc</Button>
+                                </Popconfirm>}
                         </div>
                     </>
                     : <AhoraSpinner />

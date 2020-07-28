@@ -24,6 +24,7 @@ import AhoraDocTypeField from "app/components/Forms/Fields/AhoraDocTypeField";
 import AhoraLabelsField from "app/components/Forms/Fields/AhoraLabelsField";
 import AhoraGroupDocField from "app/components/Forms/Fields/AhoraGroupDocField";
 import { BarPieGadgetDisplayType } from "app/components/Dashboards/Gadgets/BarPieGadget/data";
+import AhoraContentGadget from "app/components/Dashboards/Gadgets/Content/graph";
 
 
 class AhoraSDK {
@@ -116,14 +117,21 @@ sdkInstance.dashboardGadgets.registerGadget("AhoraClosedCreated", {
     gadgetComponent: DocsDateTimeGraph
 });
 
-
+*/
 sdkInstance.dashboardGadgets.registerGadget("AhoraCustomContent", {
     title: "Custom content",
     description: "Displays custom html content",
     group: "General",
-    formComponent: AhoraContentForm,
+    formComponent: {
+        fields: [{
+            displayName: "Content",
+            fieldType: "textarea",
+            required: true,
+            fieldName: "content"
+        }]
+    },
     gadgetComponent: AhoraContentGadget
 });
-*/
+
 
 export default AhoraSDK;

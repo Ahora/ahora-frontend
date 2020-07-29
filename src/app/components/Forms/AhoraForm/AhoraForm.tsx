@@ -13,7 +13,7 @@ interface AhoraFormState {
 interface AhoraFormProps {
     data?: any;
     submitButtonText?: string;
-    fields: AhoraFormField[];
+    fields?: AhoraFormField[];
     onUpdate?: (data: any) => void;
     onSumbit: (data: any) => Promise<void>;
     onCancel?: () => void;
@@ -24,11 +24,20 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
     constructor(props: AhoraFormProps) {
         super(props);
 
+        let fieldsFromChildren: any[] | null | undefined;
+        if (React.Children.count(this.props.children) > 0) {
+            fieldsFromChildren = React.Children.map(this.props.children, (fieldComponent: any) => {
+                return this.convertField(fieldComponent.props);
+            });
+        }
+
         this.state = {
             form: { ...this.props.data } || {},
             isSubmitting: false,
-            fields: this.props.fields.map((field) => this.convertField(field))
+            fields: fieldsFromChildren || (this.props.fields ? this.props.fields.map((field) => this.convertField(field)) : [])
         };
+
+
     }
 
     convertField(field: AhoraFormField): AhoraFormStateField {

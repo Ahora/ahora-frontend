@@ -52,6 +52,7 @@ export const canEditDashboard = (user: User | undefined | null, dashboard: Dashb
 }
 
 export const canManageOrganization = (permission?: OrganizationTeamUser): boolean => {
+    console.log(permission);
     if (permission) {
         return permission.permissionType === TeamUserType.Owner;
     }

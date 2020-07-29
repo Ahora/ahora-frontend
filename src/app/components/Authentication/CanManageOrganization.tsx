@@ -19,11 +19,15 @@ class CanManageOrganization extends React.Component<AllProps> {
     }
 
     render() {
-        return (
-            <>
-                {canManageOrganization(this.props.currentOrgPermission) && <>{this.props.children}</>}
-            </>
-        );
+        if (canManageOrganization(this.props.currentOrgPermission)) {
+            console.log("tolat")
+            return this.props.children;
+        }
+        else {
+            console.log("meshi")
+
+            return null;
+        }
     };
 }
 

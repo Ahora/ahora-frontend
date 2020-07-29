@@ -36,7 +36,7 @@ export class AddTeamMemberForm extends React.Component<Props, State> {
     render() {
         return (
             <AhoraForm submitButtonText="Add" data={this.state.form} onSumbit={this.onSubmit.bind(this)}>
-                <AhoraField fieldName="user" displayName="User" fieldType="user" required={true} />
+                <AhoraField fieldName="userId" displayName="User" fieldType="user" required={true} />
                 <AhoraField fieldName="permissionType" displayName="Permission" fieldType="enum" required={true} settings={{ enum: TeamUserType, keys: ["Member", "Owner"] }} />
             </AhoraForm>
         );

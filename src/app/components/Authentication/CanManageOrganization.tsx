@@ -20,12 +20,9 @@ class CanManageOrganization extends React.Component<AllProps> {
 
     render() {
         if (canManageOrganization(this.props.currentOrgPermission)) {
-            console.log("tolat")
             return this.props.children;
         }
         else {
-            console.log("meshi")
-
             return null;
         }
     };

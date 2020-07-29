@@ -135,16 +135,14 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                     {this.state.users ?
                         <>
                             {this.state.users.length > 0 ?
-                                <Table dataSource={this.state.users}>
+                                <Table dataSource={this.state.users} rowKey="id">
                                     <Table.Column title="User" dataIndex="User" key="User" render={(user: UserItem) => <UserDetails user={user} />} />
-                                    <Table.Column title="type" dataIndex="permissionType " key="user!.displayName" render={(permissionType: TeamUserType) =>
+                                    <Table.Column title="type" dataIndex="permissionType" key="permissionType" render={(permissionType: TeamUserType) =>
                                         <>{permissionType === TeamUserType.Member ? "Member" : "Owner"}</>
                                     } />
                                     <Table.Column title="Actions" render={(value: any, user: OrganizationTeamUser) =>
                                         <CanManageOrganization>
-                                            <td>
-                                                <Button danger type="primary" onClick={() => { this.deleteUser(user); }}>Delete</Button>
-                                            </td>
+                                            <Button danger type="primary" onClick={() => { this.deleteUser(user); }}>Delete</Button>
                                         </CanManageOrganization>
                                     } />
                                 </Table> :
@@ -165,7 +163,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                         <>
                             {this.state.subTeams.length > 0 ?
 
-                                <Table dataSource={this.state.subTeams}>
+                                <Table dataSource={this.state.subTeams} rowKey="id">
                                     <Table.Column title="name" dataIndex="name" key="name" render={(name: string, team: OrganizationTeam) =>
                                         <Link to={`/organizations/${this.props.match.params.login}/teams/${team.id}`}>{team.name}</Link>
                                     } />

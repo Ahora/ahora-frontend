@@ -1,6 +1,9 @@
-import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import * as React from "react";
 import { UserItem, searchUsers } from "app/services/users";
+import { Select } from "antd";
+import AhoraSpinner from "../Forms/Basics/Spinner";
+import UserDetails from "./UserDetails";
+import { debounce } from "lodash";
 
 interface SelectUserProps {
     onSelect(user: UserItem): void;
@@ -24,6 +27,9 @@ export default class SelectUser extends React.Component<SelectUserProps, State> 
             query: '',
             editMode: (props.editMode === undefined) ? true : props.editMode
         };
+
+        this._handleSearch = debounce(this._handleSearch, 800);
+
     }
 
     onBlur() {
@@ -38,34 +44,29 @@ export default class SelectUser extends React.Component<SelectUserProps, State> 
         });
     }
 
-    onChange(users: UserItem[]) {
-        if (users.length > 0) {
-            this.props.onSelect(users[0]);
-            this.setState({
-                editMode: (this.props.editMode === undefined) ? true : this.props.editMode
-            });
-        }
+    onChange(user: any) {
+        this.props.onSelect(user.label.props.user);
+        this.setState({
+            editMode: (this.props.editMode === undefined) ? true : this.props.editMode
+        });
     }
 
     render() {
         if (this.state.editMode) {
             return (
-                <AsyncTypeahead
-                    labelKey="username"
-                    maxResults={50 - 1}
-                    {...this.state}
-                    onBlur={this.onBlur.bind(this)}
-                    onChange={(users) => { this.onChange(users) }}
-                    onInputChange={this._handleInputChange.bind(this)}
-                    onSearch={this._handleSearch.bind(this)}
-                    defaultSelected={this.props.defaultSelected}
-                    placeholder="Search for a user..."
-                    renderMenuItemChildren={
-                        (user: UserItem) => {
-                            return <div key={user.id}>{user.displayName} ({user.username})</div>;
-                        }
-                    }
-                />
+                <Select
+                    showSearch={true}
+                    labelInValue
+                    placeholder="Select users"
+                    notFoundContent={this.state.isLoading ? <AhoraSpinner /> : null}
+                    filterOption={false}
+                    onSearch={this._handleSearch}
+                    onSelect={this.onChange.bind(this)}
+                    onChange={this._handleInputChange}>
+                    {this.state.options.map(user => (
+                        <Select.Option key={user.id} value={user.id!.toString()}><UserDetails user={user} /></Select.Option>
+                    ))}
+                </ Select>
             );
         }
         else {

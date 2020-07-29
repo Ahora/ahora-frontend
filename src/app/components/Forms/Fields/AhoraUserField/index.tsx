@@ -23,7 +23,6 @@ class AhoraUserField extends React.Component<GroupBySelectStateProps, GroupBySel
     async handleChange(user: UserItem) {
         this.setState({ value: user.id });
         this.props.onUpdate(user.id);
-
     }
 
     render() {

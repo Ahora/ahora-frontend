@@ -74,8 +74,6 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
         }
 
         this.setState({ form });
-
-
     }
 
     cancel() {

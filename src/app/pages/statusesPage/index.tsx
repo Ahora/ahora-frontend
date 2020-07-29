@@ -1,13 +1,10 @@
-import * as React from 'react'; import Button from 'react-bootstrap/Button';
-import Nav from 'react-bootstrap/Nav';
-import NavItem from 'react-bootstrap/NavItem';
+import * as React from 'react';
 import { Status, add, deleteStatus, editStatus } from 'app/services/statuses';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { addStatusFromState, deleteStatusFromState, updateStatusToState } from 'app/store/statuses/actions';
 import { connect } from 'react-redux';
-import Table from 'react-bootstrap/Table';
-import Form from 'react-bootstrap/Form';
+import { Typography, Menu, Space, Table, Button, Input } from 'antd';
 
 interface StatusRow {
     status: Status;
@@ -113,60 +110,59 @@ class StatusesPage extends React.Component<AllProps, StatusesPageState> {
     render() {
         let statuses: StatusRow[] | undefined = [...this.props.statuses];
         if (statuses && this.state.newStatus) {
-            statuses.push(this.state.newStatus);
+            statuses = [this.state.newStatus, ...statuses]
         }
         return (
             <div>
-                <h2>Statuses</h2>
-                <Nav>
-                    <NavItem>
+                <Typography.Title level={1}>Statuses</Typography.Title>
+                <Menu className="navbar-menu" mode="horizontal">
+                    <Space>
                         <Button onClick={this.addnewStatus.bind(this)}>Add new status</Button>
-                    </NavItem>
-                </Nav>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>description</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {statuses && (statuses.map((statusRow) => {
-                            return (
-                                <tr className="pt-3" key={statusRow.status.id}>
-                                    <td>
-                                        {statusRow.editable ? (
-                                            <Form.Control value={statusRow.name} name="name" onChange={(e: any) => { this.saveData(e, statusRow) }} type="text" />
-                                        ) : (<>{statusRow.status.name}</>)}
-                                    </td>
-                                    <td>
-                                        {statusRow.editable ? (
-                                            <Form.Control name="description" value={statusRow.description} onChange={(e: any) => { this.saveData(e, statusRow) }} type="text" />
-                                        ) : (<>{statusRow.status.description}</>)}
-                                    </td>
-                                    <td>
-                                        {statusRow.editable ? (
-                                            <>
-                                                <Button variant="danger" onClick={() => { this.cancelEditable(statusRow); }}>Cancel</Button>
-                                                <Button variant="success" onClick={() => { this.saveStatus(statusRow) }}>Save</Button>
-                                            </>)
-                                            :
-                                            (<>
-                                                {(statusRow.organizationId || statusRow.editable) &&
-                                                    <>
-                                                        <Button onClick={() => { this.markAsEditable(statusRow); }}>Edit</Button>
-                                                        <Button variant="danger" onClick={() => { this.onDeleteStatus(statusRow); }}>Delete</Button>
-                                                    </>}
-                                            </>)}
+                    </Space>
+                </Menu>
+                <Table className="content-toside" dataSource={statuses} rowKey="id">
+                    <Table.Column title="Name" dataIndex="name" key="name" render={(text, statusRow: StatusRow) => (
+                        <>
+                            {
+                                statusRow.editable ? (
+                                    <Input value={statusRow.name} name="name" onChange={(e: any) => { this.saveData(e, statusRow) }} type="text" />
+                                ) : (<>{statusRow.status.name}</>)
+                            }
+                        </>
+                    )} />
+                    <Table.Column title="Description" dataIndex="description" key="description" render={(text, statusRow: StatusRow) => (
+                        <>
+                            {
+                                statusRow.editable ? (
+                                    <Input value={statusRow.description} name="name" onChange={(e: any) => { this.saveData(e, statusRow) }} type="text" />
+                                ) : (<>{statusRow.status.description}</>)
+                            }
+                        </>
+                    )} />
+                    <Table.Column title="Actions" render={(text, statusRow: StatusRow) => {
 
-
-                                    </td>
-                                </tr>);
-                        }))}
-                    </tbody>
+                        const canSave: boolean = !!statusRow.name && statusRow.name.trim().length > 0;
+                        return <>
+                            {statusRow.editable ? (
+                                <Space>
+                                    <Button danger onClick={() => { this.cancelEditable(statusRow); }}>Cancel</Button>
+                                    <Button disabled={!canSave} onClick={() => { this.saveStatus(statusRow) }}>Save</Button>
+                                </Space>)
+                                :
+                                (<>
+                                    {(statusRow.status.organizationId !== null) &&
+                                        <Space>
+                                            <Button onClick={() => { this.markAsEditable(statusRow); }}>Edit</Button>
+                                            <Button danger onClick={() => { this.onDeleteStatus(statusRow); }}>Delete</Button>
+                                        </Space>
+                                    }
+                                </>
+                                )
+                            }
+                        </>;
+                    }} />
                 </Table>
-            </div>
+            </div >
         );
     };
 }

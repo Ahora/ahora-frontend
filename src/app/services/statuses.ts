@@ -5,6 +5,7 @@ export interface Status {
   id?: number;
   name: string;
   description: string;
+  organizationId?: number;
 }
 
 const statusesClient: RestCollectorClient = new RestCollectorClient(

@@ -151,15 +151,15 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
                         const canSave: boolean = !!labelRow.name && labelRow.name.trim().length > 0;
                         return <>
                             {labelRow.editable ? (
-                                <>
+                                <Space>
                                     <Button danger onClick={() => { this.cancelEditable(labelRow); }}>Cancel</Button>
                                     <Button disabled={!canSave} onClick={() => { this.saveLabel(labelRow) }}>Save</Button>
-                                </>)
+                                </Space>)
                                 :
-                                (<>
+                                (<Space>
                                     <Button onClick={() => { this.markAsEditable(labelRow); }}>Edit</Button>
                                     <Button danger onClick={() => { this.onDeleteLabel(labelRow); }}>Delete</Button>
-                                </>
+                                </Space>
                                 )
                             }
                         </>;

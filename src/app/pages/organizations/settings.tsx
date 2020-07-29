@@ -43,11 +43,8 @@ export default class OrganizationSettingsPage extends React.Component<
       return (
         <div>
           <Menu mode="horizontal" activeKey={this.props.match.params.settingsSection}>
-            <Menu.Item key={undefined}>
+            <Menu.Item key={""}>
               <Link to={`/organizations/${organization.login}/settings`}>Home</Link>
-            </Menu.Item>
-            <Menu.Item key="payment">
-              <Link to={`/organizations/${organization.login}/settings/payment`}>Payment</Link>
             </Menu.Item>
             <Menu.Item key="statuses">
               <Link to={`/organizations/${organization.login}/settings/statuses`}>Statuses</Link>
@@ -58,7 +55,7 @@ export default class OrganizationSettingsPage extends React.Component<
             <Menu.Item key="labels">
               <Link to={`/organizations/${organization.login}/settings/labels`}>Labels</Link>
             </Menu.Item>
-            <Menu.Item key="docsoures">
+            <Menu.Item key="docsources">
               <Link to={`/organizations/${organization.login}/settings/docsources`}>Doc Sources</Link>
             </Menu.Item>
           </Menu>

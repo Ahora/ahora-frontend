@@ -6,6 +6,7 @@ export interface DocType {
   name: string;
   code: string;
   description: string;
+  organizationId: Number | null;
 }
 
 const docTypesClient: RestCollectorClient = new RestCollectorClient(

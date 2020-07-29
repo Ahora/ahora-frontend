@@ -1,13 +1,10 @@
-import * as React from 'react'; import Button from 'react-bootstrap/Button';
-import Nav from 'react-bootstrap/Nav';
-import NavItem from 'react-bootstrap/NavItem';
+import * as React from 'react';
 import { DocType, add, deleteDocType, editDocType } from 'app/services/docTypes';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import Table from 'react-bootstrap/Table';
-import Form from 'react-bootstrap/Form';
 import { addDocTypeFromState, deleteDocTypeFromState, updateDocTypeToState } from 'app/store/docTypes/actions';
+import { Menu, Space, Table, Button, Input } from 'antd';
 
 interface DocTypeRow {
     docType: DocType;
@@ -15,7 +12,7 @@ interface DocTypeRow {
     name?: string;
     description?: string;
     code?: string;
-    organizationId?: number;
+    organizationId: number | null;
 }
 
 interface DocTypeesPageState {
@@ -57,8 +54,10 @@ class DocTypesPage extends React.Component<AllProps, DocTypeesPageState> {
             newDocType: {
                 editable: true,
                 description: "",
+                organizationId: null,
                 name: "",
                 docType: {
+                    organizationId: null,
                     name: "",
                     code: "",
                     description: "",
@@ -116,68 +115,66 @@ class DocTypesPage extends React.Component<AllProps, DocTypeesPageState> {
 
 
     render() {
-        let docTypes: DocTypeRow[] | undefined = [...this.props.docTypes];
+        let docTypes: DocTypeRow[] | undefined = this.props.docTypes;
+
         if (docTypes && this.state.newDocType) {
-            docTypes.push(this.state.newDocType);
+            docTypes = [this.state.newDocType, ...docTypes]
         }
         return (
             <div>
                 <h2>Doc Types</h2>
-                <Nav>
-                    <NavItem>
-                        <Button onClick={this.addnewDocType.bind(this)}>Add new doc type</Button>
-                    </NavItem>
-                </Nav>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Code</th>
-                            <th>description</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {docTypes && (docTypes.map((docTypeRow) => {
-                            return (
-                                <tr className="pt-3" key={docTypeRow.docType.id}>
-                                    <td>
-                                        {docTypeRow.editable ? (
-                                            <Form.Control value={docTypeRow.name} name="name" onChange={(e: any) => { this.saveData(e, docTypeRow) }} type="text" />
-                                        ) : (<>{docTypeRow.docType.name}</>)}
-                                    </td>
-                                    <td>
-                                        {docTypeRow.editable ? (
-                                            <Form.Control name="code" value={docTypeRow.code} onChange={(e: any) => { this.saveData(e, docTypeRow) }} type="text" />
-                                        ) : (<>{docTypeRow.docType.code}</>)}
-                                    </td>
-                                    <td>
-                                        {docTypeRow.editable ? (
-                                            <Form.Control name="description" value={docTypeRow.description} onChange={(e: any) => { this.saveData(e, docTypeRow) }} type="text" />
-                                        ) : (<>{docTypeRow.docType.description}</>)}
-                                    </td>
-                                    <td>
-                                        {docTypeRow.editable ? (
-                                            <>
-                                                <Button variant="danger" onClick={() => { this.cancelEditable(docTypeRow); }}>Cancel</Button>
-                                                <Button variant="success" onClick={() => { this.saveDocType(docTypeRow) }}>Save</Button>
-                                            </>)
-                                            :
-                                            (<>
-                                                {(docTypeRow.organizationId || docTypeRow.editable) &&
-                                                    <>
-                                                        <Button onClick={() => { this.markAsEditable(docTypeRow); }}>Edit</Button>
-                                                        <Button variant="danger" onClick={() => { this.onDeleteDocType(docTypeRow); }}>Delete</Button>
-                                                    </>
-                                                }
-                                            </>
-                                            )
-                                        }
+                <Menu className="navbar-menu" mode="horizontal">
+                    <Space>
+                        <Button type="primary" onClick={this.addnewDocType.bind(this)}>Add new doc type</Button>
+                    </Space>
+                </Menu>
 
-                                    </td>
-                                </tr>);
-                        }))}
-                    </tbody>
+
+                <Table className="content-toside" dataSource={docTypes} rowKey="id">
+                    <Table.Column title="Name" dataIndex="name" key="name" render={(text, docTypeRow: DocTypeRow) => (
+                        <>
+                            {docTypeRow.editable ? (
+                                <Input value={docTypeRow.name} name="name" onChange={(e: any) => { this.saveData(e, docTypeRow) }} type="text" />
+                            ) : (<>{docTypeRow.docType.name}</>)}
+                        </>
+                    )} />
+                    <Table.Column title="Code" dataIndex="code" key="code" render={(text, docTypeRow: DocTypeRow) => (
+                        <>
+                            {docTypeRow.editable ? (
+                                <Input name="code" value={docTypeRow.code} onChange={(e: any) => { this.saveData(e, docTypeRow) }} type="text" />
+                            ) : (<>{docTypeRow.docType.code}</>)}
+                        </>
+                    )} />
+                    <Table.Column title="Description" dataIndex="description" key="description" render={(text, docTypeRow: DocTypeRow) => (
+                        <>
+                            {docTypeRow.editable ? (
+                                <Input name="description" value={docTypeRow.description} onChange={(e: any) => { this.saveData(e, docTypeRow) }} type="text" />
+                            ) : (<>{docTypeRow.docType.description}</>)}
+                        </>
+                    )} />
+                    <Table.Column title="Actions" render={(text, docTypeRow: DocTypeRow) => {
+
+                        const canSave: boolean = !!docTypeRow.code && docTypeRow.code.trim().length > 0
+                            && !!docTypeRow.name && docTypeRow.name.trim().length > 0;
+                        return <>
+                            {docTypeRow.editable ? (
+                                <>
+                                    <Button danger onClick={() => { this.cancelEditable(docTypeRow); }}>Cancel</Button>
+                                    <Button disabled={!canSave} onClick={() => { this.saveDocType(docTypeRow) }}>Save</Button>
+                                </>)
+                                :
+                                (<>
+                                    {(docTypeRow.docType.organizationId !== null) &&
+                                        <>
+                                            <Button onClick={() => { this.markAsEditable(docTypeRow); }}>Edit</Button>
+                                            <Button danger onClick={() => { this.onDeleteDocType(docTypeRow); }}>Delete</Button>
+                                        </>
+                                    }
+                                </>
+                                )
+                            }
+                        </>;
+                    }} />
                 </Table>
             </div>
         );

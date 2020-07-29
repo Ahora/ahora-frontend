@@ -78,11 +78,8 @@ class MilestonesPage extends React.Component<MilestonesPageProps, MilestonesPage
     }
 
     render() {
-        let canManageOrg: boolean = false;
         return (
             <div>
-
-
                 <Typography.Title>Milestones</Typography.Title>
                 <CanManageOrganization>
                     {this.state.form ?
@@ -102,16 +99,17 @@ class MilestonesPage extends React.Component<MilestonesPageProps, MilestonesPage
                         <Table.Column title="Description" dataIndex="description" key="description" />
                         <Table.Column title="ClosedAt" dataIndex="closedAt" key="ClosedAt" render={(value) => <>{value && <Moment date={value} format="YYYY-MM-DD"></Moment>}</>} />
                         <Table.Column title="Due On" dataIndex="dueOn" key="dueOn" render={(value) => <>{value && <Moment date={value} format="YYYY-MM-DD"></Moment>}</>} />
-                        {canManageOrg && <Table.Column title="Actions" render={(value: any, milestone: OrganizationMilestone) =>
-                            <Space>
-                                {milestone.state === MilestoneStatus.open ?
-                                    <Button type="primary" onClick={() => { this.close(milestone) }}>Close</Button>
-                                    : <Button type="primary" onClick={() => { this.reopen(milestone) }}>Open</Button>
-                                }
-                                <Button danger onClick={() => { this.deleteOrganization(milestone) }}>Delete</Button>
-                            </Space>
-                        }></Table.Column>}
-
+                        <Table.Column title="Actions" render={(value: any, milestone: OrganizationMilestone) =>
+                            <CanManageOrganization>
+                                <Space>
+                                    {milestone.state === MilestoneStatus.open ?
+                                        <Button type="primary" onClick={() => { this.close(milestone) }}>Close</Button>
+                                        : <Button type="primary" onClick={() => { this.reopen(milestone) }}>Open</Button>
+                                    }
+                                    <Button danger onClick={() => { this.deleteOrganization(milestone) }}>Delete</Button>
+                                </Space>
+                            </CanManageOrganization>
+                        }></Table.Column>
                     </Table >
                     :
                     <AhoraSpinner />

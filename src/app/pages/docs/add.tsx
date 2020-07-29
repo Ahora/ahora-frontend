@@ -6,11 +6,10 @@ import { connect } from 'react-redux';
 import { DocType } from 'app/services/docTypes';
 import { Typography } from 'antd';
 import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
-import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
+import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
 
 interface AddDocsPageState {
     form: any;
-    fields: AhoraFormField[];
 }
 
 interface AddDocsPageParams {
@@ -27,30 +26,7 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            form: { description: "" },
-            fields: [
-                {
-                    displayName: "Subject",
-                    fieldName: "subject",
-                    fieldType: "text",
-                    required: true
-                },
-                {
-                    displayName: "Type",
-                    fieldName: "docTypeId",
-                    fieldType: "doctype",
-                    required: true
-                },
-                {
-                    displayName: "Labels",
-                    fieldName: "labels",
-                    fieldType: "labels"
-                },
-                {
-                    displayName: "Description",
-                    fieldName: "description",
-                    fieldType: "textarea"
-                }]
+            form: { description: "" }
         }
     }
 
@@ -67,7 +43,13 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
         return (
             <div style={{ padding: "8px" }}>
                 <Typography.Title>Add Doc</Typography.Title>
-                <AhoraForm onCancel={this.onCancel.bind(this)} fields={this.state.fields} data={this.state.form} onSumbit={this.onSubmit.bind(this)} />
+                <AhoraForm onCancel={this.onCancel.bind(this)} onSumbit={this.onSubmit.bind(this)}>
+                    <AhoraField displayName="Subject" fieldName="subject" fieldType="text" required={true}></AhoraField>
+                    <AhoraField displayName="Type" fieldName="docTypeId" fieldType="doctype" required={true}></AhoraField>
+                    <AhoraField displayName="Labels" fieldName="labels" fieldType="labels"></AhoraField>
+                    <AhoraField displayName="Description" fieldName="description" fieldType="textarea"></AhoraField>
+
+                </AhoraForm>
             </div>
         );
     };

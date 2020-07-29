@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { AhoraFormField } from '../Forms/AhoraForm/data';
 import AhoraForm from '../Forms/AhoraForm/AhoraForm';
 import { addUser, OrganizationTeamUser, TeamUserType } from 'app/services/organizationTeams';
+import AhoraField from '../Forms/AhoraForm/AhoraField';
 
 interface Props {
     onUserAdded(user: OrganizationTeamUser): void;
@@ -10,27 +10,13 @@ interface Props {
 
 interface State {
     form: any;
-    fields: AhoraFormField[];
 }
 
 export class AddTeamMemberForm extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            form: { permissionType: TeamUserType.Member },
-            fields: [
-                {
-                    displayName: "User",
-                    fieldName: "userId",
-                    fieldType: "user",
-                    required: true
-
-                }, {
-                    displayName: "permission",
-                    fieldName: "permissionType",
-                    fieldType: "teamuserpermission",
-                    required: true
-                }]
+            form: { permissionType: TeamUserType.Member }
         }
     }
 
@@ -41,7 +27,6 @@ export class AddTeamMemberForm extends React.Component<Props, State> {
     }
 
     async onSubmit(data: any) {
-        console.log(data);
         const addedUser: OrganizationTeamUser = await addUser(data.userId, this.props.teamId, data.permissionType);
         this.props.onUserAdded(addedUser);
 
@@ -50,7 +35,10 @@ export class AddTeamMemberForm extends React.Component<Props, State> {
 
     render() {
         return (
-            <AhoraForm submitButtonText="Add" fields={this.state.fields} data={this.state.form} onSumbit={this.onSubmit.bind(this)} />
+            <AhoraForm submitButtonText="Add" data={this.state.form} onSumbit={this.onSubmit.bind(this)}>
+                <AhoraField fieldName="user" displayName="User" fieldType="user" required={true} />
+                <AhoraField fieldName="permissionType" displayName="Permission" fieldType="enum" required={true} settings={{ enum: TeamUserType, keys: ["Member", "Owner"] }} />
+            </AhoraForm>
         );
     }
 }

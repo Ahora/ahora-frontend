@@ -4,7 +4,7 @@ import * as fetch from 'isomorphic-fetch';
 
 export interface UserItem {
     username: string;
-    displayName: string;
+    displayName?: string;
     id?: number
 }
 

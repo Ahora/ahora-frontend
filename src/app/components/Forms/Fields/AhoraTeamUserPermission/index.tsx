@@ -17,7 +17,6 @@ interface GroupBySelectStateProps {
 class AhoraTeamUserPermissionField extends React.Component<GroupBySelectStateProps, GroupBySelectState> {
     constructor(props: GroupBySelectStateProps) {
         super(props);
-
         this.state = { value: this.props.value };
     }
 

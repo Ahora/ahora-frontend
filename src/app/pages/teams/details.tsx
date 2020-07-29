@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { deleteOrganizationTeamMethod, OrganizationTeam, getTeamById, addOrganizationTeam, getTeams, OrganizationTeamUser, getUsersByTeam, deleteUserFromTeam, updateTeamName, TeamUserType } from 'app/services/organizationTeams';
 import { RouteComponentProps } from 'react-router';
-import Table from 'react-bootstrap/Table';
 import { Link } from 'react-router-dom';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Button from 'react-bootstrap/Button';
 import EditableHeader from 'app/components/EditableHeader';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 import { AddTeamMemberForm } from 'app/components/Teams/AddTeamMemberForm';
+import { Table, Button } from 'antd';
+import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
+import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
+import { UserItem } from 'app/services/users';
+import UserDetails from 'app/components/users/UserDetails';
 
 interface TeamsPageState {
     team: OrganizationTeam | null;
@@ -78,12 +79,9 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
         this.setState({ teamNameVal: event.target.value });
     }
 
-    async submitForm(event: any) {
-        if (event) {
-            event!.preventDefault();
-        }
-        if (this.state.teamNameVal && this.state.teamNameVal.trim().length > 0) {
-            const addedTeam = await addOrganizationTeam(this.state.teamNameVal.trim(), this.state.team && this.state.team.id);
+    async onSubmit(data: any): Promise<void> {
+        if (data.teamNameVal && data.teamNameVal.trim().length > 0) {
+            const addedTeam = await addOrganizationTeam(data.teamNameVal.trim(), this.state.team && this.state.team.id);
             this.setState({
                 subTeams: [addedTeam, ...this.state.subTeams],
                 teamNameVal: ""
@@ -137,31 +135,18 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                     {this.state.users ?
                         <>
                             {this.state.users.length > 0 ?
-                                <Table className="mt-2">
-                                    <thead>
-                                        <tr>
-                                            <th>User</th>
-                                            <th>Type</th>
-                                            <CanManageOrganization>
-                                                <th>Actions</th>
-                                            </CanManageOrganization>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {(this.state.users.map((user) => {
-                                            return (
-                                                <tr className="pt-3" key={user.id}>
-                                                    <td>{user.User.displayName} ({user.User.username})</td>
-                                                    <td>{user.permissionType === TeamUserType.Member ? "Member" : "Owner"}</td>
-                                                    <CanManageOrganization>
-                                                        <td>
-                                                            <Button variant="danger" onClick={() => { this.deleteUser(user); }}>Delete</Button>
-                                                        </td>
-                                                    </CanManageOrganization>
-                                                </tr>);
-                                        }))}
-                                    </tbody>
+                                <Table dataSource={this.state.users}>
+                                    <Table.Column title="User" dataIndex="User" key="User" render={(user: UserItem) => <UserDetails user={user} />} />
+                                    <Table.Column title="type" dataIndex="permissionType " key="user!.displayName" render={(permissionType: TeamUserType) =>
+                                        <>{permissionType === TeamUserType.Member ? "Member" : "Owner"}</>
+                                    } />
+                                    <Table.Column title="Actions" render={(value: any, user: OrganizationTeamUser) =>
+                                        <CanManageOrganization>
+                                            <td>
+                                                <Button danger type="primary" onClick={() => { this.deleteUser(user); }}>Delete</Button>
+                                            </td>
+                                        </CanManageOrganization>
+                                    } />
                                 </Table> :
                                 <p>No members</p>
                             }
@@ -171,37 +156,19 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                     <div>
                         <h2>Sub Teams</h2>
                         <CanManageOrganization>
-                            <Form onSubmit={this.submitForm.bind(this)}>
-                                <Form.Group>
-                                    <Form.Label>Add Team</Form.Label>
-                                    <InputGroup>
-                                        <Form.Control value={this.state.teamNameVal} onChange={this.teamNameChanged.bind(this)} placeholder="Enter team name" />
-                                        <InputGroup.Append>
-                                            <Button type="submit" variant="primary">Add</Button>
-                                        </InputGroup.Append>
-                                    </InputGroup>
-                                </Form.Group>
-                            </Form>
+                            <AhoraForm onSumbit={this.onSubmit.bind(this)}>
+                                <AhoraField fieldType="text" fieldName="teamNameVal" displayName="name" required={true} />
+                            </AhoraForm>
                         </CanManageOrganization>
                     </div>
                     {this.state.subTeams ?
                         <>
                             {this.state.subTeams.length > 0 ?
 
-                                < Table >
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {(this.state.subTeams.map((team) => {
-                                            return (
-                                                <tr className="pt-3" key={team.id}>
-                                                    <td><Link to={`/organizations/${this.props.match.params.login}/teams/${team.id}`}>{team.name}</Link></td>
-                                                </tr>);
-                                        }))}
-                                    </tbody>
+                                <Table dataSource={this.state.subTeams}>
+                                    <Table.Column title="name" dataIndex="name" key="name" render={(name: string, team: OrganizationTeam) =>
+                                        <Link to={`/organizations/${this.props.match.params.login}/teams/${team.id}`}>{team.name}</Link>
+                                    } />
                                 </Table> : <p>No teams</p>
                             }
                         </>
@@ -211,7 +178,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                         {this.state.team &&
                             <div>
                                 <h2>Danger Zone</h2>
-                                <Button type="button" onClick={this.deleteTeam.bind(this)} variant="danger">Delete Team</Button>
+                                <Button type="primary" danger onClick={this.deleteTeam.bind(this)}>Delete Team</Button>
                             </div>
                         }
                     </CanManageOrganization>

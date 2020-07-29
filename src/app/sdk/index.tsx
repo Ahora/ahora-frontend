@@ -13,7 +13,6 @@ import DocsDateTimeGraph from "app/components/Dashboards/Gadgets/DateTimeChart/g
 import AhoraTextAreaField from "app/components/Forms/Fields/AhoraTextAreaField";
 import AhoraOrganizationUrlField from "app/components/Forms/Fields/AhoraOrganizationUrlField";
 import AhoraUserField from "app/components/Forms/Fields/AhoraUserField";
-import AhoraTeamUserPermissionField from "app/components/Forms/Fields/AhoraTeamUserPermission";
 import AhoraEnumField from "app/components/Forms/Fields/AhoraEnumField";
 import AhoraDocTypeField from "app/components/Forms/Fields/AhoraDocTypeField";
 import AhoraLabelsField from "app/components/Forms/Fields/AhoraLabelsField";
@@ -55,7 +54,6 @@ sdkInstance.formComponents.register("enum", AhoraEnumField);
 sdkInstance.formComponents.register("githubrepository", AhoraRepistoryAutoCompleteField);
 sdkInstance.formComponents.register("githuborganization", AhoraOrganizationAutoCompleteField);
 sdkInstance.formComponents.register("user", AhoraUserField);
-sdkInstance.formComponents.register("teamuserpermission", AhoraTeamUserPermissionField);
 sdkInstance.formComponents.register("doctype", AhoraDocTypeField);
 sdkInstance.formComponents.register("labels", AhoraLabelsField);
 sdkInstance.formComponents.register("docsgroup", AhoraGroupDocField);

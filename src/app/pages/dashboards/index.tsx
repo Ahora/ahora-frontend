@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import CanAddDashboard from 'app/components/Authentication/CanAddDashboard';
 import { Button, Table, Menu } from 'antd';
+import UserDetails from 'app/components/users/UserDetails';
 
 
 interface DashboardsPageState {
@@ -61,8 +62,8 @@ class DashboardsPage extends React.Component<AllProps, DashboardsPageState> {
                                     {text}
                                 </Link>
                             )} />
-                            <Table.Column title="Description" dataIndex="user!.displayName" key="user!.displayName" />
-                            <Table.Column title="User" dataIndex="description" key="description" />
+                            <Table.Column title="User" dataIndex="user" key="user" render={(value) => <UserDetails user={value} />} />
+                            <Table.Column title="Description" dataIndex="description" key="description" />
 
                             <Table.Column title="Type" dataIndex="dashboardType" key="dashboardType" render={(dashboardType: any) =>
                                 <>{dashboardType === DashboardType.Public ? "Public" : "Private"}</>

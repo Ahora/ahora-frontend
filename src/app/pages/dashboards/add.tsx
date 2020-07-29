@@ -2,14 +2,12 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { addDashboard, DashboardType } from 'app/services/dashboard';
 import { ApplicationState } from 'app/store';
-import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { Typography } from 'antd';
 import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
-import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
+import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
 
 interface AddDashboardsPageState {
-    fields: AhoraFormField[];
 }
 
 interface AddDashboardsPageParams {
@@ -25,33 +23,6 @@ interface Props extends RouteComponentProps<AddDashboardsPageParams>, DispatchPr
 class AddDashboardPage extends React.Component<Props, AddDashboardsPageState> {
     constructor(props: Props) {
         super(props);
-        this.state = {
-            fields: [
-                {
-                    displayName: "Title",
-                    fieldName: "title",
-                    required: true,
-                    fieldType: "text"
-                },
-                {
-                    displayName: "Description",
-                    fieldName: "description",
-                    fieldType: "text"
-                },
-                {
-                    displayName: "Type",
-                    fieldName: "Type",
-                    fieldType: "enum",
-                    settings: {
-                        enum: DashboardType,
-                        keys: [
-                            "Public",
-                            "Private"
-                        ]
-                    }
-                }
-            ]
-        }
     }
 
     componentDidMount() {
@@ -67,7 +38,11 @@ class AddDashboardPage extends React.Component<Props, AddDashboardsPageState> {
         return (
             <div className="main-content">
                 <Typography.Title>Add Dashboard</Typography.Title>
-                <AhoraForm data={{}} fields={this.state.fields} onSumbit={this.onSubmit.bind(this)}></AhoraForm>
+                <AhoraForm onSumbit={this.onSubmit.bind(this)}>
+                    <AhoraField required={true} fieldName="title" displayName="Title" fieldType="text"></AhoraField>
+                    <AhoraField fieldName="description" displayName="Description" fieldType="text"></AhoraField>
+                    <AhoraField fieldName="dashboardType" displayName="Type" fieldType="enum" settings={{ enum: DashboardType, keys: ["Public", "Private"] }}></AhoraField>
+                </AhoraForm>
             </div>
         );
     };
@@ -79,9 +54,4 @@ const mapStateToProps = (state: ApplicationState) => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-    return {
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddDashboardPage as any);
+export default connect(mapStateToProps)(AddDashboardPage as any);

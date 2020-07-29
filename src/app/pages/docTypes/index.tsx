@@ -130,7 +130,7 @@ class DocTypesPage extends React.Component<AllProps, DocTypeesPageState> {
                 </Menu>
 
 
-                <Table className="content-toside" dataSource={docTypes} rowKey="id">
+                <Table pagination={{ pageSize: 50 }} className="content-toside" dataSource={docTypes} rowKey="id">
                     <Table.Column title="Name" dataIndex="name" key="name" render={(text, docTypeRow: DocTypeRow) => (
                         <>
                             {docTypeRow.editable ? (

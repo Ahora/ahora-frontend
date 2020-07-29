@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Table from 'react-bootstrap/Table';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import Moment from 'react-moment';
 import { ApplicationState } from 'app/store';
@@ -8,7 +7,7 @@ import { getDocSources, DocSource, deleteDocSource } from 'app/services/docSourc
 import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 import { Link } from 'react-router-dom';
 import { AddDocSourceForm } from 'app/components/DocSources/AddDocSourceForm';
-import Button from 'react-bootstrap/Button';
+import { Button, Table } from 'antd';
 
 interface MilestonesPageState {
     form?: any;
@@ -77,36 +76,24 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
                 </CanManageOrganization>
 
                 {this.state.docSources ?
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Repo</th>
-                                <th>Organization/User</th>
-                                <th>Last Updated</th>
-                                <th>Syncing</th>
-                                <CanManageOrganization>
-                                    <th></th>
-                                </CanManageOrganization>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.docSources.map((docSource: DocSource,) => {
-                                return (
-                                    <tr className="pt-3" key={docSource.id}>
-                                        <td>
-                                            <Link to={`/organizations/${this.props.organizationId}/docs?repo=${docSource.repo}`}>{docSource.repo}</Link>
-                                        </td>
-                                        <td>{docSource.organization}</td>
-                                        <td>{docSource.lastUpdated && <Moment date={docSource.lastUpdated} format="D MMM YYYY hh:mm"></Moment>}</td>
-                                        <td>{docSource.syncing!.toString()}</td>
-                                        <CanManageOrganization>
-                                            <td>
-                                                <Button variant="danger" onClick={() => { this.deleteSource(docSource) }}>Delete</Button>
-                                            </td>
-                                        </CanManageOrganization>
-                                    </tr>);
-                            })}
-                        </tbody>
+                    <Table pagination={{ pageSize: 50 }} className="content-toside" dataSource={this.state.docSources} rowKey="id">
+                        <Table.Column title="Repo" dataIndex="repo" key="repo" render={(repo: string, docSource: DocSource) =>
+                            <Link to={`/organizations/${this.props.organizationId}/docs?repo=${docSource.repo}`}>{docSource.repo}</Link>
+                        } />
+                        <Table.Column title="Organization/User" dataIndex="organization" key="organization" />
+                        <Table.Column title="Last Updated" dataIndex="lastUpdated" key="lastUpdated" render={(lastUpdated?: Date) =>
+                            <>{lastUpdated && <Moment date={lastUpdated} format="D MMM YYYY hh:mm"></Moment>}</>
+                        } />
+                        <Table.Column title="Last Updated" dataIndex="syncing" key="syncing" render={(syncing?: boolean) =>
+                            <>{syncing!.toString()}</>
+                        } />
+                        <Table.Column title="Actions" render={(value, docSource: DocSource) =>
+                            <CanManageOrganization>
+                                <td>
+                                    <Button danger onClick={() => { this.deleteSource(docSource) }}>Delete</Button>
+                                </td>
+                            </CanManageOrganization>
+                        } />
                     </Table>
                     :
                     <AhoraSpinner />

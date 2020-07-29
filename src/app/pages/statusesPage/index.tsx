@@ -120,7 +120,7 @@ class StatusesPage extends React.Component<AllProps, StatusesPageState> {
                         <Button onClick={this.addnewStatus.bind(this)}>Add new status</Button>
                     </Space>
                 </Menu>
-                <Table className="content-toside" dataSource={statuses} rowKey="id">
+                <Table pagination={{ pageSize: 50 }} className="content-toside" dataSource={statuses} rowKey="id">
                     <Table.Column title="Name" dataIndex="name" key="name" render={(text, statusRow: StatusRow) => (
                         <>
                             {

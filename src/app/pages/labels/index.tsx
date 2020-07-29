@@ -1,13 +1,10 @@
-import * as React from 'react'; import Button from 'react-bootstrap/Button';
-import Nav from 'react-bootstrap/Nav';
-import NavItem from 'react-bootstrap/NavItem';
+import * as React from 'react';
 import { Label, addLabel, deleteLabel, editLabel } from 'app/services/labels';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { addLabelFromState, deleteLabelFromState, updateLabelToState } from 'app/store/labels/actions';
 import { connect } from 'react-redux';
-import Table from 'react-bootstrap/Table';
-import Form from 'react-bootstrap/Form';
+import { Typography, Menu, Space, Button, Table, Input } from 'antd';
 
 interface LabelRow {
     label: Label;
@@ -15,6 +12,7 @@ interface LabelRow {
     name?: string;
     description?: string;
     color?: string;
+    organizationId: number;
 }
 
 interface LabelesPageState {
@@ -24,7 +22,7 @@ interface LabelesPageState {
 interface LabelPageProps {
     labels?: LabelRow[];
     loading: boolean;
-    organizationId: string;
+    organizationId: number;
 }
 
 interface DispatchProps {
@@ -55,6 +53,7 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
         this.setState({
             newLabel: {
                 editable: true,
+                organizationId: this.props.organizationId,
                 name: "",
                 label: {
                     name: "",
@@ -113,59 +112,58 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
     render() {
         let labels: LabelRow[] | undefined = [...this.props.labels];
         if (labels && this.state.newLabel) {
-            labels.push(this.state.newLabel);
+            labels = [this.state.newLabel, ...labels]
         }
         return (
             <div>
-                <h2>Labels</h2>
-                <Nav>
-                    <NavItem>
+                <Typography.Title>Labels</Typography.Title>
+                <Menu className="navbar-menu" mode="horizontal">
+                    <Space>
                         <Button onClick={this.addnewLabel.bind(this)}>Add new label</Button>
-                    </NavItem>
-                </Nav>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Color</th>
-                            <th>Description</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {labels && (labels.map((labelRow) => {
-                            return (
-                                <tr className="pt-3" key={labelRow.label.id}>
-                                    <td>
-                                        {labelRow.editable ? (
-                                            <Form.Control value={labelRow.name} name="name" onChange={(e: any) => { this.saveData(e, labelRow) }} type="text" />
-                                        ) : (<>{labelRow.label.name}</>)}
-                                    </td>
-                                    <td>
-                                        {labelRow.editable ? (
-                                            <Form.Control name="color" value={labelRow.color} onChange={(e: any) => { this.saveData(e, labelRow) }} type="text" />
-                                        ) : (<>{labelRow.label.color}</>)}
-                                    </td>
-                                    <td>
-                                        {labelRow.editable ? (
-                                            <Form.Control name="description" value={labelRow.description} onChange={(e: any) => { this.saveData(e, labelRow) }} type="text" />
-                                        ) : (<>{labelRow.label.description}</>)}
-                                    </td>
+                    </Space>
+                </Menu>
 
-                                    <td>
-                                        {labelRow.editable ? (
-                                            <>
-                                                <Button variant="danger" onClick={() => { this.cancelEditable(labelRow); }}>Cancel</Button>
-                                                <Button variant="success" onClick={() => { this.saveLabel(labelRow) }}>Save</Button>
-                                            </>)
-                                            :
-                                            (<>
-                                                <Button onClick={() => { this.markAsEditable(labelRow); }}>Edit</Button>
-                                                <Button variant="danger" onClick={() => { this.onDeleteLabel(labelRow); }}>Delete</Button></>)}
-                                    </td>
-                                </tr>);
-                        }))}
-                    </tbody>
+
+                <Table pagination={{ pageSize: 50 }} className="content-toside" dataSource={labels} rowKey="id">
+                    <Table.Column title="Name" dataIndex="name" key="name" render={(text, labelRow: LabelRow) => (
+                        <>
+                            {labelRow.editable ? (
+                                <Input value={labelRow.name} name="name" onChange={(e: any) => { this.saveData(e, labelRow) }} type="text" />
+                            ) : (<>{labelRow.label.name}</>)}
+                        </>
+                    )} />
+                    <Table.Column title="Color" dataIndex="color" key="color" render={(text, labelRow: LabelRow) => (
+                        <>
+                            {labelRow.editable ? (
+                                <Input name="code" value={labelRow.color} onChange={(e: any) => { this.saveData(e, labelRow) }} type="text" />
+                            ) : (<>{labelRow.label.color}</>)}
+                        </>
+                    )} />
+                    <Table.Column title="Description" dataIndex="description" key="description" render={(text, labelRow: LabelRow) => (
+                        <>
+                            {labelRow.editable ? (
+                                <Input name="description" value={labelRow.description} onChange={(e: any) => { this.saveData(e, labelRow) }} type="text" />
+                            ) : (<>{labelRow.label.description}</>)}
+                        </>
+                    )} />
+                    <Table.Column title="Actions" render={(text, labelRow: LabelRow) => {
+
+                        const canSave: boolean = !!labelRow.name && labelRow.name.trim().length > 0;
+                        return <>
+                            {labelRow.editable ? (
+                                <>
+                                    <Button danger onClick={() => { this.cancelEditable(labelRow); }}>Cancel</Button>
+                                    <Button disabled={!canSave} onClick={() => { this.saveLabel(labelRow) }}>Save</Button>
+                                </>)
+                                :
+                                (<>
+                                    <Button onClick={() => { this.markAsEditable(labelRow); }}>Edit</Button>
+                                    <Button danger onClick={() => { this.onDeleteLabel(labelRow); }}>Delete</Button>
+                                </>
+                                )
+                            }
+                        </>;
+                    }} />
                 </Table>
             </div>
         );

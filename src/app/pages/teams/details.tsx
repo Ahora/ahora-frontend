@@ -120,7 +120,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
 
     render() {
         return (
-            <div>
+            <div className="main-content">
 
                 <div>
                     {this.state.team &&
@@ -135,7 +135,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                     {this.state.users ?
                         <>
                             {this.state.users.length > 0 ?
-                                <Table dataSource={this.state.users} rowKey="id">
+                                <Table className="content-toside" dataSource={this.state.users} rowKey="id">
                                     <Table.Column title="User" dataIndex="User" key="User" render={(user: UserItem) => <UserDetails user={user} />} />
                                     <Table.Column title="type" dataIndex="permissionType" key="permissionType" render={(permissionType: TeamUserType) =>
                                         <>{permissionType === TeamUserType.Member ? "Member" : "Owner"}</>
@@ -163,7 +163,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                         <>
                             {this.state.subTeams.length > 0 ?
 
-                                <Table dataSource={this.state.subTeams} rowKey="id">
+                                <Table className="content-toside" dataSource={this.state.subTeams} rowKey="id">
                                     <Table.Column title="name" dataIndex="name" key="name" render={(name: string, team: OrganizationTeam) =>
                                         <Link to={`/organizations/${this.props.match.params.login}/teams/${team.id}`}>{team.name}</Link>
                                     } />

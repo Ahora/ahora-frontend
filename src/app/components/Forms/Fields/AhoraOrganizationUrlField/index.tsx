@@ -1,8 +1,7 @@
 import * as React from 'react';
-import Form from 'react-bootstrap/Form';
 import { AhoraFormField } from '../../AhoraForm/data';
-import InputGroup from 'react-bootstrap/InputGroup';
 import { checkOrgAvailability } from 'app/services/organizations';
+import { Input } from 'antd';
 
 interface GroupBySelectState {
     value: string;
@@ -59,28 +58,24 @@ class AhoraOrganizationUrlField extends React.Component<GroupBySelectStateProps,
     }
 
     render() {
-        return (
-            <InputGroup>
-                <InputGroup.Prepend>
-                    <InputGroup.Text id="inputGroupPrepend">https://ahora.dev/organizations/</InputGroup.Text>
-                </InputGroup.Prepend>
-                <Form.Control required={this.props.fieldData.required} type="text" onChange={this.handleChange.bind(this)} />
-                <InputGroup.Append>
-                    <InputGroup.Text>
-                        {this.state.loading ?
-                            <i className="fas fa-spinner"></i>
-                            :
-                            <>
-                                {this.state.isValid ?
-                                    <i className="far fa-check-circle"></i> :
-                                    <i className="far fa-times-circle"></i>
-                                }
-                            </>}
-                    </InputGroup.Text>
-                </InputGroup.Append>
-            </InputGroup>
-
-        );
+        return <Input
+            value={this.props.value}
+            onChange={this.handleChange.bind(this)}
+            required={this.props.fieldData.required}
+            prefix={"https://ahora.dev/organizations/"}
+            suffix={
+                <>
+                    {this.state.loading ?
+                        <i className="fas fa-spinner"></i>
+                        :
+                        <>
+                            {this.state.isValid ?
+                                <i className="far fa-check-circle"></i> :
+                                <i className="far fa-times-circle"></i>
+                            }
+                        </>}
+                </>
+            } />
     }
 }
 

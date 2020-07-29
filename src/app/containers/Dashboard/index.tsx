@@ -54,7 +54,7 @@ export class Dashboard extends React.Component<Props, State> {
               </div>
               <CurrentUser style={{ float: 'right' }} ></CurrentUser>
             </Header>
-            <Layout className="site-layout">
+            <Layout className="site-layout-content">
               <Switch>
                 <Route exact path="/" component={RootPageComponent} />
                 <Route path="/organizations/add" component={AddOrganizationPage} />

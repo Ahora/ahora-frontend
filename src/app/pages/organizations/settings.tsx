@@ -1,7 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps, Switch, Route } from "react-router";
 import { Link } from "react-router-dom";
-import Nav from "react-bootstrap/Nav";
 import StatusesPage from "app/pages/statusesPage";
 import { Organization, getOrganizationByLogin } from "app/services/organizations";
 import docTypesPage from "app/pages/docTypes";
@@ -9,6 +8,7 @@ import LabelsPage from "app/pages/labels";
 import DocSourcesPage from "app/pages/docSources";
 import EditOrganizationPage from "app/pages/organizations/edit";
 import PaymentPage from "app/pages/organizations/details/payment";
+import { Menu } from "antd";
 
 interface SettingsPageState {
   organization: Organization | null;
@@ -42,34 +42,37 @@ export default class OrganizationSettingsPage extends React.Component<
     if (organization) {
       return (
         <div>
-          <Nav className="mb-3" variant="tabs">
-            <Nav.Item>
-              <Link className={(!this.props.match.params.settingsSection) ? "nav-link active" : "nav-link"} to={`/organizations/${organization.login}/settings`}>Home</Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link className={(this.props.match.params.settingsSection === "payment") ? "nav-link active" : "nav-link"} to={`/organizations/${organization.login}/settings/payment`}>Payment</Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link className={(this.props.match.params.settingsSection === "statuses") ? "nav-link active" : "nav-link"} to={`/organizations/${organization.login}/settings/statuses`}>Statuses</Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link className={(this.props.match.params.settingsSection === "doctypes") ? "nav-link active" : "nav-link"} to={`/organizations/${organization.login}/settings/doctypes`}>Doc Types</Link>
-            </Nav.Item>
-            <Nav.Item >
-              <Link className={(this.props.match.params.settingsSection === "labels") ? "nav-link active" : "nav-link"} to={`/organizations/${organization.login}/settings/labels`}>Labels</Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link className={(this.props.match.params.settingsSection === "docsoures") ? "nav-link active" : "nav-link"} to={`/organizations/${organization.login}/settings/docsources`}>Doc Sources</Link>
-            </Nav.Item>
-          </Nav>
-          <Switch>
-            <Route path={`/organizations/:login/settings/statuses`} component={StatusesPage} />
-            <Route path={`/organizations/:login/settings/doctypes`} component={docTypesPage} />
-            <Route path={`/organizations/:login/settings/labels`} component={LabelsPage} />
-            <Route path={`/organizations/:login/settings/docsources`} component={DocSourcesPage} />
-            <Route path={`/organizations/:login/settings/payment`} component={PaymentPage} />
-            <Route exactpath={`/organizations/:login/settings`} component={EditOrganizationPage} />
-          </Switch>
+          <Menu mode="horizontal" activeKey={this.props.match.params.settingsSection}>
+            <Menu.Item key={undefined}>
+              <Link to={`/organizations/${organization.login}/settings`}>Home</Link>
+            </Menu.Item>
+            <Menu.Item key="payment">
+              <Link to={`/organizations/${organization.login}/settings/payment`}>Payment</Link>
+            </Menu.Item>
+            <Menu.Item key="statuses">
+              <Link to={`/organizations/${organization.login}/settings/statuses`}>Statuses</Link>
+            </Menu.Item>
+            <Menu.Item key="doctypes">
+              <Link to={`/organizations/${organization.login}/settings/doctypes`}>Doc Types</Link>
+            </Menu.Item>
+            <Menu.Item key="labels">
+              <Link to={`/organizations/${organization.login}/settings/labels`}>Labels</Link>
+            </Menu.Item>
+            <Menu.Item key="docsoures">
+              <Link to={`/organizations/${organization.login}/settings/docsources`}>Doc Sources</Link>
+            </Menu.Item>
+          </Menu>
+          <div className="main-content">
+            <Switch>
+              <Route path={`/organizations/:login/settings/statuses`} component={StatusesPage} />
+              <Route path={`/organizations/:login/settings/doctypes`} component={docTypesPage} />
+              <Route path={`/organizations/:login/settings/labels`} component={LabelsPage} />
+              <Route path={`/organizations/:login/settings/docsources`} component={DocSourcesPage} />
+              <Route path={`/organizations/:login/settings/payment`} component={PaymentPage} />
+              <Route exactpath={`/organizations/:login/settings`} component={EditOrganizationPage} />
+            </Switch>
+          </div>
+
         </div>
       );
     } else {

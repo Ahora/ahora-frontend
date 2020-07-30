@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { getOrganizations, Organization } from 'app/services/organizations';
-import ListGroup from 'react-bootstrap/ListGroup';
 import { Link } from 'react-router-dom';
-import Nav from 'react-bootstrap/Nav';
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
+import { Typography, Menu, Space, Button, List } from 'antd';
+import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 
 interface OrganizationsPageState {
-    organizations: Organization[];
+    organizations?: Organization[];
 }
 
 export default class OrganizationsPage extends React.Component<any, OrganizationsPageState> {
@@ -15,7 +13,6 @@ export default class OrganizationsPage extends React.Component<any, Organization
     constructor(props: any) {
         super(props);
         this.state = {
-            organizations: []
         };
     }
 
@@ -24,28 +21,32 @@ export default class OrganizationsPage extends React.Component<any, Organization
         this.setState({ organizations });
     }
     render = () => {
-        if (this.state.organizations) {
-            return (
-                <Container>
-                    <h1>Organizations</h1>
-                    <Nav className="mb-3">
-                        <Nav.Item>
-                            <Button variant="primary" type="button" href={`/organizations/add`}>Add</Button>
-                        </Nav.Item>
-                    </Nav>
-                    <ListGroup>
-                        {this.state.organizations.map((org) => {
-                            return <ListGroup.Item key={org.id}>
-                                <Link to={`/organizations/${org.login}`}>{org.displayName}</Link>
-                            </ListGroup.Item>
-                        })}
-                    </ListGroup>
-                </Container>
-            );
-        }
-        else {
-            return (<div>Loading....</div>)
-        }
+        return (
+            <div className="main-content">
+                <Typography.Title>Organizations</Typography.Title>
 
-    };
-}
+                {this.state.organizations ?
+                    <>
+                        <Menu className="navbar-menu" mode="horizontal">
+                            <Space>
+                                <Button type="primary" href={`/organizations/add`}>Add</Button>
+                            </Space>
+                        </Menu>
+                        <List
+                            bordered
+                            dataSource={this.state.organizations}
+                            renderItem={org => (
+                                <List.Item>
+                                    <Typography.Text>
+                                        <Link to={`/organizations/${org.login}`}>{org.displayName}</Link></Typography.Text>
+                                </List.Item>
+                            )}
+                        />
+                    </> :
+                    <AhoraSpinner></AhoraSpinner>
+                }
+            </div>
+        );
+    }
+
+};

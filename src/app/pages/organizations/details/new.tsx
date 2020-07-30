@@ -3,7 +3,6 @@ import { RouteComponentProps } from 'react-router';
 import { AddDocSourceForm } from 'app/components/DocSources/AddDocSourceForm';
 import { DocSource, getDocSources } from 'app/services/docSources';
 import DocSourceList from 'app/components/DocSources/DocSourceList';
-import Button from 'react-bootstrap/Button';
 import { addDashboard, DashboardType, DashboardLayout } from 'app/services/dashboard';
 import SyncOrganization from 'app/components/DocSources/SyncOrganization';
 import PaymentForm from 'app/components/payments/paymentForm';
@@ -11,6 +10,7 @@ import { PaymentData, setOrgPaymentData } from 'app/services/payments';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { Organization, OrganizationType } from 'app/services/organizations';
+import { Button } from 'antd';
 
 interface DashboardsPageState {
     docSources: DocSource[];
@@ -117,7 +117,7 @@ class OrganizationNew extends React.Component<AllProps, DashboardsPageState> {
                             <DocSourceList onDocSourceDeleted={this.onDocSourceDeleted.bind(this)} docSources={this.state.docSources}></DocSourceList>
                             {this.state.docSources.length > 0 &&
                                 <div>
-                                    <Button onClick={this.addDashboards.bind(this)} variant="success">Continue &amp; create a dashboard</Button>
+                                    <Button onClick={this.addDashboards.bind(this)} type="primary">Continue &amp; create a dashboard</Button>
                                     <p>*It may take several minutes to see imported information available.</p>
                                 </div>
                             }

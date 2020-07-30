@@ -1,16 +1,12 @@
 import * as React from 'react';
-import Container from "react-bootstrap/Container";
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { User } from 'app/services/users';
-import Jumbotron from 'react-bootstrap/Jumbotron';
 import { requestCurrentUserData } from 'app/store/currentuser/actions';
 import { ApplicationState } from 'app/store';
-import Card from 'react-bootstrap/Card';
-import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
 import { Organization, getOrganizations } from 'app/services/organizations';
+import { Card, Button, Typography } from 'antd';
 require('./styles.scss')
 
 interface RootPageProps {
@@ -45,113 +41,92 @@ class RootPageComponent extends React.Component<AllProps, State> {
     return (
       <>
 
-        <Jumbotron>
-          <Container>
-            <h1>Ahora! Enhance your community.</h1>
-            <p className="lead text-muted">
-              Ahora! is a free, open source public repository solution. <br />Provides you tools to better manage repositories, putting communication and collaboration at the center of your organization.
+        <div className="main">
+          <Typography.Title>Ahora! Enhance your community.</Typography.Title>
+          <p className="lead text-muted">
+            Ahora! is a free, open source public repository solution. <br />Provides you tools to better manage repositories, putting communication and collaboration at the center of your organization.
                 </p>
-            <p>
-              {
-                this.state.organizations &&
-                <>
-                  {this.props.currentUser ?
-                    <>
-                      {(this.state.organizations.length > 0) ?
-                        <Link to="/organizations"><Button variant="success">Continue to Organizations</Button></Link> :
-                        <Link to="/organizations/add"><Button variant="primary">Create Organization</Button></Link>
-                      }
-                    </> :
-                    <Button variant="success" href="/auth/github">Login with GitHub</Button>
-                  }
-                </>
-              }
-            </p>
-          </Container>
-        </Jumbotron>
+          <p>
+            {
+              this.state.organizations &&
+              <>
+                {this.props.currentUser ?
+                  <>
+                    {(this.state.organizations.length > 0) ?
+                      <Link to="/organizations"><Button type="primary">Continue to Organizations</Button></Link> :
+                      <Link to="/organizations/add"><Button type="primary">Create Organization</Button></Link>
+                    }
+                  </> :
+                  <Button type="primary" href="/auth/github">Login with GitHub</Button>
+                }
+              </>
+            }
+          </p>
+        </div>
 
-        <Container className="main">
-          <Row>
+        <div className="main">
+          <div className="row">
             <div className="col-md-4">
-              <Card>
-                <Card.Header>Visualize your GitHub content</Card.Header>
-                <Card.Body className="text-center">
-                  <div className="icon">
-                    <i className="fab fa-github"></i>
-                  </div>
+              <Card title="Visualize your GitHub content">
+                <div className="icon">
+                  <i className="fab fa-github"></i>
+                </div>
                     Utilize smart graphs to display <br />Issues and Pull Requests
-                  </Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
-              <Card>
-                <Card.Header>Aggregate multiple repositories</Card.Header>
-                <Card.Body className="text-center">
-                  <div className="icon">
-                    <i className="fas fa-code-branch"></i>
-                  </div>
-                    Manage your cross organization's repositories in a single place</Card.Body>
+              <Card title="Aggregate multiple repositories">
+                <div className="icon">
+                  <i className="fas fa-code-branch"></i>
+                </div>
+                    Manage your cross organization's repositories in a single place
               </Card>
             </div>
             <div className="col-md-4">
-              <Card>
-                <Card.Header>Advanced team support</Card.Header>
-                <Card.Body className="text-center">
-                  <div className="icon">
-                    <i className="fas fa-user-friends"></i>
-                  </div>
+              <Card title="Advanced team support">
+                <div className="icon">
+                  <i className="fas fa-user-friends"></i>
+                </div>
                       Search issues by specific team<br />
                       Visualize content by teams<br />
-                </Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
-              <Card>
-                <Card.Header>Discussions</Card.Header>
-                <Card.Body className="text-center">
-                  <div className="icon">
-                    <i className="far fa-comments"></i>
-                  </div>
+              <Card title="Discussions">
+                <div className="icon">
+                  <i className="far fa-comments"></i>
+                </div>
                     Share ideas and feedback<br /> easily with others
-                  </Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
-              <Card>
-                <Card.Header>Free public repositories</Card.Header>
-                <Card.Body className="text-center">
-                  <div className="icon">
-                    <i className="fas fa-dollar-sign"></i>
-                  </div>
+              <Card title="Free public repositories">
+                <div className="icon">
+                  <i className="fas fa-dollar-sign"></i>
+                </div>
                     Use Ahora! free of cost <br /> for public repositories
-                    </Card.Body>
               </Card>
             </div>
             <div className="col-md-4">
-              <Card>
-                <Card.Header>Open source</Card.Header>
-                <Card.Body className="text-center">
-                  <div className="icon">
-                    <i className="fab fa-git-square"></i>
-                  </div>
-                    Ahora! will always be <a href="https://github.com/ahora">open source</a></Card.Body>
+              <Card title="Open source">
+                <div className="icon">
+                  <i className="fab fa-git-square"></i>
+                </div>
+                    Ahora! will always be <a href="https://github.com/ahora">open source</a>
               </Card>
             </div>
             {
               false && <div className="col-md-4">
-                <Card>
-                  <Card.Header>Notifications</Card.Header>
-                  <Card.Body className="text-center">
-                    <div className="icon">
-                      <i className="fas fa-bell"></i>
-                    </div>
+                <Card title="Notifications">
+                  <div className="icon">
+                    <i className="fas fa-bell"></i>
+                  </div>
                     Custome and improved notifications <br />for Issues and Pull Requests
-                  </Card.Body>
                 </Card>
               </div>
             }
-          </Row>
-        </Container>
+          </div>
+        </div>
       </>
     );
   };

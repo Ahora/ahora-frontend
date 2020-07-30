@@ -5,7 +5,6 @@ import { PaymentData, getOrgPaymentData, setOrgPaymentData } from 'app/services/
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { Organization, OrganizationType } from 'app/services/organizations';
-import Row from 'react-bootstrap/Row';
 import PaymentMethod from 'app/components/payments/paymentMethod';
 
 interface DashboardsPageState {
@@ -77,14 +76,14 @@ class PaymentPage extends React.Component<AllProps, DashboardsPageState> {
                                 </div>
                             }
 
-                            <Row className="col-md-4">
+                            <div>
                                 {this.state.paymentInfo ?
                                     <h3>Replace mayment method</h3>
                                     :
                                     <h3>Add payment method</h3>
                                 }
                                 <PaymentForm submitted={this.onPaymentDataReceived.bind(this)}></PaymentForm>
-                            </Row>
+                            </div>
                         </>
                         :
                         <p>

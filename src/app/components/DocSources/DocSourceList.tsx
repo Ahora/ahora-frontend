@@ -1,13 +1,11 @@
 import * as React from 'react';
-import Table from 'react-bootstrap/Table';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
-import Button from 'react-bootstrap/Button';
 import { ApplicationState } from 'app/store';
-
 import { connect } from 'react-redux';
 import { DocSource, deleteDocSource } from 'app/services/docSources';
 import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 import { Link } from 'react-router-dom';
+import { Button, Table } from 'antd';
 
 interface MilestonesPageParams {
     organizationId: string;
@@ -33,32 +31,17 @@ class DocSourceList extends React.Component<MilestonesPageProps> {
         return (
             <div>
                 {this.props.docSources ?
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Repo</th>
-                                <th>Organization or User</th>
-                                <CanManageOrganization>
-                                    <th></th>
-                                </CanManageOrganization>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.props.docSources.map((docSource: DocSource,) => {
-                                return (
-                                    <tr className="pt-3" key={docSource.id}>
-                                        <td>
-                                            <Link to={`/organizations/${this.props.organizationId}/docs?repo=${docSource.repo}`}>{docSource.repo}</Link>
-                                        </td>
-                                        <td>{docSource.organization}</td>
-                                        <CanManageOrganization>
-                                            <td>
-                                                <Button variant="danger" onClick={() => { this.deleteSource(docSource) }}>Delete</Button>
-                                            </td>
-                                        </CanManageOrganization>
-                                    </tr>);
-                            })}
-                        </tbody>
+                    <Table rowKey="id" dataSource={this.props.docSources}>
+                        <Table.Column title="Repo" dataIndex="repo" key="repo" />
+
+                        <Table.Column title="Organization or User" dataIndex="organization" key="organization" render={(text, docSource: DocSource) => (
+                            <Link to={`/organizations/${this.props.organizationId}/docs?repo=${docSource.repo}`}>{docSource.repo}</Link>
+                        )} />
+                        <Table.Column title="Actions" render={(value, docSource: DocSource) =>
+                            <CanManageOrganization>
+                                <Button danger onClick={() => { this.deleteSource(docSource) }}>Delete</Button>
+                            </CanManageOrganization>
+                        } />
                     </Table>
                     :
                     <AhoraSpinner />

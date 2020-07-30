@@ -5,9 +5,9 @@ import { ApplicationState } from 'app/store';
 import { User } from 'app/services/users';
 import { Dispatch } from 'redux';
 import { requestCurrentUserData } from 'app/store/currentuser/actions';
-import Button from 'react-bootstrap/Button';
 import { watchDoc, unwatchDoc } from 'app/services/docs';
 import AhoraSpinner from '../Forms/Basics/Spinner';
+import { Button } from 'antd';
 
 interface injectedParams {
     currentUser?: User,
@@ -88,8 +88,8 @@ class DocWatchersComponent extends React.Component<DocWatcherProps, State> {
                         {this.props.currentUser &&
                             <div>
                                 {this.state.isWatchedByMe ?
-                                    <Button variant="primary" onClick={this.unwatch.bind(this)}>Unwatch</Button> :
-                                    <Button variant="primary" onClick={this.watch.bind(this)}>Watch</Button>
+                                    <Button type="primary" onClick={this.unwatch.bind(this)}>Unwatch</Button> :
+                                    <Button type="primary" onClick={this.watch.bind(this)}>Watch</Button>
                                 }
                             </div>
                         }

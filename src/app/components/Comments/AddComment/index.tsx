@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { addComment, Comment } from 'app/services/comments';
 import MarkDownEditor from 'app/components/MarkDownEditor';
-import Nav from 'react-bootstrap/Nav';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import { Button } from 'antd';
 require("./style.scss")
@@ -90,7 +89,7 @@ export class AddCommentComponent extends React.Component<CommentsProps, State> {
                     this.state.editMode ?
                         <>
                             <MarkDownEditor value={this.state.comment} onChange={this.handleChange.bind(this)} />
-                            <Nav className="justify-content-end button-container">
+                            <div>
                                 <Button type="default" onClick={this.discard.bind(this)}>Discard</Button>
                                 <Button type="primary" disabled={disablePost} onClick={this.post()}>
                                     {this.state.submittingComment ?
@@ -98,7 +97,7 @@ export class AddCommentComponent extends React.Component<CommentsProps, State> {
                                         <>Post</>
                                     }
                                 </Button>
-                            </Nav>
+                            </div>
                         </> :
                         <div className="AddCommentPlaceHolder" onClick={this.editMode.bind(this)}>Add a comment</div>
                 }

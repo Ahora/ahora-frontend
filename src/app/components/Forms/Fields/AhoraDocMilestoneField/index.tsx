@@ -1,9 +1,9 @@
 import * as React from 'react';
-import Form from 'react-bootstrap/Form';
 import { AhoraFormField } from '../../AhoraForm/data';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
+import { Select } from 'antd';
 
 interface State {
     value?: number;
@@ -17,7 +17,7 @@ interface Props extends InjectedProps {
     value?: number;
     autoFocus?: boolean;
     fieldData: AhoraFormField;
-    onUpdate: (value: number) => void;
+    onUpdate: (value: number | null) => void;
 }
 
 
@@ -30,19 +30,22 @@ class AhoraDocStatusField extends React.Component<Props, State> {
         };
     }
 
-    handleChange(event: any) {
-        const value: number = parseInt(event.target.value);
+    handleChange(value?: number) {
         this.setState({ value });
-        this.props.onUpdate(value);
+        this.props.onUpdate(value || null);
+    }
+
+    onBlur() {
+        this.props.onUpdate(this.state.value || null);
     }
 
     render() {
         return (
             <div>
-                <Form.Control autoFocus={this.props.autoFocus} onBlur={this.handleChange.bind(this)} value={this.state.value ? this.state.value.toString() : ""} onChange={this.handleChange.bind(this)} as="select">
-                    <option key={-1} value={undefined}></option>
-                    {this.props.milestones.map((milestone) => <option key={milestone.id} value={milestone.id}>{milestone.title}</option>)}
-                </Form.Control>
+                <Select autoFocus={this.props.autoFocus} onBlur={this.onBlur.bind(this)} value={this.state.value} onChange={this.handleChange.bind(this)}>
+                    <Select.Option key="-1" value=""> </Select.Option>
+                    {this.props.milestones.map((milestone) => <Select.Option key={milestone.id} value={milestone.id!}>{milestone.title}</Select.Option>)}
+                </Select>
             </div>)
     }
 }

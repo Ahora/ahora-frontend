@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Comment, updateComment, deleteComment, pinComment, unpinComment } from 'app/services/comments';
 import Moment from 'react-moment';
 import MarkDownEditor from 'app/components/MarkDownEditor';
-import Nav from 'react-bootstrap/Nav';
 import CanEditOrDeleteComment from 'app/components/Authentication/CanEditOrDeleteComment';
 import CanPinComment from 'app/components/Authentication/CanPinComment';
 import { Doc } from 'app/services/docs';
@@ -122,7 +121,7 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
                 this.state.editMode ?
                     <div>
                         <MarkDownEditor value={this.props.comment.comment} onChange={this.onCommentChange.bind(this)}></MarkDownEditor>
-                        <Nav className="justify-content-end button-container">
+                        <div>
                             <Button type="default" onClick={this.discard.bind(this)}>Discard</Button>
                             <Button type="primary" disabled={disablePost} onClick={this.post.bind(this)}>
                                 {this.state.submittingComment ?
@@ -130,7 +129,7 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
                                     <>Update</>
                                 }
                             </Button>
-                        </Nav>
+                        </div>
                     </div> :
                     <p className="markdown-body" dangerouslySetInnerHTML={{ __html: this.state.comment.htmlComment }}></p>
             }>

@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { AhoraFormField } from '../../AhoraForm/data';
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { RestCollectorClient } from 'rest-collector';
+import { Select } from 'antd';
+import AhoraSpinner from '../../Basics/Spinner';
 
 interface GroupBySelectState {
     value: string;
@@ -20,7 +21,6 @@ const githubRepoClient: RestCollectorClient = new RestCollectorClient("https://a
 
 export default class AhoraRepistoryAutoCompleteField extends React.Component<GroupBySelectStateProps, GroupBySelectState> {
 
-    private typeahead: any;
 
     constructor(props: GroupBySelectStateProps) {
         super(props);
@@ -32,15 +32,12 @@ export default class AhoraRepistoryAutoCompleteField extends React.Component<Gro
         };
     }
 
-    onChange(repositories: any[]) {
-        if (repositories.length > 0) {
-            this.props.onUpdate(repositories[0].name);
-        }
+    onChange(repo: any) {
+        this.props.onUpdate(repo.value);
     }
 
     componentDidUpdate(prevProps: GroupBySelectStateProps, prevState: GroupBySelectState) {
         if (prevProps.value && this.props.value !== prevProps.value) {
-            this.typeahead.getInstance().clear();
             this.setState({
                 value: this.props.value || ""
             })
@@ -80,15 +77,18 @@ export default class AhoraRepistoryAutoCompleteField extends React.Component<Gro
     render() {
         return (
             <div style={{ width: "100%" }}>
-                <AsyncTypeahead
-                    defaultInputValue={this.props.value}
-                    ref={typeahead => this.typeahead = typeahead}
-                    labelKey="name"
-                    options={this.state.repositories}
-                    isLoading={this.state.isLoading}
-                    onChange={(users) => { this.onChange(users) }}
-                    onSearch={this._handleSearch.bind(this)}
-                ></AsyncTypeahead>
+                <Select
+                    showSearch={true}
+                    labelInValue
+                    placeholder="Select repo"
+                    notFoundContent={this.state.isLoading ? <AhoraSpinner /> : null}
+                    filterOption={false}
+                    onSearch={this._handleSearch}
+                    onSelect={this.onChange.bind(this)}>
+                    {this.state.repositories.map(repo => (
+                        <Select.Option key={repo.name} value={repo.name}>{repo.name}</Select.Option>
+                    ))}
+                </Select>
             </div>
         );
     }

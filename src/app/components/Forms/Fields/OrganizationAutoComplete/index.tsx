@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { AhoraFormField } from '../../AhoraForm/data';
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { RestCollectorClient } from 'rest-collector';
+import { Select } from 'antd';
+import AhoraSpinner from '../../Basics/Spinner';
+import { debounce } from 'lodash';
 
 export interface OrgValue {
     login: string;
@@ -24,23 +26,29 @@ interface GroupBySelectStateProps {
 const githubRepoClient: RestCollectorClient = new RestCollectorClient("https://api.github.com/search/users");
 
 export default class AhoraOrganizationAutoCompleteField extends React.Component<GroupBySelectStateProps, GroupBySelectState> {
+
+    private resultMap: Map<string, any>;
     constructor(props: GroupBySelectStateProps) {
         super(props);
 
+        this.resultMap = new Map();
         this.state = {
             organizations: [],
             isLoading: false,
             value: this.props.value || ""
         };
+
+        this._handleSearch = debounce(this._handleSearch, 800);
+
     }
 
-    onChange(orgs: any[]) {
-        if (orgs.length > 0) {
-            this.props.onUpdate({
-                login: orgs[0].login,
-                isOrg: (orgs[0].type === "Organization")
-            });
-        }
+    onChange(orName: any) {
+        const org = this.resultMap.get(orName.value);
+        console.log(orName);
+        this.props.onUpdate({
+            login: org.login,
+            isOrg: (org.type === "Organization")
+        });
     }
 
     _handleSearch = async (query: string) => {
@@ -50,6 +58,11 @@ export default class AhoraOrganizationAutoCompleteField extends React.Component<
 
         const repositoriesResult = await githubRepoClient.get({
             query: { q: `${query} in:login` }
+        });
+
+        this.resultMap.clear();
+        repositoriesResult.data.items.map((item: any) => {
+            this.resultMap.set(item.login, item);
         })
 
         this.setState({
@@ -60,16 +73,17 @@ export default class AhoraOrganizationAutoCompleteField extends React.Component<
 
     render() {
         return (
-            <div style={{ width: "100%" }}>
-                <AsyncTypeahead
-                    defaultInputValue={this.props.value}
-                    labelKey="login"
-                    options={this.state.organizations}
-                    isLoading={this.state.isLoading}
-                    onChange={(users) => { this.onChange(users) }}
-                    onSearch={this._handleSearch.bind(this)}
-                ></AsyncTypeahead>
-            </div>
+            <Select
+                showSearch={true}
+                labelInValue
+                notFoundContent={this.state.isLoading ? <AhoraSpinner /> : null}
+                filterOption={false}
+                onSearch={this._handleSearch}
+                onSelect={this.onChange.bind(this)}>
+                {this.state.organizations.map(org => (
+                    <Select.Option key={org.login} value={org.login}>{org.login}</Select.Option>
+                ))}
+            </Select>
         );
     }
 }

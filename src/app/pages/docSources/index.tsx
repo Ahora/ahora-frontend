@@ -89,9 +89,7 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
                         } />
                         <Table.Column title="Actions" render={(value, docSource: DocSource) =>
                             <CanManageOrganization>
-                                <td>
-                                    <Button danger onClick={() => { this.deleteSource(docSource) }}>Delete</Button>
-                                </td>
+                                <Button danger onClick={() => { this.deleteSource(docSource) }}>Delete</Button>
                             </CanManageOrganization>
                         } />
                     </Table>

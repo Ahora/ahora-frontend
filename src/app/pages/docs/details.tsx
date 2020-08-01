@@ -82,6 +82,10 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     async componentDidUpdate(PrevProps: AllProps) {
         const prevDocId: number | undefined = PrevProps.doc ? PrevProps.doc.id : undefined;
         if (this.props.doc && this.props.doc.id !== prevDocId) {
+            this.props.onDocUpdated({
+                ...this.props.doc,
+                lastView: { updatedAt: new Date() }
+            });
             this.setState({ doc: this.props.doc });
         }
     }
@@ -89,11 +93,19 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     async componentDidMount() {
         if (!this.props.doc && !this.state.doc) {
             const doc: Doc = await getDoc(this.props.match.params.login, parseInt(this.props.match.params.docId));
+            doc.lastView = { updatedAt: new Date() };
+            this.props.onDocUpdated(doc);
             this.setState({ doc });
+
         }
         else {
             if (this.props.doc) {
                 this.setState({ doc: this.props.doc });
+                this.props.onDocUpdated({
+                    ...this.props.doc,
+                    lastView: { updatedAt: new Date() }
+                });
+
             }
         }
     }
@@ -167,6 +179,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                 {doc ?
                     <>
                         <div className="doc-details">
+                            <img style={{ display: "none" }} src={`/api/organizations/${this.props.match.params.login}/docs/${doc.id}/view`} />
                             <Space className="extra">
                                 <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
                                 <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>

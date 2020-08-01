@@ -28,10 +28,11 @@ export default class AhoraEnumField extends React.Component<GroupBySelectStatePr
     }
 
     render() {
+        const currentEnum = this.props.fieldData.settings!.enum;
         return (
-            <Select value={this.props.value ? this.props.value.toString() : undefined} onChange={this.onCheckChange.bind(this)}>
+            <Select value={this.state.value} onSelect={this.onCheckChange.bind(this)}>
                 {this.props.fieldData.settings!.keys.map((key: string) => {
-                    return (<Select.Option key={key} value={this.props.fieldData.settings!.enum[key]}>{key}</Select.Option>);
+                    return (<Select.Option key={key} value={currentEnum[key]}>{key}</Select.Option>);
                 })}
             </Select>)
     }

@@ -6,6 +6,7 @@ import AhoraSpinner from '../Basics/Spinner';
 
 interface AhoraFormState {
     form: any;
+    error?: any;
     isSubmitting: boolean;
     fields: AhoraFormStateField[];
 }
@@ -14,6 +15,7 @@ interface AhoraFormProps {
     data?: any;
     submitButtonText?: string;
     fields?: AhoraFormField[];
+    showError?: (error: any) => React.ReactNode;
     onUpdate?: (data: any) => void;
     onSumbit: (data: any) => Promise<void>;
     onCancel?: () => void;
@@ -49,9 +51,15 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
     }
 
     async onSubmit(data: any) {
-        this.setState({ isSubmitting: true });
-        await this.props.onSumbit(this.state.form);
-        this.setState({ isSubmitting: false });
+        this.setState({ isSubmitting: true, error: undefined });
+        try {
+            await this.props.onSumbit(this.state.form);
+            this.setState({ isSubmitting: false });
+
+        } catch (error) {
+            this.setState({ isSubmitting: false, error });
+
+        }
     }
 
     componentDidUpdate(prevProps: AhoraFormProps) {
@@ -97,6 +105,7 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
                         }
                     </Form.Item>
                 })}
+                {this.state.error && <div>{this.props.showError ? this.props.showError(this.state.error) : <>Unexpected Error</>}</div>}
                 <Space>
                     <Button disabled={this.state.isSubmitting} htmlType="submit" type="primary">
                         {

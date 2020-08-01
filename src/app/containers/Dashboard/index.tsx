@@ -6,6 +6,7 @@ import CurrentUser from "app/components/CurrentUser";
 import RootPageComponent from "app/pages/RootPage";
 import AddOrganizationPage from "app/pages/organizations/add";
 import { Layout } from 'antd';
+import { Link } from "react-router-dom";
 
 interface LoginParams { }
 
@@ -50,7 +51,7 @@ export class Dashboard extends React.Component<Props, State> {
                 margin: "16px 24px 16px 0",
                 float: "left"
               }}>
-                <a href="/">Ahora!</a>
+                <Link to="/">Ahora!</Link>
               </div>
               <CurrentUser style={{ float: 'right' }} ></CurrentUser>
             </Header>

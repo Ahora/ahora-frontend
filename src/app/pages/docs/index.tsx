@@ -16,6 +16,7 @@ import CanAddDoc from 'app/components/Authentication/CanAddDoc';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import DefaultDocsPage from './default';
 require('./styles.scss')
 
 
@@ -188,6 +189,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                             :
                                                             <Switch>
                                                                 <Route path={`/organizations/:login/docs/add`} component={(props: any) => <AddDocPage {...props} onCancel={this.onAddCancel.bind(this)} onDocAdded={this.onDocAdded.bind(this)} />} />
+                                                                <Route path={`/organizations/:login/docs`} component={DefaultDocsPage} />
                                                             </Switch>
                                                         }
                                                     </div>

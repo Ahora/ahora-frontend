@@ -30,7 +30,7 @@ class AhoraTextAreaField extends React.Component<GroupBySelectStateProps, GroupB
 
     render() {
         return (
-            <Input.TextArea rows={6} allowClear onChange={this.onChange.bind(this)}>{this.props.value}</Input.TextArea>
+            <Input.TextArea rows={6} allowClear onChange={this.onChange.bind(this)}>{this.state.value}</Input.TextArea>
         );
     }
 }

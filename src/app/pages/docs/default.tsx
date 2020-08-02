@@ -7,7 +7,7 @@ export default class DefaultDocsPage extends React.Component {
         return <div className="defaultdoccontainer">
             <p>Start a discussion or just select your relevant doc!</p>
             <div>
-                <Link to="docs/add">
+                <Link to="add">
                     <Button type="primary">Start a new discussion</Button>
                 </Link>
             </div>

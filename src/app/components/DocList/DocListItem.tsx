@@ -40,7 +40,7 @@ class DocListItem extends React.Component<AllProps> {
             <List.Item className={`${this.props.isActive ? "active" : ""} doc-list-item`}>
                 <div className="item-wrapper">
                     <div className="extra">
-                        <Moment titleFormat="YYYY-MM-DD HH:mm" format="YYYY-MM-DD HH:mm" withTitle date={doc.createdAt}></Moment>
+                        <Moment titleFormat="YYYY-MM-DD HH:mm" format="YYYY-MM-DD HH:mm" withTitle date={doc.updatedAt || doc.createdAt}></Moment>
                         <div className="tags">
                             <Tag>{(currentDocType) ? currentDocType.name : ""}</Tag>
                             <Tag>{(currentStatus) ? currentStatus.name : ""}</Tag>

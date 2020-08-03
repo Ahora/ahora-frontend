@@ -47,8 +47,7 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
                     <AhoraField displayName="Subject" fieldName="subject" fieldType="text" required={true}></AhoraField>
                     <AhoraField displayName="Type" fieldName="docTypeId" fieldType="doctype" required={true}></AhoraField>
                     <AhoraField displayName="Labels" fieldName="labels" fieldType="labels"></AhoraField>
-                    <AhoraField displayName="Description" fieldName="description" fieldType="textarea"></AhoraField>
-
+                    <AhoraField displayName="Description" fieldName="description" fieldType="markdown"></AhoraField>
                 </AhoraForm>
             </div>
         );

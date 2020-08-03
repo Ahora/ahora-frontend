@@ -1,8 +1,9 @@
 import * as React from 'react';
-import MarkDownEditor from '../MarkDownEditor';
 import './style.scss';
 import AhoraSpinner from '../Forms/Basics/Spinner';
-import { Button, Space } from 'antd';
+import { Button } from 'antd';
+import AhoraForm from '../Forms/AhoraForm/AhoraForm';
+import AhoraField from '../Forms/AhoraForm/AhoraField';
 
 interface EditableMarkDownParams {
     value: string;
@@ -28,11 +29,9 @@ export default class EditableMarkDown extends React.Component<EditableMarkDownPa
     }
 
     startEdit(event: any) {
-        if (event.target.tagName !== "VIDEO") {
-            this.setState({
-                editMode: true
-            });
-        }
+        this.setState({
+            editMode: true
+        });
     }
 
     cancel() {
@@ -42,12 +41,12 @@ export default class EditableMarkDown extends React.Component<EditableMarkDownPa
         });
     }
 
-    async close() {
+    async close(data: any) {
         this.setState({
             editMode: false,
             updating: true
         });
-        await this.props.onChanged(this.state.value);
+        await this.props.onChanged(data.description);
         this.setState({
             updating: false
         });
@@ -62,11 +61,9 @@ export default class EditableMarkDown extends React.Component<EditableMarkDownPa
             <>
                 {this.state.editMode ?
                     <>
-                        <MarkDownEditor height="400px" value={this.state.value} onChange={this.valueChanged.bind(this)} />
-                        <Space className="editablecontent-buttons">
-                            <Button type="primary" onClick={this.close.bind(this)}>Save</Button>
-                            <Button danger onClick={this.cancel.bind(this)}>Cancel</Button>
-                        </Space>
+                        <AhoraForm submitButtonText="Update" data={{ description: this.props.value }} onCancel={this.cancel.bind(this)} onSumbit={this.close.bind(this)}>
+                            <AhoraField fieldType="markdown" fieldName="description" displayName=""></AhoraField>
+                        </AhoraForm>
                     </>
                     :
                     <>

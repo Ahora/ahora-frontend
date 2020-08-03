@@ -20,6 +20,7 @@ import AhoraGroupDocField from "app/components/Forms/Fields/AhoraGroupDocField";
 import { BarPieGadgetDisplayType } from "app/components/Dashboards/Gadgets/BarPieGadget/data";
 import AhoraContentGadget from "app/components/Dashboards/Gadgets/Content/graph";
 import DocListGadget from "app/components/Dashboards/Gadgets/DocListGadget/Gadget";
+import AhoraMarkdownField from "app/components/Forms/Fields/AhoraMarkdownField";
 
 
 class AhoraSDK {
@@ -57,6 +58,7 @@ sdkInstance.formComponents.register("user", AhoraUserField);
 sdkInstance.formComponents.register("doctype", AhoraDocTypeField);
 sdkInstance.formComponents.register("labels", AhoraLabelsField);
 sdkInstance.formComponents.register("docsgroup", AhoraGroupDocField);
+sdkInstance.formComponents.register("markdown", AhoraMarkdownField);
 
 sdkInstance.dashboardGadgets.registerGadget("AhoraBarsPie", {
     title: "Pie or Bars Chart",

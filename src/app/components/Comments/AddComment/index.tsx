@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { addComment, Comment } from 'app/services/comments';
-import MarkDownEditor from 'app/components/MarkDownEditor';
-import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
-import { Button } from 'antd';
+import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
+import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
 require("./style.scss")
 
 
@@ -51,20 +50,18 @@ export class AddCommentComponent extends React.Component<CommentsProps, State> {
         });
     }
 
-    post() {
-        return async () => {
-            if (this.state.comment) {
-                this.setState({
-                    submittingComment: true
-                });
-                const newComment: Comment = await addComment(this.props.login, this.props.docId, this.state.comment, this.props.qouteComment && this.props.qouteComment.id);
-                this.setState({
-                    comment: undefined,
-                    submittingComment: false,
-                    editMode: false
-                });
-                this.props.commentAdded(newComment)
-            }
+    async post(data: any): Promise<void> {
+        if (data.comment) {
+            this.setState({
+                submittingComment: true
+            });
+            const newComment: Comment = await addComment(this.props.login, this.props.docId, data.comment, this.props.qouteComment && this.props.qouteComment.id);
+            this.setState({
+                comment: undefined,
+                submittingComment: false,
+                editMode: false
+            });
+            this.props.commentAdded(newComment)
         }
     }
 
@@ -82,22 +79,14 @@ export class AddCommentComponent extends React.Component<CommentsProps, State> {
 
 
     render() {
-        const disablePost: boolean = !(!!this.state.comment && this.state.comment.trim().length > 0);
         return (
             <div className="mt-2">
                 {
                     this.state.editMode ?
                         <>
-                            <MarkDownEditor value={this.state.comment} onChange={this.handleChange.bind(this)} />
-                            <div>
-                                <Button type="default" onClick={this.discard.bind(this)}>Discard</Button>
-                                <Button type="primary" disabled={disablePost} onClick={this.post()}>
-                                    {this.state.submittingComment ?
-                                        <AhoraSpinner /> :
-                                        <>Post</>
-                                    }
-                                </Button>
-                            </div>
+                            <AhoraForm submitButtonText="Post" data={{ comment: this.state.comment }} onCancel={this.discard.bind(this)} onSumbit={this.post.bind(this)}>
+                                <AhoraField fieldType="markdown" fieldName="comment" displayName=""></AhoraField>
+                            </AhoraForm>
                         </> :
                         <div className="AddCommentPlaceHolder" onClick={this.editMode.bind(this)}>Add a comment</div>
                 }

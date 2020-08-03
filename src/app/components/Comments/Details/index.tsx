@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Comment, updateComment, deleteComment, pinComment, unpinComment } from 'app/services/comments';
 import Moment from 'react-moment';
-import MarkDownEditor from 'app/components/MarkDownEditor';
 import CanEditOrDeleteComment from 'app/components/Authentication/CanEditOrDeleteComment';
 import CanPinComment from 'app/components/Authentication/CanPinComment';
 import { Doc } from 'app/services/docs';
-import { Comment as CommentComponent, Button } from 'antd';
-import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
+import { Comment as CommentComponent } from 'antd';
 import './style.scss';
 import { CheckOutlined } from '@ant-design/icons';
+import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
+import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
 
 interface CommentsProps {
     comment: Comment;
@@ -70,12 +70,12 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
         });
     }
 
-    async post() {
-        if (this.state.comment) {
+    async post(data: any) {
+        if (data.comment) {
             this.setState({
                 submittingComment: true
             });
-            const newComment: Comment = await updateComment(this.props.login, this.state.comment.docId, this.state.comment.id, this.state.newCommentText!);
+            const newComment: Comment = await updateComment(this.props.login, this.state.comment.docId, this.state.comment.id, data.comment);
             this.setState({
                 comment: newComment,
                 newCommentText: undefined,
@@ -98,7 +98,6 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
     }
 
     render() {
-        const disablePost: boolean = !(!!this.state.newCommentText && this.state.newCommentText.trim().length > 0);
         return <CommentComponent className="comment"
             author={
                 <>
@@ -119,18 +118,10 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
             ]}
             content={
                 this.state.editMode ?
-                    <div>
-                        <MarkDownEditor value={this.props.comment.comment} onChange={this.onCommentChange.bind(this)}></MarkDownEditor>
-                        <div>
-                            <Button type="default" onClick={this.discard.bind(this)}>Discard</Button>
-                            <Button type="primary" disabled={disablePost} onClick={this.post.bind(this)}>
-                                {this.state.submittingComment ?
-                                    <AhoraSpinner /> :
-                                    <>Update</>
-                                }
-                            </Button>
-                        </div>
-                    </div> :
+                    <AhoraForm submitButtonText="Update" data={{ comment: this.state.comment.comment }} onCancel={this.discard.bind(this)} onSumbit={this.post.bind(this)}>
+                        <AhoraField fieldType="markdown" fieldName="comment" displayName=""></AhoraField>
+                    </AhoraForm>
+                    :
                     <p className="markdown-body" dangerouslySetInnerHTML={{ __html: this.state.comment.htmlComment }}></p>
             }>
 

@@ -9,7 +9,7 @@ const { Option } = Mentions;
 
 interface State {
     value: string;
-    users: UserItem[];
+    users?: UserItem[];
     loading: boolean;
 }
 
@@ -26,8 +26,7 @@ export default class AhoraMarkdownField extends React.Component<Props, State> {
 
         this.state = {
             value: this.props.value || "",
-            loading: false,
-            users: []
+            loading: false
         };
 
         this.onSearch = debounce(this.onSearch, 800);
@@ -35,17 +34,19 @@ export default class AhoraMarkdownField extends React.Component<Props, State> {
     }
 
     async onSearch(search: string) {
-        this.setState({
-            loading: true,
-            users: []
-        });
+        if (search && search.length > 2) {
+            this.setState({
+                loading: true,
+                users: undefined
+            });
 
-        const users = await searchUsers(search);
+            const users = await searchUsers(search);
 
-        this.setState({
-            loading: false,
-            users: users.slice(0, 10)
-        });
+            this.setState({
+                loading: false,
+                users: users.slice(0, 10)
+            });
+        }
     }
 
 
@@ -57,7 +58,7 @@ export default class AhoraMarkdownField extends React.Component<Props, State> {
     render() {
         return (
             <Mentions rows={6} loading={this.state.loading} defaultValue={this.props.value} onChange={this.onChange.bind(this)} onSearch={this.onSearch.bind(this)}>
-                {this.state.users.map((user) => (
+                {this.state.users && this.state.users.map((user) => (
                     <Option key={user.username} value={user.username}>
                         <span>{user.username}</span>
                     </Option>

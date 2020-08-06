@@ -44,14 +44,9 @@ export class Dashboard extends React.Component<Props, State> {
         <Layout style={{ minHeight: '100vh' }}>
           <Layout className="site-layout">
             <Header className="site-layout-background" >
-              <div className="logo" style={{
-                width: "120px",
-                height: "31px",
-                background: "rgba(255, 255, 255, 0.2)",
-                margin: "16px 24px 16px 0",
-                float: "left"
-              }}>
-                <Link to="/">Ahora!</Link>
+
+              <div className="logo" style={{ float: "left", width: "80px" }}>
+                <Link to="/"><img src="/images/logo.svg" /></Link>
               </div>
               <CurrentUser style={{ float: 'right' }} ></CurrentUser>
             </Header>

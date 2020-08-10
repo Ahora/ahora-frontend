@@ -64,6 +64,8 @@ export const SearchCriteriasToText = (searchCriterias?: SearchCriterias): string
 
 export default class SearchDocsInput extends React.Component<Props, State> {
 
+    private previousText?: string;
+
     constructor(props: Props) {
         super(props);
 
@@ -115,7 +117,11 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                 });
             }
 
-            this.props.searchSelected(result, this.state.searchCriteriaText);
+            //Sometimes on blur we don't want to reload the doc list again, if the search critetira wasn't changed.
+            if (this.previousText !== this.state.searchCriteriaText) {
+                this.props.searchSelected(result, this.state.searchCriteriaText);
+            }
+            this.previousText = this.state.searchCriteriaText;
         }
         else {
             this.props.searchSelected({});

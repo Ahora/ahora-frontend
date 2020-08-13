@@ -17,7 +17,7 @@ interface InjectedProps {
 interface GroupBySelectStateProps extends InjectedProps {
     value?: number;
     fieldData: AhoraFormField;
-    onUpdate: (value: number) => void;
+    onChange: (value: number) => void;
 }
 
 
@@ -32,7 +32,7 @@ class AhoraDocTypeField extends React.Component<GroupBySelectStateProps, GroupBy
 
     onCheckChange(value: number) {
         this.setState({ value });
-        this.props.onUpdate(value);
+        this.props.onChange(value);
     }
 
     render() {

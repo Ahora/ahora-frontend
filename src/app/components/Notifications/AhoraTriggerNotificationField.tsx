@@ -50,7 +50,7 @@ class AhoraTriggerNotificationField extends React.Component<GroupBySelectStatePr
 
     render() {
         return (
-            <><AhoraEnumField value={this.props.value} onUpdate={this.onUpdate.bind(this)} fieldData={this.state.fieldData}></AhoraEnumField>
+            <><AhoraEnumField value={this.props.value} onChange={this.onUpdate.bind(this)} fieldData={this.state.fieldData}></AhoraEnumField>
                 <Button onClick={this.save.bind(this)}>Save</Button></>)
     }
 }

@@ -9,7 +9,7 @@ interface AhoraGroupDocFieldState {
 interface AhoraGroupDocFieldProps {
     value?: string;
     fieldData: AhoraFormField;
-    onUpdate: (value: string) => void;
+    onChange: (value: string) => void;
 }
 
 
@@ -25,7 +25,7 @@ class AhoraGroupDocField extends React.Component<AhoraGroupDocFieldProps, AhoraG
 
     handleChange(value: string) {
         this.setState({ value });
-        this.props.onUpdate(value);
+        this.props.onChange(value);
     }
 
     render() {

@@ -70,18 +70,12 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
         }
     }
 
-
-    handleChange(fieldName: string, value: any) {
-        const form = {
-            ...this.state.form,
-            [fieldName]: value
-        };
+    onValuesChange(changedValues: any, allValues: any) {
+        this.setState({ form: allValues });
 
         if (this.props.onUpdate) {
-            this.props.onUpdate(form);
+            this.props.onUpdate(allValues);
         }
-
-        this.setState({ form });
     }
 
     cancel() {
@@ -92,17 +86,11 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
 
     render() {
         return (
-            <Form layout="vertical" initialValues={this.props.data} onFinish={this.onSubmit.bind(this)}>
+            <Form onValuesChange={this.onValuesChange.bind(this)} layout="vertical" initialValues={this.props.data} onFinish={this.onSubmit.bind(this)}>
                 {this.state.fields.map((field) => {
-                    return <Form.Item key={field.fieldName} name={field.fieldName} required={field.required} label={field.displayName}>
-                        {
-                            field.instance && React.createElement(field.instance, {
-                                fieldData: field,
-                                formData: this.state.form,
-                                onUpdate: (value: any) => { this.handleChange(field.fieldName, value); },
-                                value: this.state.form && this.state.form[field.fieldName]
-                            })
-                        }
+                    const Element = field.instance;
+                    return <Form.Item key={field.fieldName} name={field.fieldName} rules={[{ required: field.required, message: `${field.displayName} is required` }]} label={field.displayName}>
+                        <Element value={this.state.form && this.state.form[field.fieldName]} fieldData={field} formData={this.state.form}></Element>
                     </Form.Item>
                 })}
                 {this.state.error && <div>{this.props.showError ? this.props.showError(this.state.error) : <>Unexpected Error</>}</div>}

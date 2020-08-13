@@ -7,7 +7,7 @@ interface GroupBySelectState {
 
 interface GroupBySelectStateProps {
     value?: SearchCriterias;
-    onUpdate: (value?: SearchCriterias) => void;
+    onChange: (value?: SearchCriterias) => void;
 }
 
 
@@ -23,8 +23,7 @@ class AhoraSearchCriteriasField extends React.Component<GroupBySelectStateProps,
 
     onSearchSelected(searchCriterias?: SearchCriterias) {
         this.setState({ value: searchCriterias });
-        this.props.onUpdate(searchCriterias);
-
+        this.props.onChange(searchCriterias);
     }
 
     render() {

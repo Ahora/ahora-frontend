@@ -17,7 +17,7 @@ interface Props extends InjectedProps {
     value?: number;
     autoFocus?: boolean;
     fieldData: AhoraFormField;
-    onUpdate: (value: number | null) => void;
+    onChange: (value: number | null) => void;
 }
 
 
@@ -32,11 +32,11 @@ class AhoraDocStatusField extends React.Component<Props, State> {
 
     handleChange(value?: number) {
         this.setState({ value });
-        this.props.onUpdate(value || null);
+        this.props.onChange(value || null);
     }
 
     onBlur() {
-        this.props.onUpdate(this.state.value || null);
+        this.props.onChange(this.state.value || null);
     }
 
     render() {

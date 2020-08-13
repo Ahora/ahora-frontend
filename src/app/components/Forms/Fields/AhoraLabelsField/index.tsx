@@ -9,7 +9,7 @@ interface GroupBySelectState {
 interface Props {
     value?: number[];
     fieldData: AhoraFormField;
-    onUpdate: (value: number[]) => void;
+    onChange: (value: number[]) => void;
 }
 
 
@@ -24,7 +24,7 @@ export default class AhoraLabelsField extends React.Component<Props, GroupBySele
 
     onUpdate(value: number[]) {
         this.setState({ value });
-        this.props.onUpdate(value);
+        this.props.onChange(value);
     }
 
     render() {

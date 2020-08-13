@@ -14,7 +14,7 @@ interface GroupBySelectStateProps {
     value?: string;
     fieldData: AhoraFormField;
     formData: any;
-    onUpdate: (value: string) => void;
+    onChange: (value: string) => void;
 }
 
 const githubRepoClient: RestCollectorClient = new RestCollectorClient("https://api.github.com/search/repositories");
@@ -33,7 +33,7 @@ export default class AhoraRepistoryAutoCompleteField extends React.Component<Gro
     }
 
     onChange(repo: any) {
-        this.props.onUpdate(repo.value);
+        this.props.onChange(repo.value);
     }
 
     componentDidUpdate(prevProps: GroupBySelectStateProps, prevState: GroupBySelectState) {

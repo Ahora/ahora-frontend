@@ -9,7 +9,7 @@ interface GroupBySelectState {
 interface GroupBySelectStateProps {
     value: any;
     fieldData: AhoraFormField;
-    onUpdate: (value: string) => void;
+    onChange: (value: string) => void;
 }
 
 
@@ -25,7 +25,7 @@ class AhoraDateField extends React.Component<GroupBySelectStateProps, GroupBySel
 
     handleChange(value: any) {
         this.setState({ value });
-        this.props.onUpdate(value);
+        this.props.onChange(value);
 
     }
 

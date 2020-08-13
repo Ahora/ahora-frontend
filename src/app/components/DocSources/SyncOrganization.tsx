@@ -26,7 +26,7 @@ class SyncOrganization extends React.Component<MilestonesPageProps> {
     render() {
         return (
             <div>
-                <AhoraOrganizationAutoCompleteField formData={{}} fieldData={{ displayName: "Organization", fieldName: "organization", fieldType: "" }} onUpdate={this.onUpdate.bind(this)}></AhoraOrganizationAutoCompleteField>
+                <AhoraOrganizationAutoCompleteField formData={{}} fieldData={{ displayName: "Organization", fieldName: "organization", fieldType: "" }} onChange={this.onUpdate.bind(this)}></AhoraOrganizationAutoCompleteField>
             </div>
         );
     };

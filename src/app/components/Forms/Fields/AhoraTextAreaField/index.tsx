@@ -9,7 +9,7 @@ interface GroupBySelectState {
 interface GroupBySelectStateProps {
     value?: string;
     fieldData: AhoraFormField;
-    onUpdate: (value: string) => void;
+    onChange: (value: string) => void;
 }
 
 
@@ -25,7 +25,7 @@ class AhoraTextAreaField extends React.Component<GroupBySelectStateProps, GroupB
 
     onChange(event: any) {
         this.setState({ value: event.target.value });
-        this.props.onUpdate(event.target.value);
+        this.props.onChange(event.target.value);
     }
 
     render() {

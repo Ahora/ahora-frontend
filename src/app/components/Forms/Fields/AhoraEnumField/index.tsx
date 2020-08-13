@@ -9,7 +9,7 @@ interface GroupBySelectState {
 interface GroupBySelectStateProps {
     value?: number;
     fieldData: AhoraFormField;
-    onUpdate: (value: number) => void;
+    onChange: (value: number) => void;
 }
 
 
@@ -24,7 +24,7 @@ export default class AhoraEnumField extends React.Component<GroupBySelectStatePr
 
     onCheckChange(value: any) {
         this.setState({ value });
-        this.props.onUpdate(value);
+        this.props.onChange(value);
     }
 
     render() {

@@ -16,7 +16,7 @@ interface State {
 interface Props {
     value?: string;
     fieldData: AhoraFormField;
-    onUpdate: (value: string) => void;
+    onChange: (value: string) => void;
 }
 
 
@@ -52,7 +52,7 @@ export default class AhoraMarkdownField extends React.Component<Props, State> {
 
     onChange(value: string) {
         this.setState({ value });
-        this.props.onUpdate(value);
+        this.props.onChange(value);
     }
 
     render() {

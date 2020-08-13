@@ -20,7 +20,7 @@ interface GroupBySelectStateProps {
     value?: string;
     fieldData: AhoraFormField;
     formData: any;
-    onUpdate: (value: OrgValue) => void;
+    onChange: (value: OrgValue) => void;
 }
 
 const githubRepoClient: RestCollectorClient = new RestCollectorClient("https://api.github.com/search/users");
@@ -45,7 +45,7 @@ export default class AhoraOrganizationAutoCompleteField extends React.Component<
     onChange(orName: any) {
         const org = this.resultMap.get(orName.value);
         console.log(orName);
-        this.props.onUpdate({
+        this.props.onChange({
             login: org.login,
             isOrg: (org.type === "Organization")
         });

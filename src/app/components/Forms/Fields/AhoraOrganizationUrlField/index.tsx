@@ -12,7 +12,7 @@ interface GroupBySelectState {
 interface GroupBySelectStateProps {
     value?: string;
     fieldData: AhoraFormField;
-    onUpdate: (value: string) => void;
+    onChange: (value: string) => void;
 }
 
 
@@ -43,7 +43,7 @@ class AhoraOrganizationUrlField extends React.Component<GroupBySelectStateProps,
                     this.setState({ value: value, isValid, loading: false });
 
                     if (isValid) {
-                        this.props.onUpdate(value);
+                        this.props.onChange(value);
                     }
                 }
                 else {

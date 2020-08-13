@@ -10,7 +10,7 @@ interface GroupBySelectState {
 interface GroupBySelectStateProps {
     value?: number;
     fieldData: AhoraFormField;
-    onUpdate: (value: number) => void;
+    onChange: (value: number) => void;
 }
 
 
@@ -37,7 +37,7 @@ class AhoraBitwiseEnumField extends React.Component<GroupBySelectStateProps, Gro
             value = this.state.value & ~this.props.fieldData.settings!.enum[key];
         }
         this.setState({ value });
-        this.props.onUpdate(value);
+        this.props.onChange(value);
     }
 
     render() {

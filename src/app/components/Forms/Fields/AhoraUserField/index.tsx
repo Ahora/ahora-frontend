@@ -10,7 +10,7 @@ interface GroupBySelectState {
 interface GroupBySelectStateProps {
     value?: number;
     fieldData: AhoraFormField;
-    onUpdate: (value?: number) => void;
+    onChange: (value?: number) => void;
 }
 
 
@@ -22,7 +22,7 @@ class AhoraUserField extends React.Component<GroupBySelectStateProps, GroupBySel
 
     async handleChange(user: UserItem) {
         this.setState({ value: user.id });
-        this.props.onUpdate(user.id);
+        this.props.onChange(user.id);
     }
 
     render() {

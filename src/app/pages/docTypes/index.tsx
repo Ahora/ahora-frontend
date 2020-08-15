@@ -122,10 +122,9 @@ class DocTypesPage extends React.Component<AllProps, DocTypeesPageState> {
         }
         return (
             <div>
-                <h2>Doc Types</h2>
                 <Menu className="navbar-menu" mode="horizontal">
                     <Space>
-                        <Button type="primary" onClick={this.addnewDocType.bind(this)}>Add new doc type</Button>
+                        <Button onClick={this.addnewDocType.bind(this)}>Add new doc type</Button>
                     </Space>
                 </Menu>
 

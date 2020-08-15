@@ -4,7 +4,7 @@ import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { addStatusFromState, deleteStatusFromState, updateStatusToState } from 'app/store/statuses/actions';
 import { connect } from 'react-redux';
-import { Typography, Menu, Space, Table, Button, Input } from 'antd';
+import { Menu, Space, Table, Button, Input } from 'antd';
 
 interface StatusRow {
     status: Status;
@@ -114,7 +114,6 @@ class StatusesPage extends React.Component<AllProps, StatusesPageState> {
         }
         return (
             <div>
-                <Typography.Title level={1}>Statuses</Typography.Title>
                 <Menu className="navbar-menu" mode="horizontal">
                     <Space>
                         <Button onClick={this.addnewStatus.bind(this)}>Add new status</Button>

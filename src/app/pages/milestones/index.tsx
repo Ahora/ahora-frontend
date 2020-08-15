@@ -8,7 +8,7 @@ import { ApplicationState } from 'app/store';
 import { requestMilestonesData, addMilestoneFromState, deleteMilestoneFromState, updateMilestoneToState } from 'app/store/milestones/actions';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Table, Typography, Space } from 'antd';
+import { Button, Table, Space, Menu } from 'antd';
 import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
 
 interface MilestonesPageState {
@@ -80,7 +80,6 @@ class MilestonesPage extends React.Component<MilestonesPageProps, MilestonesPage
     render() {
         return (
             <div>
-                <Typography.Title>Milestones</Typography.Title>
                 <CanManageOrganization>
                     {this.state.form ?
                         <AhoraForm data={this.state.form} onCancel={this.cancelAdd.bind(this)} onSumbit={this.onSubmit.bind(this)}>
@@ -89,7 +88,11 @@ class MilestonesPage extends React.Component<MilestonesPageProps, MilestonesPage
                             <AhoraField fieldName="dueOn" displayName="Due On" fieldType="date"></AhoraField>
                         </AhoraForm>
                         :
-                        <Button onClick={this.openAddForm.bind(this)}>Add milestone</Button>
+                        <Menu className="navbar-menu" mode="horizontal">
+                            <Space>
+                                <Button onClick={this.openAddForm.bind(this)}>Add milestone</Button>
+                            </Space>
+                        </Menu>
                     }
                 </CanManageOrganization>
 

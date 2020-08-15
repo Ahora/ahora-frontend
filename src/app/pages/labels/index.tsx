@@ -4,7 +4,7 @@ import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { addLabelFromState, deleteLabelFromState, updateLabelToState } from 'app/store/labels/actions';
 import { connect } from 'react-redux';
-import { Typography, Menu, Space, Button, Table, Input } from 'antd';
+import { Menu, Space, Button, Table, Input } from 'antd';
 
 interface LabelRow {
     label: Label;
@@ -116,7 +116,6 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
         }
         return (
             <div>
-                <Typography.Title>Labels</Typography.Title>
                 <Menu className="navbar-menu" mode="horizontal">
                     <Space>
                         <Button onClick={this.addnewLabel.bind(this)}>Add new label</Button>

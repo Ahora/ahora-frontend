@@ -55,7 +55,7 @@ class EditOrganizationPage extends React.Component<Props> {
         if (this.props.organization) {
             return (
                 <div>
-                    <Typography.Title>Edit {this.props.organization.displayName}</Typography.Title>
+                    <Typography.Title level={2}>Edit {this.props.organization.displayName}</Typography.Title>
                     <OrganizationForm initData={this.props.organization} onUpdate={this.onSubmit.bind(this)}></OrganizationForm>
                     <Typography.Title level={2}>Danger Zone</Typography.Title>
                     <Button danger onClick={this.onDelete.bind(this)}>Delete</Button>

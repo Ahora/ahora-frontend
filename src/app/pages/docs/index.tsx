@@ -17,6 +17,9 @@ import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import DefaultDocsPage from './default';
+
+import { isMobile, isBrowser } from "react-device-detect";
+
 require('./styles.scss')
 
 
@@ -158,6 +161,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     }
 
     render() {
+        console.log(isBrowser, isMobile);
         return (
             <section style={{ height: "100%" }} className="ant-layout site-layout">
                 <div className="docsheader">
@@ -171,29 +175,34 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                     <div className="main-content">
                                         <div className="content-wrapper">
                                             <div className="content">
-                                                <div className="left-side">
-                                                    <CanAddDoc>
-                                                        <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>
-                                                            <Button className="add-button" block type="primary">
-                                                                <PlusOutlined />Add doc</Button>
-                                                        </Link>
-                                                    </CanAddDoc>
-                                                    <div className="doc-list-wrapper scrollable">
-                                                        <DocList docs={this.state.docs} onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>No Results</DocList>
+                                                {
+                                                    (isBrowser || (isMobile && this.props.match.params.docId === undefined)) &&
+                                                    <div className={isBrowser ? "left-side" : "main-content"}>
+                                                        <CanAddDoc>
+                                                            <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>
+                                                                <Button className="add-button" block type="primary">
+                                                                    <PlusOutlined />Add doc</Button>
+                                                            </Link>
+                                                        </CanAddDoc>
+                                                        <div className="doc-list-wrapper scrollable">
+                                                            <DocList docs={this.state.docs} onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>No Results</DocList>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div className="main-content">
-                                                    <div className="scrollable">
-                                                        {this.state.currentDocId ?
-                                                            <DocsDetailsPage onDocDeleted={this.onDocDeleted.bind(this)} onDocUpdated={this.onDocUpdated.bind(this)} doc={this.state.currentDoc} {...this.props}></DocsDetailsPage>
-                                                            :
-                                                            <Switch>
-                                                                <Route path={`/organizations/:login/docs/add`} component={(props: any) => <AddDocPage {...props} onCancel={this.onAddCancel.bind(this)} onDocAdded={this.onDocAdded.bind(this)} />} />
-                                                                <Route path={`/organizations/:login/docs`} component={DefaultDocsPage} />
-                                                            </Switch>
-                                                        }
+                                                }
+                                                {(isBrowser || (isMobile && this.props.match.params.docId)) &&
+                                                    <div className="main-content">
+                                                        <div className="scrollable">
+                                                            {this.state.currentDocId ?
+                                                                <DocsDetailsPage onDocDeleted={this.onDocDeleted.bind(this)} onDocUpdated={this.onDocUpdated.bind(this)} doc={this.state.currentDoc} {...this.props}></DocsDetailsPage>
+                                                                :
+                                                                <Switch>
+                                                                    <Route path={`/organizations/:login/docs/add`} component={(props: any) => <AddDocPage {...props} onCancel={this.onAddCancel.bind(this)} onDocAdded={this.onDocAdded.bind(this)} />} />
+                                                                    <Route path={`/organizations/:login/docs`} component={DefaultDocsPage} />
+                                                                </Switch>
+                                                            }
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                }
                                             </div>
                                         </div>
                                     </div>

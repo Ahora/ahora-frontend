@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { AhoraFormField } from '../../AhoraForm/data';
-import { RestCollectorClient } from 'rest-collector';
 import { Select } from 'antd';
 import AhoraSpinner from '../../Basics/Spinner';
+import { searchGithubRepositories } from 'app/services/github';
+import { debounce } from 'lodash';
 
 interface GroupBySelectState {
     value: string;
@@ -17,8 +18,6 @@ interface GroupBySelectStateProps {
     onChange: (value: string) => void;
 }
 
-const githubRepoClient: RestCollectorClient = new RestCollectorClient("https://api.github.com/search/repositories");
-
 export default class AhoraRepistoryAutoCompleteField extends React.Component<GroupBySelectStateProps, GroupBySelectState> {
 
 
@@ -30,6 +29,8 @@ export default class AhoraRepistoryAutoCompleteField extends React.Component<Gro
             isLoading: false,
             value: this.props.value || ""
         };
+
+        this._handleSearch = debounce(this._handleSearch, 800);
     }
 
     onChange(repo: any) {
@@ -47,31 +48,15 @@ export default class AhoraRepistoryAutoCompleteField extends React.Component<Gro
     _handleSearch = async (query: string) => {
         this.setState({
             isLoading: true,
+            repositories: []
         });
-        let repositoriesResult: any;
 
-        if (this.props.formData.organization.isOrg) {
-            repositoriesResult = await githubRepoClient.get({
-                query: { q: `org:${this.props.formData.organization.login} ${query} in:name fork:true` }
-            });
+        const repositories = await searchGithubRepositories(query, this.props.formData.organization.login, this.props.formData.organization.isOrg);
 
-            this.setState({
-                repositories: repositoriesResult.data.items,
-                isLoading: false
-            });
-        }
-        else {
-            repositoriesResult = await githubRepoClient.get({
-                url: `https://api.github.com/users/${this.props.formData.organization.login}/repos`
-            });
-
-            this.setState({
-                repositories: repositoriesResult.data,
-                isLoading: false,
-            });
-        }
-
-
+        this.setState({
+            repositories,
+            isLoading: false,
+        });
     }
 
     render() {

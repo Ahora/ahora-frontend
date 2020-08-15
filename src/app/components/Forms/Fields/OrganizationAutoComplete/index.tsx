@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { AhoraFormField } from '../../AhoraForm/data';
-import { RestCollectorClient } from 'rest-collector';
 import { Select } from 'antd';
 import AhoraSpinner from '../../Basics/Spinner';
 import { debounce } from 'lodash';
+import { searchGithubUsers } from 'app/services/github';
 
 export interface OrgValue {
     login: string;
@@ -23,7 +23,6 @@ interface GroupBySelectStateProps {
     onChange: (value: OrgValue) => void;
 }
 
-const githubRepoClient: RestCollectorClient = new RestCollectorClient("https://api.github.com/search/users");
 
 export default class AhoraOrganizationAutoCompleteField extends React.Component<GroupBySelectStateProps, GroupBySelectState> {
 
@@ -52,23 +51,25 @@ export default class AhoraOrganizationAutoCompleteField extends React.Component<
     }
 
     _handleSearch = async (query: string) => {
-        this.setState({
-            isLoading: true,
-        });
+        if (query && query.length > 1) {
+            this.setState({
+                isLoading: true,
+                organizations: []
+            });
 
-        const repositoriesResult = await githubRepoClient.get({
-            query: { q: `${query} in:login` }
-        });
+            const items = await searchGithubUsers(query);
 
-        this.resultMap.clear();
-        repositoriesResult.data.items.map((item: any) => {
-            this.resultMap.set(item.login, item);
-        })
+            this.resultMap.clear();
+            items.map((item: any) => {
+                this.resultMap.set(item.login, item);
+            })
 
-        this.setState({
-            organizations: repositoriesResult.data.items,
-            isLoading: false,
-        });
+            this.setState({
+                organizations: items,
+                isLoading: false,
+            });
+        }
+
     }
 
     render() {
@@ -76,6 +77,7 @@ export default class AhoraOrganizationAutoCompleteField extends React.Component<
             <Select
                 showSearch={true}
                 labelInValue
+                loading={this.state.isLoading}
                 notFoundContent={this.state.isLoading ? <AhoraSpinner /> : null}
                 filterOption={false}
                 onSearch={this._handleSearch}

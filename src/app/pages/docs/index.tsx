@@ -161,7 +161,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     }
 
     render() {
-        console.log(isBrowser, isMobile);
         return (
             <section style={{ height: "100%" }} className="ant-layout site-layout">
                 <div className="docsheader">

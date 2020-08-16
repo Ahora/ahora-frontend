@@ -85,10 +85,13 @@
         }
     }
 }
-
-.add-button {
-    margin: 10px 0px;
+.add-doc-button {
+    padding: 0px 5px;
+    .add-button {
+        margin: 10px 0px;
+    }
 }
+
 
 .defaultdoccontainer {
     margin: auto;

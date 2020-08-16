@@ -92,9 +92,9 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
       const canManageOrg: boolean = canManageOrganization(this.props.currentOrgPermission);
       return (
         <Layout>
-          <Sider theme="light" breakpoint="md"
-            collapsedWidth="0" reverseArrow={true} collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
+          <Sider theme="dark" breakpoint="sm" collapsedWidth="0" collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
             <Menu
+              theme="dark"
               mode="vertical"
               selectedKeys={[this.props.match.params.section || "dashboards"]}
               style={{ height: '100%' }}

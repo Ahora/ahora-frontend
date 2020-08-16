@@ -178,7 +178,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                     (isBrowser || (isMobile && this.props.match.params.docId === undefined)) &&
                                                     <div className={isBrowser ? "left-side" : "main-content"}>
                                                         <CanAddDoc>
-                                                            <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>
+                                                            <Link className="add-doc-button" to={`/organizations/${this.props.match.params.login}/docs/add`}>
                                                                 <Button className="add-button" block type="primary">
                                                                     <PlusOutlined />Add doc</Button>
                                                             </Link>

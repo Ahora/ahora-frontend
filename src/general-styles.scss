@@ -29,3 +29,19 @@ Header * {
 .content-toside {
     margin: auto -10px;
 }
+
+.ant-drawer-body {
+    padding: 0px;
+}
+
+.ant-layout-sider-zero-width-trigger {
+    position: fixed;
+    top: 12px;
+    right: inherit;
+    background: transparent;
+    left: -4px;
+}
+
+.navbar-menu {
+    margin:  0px 10px;
+}

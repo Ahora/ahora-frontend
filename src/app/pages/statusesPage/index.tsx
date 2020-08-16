@@ -4,7 +4,7 @@ import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { addStatusFromState, deleteStatusFromState, updateStatusToState } from 'app/store/statuses/actions';
 import { connect } from 'react-redux';
-import { Menu, Space, Table, Button, Input } from 'antd';
+import { Menu, Space, Table, Button, Input, Popconfirm } from 'antd';
 
 interface StatusRow {
     status: Status;
@@ -152,7 +152,9 @@ class StatusesPage extends React.Component<AllProps, StatusesPageState> {
                                     {(statusRow.status.organizationId !== null) &&
                                         <Space>
                                             <Button onClick={() => { this.markAsEditable(statusRow); }}>Edit</Button>
-                                            <Button danger onClick={() => { this.onDeleteStatus(statusRow); }}>Delete</Button>
+                                            <Popconfirm onConfirm={this.onDeleteStatus.bind(this, statusRow)} title="Are you sure?">
+                                                <Button danger>Delete</Button>
+                                            </Popconfirm>
                                         </Space>
                                     }
                                 </>

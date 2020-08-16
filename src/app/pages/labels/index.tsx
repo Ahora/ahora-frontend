@@ -4,7 +4,7 @@ import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { addLabelFromState, deleteLabelFromState, updateLabelToState } from 'app/store/labels/actions';
 import { connect } from 'react-redux';
-import { Menu, Space, Button, Table, Input } from 'antd';
+import { Menu, Space, Button, Table, Input, Popconfirm } from 'antd';
 
 interface LabelRow {
     label: Label;
@@ -158,7 +158,9 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
                                 :
                                 (<Space>
                                     <Button onClick={() => { this.markAsEditable(labelRow); }}>Edit</Button>
-                                    <Button danger onClick={() => { this.onDeleteLabel(labelRow); }}>Delete</Button>
+                                    <Popconfirm onConfirm={this.onDeleteLabel.bind(this, labelRow)} title="Are you sure?">
+                                        <Button danger>Delete</Button>
+                                    </Popconfirm>
                                 </Space>
                                 )
                             }

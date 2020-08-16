@@ -7,7 +7,7 @@ import { ApplicationState } from "app/store";
 import { setCurrentOrganization } from 'app/store/organizations/actions';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import OrganizationForm from 'app/components/Organization/OrganizationForm';
-import { Typography, Button } from 'antd';
+import { Typography, Button, Popconfirm } from 'antd';
 
 interface EditDocPageParams {
 }
@@ -58,7 +58,9 @@ class EditOrganizationPage extends React.Component<Props> {
                     <Typography.Title level={2}>Edit {this.props.organization.displayName}</Typography.Title>
                     <OrganizationForm initData={this.props.organization} onUpdate={this.onSubmit.bind(this)}></OrganizationForm>
                     <Typography.Title level={2}>Danger Zone</Typography.Title>
-                    <Button danger onClick={this.onDelete.bind(this)}>Delete</Button>
+                    <Popconfirm onConfirm={this.onDelete.bind(this)} title="Are you sure?">
+                        <Button danger>Delete</Button>
+                    </Popconfirm>
                 </div>
             );
         }

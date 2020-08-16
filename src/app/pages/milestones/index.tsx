@@ -8,7 +8,7 @@ import { ApplicationState } from 'app/store';
 import { requestMilestonesData, addMilestoneFromState, deleteMilestoneFromState, updateMilestoneToState } from 'app/store/milestones/actions';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Table, Space, Menu } from 'antd';
+import { Button, Table, Space, Menu, Popconfirm } from 'antd';
 import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
 
 interface MilestonesPageState {
@@ -62,7 +62,7 @@ class MilestonesPage extends React.Component<MilestonesPageProps, MilestonesPage
     }
 
 
-    async deleteOrganization(milestone: OrganizationMilestone) {
+    async ondeleteMilestone(milestone: OrganizationMilestone) {
         await deleteMilestone(milestone.id!);
         this.props.removeMilestoneFromState(milestone.id!);
     }
@@ -109,7 +109,9 @@ class MilestonesPage extends React.Component<MilestonesPageProps, MilestonesPage
                                         <Button type="primary" onClick={() => { this.close(milestone) }}>Close</Button>
                                         : <Button type="primary" onClick={() => { this.reopen(milestone) }}>Open</Button>
                                     }
-                                    <Button danger onClick={() => { this.deleteOrganization(milestone) }}>Delete</Button>
+                                    <Popconfirm onConfirm={this.ondeleteMilestone.bind(this, milestone)} title="Are you sure?">
+                                        <Button danger>Delete</Button>
+                                    </Popconfirm>
                                 </Space>
                             </CanManageOrganization>
                         }></Table.Column>

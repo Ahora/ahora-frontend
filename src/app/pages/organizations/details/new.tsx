@@ -5,12 +5,12 @@ import { DocSource, getDocSources } from 'app/services/docSources';
 import DocSourceList from 'app/components/DocSources/DocSourceList';
 import { addDashboard, DashboardType, DashboardLayout } from 'app/services/dashboard';
 import SyncOrganization from 'app/components/DocSources/SyncOrganization';
-import PaymentForm from 'app/components/payments/paymentForm';
 import { PaymentData, setOrgPaymentData } from 'app/services/payments';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
-import { Organization, OrganizationType } from 'app/services/organizations';
-import { Button } from 'antd';
+import { Organization } from 'app/services/organizations';
+import { Button, Space } from 'antd';
+import { Link } from 'react-router-dom';
 
 interface DashboardsPageState {
     docSources: DocSource[];
@@ -78,6 +78,10 @@ class OrganizationNew extends React.Component<AllProps, DashboardsPageState> {
         this.props.history.push(`/organizations/${this.props.match.params.login}/dashboards/${addedDashboard.id}`)
     }
 
+    skip() {
+        this.props.history.push(`/organizations/${this.props.match.params.login}/docs`)
+    }
+
     docSourceAdded(docSource: DocSource) {
         this.setState({
             docSources: [docSource, ...this.state.docSources]
@@ -100,34 +104,26 @@ class OrganizationNew extends React.Component<AllProps, DashboardsPageState> {
     render() {
         return (
             <div className="wrap-content">
-                {
-
-                    (this.props.organization && (this.props.organization.orgType === OrganizationType.Public || (this.state.paymentInfoReceived || this.props.organization.hasPayment))) ?
-                        <>
-                            <p>
-                                Please add your favorite Github repositories.
+                <p>
+                    Please add your favorite Github repositories, or <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>add your first item.</Link>
                 </p>
-                            <div style={{ display: "none" }}>
-                                <SyncOrganization></SyncOrganization>
-                            </div>
+                <div style={{ display: "none" }}>
+                    <SyncOrganization></SyncOrganization>
+                </div>
 
-                            <div className="mb-4">
-                                <AddDocSourceForm onDocSourceAdded={this.docSourceAdded.bind(this)}></AddDocSourceForm>
-                            </div>
-                            <DocSourceList onDocSourceDeleted={this.onDocSourceDeleted.bind(this)} docSources={this.state.docSources}></DocSourceList>
-                            {this.state.docSources.length > 0 &&
-                                <div>
-                                    <Button onClick={this.addDashboards.bind(this)} type="primary">Continue &amp; create a dashboard</Button>
-                                    <p>*It may take several minutes to see imported information available.</p>
-                                </div>
-                            }
-                        </> :
-                        <div>
-                            <p>You choose to create private organization. <br />
-                            Please add payment method for monthly billing (10$ / user)</p>
-                            <PaymentForm submitted={this.onPaymentDataReceived.bind(this)}></PaymentForm>
-                        </div>
-                }
+                <div className="mb-4">
+                    <AddDocSourceForm onDocSourceAdded={this.docSourceAdded.bind(this)}></AddDocSourceForm>
+                </div>
+                <DocSourceList onDocSourceDeleted={this.onDocSourceDeleted.bind(this)} docSources={this.state.docSources}></DocSourceList>
+                <Space>
+                    {this.state.docSources.length > 0 &&
+                        <>
+                            <Button onClick={this.addDashboards.bind(this)} type="primary">Continue &amp; create a dashboard</Button>
+                        </>
+                    }
+                    <Button onClick={this.skip.bind(this)} type="default">Skip &amp; add your first doc</Button>
+
+                </Space>
             </div>
         );
     };

@@ -4,7 +4,7 @@ import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { addDocTypeFromState, deleteDocTypeFromState, updateDocTypeToState } from 'app/store/docTypes/actions';
-import { Menu, Space, Table, Button, Input } from 'antd';
+import { Menu, Space, Table, Button, Input, Popconfirm } from 'antd';
 
 interface DocTypeRow {
     docType: DocType;
@@ -166,7 +166,9 @@ class DocTypesPage extends React.Component<AllProps, DocTypeesPageState> {
                                     {(docTypeRow.docType.organizationId !== null) &&
                                         <>
                                             <Button onClick={() => { this.markAsEditable(docTypeRow); }}>Edit</Button>
-                                            <Button danger onClick={() => { this.onDeleteDocType(docTypeRow); }}>Delete</Button>
+                                            <Popconfirm onConfirm={this.onDeleteDocType.bind(this, docTypeRow)} title="Are you sure?">
+                                                <Button danger>Delete</Button>
+                                            </Popconfirm>
                                         </>
                                     }
                                 </>

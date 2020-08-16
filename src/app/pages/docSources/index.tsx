@@ -7,7 +7,7 @@ import { getDocSources, DocSource, deleteDocSource } from 'app/services/docSourc
 import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 import { Link } from 'react-router-dom';
 import { AddDocSourceForm } from 'app/components/DocSources/AddDocSourceForm';
-import { Button, Table } from 'antd';
+import { Button, Table, Popconfirm } from 'antd';
 
 interface MilestonesPageState {
     form?: any;
@@ -89,7 +89,9 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
                         } />
                         <Table.Column title="Actions" render={(value, docSource: DocSource) =>
                             <CanManageOrganization>
-                                <Button danger onClick={() => { this.deleteSource(docSource) }}>Delete</Button>
+                                <Popconfirm onConfirm={this.deleteSource.bind(this, docSource)} title="Are you sure?">
+                                    <Button danger>Delete</Button>
+                                </Popconfirm>
                             </CanManageOrganization>
                         } />
                     </Table>

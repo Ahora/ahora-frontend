@@ -6,7 +6,7 @@ import EditableHeader from 'app/components/EditableHeader';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 import { AddTeamMemberForm } from 'app/components/Teams/AddTeamMemberForm';
-import { Table, Button } from 'antd';
+import { Table, Button, Popconfirm } from 'antd';
 import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
 import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
 import { UserItem } from 'app/services/users';
@@ -141,7 +141,9 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                                     } />
                                     <Table.Column title="Actions" render={(value: any, user: OrganizationTeamUser) =>
                                         <CanManageOrganization>
-                                            <Button danger type="primary" onClick={() => { this.deleteUser(user); }}>Delete</Button>
+                                            <Popconfirm onConfirm={this.deleteUser.bind(this, user)} title="Are you sure?">
+                                                <Button danger>Delete</Button>
+                                            </Popconfirm>
                                         </CanManageOrganization>
                                     } />
                                 </Table> :
@@ -175,7 +177,9 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                         {this.state.team &&
                             <div>
                                 <h2>Danger Zone</h2>
-                                <Button type="primary" danger onClick={this.deleteTeam.bind(this)}>Delete Team</Button>
+                                <Popconfirm onConfirm={this.deleteTeam.bind(this)} title="Are you sure?">
+                                    <Button type="primary" danger>Delete Team</Button>
+                                </Popconfirm>
                             </div>
                         }
                     </CanManageOrganization>

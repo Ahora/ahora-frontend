@@ -20,6 +20,7 @@ interface injectedParams {
 
 interface DocsPageProps extends injectedParams {
     doc: Doc;
+    section?: string;
     isActive: boolean;
 }
 
@@ -47,7 +48,7 @@ class DocListItem extends React.Component<AllProps> {
                         </div>
                     </div>
                     <div>
-                        <div className="title"><Typography.Text strong={!isViewed}><Link to={`/organizations/${this.props.currentOrganization!.login}/docs/${doc.id}`}>{doc.subject}</Link> | {(doc.reporter) && doc.reporter.username}</Typography.Text></div>
+                        <div className="title"><Typography.Text strong={!isViewed}><Link to={`/organizations/${this.props.currentOrganization!.login}/${this.props.section || "docs"}/${doc.id}`}>{doc.subject}</Link> | {(doc.reporter) && doc.reporter.username}</Typography.Text></div>
                         <div><LabelsList defaultSelected={doc.labels}></LabelsList></div>
                     </div>
 

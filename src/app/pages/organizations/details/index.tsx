@@ -27,7 +27,7 @@ import { requestStatusesData } from "app/store/statuses/actions";
 import OrganizationNew from "./new";
 import { SearchCriterias } from "app/components/SearchDocsInput";
 import { Layout, Menu } from 'antd';
-import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined } from '@ant-design/icons';
+import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined, InboxOutlined } from '@ant-design/icons';
 
 
 interface OrganizationDetailsPageProps {
@@ -99,6 +99,7 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
               selectedKeys={[this.props.match.params.section || "dashboards"]}
               style={{ height: '100%' }}
             >
+              <Menu.Item icon={<InboxOutlined />} key="inbox"><Link to={`/organizations/${organization.login}/inbox`}>Inbox</Link></Menu.Item>
               <Menu.Item icon={<PieChartOutlined />} key="dashboards"><Link to={`/organizations/${organization.login}/dashboards`}>Dashboards</Link></Menu.Item>
               <Menu.Item icon={<UnorderedListOutlined />} key="docs"><Link to={`/organizations/${organization.login}/docs`}>Browse</Link></Menu.Item>
               <Menu.Item icon={<TeamOutlined />} key="teams"><Link to={`/organizations/${organization.login}/teams`}>Teams</Link></Menu.Item>
@@ -111,13 +112,13 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
               <Switch>
                 <Route path={`/organizations/:login/settings/:settingsSection?`} component={OrganizationSettingsPage} />
                 <Route path={`/organizations/:login/new`} component={OrganizationNew} />
-                <Route path={`/organizations/:login/docs/:docId?`} component={DocsPage} />
                 <Route path={`/organizations/:login/dashboards/add`} component={AddDashboardPage} />
                 <Route path={`/organizations/:login/dashboards/:id`} component={DashboardDetailsPage} />
                 <Route path={`/organizations/:login/dashboards`} component={DashboardsPage} />
                 <Route path={`/organizations/:login/notifications`} component={NotificationsPage} />
                 <Route path={`/organizations/:login/milestones`} component={MilestonesPage} />
                 <Route path={`/organizations/:login/teams`} component={OrganizationTeamRootPage} />
+                <Route path={`/organizations/:login/:section/:docId?`} component={DocsPage} />
                 <Route path={`/organizations/:login`} component={DashboardsPage}>
                 </Route>
               </Switch>

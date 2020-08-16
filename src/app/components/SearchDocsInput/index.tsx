@@ -13,6 +13,7 @@ export interface SearchCriterias {
     milestone?: string | string[];
     text?: string | string[]
     docType?: string | string[]
+    mention?: string | string[]
 }
 
 

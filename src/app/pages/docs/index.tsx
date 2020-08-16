@@ -32,7 +32,7 @@ interface DocsPageState {
 }
 
 interface DocsPageParams {
-    docTypeCode: string;
+    section: string;
     login: string;
     docId: string;
 }
@@ -75,17 +75,28 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         }
     }
 
-    async componentDidMount() {
+    setSearchCriterias() {
         if (this.props.location.search.length > 0) {
             const parsedUrl: ParsedUrl = parseUrl(this.props.location.search);
             const searchCriterias: SearchCriterias = parsedUrl.query;
             this.searchSelected(searchCriterias);
         }
         else if (this.props.searchCriteria) {
-            this.searchSelected(this.props.searchCriteria);
+            if (this.props.match.params.section === "inbox") {
+                this.searchSelected({ mention: "me", status: "open" });
+
+            }
+            else {
+                this.searchSelected(this.props.searchCriteria);
+
+            }
         } else {
             this.searchSelected({});
         }
+    }
+
+    async componentDidMount() {
+        this.setSearchCriterias();
 
         const docId: number = parseInt(this.props.match.params.docId);
         if (!isNaN(docId)) {
@@ -96,7 +107,9 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     }
 
     async searchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string) {
-        this.props.setSearchCriterias(searchCriterias);
+        if (this.props.match.params.section === "docs") {
+            this.props.setSearchCriterias(searchCriterias);
+        }
         this.setState({
             searchCriteria: searchCriterias,
             searchCriteriasText,
@@ -126,6 +139,10 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                 });
             }
         }
+
+        if (this.props.match.params.section !== PrevProps.match.params.section) {
+            this.setSearchCriterias();
+        }
     }
 
     onDocDeleted(updatedDoc: Doc) {
@@ -133,7 +150,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
             this.setState({
                 docs: this.state.docs.filter((doc) => doc.id !== updatedDoc.id)
             });
-            this.props.history.replace(`/organizations/${this.props.match.params.login}/docs`);
+            this.props.history.replace(`/organizations/${this.props.match.params.login}/${this.props.match.params.section}`);
         }
     }
 
@@ -147,7 +164,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     onAddCancel() {
         if (this.props.history.length <= 2) {
-            this.props.history.push(`/organizations/${this.props.match.params.login}/docs`)
+            this.props.history.push(`/organizations/${this.props.match.params.login}/${this.props.match.params.section}`)
 
         }
         else {
@@ -157,7 +174,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     onDocAdded(addedDoc: Doc) {
         this.setState({ docs: [addedDoc, ...this.state.docs] });
-        this.props.history.replace(`/organizations/${this.props.match.params.login}/docs/${addedDoc.id}`)
+        this.props.history.replace(`/organizations/${this.props.match.params.login}/${this.props.match.params.section}/${addedDoc.id}`)
     }
 
     render() {
@@ -184,7 +201,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                             </Link>
                                                         </CanAddDoc>
                                                         <div className="doc-list-wrapper scrollable">
-                                                            <DocList docs={this.state.docs} onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>No Results</DocList>
+                                                            <DocList section={this.props.match.params.section} docs={this.state.docs} onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>No Results</DocList>
                                                         </div>
                                                     </div>
                                                 }

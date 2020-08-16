@@ -38,7 +38,7 @@ export default class OrganizationsPage extends React.Component<any, Organization
                             renderItem={org => (
                                 <List.Item>
                                     <Typography.Text>
-                                        <Link to={`/organizations/${org.login}`}>{org.displayName}</Link></Typography.Text>
+                                        <Link to={`/organizations/${org.login}/inbox`}>{org.displayName}</Link></Typography.Text>
                                 </List.Item>
                             )}
                         />

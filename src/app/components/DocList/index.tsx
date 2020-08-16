@@ -10,7 +10,6 @@ interface DocsPageState {
     docs: Doc[] | null;
     page: number;
     totalPages: number;
-
 }
 
 interface DocListProps {
@@ -18,6 +17,7 @@ interface DocListProps {
     pageSize?: number;
     activeDocId?: number;
     docs?: Doc[],
+    section?: string;
     onDocListUpdated?: (docs: Doc[]) => void;
 }
 
@@ -97,7 +97,7 @@ class DocList extends React.Component<DocListProps, DocsPageState> {
                                 className="doc-list"
                                 itemLayout="horizontal"
                                 dataSource={this.state.docs}
-                                renderItem={doc => <DocListItem isActive={doc.id === this.props.activeDocId} doc={doc}></DocListItem>}></List>
+                                renderItem={doc => <DocListItem section={this.props.section} isActive={doc.id === this.props.activeDocId} doc={doc}></DocListItem>}></List>
                             :
                             <> {this.props.children}</>}
 

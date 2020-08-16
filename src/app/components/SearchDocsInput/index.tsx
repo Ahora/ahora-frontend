@@ -2,7 +2,7 @@ import * as React from 'react';
 import { parse, SearchParserOptions, } from "search-query-parser";
 import { Input } from 'antd';
 
-var searchOptions: SearchParserOptions = { keywords: ['status', 'docType', 'assignee', 'reporter', 'label', "repo", "milestone", "team", "createdAt", "closedAt"], alwaysArray: true }
+var searchOptions: SearchParserOptions = { keywords: ['status', 'docType', 'assignee', 'reporter', 'mention', 'label', "repo", "milestone", "team", "createdAt", "closedAt"], alwaysArray: true }
 
 export interface SearchCriterias {
     assignee?: string[];

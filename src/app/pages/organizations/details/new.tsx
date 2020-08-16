@@ -99,7 +99,7 @@ class OrganizationNew extends React.Component<AllProps, DashboardsPageState> {
 
     render() {
         return (
-            <div>
+            <div className="wrap-content">
                 {
 
                     (this.props.organization && (this.props.organization.orgType === OrganizationType.Public || (this.state.paymentInfoReceived || this.props.organization.hasPayment))) ?

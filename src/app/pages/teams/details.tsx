@@ -120,8 +120,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
 
     render() {
         return (
-            <div className="main-content">
-
+            <div className="wrap-content">
                 <div>
                     {this.state.team &&
                         <>

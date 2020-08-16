@@ -166,7 +166,7 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
         }
 
         return (
-            <div className="main-content">
+            <div className="wrap-content">
                 {dashboard &&
                     <>
                         <EditableHeader canEdit={canEdit} onChanged={this.onTitleChanged.bind(this)} value={dashboard.title}>
@@ -174,7 +174,7 @@ class DashboardDetailsPage extends React.Component<AllProps, DashboardsDetailsPa
                         </EditableHeader>
                         <EditableHeader canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={dashboard.description}>{dashboard.description}</EditableHeader>
                         {canEdit &&
-                            <Menu className="navbar-menu" mode="horizontal">
+                            <Menu mode="horizontal">
                                 <Space>
                                     <AddGadgetButton onSelect={this.addEmptyGadget.bind(this)}></AddGadgetButton>
                                     <Popconfirm onConfirm={this.remove.bind(this)} title="Are you sure?">

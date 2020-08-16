@@ -25,7 +25,7 @@ class DocMilestoneViewEdit extends React.Component<Props, State> {
             <ViewEdit canEdit={this.props.canEdit} onUpdate={this.props.onUpdate.bind(this)}
                 viewComponent={() => { return <Tag>{milestone ? milestone.title : "No milestone"}</Tag> }}
                 editComponent={(props: any) =>
-                    <AhoraDocMilestoneField autoFocus={true} onUpdate={props.onUpdate} value={this.props.milestone ? this.props.milestone.id : undefined} />
+                    <AhoraDocMilestoneField autoFocus={true} onChange={props.onUpdate} value={this.props.milestone ? this.props.milestone.id : undefined} />
                 } />
         );
     }

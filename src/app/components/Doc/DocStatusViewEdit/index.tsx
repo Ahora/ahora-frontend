@@ -25,7 +25,7 @@ class DocStatusViewEdit extends React.Component<Props, State> {
             <ViewEdit canEdit={this.props.canEdit} onUpdate={this.props.onUpdate.bind(this)}
                 viewComponent={() => <Tag color="processing">{status ? status.name : "Empty"}</Tag>}
                 editComponent={(props: any) =>
-                    <AhoraDocStatusField autoFocus={true} onUpdate={props.onUpdate} value={this.props.status ? this.props.status.id : undefined} />
+                    <AhoraDocStatusField autoFocus={true} onChange={props.onUpdate} value={this.props.status ? this.props.status.id : undefined} />
                 } />
         );
     }

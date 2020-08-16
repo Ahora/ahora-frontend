@@ -66,6 +66,7 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
         if (labelRow.label.id) {
             labelRow.editable = false;
             labelRow.name = labelRow.label.name;
+            labelRow.color = labelRow.label.color;
             labelRow.description = labelRow.label.description || "";
             this.setState({});
         }
@@ -134,7 +135,7 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
                     <Table.Column title="Color" dataIndex="color" key="color" render={(text, labelRow: LabelRow) => (
                         <>
                             {labelRow.editable ? (
-                                <Input name="code" value={labelRow.color} onChange={(e: any) => { this.saveData(e, labelRow) }} type="text" />
+                                <Input name="color" value={labelRow.color} onChange={(e: any) => { this.saveData(e, labelRow) }} type="text" />
                             ) : (<>{labelRow.label.color}</>)}
                         </>
                     )} />

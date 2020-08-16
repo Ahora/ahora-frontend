@@ -1,15 +1,17 @@
-import { DocTypesState, DocTypeActionTypes, ADD_DOCTYPE, DELETE_DOCTYPE, RECEIVE_DOCTYPES, UPDATE_DOCTYPE } from './types'
+import { DocTypesState, DocTypeActionTypes, ADD_DOCTYPE, DELETE_DOCTYPE, RECEIVE_DOCTYPES, UPDATE_DOCTYPE, REMEMBER_LAST_DOCTYPE } from './types'
 import { DocType } from 'app/services/docTypes'
 
 const initialState: DocTypesState = {
     docTypes: [],
     mapById: new Map<number, DocType>(),
     mapByCode: new Map<string, DocType>(),
-    loading: false
+    loading: false,
 }
 
 export function docTypesReducer(state = initialState, action: DocTypeActionTypes): DocTypesState {
     switch (action.type) {
+        case REMEMBER_LAST_DOCTYPE:
+            return { ...state, lastDocTypeId: action.payload }
         case ADD_DOCTYPE:
             return { ...state, docTypes: [...state.docTypes, action.payload] }
         case RECEIVE_DOCTYPES:

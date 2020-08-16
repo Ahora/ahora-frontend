@@ -179,10 +179,13 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     render() {
         return (
+
             <section style={{ height: "100%" }} className="ant-layout site-layout">
-                <div className="docsheader">
-                    <SearchDocsInput searchCriterias={this.state.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
-                </div>
+                {(isBrowser || (isMobile && this.props.match.params.docId === undefined)) &&
+                    <div className="docsheader">
+                        <SearchDocsInput searchCriterias={this.state.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
+                    </div>
+                }
                 <section className="ant-layout site-layout">
                     <div className="ant-layout">
                         <div className="ant-layout site-layout-content">
@@ -195,13 +198,15 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                     (isBrowser || (isMobile && this.props.match.params.docId === undefined)) &&
                                                     <div className={isBrowser ? "left-side" : "main-content"}>
                                                         <CanAddDoc>
-                                                            <Link className="add-doc-button" to={`/organizations/${this.props.match.params.login}/docs/add`}>
+                                                            <Link className="add-doc-button" to={`/organizations/${this.props.match.params.login}/${this.props.match.params.section}/add`}>
                                                                 <Button className="add-button" block type="primary">
                                                                     <PlusOutlined />Add doc</Button>
                                                             </Link>
                                                         </CanAddDoc>
                                                         <div className="doc-list-wrapper scrollable">
-                                                            <DocList section={this.props.match.params.section} docs={this.state.docs} onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>No Results</DocList>
+                                                            <DocList section={this.props.match.params.section} docs={this.state.docs} onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>
+                                                                <div className="no-docs">No Results</div>
+                                                            </DocList>
                                                         </div>
                                                     </div>
                                                 }
@@ -212,8 +217,8 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                                 <DocsDetailsPage onDocDeleted={this.onDocDeleted.bind(this)} onDocUpdated={this.onDocUpdated.bind(this)} doc={this.state.currentDoc} {...this.props}></DocsDetailsPage>
                                                                 :
                                                                 <Switch>
-                                                                    <Route path={`/organizations/:login/docs/add`} component={(props: any) => <AddDocPage {...props} onCancel={this.onAddCancel.bind(this)} onDocAdded={this.onDocAdded.bind(this)} />} />
-                                                                    <Route path={`/organizations/:login/docs`} component={DefaultDocsPage} />
+                                                                    <Route path={`/organizations/:login/:section/add`} component={(props: any) => <AddDocPage {...props} onCancel={this.onAddCancel.bind(this)} onDocAdded={this.onDocAdded.bind(this)} />} />
+                                                                    <Route path={`/organizations/:login/:section`} component={DefaultDocsPage} />
                                                                 </Switch>
                                                             }
                                                         </div>

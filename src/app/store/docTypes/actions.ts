@@ -1,4 +1,4 @@
-import { ADD_DOCTYPE, RECEIVE_DOCTYPES, DocTypeActionTypes, FETCH_DOCTYPES, DELETE_DOCTYPE, UPDATE_DOCTYPE } from './types'
+import { ADD_DOCTYPE, RECEIVE_DOCTYPES, DocTypeActionTypes, FETCH_DOCTYPES, DELETE_DOCTYPE, UPDATE_DOCTYPE, REMEMBER_LAST_DOCTYPE } from './types'
 import { DocType } from 'app/services/docTypes';
 
 export function addDocTypeFromState(newDocType: DocType): DocTypeActionTypes {
@@ -18,6 +18,7 @@ export function updateDocTypeToState(newDocType: DocType): DocTypeActionTypes {
 
 export const requestDocTypesData = () => ({ type: FETCH_DOCTYPES });
 export const receiveDocTypesData = (data: DocType[]) => ({ type: RECEIVE_DOCTYPES, data });
+export const rememberLastDocTypeId = (lastDocTypeId: number) => ({ type: REMEMBER_LAST_DOCTYPE, payload: lastDocTypeId });
 
 export function deleteDocTypeFromState(id: number): DocTypeActionTypes {
     return {

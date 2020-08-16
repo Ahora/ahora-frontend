@@ -16,9 +16,11 @@ interface GroupBySelectStateProps {
 export default class AhoraEnumField extends React.Component<GroupBySelectStateProps, GroupBySelectState> {
     constructor(props: GroupBySelectStateProps) {
         super(props);
+        const currentEnum = this.props.fieldData.settings!.enum;
+
 
         this.state = {
-            value: this.props.value || 0
+            value: this.props.value || currentEnum[this.props.fieldData.settings!.keys[0]]
         };
     }
 

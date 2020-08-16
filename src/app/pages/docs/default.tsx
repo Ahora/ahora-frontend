@@ -4,6 +4,7 @@ import { Button } from 'antd';
 
 interface PageParams {
     login: string;
+    section: string;
 }
 
 interface Props extends RouteComponentProps<PageParams> {
@@ -15,7 +16,7 @@ export default class DefaultDocsPage extends React.Component<Props> {
         return <div className="defaultdoccontainer">
             <p>Start a discussion or just select your relevant doc!</p>
             <div>
-                <Link to={`/organizations/${this.props.match.params.login}/docs/add`}>
+                <Link to={`/organizations/${this.props.match.params.login}/${this.props.match.params.section}/add`}>
                     <Button type="primary">Start a new discussion</Button>
                 </Link>
             </div>

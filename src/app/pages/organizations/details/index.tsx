@@ -118,7 +118,7 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
                 <Route path={`/organizations/:login/notifications`} component={NotificationsPage} />
                 <Route path={`/organizations/:login/milestones`} component={MilestonesPage} />
                 <Route path={`/organizations/:login/teams`} component={OrganizationTeamRootPage} />
-                <Route path={`/organizations/:login/:section/:docId?`} component={DocsPage} />
+                <Route path={`/organizations/:login/:section(docs|inbox)/:docId?`} component={DocsPage} />
                 <Route path={`/organizations/:login`} component={DashboardsPage}>
                 </Route>
               </Switch>

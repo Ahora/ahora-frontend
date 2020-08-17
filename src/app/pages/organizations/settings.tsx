@@ -9,6 +9,7 @@ import DocSourcesPage from "app/pages/docSources";
 import EditOrganizationPage from "app/pages/organizations/edit";
 import PaymentPage from "app/pages/organizations/details/payment";
 import { Menu } from "antd";
+import AhoraSpinner from "app/components/Forms/Basics/Spinner";
 
 interface SettingsPageState {
   organization: Organization | null;
@@ -73,7 +74,7 @@ export default class OrganizationSettingsPage extends React.Component<
         </div>
       );
     } else {
-      return <div>Loading....</div>;
+      return <AhoraSpinner />;
     }
   };
 }

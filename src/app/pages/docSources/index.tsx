@@ -7,7 +7,7 @@ import { getDocSources, DocSource, deleteDocSource } from 'app/services/docSourc
 import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 import { Link } from 'react-router-dom';
 import { AddDocSourceForm } from 'app/components/DocSources/AddDocSourceForm';
-import { Button, Table, Popconfirm } from 'antd';
+import { Button, Table, Popconfirm, Menu, Space } from 'antd';
 
 interface MilestonesPageState {
     form?: any;
@@ -71,7 +71,11 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
                     {this.state.form ?
                         <AddDocSourceForm onDocSourceAdded={this.docSourceAdded.bind(this)}></AddDocSourceForm>
                         :
-                        <Button onClick={this.openAddForm.bind(this)}>Add docSource</Button>
+                        <Menu className="navbar-menu" mode="horizontal">
+                            <Space>
+                                <Button onClick={this.openAddForm.bind(this)}>Add docSource</Button>
+                            </Space>
+                        </Menu>
                     }
                 </CanManageOrganization>
 

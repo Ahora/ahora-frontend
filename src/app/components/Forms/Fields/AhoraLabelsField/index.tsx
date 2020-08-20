@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { AhoraFormField } from '../../AhoraForm/data';
-import LabelsList from 'app/components/LabelsSelector/details';
+import LabelsList from 'app/components/Labels/LabelList';
 
 interface GroupBySelectState {
     value?: number[];

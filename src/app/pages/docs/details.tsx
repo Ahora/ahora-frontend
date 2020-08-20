@@ -13,7 +13,7 @@ import EditableHeader from 'app/components/EditableHeader';
 import EditableMarkDown from 'app/components/EditableMarkDown';
 import { canEditDoc } from 'app/services/authentication';
 import DocStatusViewEdit from 'app/components/Doc/DocStatusViewEdit';
-import LabelsList from 'app/components/LabelsSelector/details';
+import LabelsList from 'app/components/Labels/LabelList';
 import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';

@@ -6,7 +6,7 @@ import { Status } from 'app/services/statuses';
 import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
 import { DocType } from 'app/services/docTypes';
-import LabelsList from 'app/components/LabelsSelector/details';
+import LabelsList from 'app/components/Labels/LabelList';
 import { Organization } from 'app/services/organizations';
 import { List, Typography, Tag } from 'antd';
 

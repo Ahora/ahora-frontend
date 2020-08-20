@@ -4,7 +4,7 @@ import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { addLabelFromState, deleteLabelFromState, updateLabelToState } from 'app/store/labels/actions';
 import { connect } from 'react-redux';
-import { Menu, Space, Button, Table, Input, Popconfirm } from 'antd';
+import { Menu, Space, Button, Table, Input, Popconfirm, Tag } from 'antd';
 
 interface LabelRow {
     label: Label;
@@ -129,7 +129,7 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
                         <>
                             {labelRow.editable ? (
                                 <Input value={labelRow.name} name="name" onChange={(e: any) => { this.saveData(e, labelRow) }} type="text" />
-                            ) : (<>{labelRow.label.name}</>)}
+                            ) : (<Tag color={`#${labelRow.label.color || "0366d6"}`}>{labelRow.label.name}</Tag>)}
                         </>
                     )} />
                     <Table.Column title="Color" dataIndex="color" key="color" render={(text, labelRow: LabelRow) => (

@@ -1,8 +1,52 @@
 import * as React from 'react';
 import { parse, SearchParserOptions, } from "search-query-parser";
-import { Input } from 'antd';
+import { Mentions } from 'antd';
+import { searchUsers } from 'app/services/users';
+
+import { store } from "app/store";
+import { searchTeams } from 'app/services/organizationTeams';
+const autoCompleteOptions: Map<string, (text: string) => Promise<string[]>> = new Map();
+
+const usersSearch = async (text: string): Promise<string[]> => {
+
+    if (text && text.length > 1) {
+        const users = await searchUsers(text);
+        return users.map((user) => user.username);
+    }
+    return [];
+}
+
+autoCompleteOptions.set("team:", async (text: string): Promise<string[]> => {
+    const teams = await searchTeams(text);
+    return teams.map((team) => team.name);
+});
+
+
+autoCompleteOptions.set("assignee:", usersSearch);
+autoCompleteOptions.set("reporter:", usersSearch);
+autoCompleteOptions.set("mention:", usersSearch);
+autoCompleteOptions.set("status:", async (text: string): Promise<string[]> => {
+    return store.getState().statuses.statuses.map((status) => status.name);
+});
+
+
+
+autoCompleteOptions.set("label:", async (text: string): Promise<string[]> => {
+    return store.getState().labels.labels.map((label) => label.name);
+});
+
+autoCompleteOptions.set("docType:", async (text: string): Promise<string[]> => {
+    return store.getState().docTypes.docTypes.map((docTypes) => docTypes.name);
+});
+
+autoCompleteOptions.set("milestone:", async (text: string): Promise<string[]> => {
+    return store.getState().milestones.milestones.map((milestone) => milestone.title);
+});
+
+
 
 var searchOptions: SearchParserOptions = { keywords: ['status', 'docType', 'assignee', 'reporter', 'mention', 'label', "repo", "milestone", "team", "createdAt", "closedAt"], alwaysArray: true }
+const autoComleteTokens: string[] = searchOptions.keywords!.map((token) => `${token}:`);
 
 export interface SearchCriterias {
     assignee?: string[];
@@ -28,6 +72,7 @@ interface State {
     searchCriteriaText?: string;
     searchCriterias?: SearchCriterias;
     isFocused: boolean;
+    possibleOptions: string[]
 }
 
 const printTextOfQuery = (field: string, val: string | string[]): string => {
@@ -71,6 +116,7 @@ export default class SearchDocsInput extends React.Component<Props, State> {
         super(props);
 
         this.state = {
+            possibleOptions: [],
             searchCriteriaText: this.props.searchCriteriaText,
             searchCriterias: this.props.searchCriterias,
             isFocused: false
@@ -93,9 +139,9 @@ export default class SearchDocsInput extends React.Component<Props, State> {
         });
     }
 
-    onTextChange(event: any) {
+    onTextChange(text: string) {
         this.setState({
-            searchCriteriaText: event.target.value
+            searchCriteriaText: text
         });
     }
 
@@ -140,7 +186,19 @@ export default class SearchDocsInput extends React.Component<Props, State> {
 
     handleKeyDown(e: any) {
         if (e.key === 'Enter') {
+            e.preventDefault()
+            e.stopPropagation();
             this.search();
+        }
+    }
+
+    async searchAutoComplete(text: string, prefix: string) {
+        const autoCompleteHandler = autoCompleteOptions.get(prefix);
+        if (autoCompleteHandler) {
+            this.setState({ possibleOptions: await autoCompleteHandler(text) });
+        }
+        else {
+            this.setState({ possibleOptions: [] });
         }
     }
 
@@ -150,18 +208,24 @@ export default class SearchDocsInput extends React.Component<Props, State> {
     render = () => {
         return (
             <div>
-                <Input.Search
-                    type="text"
+                <Mentions
+                    style={{ width: '100%' }}
                     required={this.props.required === undefined ? true : this.props.required}
-                    onFocus={this.handleFocus.bind(this)}
                     value={this.state.searchCriteriaText}
-                    onChange={this.onTextChange.bind(this)}
                     placeholder="enter your search criteria"
-                    onKeyDown={this.handleKeyDown.bind(this)}
+                    prefix={autoComleteTokens}
+                    onChange={this.onTextChange.bind(this)}
+                    onFocus={this.handleFocus.bind(this)}
+                    onKeyDownCapture={this.handleKeyDown.bind(this)}
                     onBlur={this.handleBlur.bind(this)}
-                    onSearch={this.search.bind(this)}
-                    enterButton="Search"
-                />
+                    onSearch={this.searchAutoComplete.bind(this)}
+                >
+                    {this.state.possibleOptions.map(value => (
+                        <Mentions.Option key={value} value={value.indexOf(" ") > -1 ? `"${value}"` : value}>
+                            {value}
+                        </Mentions.Option>
+                    ))}
+                </Mentions>
             </div >
         );
     };

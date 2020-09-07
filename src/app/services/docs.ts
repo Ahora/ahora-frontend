@@ -4,6 +4,12 @@ import { SearchCriterias } from "app/components/SearchDocsInput";
 import { UserItem } from "./users";
 import { DocWatcher } from "./watchers";
 
+export interface DocGroup {
+    count: number;
+    values: string[];
+    criteria: string[];
+}
+
 export interface Doc {
     id: number;
     subject: string;
@@ -57,12 +63,21 @@ export const getDocs = async (query?: SearchCriterias, offset: number = 0, limit
     }
 }
 
-export const getDocGroup = async (group: string | string[], query?: SearchCriterias, sort?: string): Promise<any[]> => {
+export const getDocGroup = async (group: string | string[], query?: SearchCriterias, sort?: string): Promise<DocGroup[]> => {
     const result = await docsClient.get({
         query: { ...query, group, sort: sort }
     });
 
     return result.data;
+}
+
+export const getDocUnreadMessage = async (): Promise<number[]> => {
+    const result = await docsClient.get({
+        query: { unread: true, mention: ["rollandf"], limit: 2000 }
+    });
+
+    const data: Doc[] = result.data;
+    return data.map((doc) => doc.id);
 }
 
 export const getDoc = async (login: string, id: number): Promise<Doc> => {

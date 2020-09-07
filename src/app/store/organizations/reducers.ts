@@ -1,4 +1,4 @@
-import { OrganizationsState, OrganizationsActionTypes, SET_CURRENT_USER, SET_SEARCH_CRITERIAS } from './types'
+import { OrganizationsState, OrganizationsActionTypes, SET_CURRENT_USER, SET_SEARCH_CRITERIAS, RECIEVED_UNREAD_NUMBER, REDUCE_UNREAD_COUNT } from './types'
 
 const initialState: OrganizationsState = {
     currentOrganization: undefined,
@@ -11,6 +11,10 @@ export function currentOrganizationsReducer(state = initialState, action: Organi
             return { ...state, currentOrganization: action.data.currentOrganization, currentOrgPermission: action.data.currentOrgPermission }
         case SET_SEARCH_CRITERIAS:
             return { ...state, searchCriterias: action.data }
+        case REDUCE_UNREAD_COUNT:
+            return { ...state, unreatCount: state.unreatCount && state.unreatCount.filter((docId) => action.data !== docId) }
+        case RECIEVED_UNREAD_NUMBER:
+            return { ...state, unreatCount: action.data }
         default:
             return state
     }

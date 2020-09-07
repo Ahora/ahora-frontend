@@ -5,6 +5,7 @@ import { routerMiddleware } from 'connected-react-router';
 import { LabelsState } from './labels/types';
 import createSagaMiddleware from "redux-saga";
 import labelSaga from "./labels/sagas";
+import unreadSaga from "./organizations/sagas";
 import statusesSaga from "./statuses/sagas";
 import milestoneSaga from "./milestones/sagas";
 import docTypeSaga from "./docTypes/sagas";
@@ -40,6 +41,7 @@ export const store = createStore(
 );
 
 sagaMiddleware.run(labelSaga);
+sagaMiddleware.run(unreadSaga);
 sagaMiddleware.run(docTypeSaga);
 sagaMiddleware.run(statusesSaga);
 sagaMiddleware.run(milestoneSaga);

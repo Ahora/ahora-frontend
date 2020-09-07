@@ -18,6 +18,8 @@ import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import { Comment, Descriptions, Button, Space, Popconfirm } from 'antd';
+import { Dispatch } from 'redux';
+import { reduceUnReadCount } from 'app/store/organizations/actions';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -35,20 +37,17 @@ interface injectedParams {
     milestonesMap: Map<number, OrganizationMilestone>,
     loading: boolean;
     currentUser: User | undefined | null;
-
 }
 
-interface DocDetailsPageProps extends RouteComponentProps<DocsDetailsPageParams>, injectedParams {
+interface DispatchProps {
+    reduceUnReadCount(docId: number): void;
+}
+
+interface AllProps extends RouteComponentProps<DocsDetailsPageParams>, injectedParams, DispatchProps {
     doc?: Doc;
     onDocUpdated: (doc: Doc) => void;
     onDocDeleted: (doc: Doc) => void;
 }
-
-interface AllProps extends DocDetailsPageProps {
-
-}
-
-
 
 class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     constructor(props: AllProps) {
@@ -61,20 +60,28 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     async changeStatus(statusId: number) {
         if (statusId !== this.state.doc!.statusId) {
             const updatedDoc = { ...this.state.doc!, statusId };
-            this.props.onDocUpdated(updatedDoc);
             await updateDocStatus(this.props.match.params.login, this.state.doc!.id, statusId);
-            this.setState({ doc: updatedDoc });
+            this.updateDoc(updatedDoc);
+
         }
+    }
+
+    updateDoc(doc: Doc) {
+        this.props.onDocUpdated(doc);
+        this.props.reduceUnReadCount(doc.id);
+
+        if (doc.lastView && doc.lastView.updatedAt < doc.updatedAt) {
+            this.props.reduceUnReadCount(doc.id);
+        }
+
+        this.setState({ doc });
     }
 
     async changeMilestone(milestoneId?: number) {
         if (milestoneId !== this.state.doc!.milestoneId) {
             const doc = { ...this.state.doc!, milestoneId };
             const updatedDoc = await updateDoc(this.props.match.params.login, doc.id, doc);
-            this.setState({
-                doc: updatedDoc
-            });
-            this.props.onDocUpdated(updatedDoc);
+            this.updateDoc(updatedDoc);
 
         }
     }
@@ -82,11 +89,11 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     async componentDidUpdate(PrevProps: AllProps) {
         const prevDocId: number | undefined = PrevProps.doc ? PrevProps.doc.id : undefined;
         if (this.props.doc && this.props.doc.id !== prevDocId) {
-            this.props.onDocUpdated({
+
+            this.updateDoc({
                 ...this.props.doc,
                 lastView: { updatedAt: new Date() }
-            });
-            this.setState({ doc: this.props.doc });
+            })
         }
     }
 
@@ -94,14 +101,13 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         if (!this.props.doc && !this.state.doc) {
             const doc: Doc = await getDoc(this.props.match.params.login, parseInt(this.props.match.params.docId));
             doc.lastView = { updatedAt: new Date() };
-            this.props.onDocUpdated(doc);
-            this.setState({ doc });
+            this.updateDoc(doc);
 
         }
         else {
             if (this.props.doc) {
                 this.setState({ doc: this.props.doc });
-                this.props.onDocUpdated({
+                this.updateDoc({
                     ...this.props.doc,
                     lastView: { updatedAt: new Date() }
                 });
@@ -112,28 +118,20 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
     async onLabelsUpdate(labels: number[]): Promise<void> {
         const updatedDoc = { ...this.state.doc!, labels };
-        this.props.onDocUpdated(updatedDoc);
+        this.updateDoc(updatedDoc);
         await updateDocLabels(this.props.match.params.login, parseInt(this.props.match.params.docId), labels);
-        this.setState({ doc: updatedDoc });
     }
 
     async onAssigneeSelect(user: UserItem) {
         const addedUserItem: UserItem = await assignDoc(this.props.match.params.login, parseInt(this.props.match.params.docId), user.username);
         const updatedDoc = { ...this.state.doc!, assignee: addedUserItem };
-        this.setState({
-            doc: updatedDoc,
-        });
-        this.props.onDocUpdated(updatedDoc);
+        this.updateDoc(updatedDoc);
     }
 
     async onSubjectChanged(value: string) {
         const updatedDoc = { ...this.state.doc!, subject: value };
         await updateDocSubject(this.props.match.params.login, this.state.doc!.id, value);
-        this.setState({
-            doc: updatedDoc
-        });
-
-        this.props.onDocUpdated(updatedDoc);
+        this.updateDoc(updatedDoc);
     }
 
     async delete() {
@@ -146,13 +144,8 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     }
 
     async onDescriptionChanged(value: string) {
-        const updatedDoc = { ...this.state.doc!, description: value };
         const newDoc = await updateDocDescription(this.props.match.params.login, this.state.doc!.id, value);
-        this.setState({
-            doc: newDoc,
-        });
-        this.props.onDocUpdated(updatedDoc);
-
+        this.updateDoc({ ...this.state.doc, ...newDoc });
     }
 
     render() {
@@ -248,4 +241,10 @@ const mapStateToProps = (state: ApplicationState): injectedParams => {
     };
 };
 
-export default connect(mapStateToProps, null)(DocsDetailsPage as any); 
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+    return {
+        reduceUnReadCount: (docId: number) => dispatch(reduceUnReadCount(docId))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DocsDetailsPage as any); 

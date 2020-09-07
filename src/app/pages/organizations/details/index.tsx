@@ -1,12 +1,12 @@
 import * as React from "react";
 import { RouteComponentProps, Switch, Route } from "react-router";
-import { Organization, getOrganizationByLogin, OrganizationDetailsWithPermission } from "../../../services/organizations";
+import { Organization, getOrganizationByLogin } from "../../../services/organizations";
 import DocsPage from "app/pages/docs";
 import DashboardDetailsPage from "app/pages/dashboards/details";
 import AddDashboardPage from "app/pages/dashboards/add";
 import OrganizationSettingsPage from "../settings";
 import { Dispatch } from "redux";
-import { setCurrentOrganization, setSearchCriteria } from "app/store/organizations/actions";
+import { setCurrentOrganization, setSearchCriteria, requestUnReadNumber } from "app/store/organizations/actions";
 import { connect } from "react-redux";
 import { ApplicationState } from "app/store";
 import { Link } from "react-router-dom";
@@ -26,7 +26,7 @@ import { requestLabelsData } from "app/store/labels/actions";
 import { requestStatusesData } from "app/store/statuses/actions";
 import OrganizationNew from "./new";
 import { SearchCriterias } from "app/components/SearchDocsInput";
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Badge } from 'antd';
 import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined, InboxOutlined } from '@ant-design/icons';
 
 
@@ -34,6 +34,7 @@ interface OrganizationDetailsPageProps {
   docTypes?: DocType[];
   currentOrgPermission?: OrganizationTeamUser;
   currentUser?: User | undefined;
+  unReadCount?: number;
 }
 
 interface OrganizationDetailsPageState {
@@ -51,6 +52,7 @@ interface DispatchProps {
   setSearchCriterias(data?: SearchCriterias): void;
   requestDocTypes(): void;
   requestLabels(): void;
+  requestUnread(): void;
   requestStatuses(): void;
   requestMilestones(): void;
   requestCurrentUser(): void;
@@ -68,12 +70,18 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
   }
 
   async componentDidMount() {
-    const organization: OrganizationDetailsWithPermission | null = await getOrganizationByLogin(this.props.match.params.login);
+
+
+    const organization = await getOrganizationByLogin(this.props.match.params.login);
+
     if (organization) {
       this.props.setOrganizationToState(organization, organization.permission);
       this.props.setSearchCriterias({ status: ["open"] });
       this.setState({ organization });
+
+      this.props.requestUnread();
     }
+
     this.props.requestDocTypes();
     this.props.requestMilestones();
     this.props.requestLabels();
@@ -99,7 +107,9 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
               selectedKeys={[this.props.match.params.section || "dashboards"]}
               style={{ height: '100%' }}
             >
-              <Menu.Item icon={<InboxOutlined />} key="inbox"><Link to={`/organizations/${organization.login}/inbox`}>Inbox</Link></Menu.Item>
+              <Menu.Item icon={<><InboxOutlined /></>} key="inbox">
+                <Link to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.unReadCount}>Inbox</Badge></Link>
+              </Menu.Item>
               <Menu.Item icon={<PieChartOutlined />} key="dashboards"><Link to={`/organizations/${organization.login}/dashboards`}>Dashboards</Link></Menu.Item>
               <Menu.Item icon={<UnorderedListOutlined />} key="docs"><Link to={`/organizations/${organization.login}/docs`}>Browse</Link></Menu.Item>
               <Menu.Item icon={<TeamOutlined />} key="teams"><Link to={`/organizations/${organization.login}/teams`}>Teams</Link></Menu.Item>
@@ -134,11 +144,12 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
   };
 }
 
-const mapStateToProps = (state: ApplicationState) => {
+const mapStateToProps = (state: ApplicationState): OrganizationDetailsPageProps => {
   return {
     currentOrgPermission: state.organizations.currentOrgPermission,
     docTypes: state.docTypes.docTypes,
-    currentUser: state.currentUser.user
+    currentUser: state.currentUser.user,
+    unReadCount: state.organizations.unreatCount && state.organizations.unreatCount.length
   };
 };
 
@@ -147,6 +158,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     requestDocTypes: () => dispatch(requestDocTypesData()),
     requestMilestones: () => dispatch(requestMilestonesData()),
     requestStatuses: () => dispatch(requestStatusesData()),
+    requestUnread: () => dispatch(requestUnReadNumber()),
     requestLabels: () => dispatch(requestLabelsData()),
     setSearchCriterias: (data: SearchCriterias) => dispatch(setSearchCriteria(data)),
     setOrganizationToState: (organization: Organization, permission?: OrganizationTeamUser) => dispatch(setCurrentOrganization(organization, permission)),

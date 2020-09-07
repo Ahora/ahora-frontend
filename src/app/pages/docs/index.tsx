@@ -83,7 +83,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         }
         else if (this.props.searchCriteria) {
             if (this.props.match.params.section === "inbox") {
-                this.searchSelected({ mention: "me", status: "open" });
+                this.searchSelected({ mention: "me" });
 
             }
             else {

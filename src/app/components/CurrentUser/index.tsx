@@ -34,14 +34,14 @@ class CurrentUser extends React.Component<AllProps, LabelsPageState> {
 
     render() {
         return (
-            <div style={{ float: 'right' }} >
+            <>
                 {this.props.currentUser !== undefined && (<>
                     {this.props.currentUser ?
                         (<span>{this.props.currentUser.displayName || this.props.currentUser.username} | <a href="/auth/logout">Logout</a></span>) :
                         (<a href="/auth/github">Login</a>)
                     }
                 </>)}
-            </div>
+            </>
         );
     };
 }

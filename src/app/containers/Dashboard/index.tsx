@@ -5,48 +5,38 @@ import OrganizationDetailsPage from "app/pages/organizations/details";
 import CurrentUser from "app/components/CurrentUser";
 import RootPageComponent from "app/pages/RootPage";
 import AddOrganizationPage from "app/pages/organizations/add";
-import { Layout, Drawer, Menu } from 'antd';
+import { Layout, Button, Badge } from 'antd';
 import { Link } from "react-router-dom";
-import { PieChartOutlined, UnorderedListOutlined, TeamOutlined, FlagOutlined } from "@ant-design/icons";
+import { AlertFilled } from "@ant-design/icons";
+import { ApplicationState } from "app/store";
+import { connect } from "react-redux";
+import { Organization } from "app/services/organizations";
 
-interface LoginParams { }
 
-interface Props extends RouteComponentProps<LoginParams> {
+
+interface InjectedProps {
+  organization?: Organization,
+  unReadCount?: number
+}
+
+interface Props extends RouteComponentProps, InjectedProps {
   selectedMenu: number;
   actions: any;
   user: any;
 }
 
+
 interface State {
   drawerVisible: boolean,
 }
 
-export class Dashboard extends React.Component<Props, State> {
-  static defaultProps: Partial<Props> = {};
-
+class Dashboard extends React.Component<Props, State> {
   constructor(props: Props, context?: any) {
     super(props, context);
-
-    this.state = {
-      drawerVisible: false,
-    };
   }
 
-  openDrawer() {
-    this.setState({ drawerVisible: true });
-  }
-
-  onDrawerClose() {
-    this.setState({ drawerVisible: false });
-
-  }
-
-
-  async componentDidMount() { }
-
-  render = () => {
+  render() {
     const { Header } = Layout;
-    const organization = { login: "assistedinstaller" };
     return (
       <>
         <Layout style={{ minHeight: '100vh' }}>
@@ -58,37 +48,38 @@ export class Dashboard extends React.Component<Props, State> {
                   <Link to="/"><img src="/images/logo.svg" /></Link>
                 </div>
               </div>
-
-              <CurrentUser style={{ float: 'right' }} ></CurrentUser>
+              <div style={{ float: 'right' }}>
+                <CurrentUser></CurrentUser>
+                {
+                  (this.props.organization && this.props.unReadCount !== undefined && this.props.unReadCount > 0) &&
+                  <Link to={`/organizations/${this.props.organization.login}/inbox`}>
+                    <Badge count={this.props.unReadCount}>
+                      <Button type="text" style={{ color: "#000000" }} icon={<AlertFilled></AlertFilled>} />
+                    </Badge>
+                  </Link>
+                }
+              </div>
             </Header>
             <Layout className="site-layout-content">
               <Switch>
                 <Route exact path="/" component={RootPageComponent} />
                 <Route path="/organizations/add" component={AddOrganizationPage} />
-                <Route
-                  path="/organizations/:login/:section?"
-                  component={OrganizationDetailsPage}
-                />
+                <Route path="/organizations/:login/:section?" component={OrganizationDetailsPage} />
                 <Route path="/organizations" component={OrganizationsPage} />
               </Switch>
             </Layout>
           </Layout>
-          <Drawer
-            onClose={this.onDrawerClose.bind(this)}
-            placement="left"
-            closeIcon={true}
-            closable={true}
-            visible={this.state.drawerVisible}
-          >
-            <Menu mode="vertical">
-              <Menu.Item icon={<PieChartOutlined />} key="dashboards"><Link to={`/organizations/${organization.login}/dashboards`}>Dashboards</Link></Menu.Item>
-              <Menu.Item icon={<UnorderedListOutlined />} key="docs"><Link to={`/organizations/${organization.login}/docs`}>Browse</Link></Menu.Item>
-              <Menu.Item icon={<TeamOutlined />} key="teams"><Link to={`/organizations/${organization.login}/teams`}>Teams</Link></Menu.Item>
-              <Menu.Item icon={<FlagOutlined />} key="milestones"><Link to={`/organizations/${organization.login}/milestones`}>Milestones</Link></Menu.Item>
-            </Menu>
-          </Drawer>
         </Layout>
       </>
     );
   };
 }
+
+const mapStateToProps = (state: ApplicationState): InjectedProps => {
+  return {
+    organization: state.organizations.currentOrganization,
+    unReadCount: state.organizations.unreatCount && state.organizations.unreatCount.length
+  };
+};
+
+export default connect(mapStateToProps, null)(Dashboard as any);

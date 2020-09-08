@@ -73,7 +73,7 @@ export const getDocGroup = async (group: string | string[], query?: SearchCriter
 
 export const getDocUnreadMessage = async (): Promise<number[]> => {
     const result = await docsClient.get({
-        query: { unread: true, mention: ["rollandf"], limit: 2000 }
+        query: { unread: true, mention: ["me"], limit: 2000 }
     });
 
     const data: Doc[] = result.data;

@@ -2,6 +2,7 @@ import * as React from 'react';
 import './style.scss';
 import { AttachmentUpload, AddAttachment, markUploaded } from 'app/services/attachments';
 import { RestCollectorClient, RestCollectorRequest } from 'rest-collector';
+import AhoraSpinner from '../Forms/Basics/Spinner';
 
 
 const bucketUploader: RestCollectorClient = new RestCollectorClient(undefined, {
@@ -15,6 +16,7 @@ const bucketUploader: RestCollectorClient = new RestCollectorClient(undefined, {
 
 interface DragAndDropState {
     drag: boolean;
+    showSpinner: boolean;
 }
 
 interface DragAndDropProps {
@@ -32,6 +34,7 @@ class FileUpload extends React.Component<DragAndDropProps, DragAndDropState> {
 
         this.dragCounter = 0;
         this.state = {
+            showSpinner: false,
             drag: false
         };
 
@@ -40,6 +43,7 @@ class FileUpload extends React.Component<DragAndDropProps, DragAndDropState> {
     }
 
     async uploadFiles(files: FileList) {
+        this.setState({ showSpinner: true });
         for (let index = 0; index < files.length; index++) {
             const file: File = files[index];
 
@@ -55,6 +59,7 @@ class FileUpload extends React.Component<DragAndDropProps, DragAndDropState> {
             await markUploaded(uploadInfo.id)
             this.props.onFileUploaded(uploadInfo.viewUrl);
         }
+        this.setState({ showSpinner: false });
     }
 
     handleDrag = (e: any) => {
@@ -84,7 +89,8 @@ class FileUpload extends React.Component<DragAndDropProps, DragAndDropState> {
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
             this.uploadFiles(e.dataTransfer.files);
             e.dataTransfer.clearData()
-            this.dragCounter = 0
+            this.dragCounter = 0;
+
         }
     }
 
@@ -109,7 +115,11 @@ class FileUpload extends React.Component<DragAndDropProps, DragAndDropState> {
         return (
             <div ref={this.dropRef}>
                 <div>
-                    <div className={this.state.drag ? "drop-area drag" : "drop-area"}><label htmlFor="fileElem">Upload multiple files by dragging and dropping images to here</label></div>
+                    <div className={this.state.drag ? "drop-area drag" : "drop-area"}>
+                        {this.state.showSpinner ?
+                            <AhoraSpinner /> :
+                            <label htmlFor="fileElem">Upload multiple files by dragging and dropping images to here</label>}
+                    </div>
                     <input type="file" id="fileElem" onChange={this.onChange.bind(this)} multiple={this.props.multiple} accept={this.props.accept} />
                 </div>
             </div>

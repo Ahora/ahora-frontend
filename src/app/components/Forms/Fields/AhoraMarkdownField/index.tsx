@@ -3,6 +3,7 @@ import { AhoraFormField } from '../../AhoraForm/data';
 import { Mentions } from 'antd';
 import { UserItem, searchUsers } from 'app/services/users';
 import { debounce } from 'lodash';
+import FileUpload from 'app/components/FileUpload';
 
 const { Option } = Mentions;
 
@@ -55,15 +56,24 @@ export default class AhoraMarkdownField extends React.Component<Props, State> {
         this.props.onChange(value);
     }
 
+    onFileUploaded(url: string) {
+        this.setState({ value: this.state.value + "\n" + url });
+
+    }
+
     render() {
         return (
-            <Mentions rows={6} loading={this.state.loading} defaultValue={this.props.value} onChange={this.onChange.bind(this)} onSearch={this.onSearch.bind(this)}>
-                {this.state.users && this.state.users.map((user) => (
-                    <Option key={user.username} value={user.username}>
-                        <span>{user.username}</span>
-                    </Option>
-                ))}
-            </Mentions>
+            <>
+                <Mentions rows={6} loading={this.state.loading} value={this.state.value} defaultValue={this.props.value} onChange={this.onChange.bind(this)} onSearch={this.onSearch.bind(this)}>
+                    {this.state.users && this.state.users.map((user) => (
+                        <Option key={user.username} value={user.username}>
+                            <span>{user.username}</span>
+                        </Option>
+                    ))}
+                </Mentions>
+                <FileUpload onFileUploaded={this.onFileUploaded.bind(this)}></FileUpload>
+            </>
+
         );
     }
 }

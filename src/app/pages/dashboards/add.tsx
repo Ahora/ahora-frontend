@@ -36,7 +36,7 @@ class AddDashboardPage extends React.Component<Props, AddDashboardsPageState> {
 
     render() {
         return (
-            <div className="main-content">
+            <div className="wrap-content">
                 <Typography.Title>Add Dashboard</Typography.Title>
                 <AhoraForm onSumbit={this.onSubmit.bind(this)}>
                     <AhoraField required={true} fieldName="title" displayName="Title" fieldType="text"></AhoraField>

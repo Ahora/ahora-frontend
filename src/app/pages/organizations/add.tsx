@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import { addOrg, Organization } from 'app/services/organizations';
+import { addOrg, Organization, OrganizationType } from 'app/services/organizations';
 import OrganizationForm from 'app/components/Organization/OrganizationForm';
 import { Typography } from 'antd';
 
@@ -23,7 +23,7 @@ export default class AddOrganizationPage extends React.Component<Props> {
         return (
             <div className="wrap-content">
                 <Typography.Title>Add Organization</Typography.Title>
-                <OrganizationForm onUpdate={this.onSumbit.bind(this)} />
+                <OrganizationForm initData={{ orgType: OrganizationType.Public }} onUpdate={this.onSumbit.bind(this)} />
             </div>
         );
     };

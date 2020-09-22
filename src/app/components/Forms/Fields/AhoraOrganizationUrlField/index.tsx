@@ -28,6 +28,30 @@ class AhoraOrganizationUrlField extends React.Component<GroupBySelectStateProps,
         };
     }
 
+    async checkOrgAvalability(value: string) {
+
+        if (value && value.length > 0) {
+
+            const isValid: boolean = await checkOrgAvailability(value);
+            this.setState({ value: value, isValid, loading: false });
+
+            if (isValid) {
+                this.props.onChange(value);
+            }
+        }
+        else {
+            this.setState({ value: value, isValid: false, loading: false });
+        }
+    }
+
+    async onBlur(event: any) {
+        if (this.setTimeoutInterval) {
+            clearInterval(this.setTimeoutInterval);
+        }
+        this.checkOrgAvalability(event.target.value);
+
+    }
+
 
     async handleChange(event: any) {
         if (this.setTimeoutInterval) {
@@ -38,16 +62,10 @@ class AhoraOrganizationUrlField extends React.Component<GroupBySelectStateProps,
             this.setState({ loading: true });
             this.setTimeoutInterval = setTimeout(async (value: string) => {
                 if (value !== this.props.value) {
-
-                    const isValid: boolean = await checkOrgAvailability(value);
-                    this.setState({ value: value, isValid, loading: false });
-
-                    if (isValid) {
-                        this.props.onChange(value);
-                    }
+                    this.checkOrgAvalability(value);
                 }
                 else {
-                    this.setState({ value: value, isValid: true });
+                    this.setState({ value, isValid: true });
 
                 }
             }, 500, event.target.value);
@@ -59,8 +77,9 @@ class AhoraOrganizationUrlField extends React.Component<GroupBySelectStateProps,
 
     render() {
         return <Input
-            value={this.props.value}
+            defaultValue={this.props.value}
             onChange={this.handleChange.bind(this)}
+            onBlur={this.onBlur.bind(this)}
             required={this.props.fieldData.required}
             prefix={"https://ahora.dev/organizations/"}
             suffix={

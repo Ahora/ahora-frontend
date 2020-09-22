@@ -4,7 +4,7 @@ import AhoraForm from '../Forms/AhoraForm/AhoraForm';
 import AhoraField from '../Forms/AhoraForm/AhoraField';
 
 interface OrganizationFormProps {
-    initData?: Organization,
+    initData?: any,
     onUpdate: (organization: Organization) => Promise<void>;
 
 }

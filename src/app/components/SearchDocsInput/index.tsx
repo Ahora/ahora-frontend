@@ -45,7 +45,7 @@ autoCompleteOptions.set("milestone:", async (text: string): Promise<string[]> =>
 
 
 
-var searchOptions: SearchParserOptions = { keywords: ['status', 'docType', 'assignee', 'reporter', 'mention', 'label', "repo", "milestone", "team", "createdAt", "closedAt"], alwaysArray: true }
+var searchOptions: SearchParserOptions = { keywords: ['status', 'docType', 'assignee', 'reporter', 'mention', 'label', "repo", "milestone", "team", "createdAt", "closedAt", "unread"], alwaysArray: true }
 const autoComleteTokens: string[] = searchOptions.keywords!.map((token) => `${token}:`);
 
 export interface SearchCriterias {

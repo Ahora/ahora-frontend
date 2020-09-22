@@ -82,11 +82,16 @@ class MilestonesPage extends React.Component<MilestonesPageProps, MilestonesPage
             <div>
                 <CanManageOrganization>
                     {this.state.form ?
-                        <AhoraForm data={this.state.form} onCancel={this.cancelAdd.bind(this)} onSumbit={this.onSubmit.bind(this)}>
-                            <AhoraField required={true} fieldName="title" displayName="Title" fieldType="text"></AhoraField>
-                            <AhoraField fieldName="description" displayName="Description" fieldType="text"></AhoraField>
-                            <AhoraField fieldName="dueOn" displayName="Due On" fieldType="date"></AhoraField>
-                        </AhoraForm>
+                        <div className="wrap-content">
+
+                            <AhoraForm data={this.state.form} onCancel={this.cancelAdd.bind(this)} onSumbit={this.onSubmit.bind(this)}>
+                                <AhoraField required={true} fieldName="title" displayName="Title" fieldType="text"></AhoraField>
+                                <AhoraField fieldName="description" displayName="Description" fieldType="text"></AhoraField>
+                                <AhoraField fieldName="dueOn" displayName="Due On" fieldType="date"></AhoraField>
+                            </AhoraForm>
+
+
+                        </div>
                         :
                         <Menu className="navbar-menu" mode="horizontal">
                             <Space>
@@ -94,6 +99,7 @@ class MilestonesPage extends React.Component<MilestonesPageProps, MilestonesPage
                             </Space>
                         </Menu>
                     }
+
                 </CanManageOrganization>
 
                 {(this.props.milestones) ?

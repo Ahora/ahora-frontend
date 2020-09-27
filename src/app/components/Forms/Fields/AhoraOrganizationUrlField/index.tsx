@@ -9,16 +9,16 @@ interface GroupBySelectState {
     loading: boolean;
 }
 
-interface GroupBySelectStateProps {
+interface LoginFieldProps {
     value?: string;
     fieldData: AhoraFormField;
     onChange: (value: string) => void;
 }
 
 
-class AhoraOrganizationUrlField extends React.Component<GroupBySelectStateProps, GroupBySelectState> {
+class AhoraOrganizationUrlField extends React.Component<LoginFieldProps, GroupBySelectState> {
     private setTimeoutInterval: any;
-    constructor(props: GroupBySelectStateProps) {
+    constructor(props: LoginFieldProps) {
         super(props);
 
         this.state = {
@@ -26,6 +26,13 @@ class AhoraOrganizationUrlField extends React.Component<GroupBySelectStateProps,
             value: this.props.value || "",
             isValid: false
         };
+    }
+
+    componentDidUpdate(prevProps: LoginFieldProps) {
+        if (prevProps.value !== this.props.value) {
+            console.log("formupdated", this.props.value);
+            this.setState({ value: this.props.value || "" });
+        }
     }
 
     async checkOrgAvalability(value: string) {
@@ -77,7 +84,7 @@ class AhoraOrganizationUrlField extends React.Component<GroupBySelectStateProps,
 
     render() {
         return <Input
-            defaultValue={this.props.value}
+            value={this.state.value}
             onChange={this.handleChange.bind(this)}
             onBlur={this.onBlur.bind(this)}
             required={this.props.fieldData.required}

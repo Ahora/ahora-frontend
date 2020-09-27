@@ -23,7 +23,7 @@ export default class AddOrganizationPage extends React.Component<Props> {
         return (
             <div className="wrap-content">
                 <Typography.Title>Add Organization</Typography.Title>
-                <OrganizationForm initData={{ orgType: OrganizationType.Public }} onUpdate={this.onSumbit.bind(this)} />
+                <OrganizationForm initData={{ orgType: OrganizationType.Public }} onSumbit={this.onSumbit.bind(this)} />
             </div>
         );
     };

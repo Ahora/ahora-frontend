@@ -16,7 +16,7 @@ interface AhoraFormProps {
     submitButtonText?: string;
     fields?: AhoraFormField[];
     showError?: (error: any) => React.ReactNode;
-    onUpdate?: (data: any) => void;
+    onUpdate?: (data: any) => void | any;
     onSumbit: (data: any) => Promise<void>;
     onCancel?: () => void;
 }
@@ -71,11 +71,14 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
     }
 
     onValuesChange(changedValues: any, allValues: any) {
-        this.setState({ form: allValues });
 
         if (this.props.onUpdate) {
-            this.props.onUpdate(allValues);
+            const updatedFormData = this.props.onUpdate(allValues);
+            if (updatedFormData) {
+                allValues = updatedFormData;
+            }
         }
+        this.setState({ form: allValues });
     }
 
     cancel() {

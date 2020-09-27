@@ -30,7 +30,6 @@ class AhoraOrganizationUrlField extends React.Component<LoginFieldProps, GroupBy
 
     componentDidUpdate(prevProps: LoginFieldProps) {
         if (prevProps.value !== this.props.value) {
-            console.log("formupdated", this.props.value);
             this.setState({ value: this.props.value || "" });
         }
     }
@@ -56,7 +55,6 @@ class AhoraOrganizationUrlField extends React.Component<LoginFieldProps, GroupBy
             clearInterval(this.setTimeoutInterval);
         }
         this.checkOrgAvalability(event.target.value);
-
     }
 
 

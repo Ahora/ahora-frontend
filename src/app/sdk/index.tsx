@@ -92,6 +92,18 @@ sdkInstance.dashboardGadgets.registerGadget("AhoraBarsPie", {
                     "pie"
                 ]
             }
+        },
+        {
+            displayName: "Scalar",
+            fieldName: "scalar",
+            fieldType: "enum",
+            settings: {
+                enum: BarPieGadgetDisplayType,
+                keys: [
+                    "count",
+                    "timetoclose"
+                ]
+            }
         }]
     },
     gadgetComponent: BarPieGadgetGadget

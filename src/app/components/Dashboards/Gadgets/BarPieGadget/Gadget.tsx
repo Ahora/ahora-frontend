@@ -6,7 +6,8 @@ import { PieChart, Pie, Tooltip, Cell, BarChart, XAxis, YAxis, Bar, CartesianGri
 import { RouteComponentProps } from 'react-router';
 import { Organization } from 'app/services/organizations';
 import { stringify } from "query-string";
-import BarPieGadgetData, { BarPieGadgetDisplayType } from './data';
+import { duration } from "moment";
+import BarPieGadgetData, { BarPieGadgetDisplayType, BarPieGadgetScalar } from './data';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 
 interface BarPieGadgetState {
@@ -40,6 +41,8 @@ class BarPieGadget extends React.Component<AllProps, BarPieGadgetState> {
         if (prevPropse.data.displayType !== this.props.data.displayType
             || prevPropse.data.searchCriterias !== this.props.data.searchCriterias
             || prevPropse.data.primaryGroup !== this.props.data.primaryGroup
+            || prevPropse.data.scalar !== this.props.data.scalar
+            || prevPropse.data.displayType !== this.props.data.displayType
             || prevPropse.data.secondaryGroup !== this.props.data.secondaryGroup) {
             this.updateGraph(this.props);
         }
@@ -47,11 +50,11 @@ class BarPieGadget extends React.Component<AllProps, BarPieGadgetState> {
 
 
     async updateGraph(props: AllProps) {
-        if (props.data.primaryGroup || props.data.secondaryGroup) {
+        if (props.data.primaryGroup || props.data.secondaryGroup || props.data.scalar) {
             this.setState({
                 loading: true
             });
-            const rawData: any[] = await getDocGroup([props.data.primaryGroup!, props.data.secondaryGroup!], props.data.searchCriterias);
+            const rawData: any[] = await getDocGroup([props.data.primaryGroup!, props.data.secondaryGroup!], props.data.searchCriterias, undefined, props.data.scalar);
             this.setState({
                 loading: false
             });
@@ -93,6 +96,16 @@ class BarPieGadget extends React.Component<AllProps, BarPieGadgetState> {
         });
     }
 
+    formatValue(value: number): any {
+        switch (this.props.data.scalar) {
+            case BarPieGadgetScalar.timetoclose:
+                return duration(value * 1000).format();
+            default:
+                return value;
+        }
+
+    }
+
     render() {
         const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
         return (
@@ -104,19 +117,24 @@ class BarPieGadget extends React.Component<AllProps, BarPieGadgetState> {
                         <ResponsiveContainer width="100%" height={300}>
                             {this.props.data.displayType === BarPieGadgetDisplayType.pie ?
                                 <PieChart onClick={this.onClick.bind(this)}>
-                                    <Pie dataKey="count" isAnimationActive={false} data={this.state.chartData} fill="#8884d8" label >
+                                    <Pie
+                                        dataKey="count"
+                                        isAnimationActive={false}
+                                        data={this.state.chartData}
+                                        fill="#8884d8"
+                                        label={(data) => `${data.name}: ${this.formatValue(data.count)}`} >
                                         {
                                             this.state.chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
                                         }
                                     </Pie>
-                                    <Tooltip />
+                                    <Tooltip formatter={(value: any) => this.formatValue(value)} />
                                 </PieChart>
                                 :
                                 <BarChart onClick={this.onClick.bind(this)} data={this.state.chartData}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
+                                    <YAxis tickFormatter={(value) => this.formatValue(value)} />
+                                    <Tooltip formatter={(value: any) => this.formatValue(value)} />
                                     {
                                         this.state.bars.map((bar) => <Bar key={bar} dataKey="count" fill="#8884d8">
                                             {

@@ -3,7 +3,7 @@ import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import Moment from 'react-moment';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
-import { getDocSources, DocSource, deleteDocSource } from 'app/services/docSources';
+import { getDocSources, DocSource, deleteDocSource, syncNowDocSource } from 'app/services/docSources';
 import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 import { Link } from 'react-router-dom';
 import { AddDocSourceForm } from 'app/components/DocSources/AddDocSourceForm';
@@ -53,6 +53,18 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
         });
     }
 
+    async syncNow(docSource: DocSource) {
+        await syncNowDocSource(docSource.id!);
+
+        if (this.state.docSources) {
+            this.setState({
+                docSources: this.state.docSources.map((source) => source.id === docSource.id ? { ...docSource, syncing: true } : source)
+            })
+        }
+    }
+
+
+
 
     async deleteSource(docSource: DocSource) {
         await deleteDocSource(docSource.id!);
@@ -69,7 +81,9 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
             <div>
                 <CanManageOrganization>
                     {this.state.form ?
-                        <AddDocSourceForm onDocSourceAdded={this.docSourceAdded.bind(this)}></AddDocSourceForm>
+                        <div className="wrap-content">
+                            <AddDocSourceForm onDocSourceAdded={this.docSourceAdded.bind(this)}></AddDocSourceForm>
+                        </div>
                         :
                         <Menu className="navbar-menu" mode="horizontal">
                             <Space>
@@ -88,14 +102,19 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
                         <Table.Column title="Last Updated" dataIndex="lastUpdated" key="lastUpdated" render={(lastUpdated?: Date) =>
                             <>{lastUpdated && <Moment date={lastUpdated} format="D MMM YYYY hh:mm"></Moment>}</>
                         } />
-                        <Table.Column title="Last Updated" dataIndex="syncing" key="syncing" render={(syncing?: boolean) =>
+                        <Table.Column title="Syncing" dataIndex="syncing" key="syncing" render={(syncing?: boolean) =>
                             <>{syncing!.toString()}</>
                         } />
                         <Table.Column title="Actions" render={(value, docSource: DocSource) =>
                             <CanManageOrganization>
-                                <Popconfirm onConfirm={this.deleteSource.bind(this, docSource)} title="Are you sure?">
-                                    <Button danger>Delete</Button>
-                                </Popconfirm>
+                                <Space>
+                                    <Popconfirm onConfirm={this.deleteSource.bind(this, docSource)} title="Are you sure?">
+                                        <Button danger>Delete</Button>
+                                    </Popconfirm>
+                                    {docSource.syncing === false &&
+                                        <Button type="primary" onClick={this.syncNow.bind(this, docSource)}>Sync now</Button>
+                                    }
+                                </Space>
                             </CanManageOrganization>
                         } />
                     </Table>

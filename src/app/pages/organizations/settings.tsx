@@ -43,8 +43,8 @@ export default class OrganizationSettingsPage extends React.Component<
     if (organization) {
       return (
         <div>
-          <Menu mode="horizontal" activeKey={this.props.match.params.settingsSection}>
-            <Menu.Item key={""}>
+          <Menu mode="horizontal" activeKey={this.props.match.params.settingsSection || "home"}>
+            <Menu.Item key={"home"}>
               <Link to={`/organizations/${organization.login}/settings`}>Home</Link>
             </Menu.Item>
             <Menu.Item key="statuses">

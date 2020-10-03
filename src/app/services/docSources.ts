@@ -32,6 +32,14 @@ export const addDocSource = async (docSource: DocSource): Promise<DocSource> => 
   return result.data;
 };
 
+
+export const syncNowDocSource = async (id: number): Promise<DocSource> => {
+  const result = await docSourceClient.post({
+    url: `/api/organizations/${store.getState().organizations.currentOrganization!.login}/docsources/${id}/sync`,
+  });
+  return result.data;
+};
+
 export const editDocSource = async (docSource: DocSource): Promise<DocSource> => {
   const result = await docSourceClient.put({
     params: {

@@ -22,12 +22,12 @@ export default class OrganizationsPage extends React.Component<any, Organization
     }
     render = () => {
         return (
-            <div className="main-content">
+            <div className="wrap-content">
                 <Typography.Title>Organizations</Typography.Title>
 
                 {this.state.organizations ?
                     <>
-                        <Menu className="navbar-menu" mode="horizontal">
+                        <Menu mode="horizontal">
                             <Space>
                                 <Button type="primary" href={`/organizations/add`}>Add</Button>
                             </Space>

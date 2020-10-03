@@ -7,6 +7,7 @@ interface GroupBySelectState {
     value: string;
     isValid: boolean;
     loading: boolean;
+    rawValue: string;
 }
 
 interface LoginFieldProps {
@@ -24,20 +25,20 @@ class AhoraOrganizationUrlField extends React.Component<LoginFieldProps, GroupBy
         this.state = {
             loading: false,
             value: this.props.value || "",
+            rawValue: this.props.value || "",
             isValid: false
         };
     }
 
     componentDidUpdate(prevProps: LoginFieldProps) {
-        if (prevProps.value !== this.props.value) {
-            this.setState({ value: this.props.value || "" });
+        if (prevProps.value !== this.props.value && this.props.value != this.state.rawValue) {
+            this.setState({ rawValue: this.props.value || "" });
         }
     }
 
     async checkOrgAvalability(value: string) {
 
         if (value && value.length > 0) {
-
             const isValid: boolean = await checkOrgAvailability(value);
             this.setState({ value: value, isValid, loading: false });
 
@@ -59,6 +60,8 @@ class AhoraOrganizationUrlField extends React.Component<LoginFieldProps, GroupBy
 
 
     async handleChange(event: any) {
+        this.setState({ rawValue: event.target.value });
+
         if (this.setTimeoutInterval) {
             clearInterval(this.setTimeoutInterval);
         }
@@ -82,7 +85,8 @@ class AhoraOrganizationUrlField extends React.Component<LoginFieldProps, GroupBy
 
     render() {
         return <Input
-            value={this.state.value}
+            defaultValue={this.props.value}
+            value={this.state.rawValue}
             onChange={this.handleChange.bind(this)}
             onBlur={this.onBlur.bind(this)}
             required={this.props.fieldData.required}

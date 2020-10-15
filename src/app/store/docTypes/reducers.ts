@@ -1,8 +1,11 @@
 import { DocTypesState, DocTypeActionTypes, ADD_DOCTYPE, DELETE_DOCTYPE, RECEIVE_DOCTYPES, UPDATE_DOCTYPE, REMEMBER_LAST_DOCTYPE } from './types'
-import { DocType } from 'app/services/docTypes'
+import { DocType } from 'app/services/docTypes';
+
+const lastDocType = localStorage.getItem("lastdocType");
 
 const initialState: DocTypesState = {
     docTypes: [],
+    lastDocTypeId: lastDocType ? parseInt(lastDocType) : 3,
     mapById: new Map<number, DocType>(),
     mapByCode: new Map<string, DocType>(),
     loading: false,
@@ -11,6 +14,7 @@ const initialState: DocTypesState = {
 export function docTypesReducer(state = initialState, action: DocTypeActionTypes): DocTypesState {
     switch (action.type) {
         case REMEMBER_LAST_DOCTYPE:
+            localStorage.setItem("lastdocType", action.payload.toString());
             return { ...state, lastDocTypeId: action.payload }
         case ADD_DOCTYPE:
             return { ...state, docTypes: [...state.docTypes, action.payload] }

@@ -36,9 +36,12 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
 
     async onSubmit(data: any): Promise<void> {
         const addedDoc = await addDoc(this.props.match.params.login, data);
-
-        this.props.setLastDocTypeId(data.docTypeId);
         this.props.onDocAdded(addedDoc);
+    }
+
+    async onUpdate(data: any): Promise<void> {
+        this.props.setLastDocTypeId(data.docTypeId);
+
     }
 
     onCancel() {
@@ -48,7 +51,7 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
     render() {
         return (
             <div style={{ padding: "8px" }}>
-                <AhoraForm data={this.state.form} onCancel={this.onCancel.bind(this)} onSumbit={this.onSubmit.bind(this)}>
+                <AhoraForm onUpdate={this.onUpdate.bind(this)} data={this.state.form} onCancel={this.onCancel.bind(this)} onSumbit={this.onSubmit.bind(this)}>
                     <AhoraField displayName="Subject" fieldName="subject" fieldType="text" required={true}></AhoraField>
                     <AhoraField displayName="Type" fieldName="docTypeId" fieldType="doctype" required={true}></AhoraField>
                     <AhoraField displayName="Users" fieldName="users" fieldType="users"></AhoraField>

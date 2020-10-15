@@ -21,6 +21,8 @@ import { Comment, Descriptions, Button, Space, Popconfirm } from 'antd';
 import { Dispatch } from 'redux';
 import { reduceUnReadCount } from 'app/store/organizations/actions';
 import UserDetails from 'app/components/users/UserDetails';
+import UserAvatar from 'app/components/users/UserAvatar';
+import UserAvatarList from 'app/components/users/UsersAvatarList';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -182,6 +184,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 <h1>{doc.subject}</h1>
                             </EditableHeader>
                             <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
+                            <UserAvatarList userIds={doc.watchers} />
                             <Descriptions title="Details">
                                 <Descriptions.Item label="Assignee">
                                     <SelectUser editMode={false} defaultSelected={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
@@ -207,6 +210,9 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 <Comment className="description"
                                     datetime={
                                         <Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.createdAt}></Moment>
+                                    }
+                                    avatar={
+                                        <UserAvatar userId={doc.reporterUserId}></UserAvatar>
                                     }
                                     author={
                                         <UserDetails userId={doc.reporterUserId}></UserDetails>

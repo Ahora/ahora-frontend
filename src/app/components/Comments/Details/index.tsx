@@ -10,6 +10,7 @@ import { CheckOutlined } from '@ant-design/icons';
 import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
 import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
 import UserDetails from 'app/components/users/UserDetails';
+import UserAvatar from 'app/components/users/UserAvatar';
 
 interface CommentsProps {
     comment: Comment;
@@ -105,6 +106,9 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
                     {this.state.pinned && <span className="pinned"><CheckOutlined /></span>}
                     <UserDetails userId={this.props.comment.authorUserId}></UserDetails>
                 </>
+            }
+            avatar={
+                <UserAvatar userId={this.props.comment.authorUserId}></UserAvatar>
             }
             datetime={<Moment titleFormat="YYYY-MM-DD HH:mm" withTitle fromNow format="YYYY-MM-DD HH:mm" date={this.props.comment.createdAt}></Moment>}
             actions={[

@@ -87,7 +87,7 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
                         :
                         <Menu className="navbar-menu" mode="horizontal">
                             <Space>
-                                <Button onClick={this.openAddForm.bind(this)}>Add docSource</Button>
+                                <Button onClick={this.openAddForm.bind(this)}>Add external source</Button>
                             </Space>
                         </Menu>
                     }

@@ -200,7 +200,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                         <CanAddDoc>
                                                             <Link className="add-doc-button" to={`/organizations/${this.props.match.params.login}/${this.props.match.params.section}/add`}>
                                                                 <Button className="add-button" block type="primary">
-                                                                    <PlusOutlined />Add doc</Button>
+                                                                    <PlusOutlined />Add Discussion</Button>
                                                             </Link>
                                                         </CanAddDoc>
                                                         <div className="doc-list-wrapper scrollable">

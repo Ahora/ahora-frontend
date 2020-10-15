@@ -5,13 +5,14 @@ import UserAvatar from './UserAvatar';
 
 interface UserAvatarListProps {
     userIds: number[];
+    maxCount?: number;
     hideDisplayName?: boolean;
 }
 
 export default class UserAvatarList extends React.Component<UserAvatarListProps> {
     render() {
         return <div style={{ marginTop: "5px" }}>
-            <Avatar.Group maxCount={5}>
+            <Avatar.Group maxCount={this.props.maxCount}>
                 {
                     this.props.userIds && <>{this.props.userIds.map((userId: number) => <UserAvatar key={userId} userId={userId}></UserAvatar>)}</>
                 }

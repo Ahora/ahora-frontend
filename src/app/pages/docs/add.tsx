@@ -3,7 +3,6 @@ import { RouteComponentProps } from 'react-router';
 import { addDoc, Doc } from 'app/services/docs';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
-import { Typography } from 'antd';
 import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
 import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
 import { Dispatch } from 'redux';
@@ -49,7 +48,6 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
     render() {
         return (
             <div style={{ padding: "8px" }}>
-                <Typography.Title>Add Doc</Typography.Title>
                 <AhoraForm data={this.state.form} onCancel={this.onCancel.bind(this)} onSumbit={this.onSubmit.bind(this)}>
                     <AhoraField displayName="Subject" fieldName="subject" fieldType="text" required={true}></AhoraField>
                     <AhoraField displayName="Type" fieldName="docTypeId" fieldType="doctype" required={true}></AhoraField>

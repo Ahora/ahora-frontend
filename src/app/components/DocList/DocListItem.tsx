@@ -55,7 +55,7 @@ class DocListItem extends React.Component<AllProps> {
                             </Typography.Text>
                         </div>
                         <div><LabelsList defaultSelected={doc.labels}></LabelsList></div>
-                        <div><UsersAvatarList userIds={doc.watchers}></UsersAvatarList></div>
+                        <div><UsersAvatarList maxCount={5} userIds={doc.watchers}></UsersAvatarList></div>
                     </div>
                 </div>
             </List.Item >

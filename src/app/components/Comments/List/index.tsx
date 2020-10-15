@@ -31,7 +31,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
     }
 
     commentAdded(comment: Comment): void {
-        const comments: Comment[] = [comment, ...this.state.comments];
+        const comments: Comment[] = [...this.state.comments, comment];
         this.setState({
             comments,
             qouteComment: undefined
@@ -86,7 +86,13 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
                                 })}
                             </div>
                         }
-                    </>) :
+                        {this.state.comments.length > 1 &&
+                            <div style={{ margin: "5px 0px" }}>
+                                <AddCommentComponent qouteComment={this.state.qouteComment} commentAdded={(comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.doc.id}></AddCommentComponent>
+                            </div>
+                        }
+                    </>)
+                    :
                     (<AhoraSpinner />)
                 }
             </div>

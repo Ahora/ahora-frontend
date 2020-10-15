@@ -126,7 +126,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
             const docId: number = parseInt(this.props.match.params.docId);
             if (!isNaN(docId) && this.state.docs) {
-                const currentDoc: Doc | undefined = this.state.docs.find((doc) => doc.id === docId && doc.reporter);
+                const currentDoc: Doc | undefined = this.state.docs.find((doc) => doc.id === docId && doc.reporterUserId);
                 this.setState({
                     currentDoc,
                     currentDocId: isNaN(docId) ? undefined : docId

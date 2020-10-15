@@ -10,10 +10,6 @@ export interface Comment {
     pinned: boolean;
     authorUserId: number;
     parentId?: number;
-    author: {
-        username: string;
-        displayName?: string;
-    }
 }
 
 

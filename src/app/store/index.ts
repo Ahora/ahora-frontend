@@ -9,6 +9,7 @@ import unreadSaga from "./organizations/sagas";
 import statusesSaga from "./statuses/sagas";
 import milestoneSaga from "./milestones/sagas";
 import docTypeSaga from "./docTypes/sagas";
+import usersSaga from "./users/sagas";
 import currentUserSaga from "./currentuser/sagas";
 import { StatusesState } from './statuses/types';
 import { CurrentUserState } from './currentuser/types';
@@ -16,12 +17,14 @@ import { createBrowserHistory } from 'history';
 import { OrganizationsState } from './organizations/types';
 import { DocTypesState } from './docTypes/types';
 import { MilestonesState } from './milestones/types';
+import { UsersState } from './users/types';
 
 // The top-level state object
 export interface ApplicationState {
     labels: LabelsState,
     statuses: StatusesState,
     currentUser: CurrentUserState,
+    users: UsersState,
     organizations: OrganizationsState,
     milestones: MilestonesState,
     docTypes: DocTypesState
@@ -46,3 +49,4 @@ sagaMiddleware.run(docTypeSaga);
 sagaMiddleware.run(statusesSaga);
 sagaMiddleware.run(milestoneSaga);
 sagaMiddleware.run(currentUserSaga);
+sagaMiddleware.run(usersSaga);

@@ -75,6 +75,7 @@
     "postcss-url": "^8.0.0",
     "prettier": "^1.18.2",
     "prop-types": "^15.0.0",
+    "pusher-js": "^7.0.0",
     "query-string": "^6.12.1",
     "react": "^16.9.0",
     "react-addons-update": "^15.6.2",

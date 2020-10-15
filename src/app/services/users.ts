@@ -1,11 +1,10 @@
 
 import { RestCollectorClient } from "rest-collector";
-import * as fetch from 'isomorphic-fetch';
 
 export interface UserItem {
     username: string;
     displayName?: string;
-    id?: number
+    id: number
 }
 
 export interface User {
@@ -15,20 +14,6 @@ export interface User {
     email: string;
 }
 
-const SEARCH_URI = 'https://api.github.com/search/users';
-
-export function makeAndHandleRequest(query: string, page = 1) {
-    return fetch(`${SEARCH_URI}?q=${query}+in:login&page=${page}&per_page=50`)
-        .then((resp: any) => resp.json())
-        .then((data: any) => { /* eslint-disable-line camelcase */
-            const options = data.items.map((i: any) => ({
-                avatar_url: i.avatar_url,
-                id: i.id,
-                username: i.login,
-            }));
-            return { options, total_count: data.total_count };
-        });
-}
 const currentUserClient: RestCollectorClient = new RestCollectorClient("/api/me");
 const userClient: RestCollectorClient = new RestCollectorClient("/api/users/{id}");
 export const getCurrentUser = async (): Promise<User | undefined> => {
@@ -36,6 +21,14 @@ export const getCurrentUser = async (): Promise<User | undefined> => {
     return result.data;
 }
 
+export const getUserById = async (id: number): Promise<UserItem> => {
+    const result = await userClient.get({
+        params: {
+            id
+        }
+    });
+    return result.data;
+}
 
 export const searchUsers = async (q: string): Promise<UserItem[]> => {
     const result = await userClient.get({

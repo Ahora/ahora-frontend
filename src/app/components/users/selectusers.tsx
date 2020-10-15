@@ -4,12 +4,21 @@ import { Select } from "antd";
 import AhoraSpinner from "../Forms/Basics/Spinner";
 import UserDetails from "./UserDetails";
 import { debounce } from "lodash";
+import { connect } from "react-redux";
+import { addUsersToState } from "app/store/users/actions";
+import { Dispatch } from 'redux';
 
-interface SelectUserProps {
+interface DispatchProps {
+    addUsersToStore(users: UserItem[]): void;
+}
+
+interface SelectUserProps extends DispatchProps {
     onSelect(user: UserItem): void;
-    defaultSelected?: UserItem[]
+    defaultSelected?: number,
     editMode?: boolean;
 }
+
+
 interface State {
     isLoading: boolean,
     options: UserItem[],
@@ -17,7 +26,7 @@ interface State {
     editMode: boolean;
 }
 
-export default class SelectUser extends React.Component<SelectUserProps, State> {
+class SelectUser extends React.Component<SelectUserProps, State> {
 
     constructor(props: SelectUserProps) {
         super(props);
@@ -57,6 +66,7 @@ export default class SelectUser extends React.Component<SelectUserProps, State> 
                 <Select
                     showSearch={true}
                     labelInValue
+                    style={{ minWidth: "300px" }}
                     placeholder="Select users"
                     notFoundContent={this.state.isLoading ? <AhoraSpinner /> : null}
                     filterOption={false}
@@ -70,8 +80,8 @@ export default class SelectUser extends React.Component<SelectUserProps, State> 
             );
         }
         else {
-            if (this.props.defaultSelected && this.props.defaultSelected.length > 0) {
-                return (<span onClick={this.onStartEdit.bind(this)}>{this.props.defaultSelected[0].displayName} ({this.props.defaultSelected[0].username})</span>)
+            if (this.props.defaultSelected && this.props.defaultSelected) {
+                return (<span onClick={this.onStartEdit.bind(this)}><UserDetails userId={this.props.defaultSelected}></UserDetails></span>)
             }
             else {
                 return (<span onClick={this.onStartEdit.bind(this)}>Unassigned</span>)
@@ -87,9 +97,18 @@ export default class SelectUser extends React.Component<SelectUserProps, State> 
         this.setState({ isLoading: true });
 
         const users = await searchUsers(query);
+        this.props.addUsersToStore(users);
         this.setState({
             isLoading: false,
             options: users,
         });
     }
 }
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+    return {
+        addUsersToStore: (users: UserItem[]) => dispatch(addUsersToState(users))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(SelectUser as any); 

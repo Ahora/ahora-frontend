@@ -42,9 +42,7 @@ export default class AhoraOrganizationAutoCompleteField extends React.Component<
     }
 
     onChange(orName: any) {
-        const org = this.resultMap.get(orName.value);
-        console.log(orName);
-        this.props.onChange({
+        const org = this.resultMap.get(orName.value); this.props.onChange({
             login: org.login,
             isOrg: (org.type === "Organization")
         });

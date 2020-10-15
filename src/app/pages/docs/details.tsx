@@ -20,6 +20,7 @@ import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import { Comment, Descriptions, Button, Space, Popconfirm } from 'antd';
 import { Dispatch } from 'redux';
 import { reduceUnReadCount } from 'app/store/organizations/actions';
+import UserDetails from 'app/components/users/UserDetails';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -183,7 +184,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                             <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
                             <Descriptions title="Details">
                                 <Descriptions.Item label="Assignee">
-                                    <SelectUser editMode={false} defaultSelected={doc.assignee && [doc.assignee]} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
+                                    <SelectUser editMode={false} defaultSelected={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
                                 </Descriptions.Item>
                                 {docType && <Descriptions.Item label="Type"><>{docType.name}</></Descriptions.Item>}
                                 {doc.closedAt && <Descriptions.Item label="Closed At"><Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.closedAt}></Moment></Descriptions.Item>}
@@ -208,7 +209,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                         <Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.createdAt}></Moment>
                                     }
                                     author={
-                                        <>{doc.reporter.displayName} ({doc.reporter.username})</>
+                                        <UserDetails userId={doc.reporterUserId}></UserDetails>
                                     }
                                     content={
                                         <p className="markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>

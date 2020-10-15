@@ -13,6 +13,7 @@ import DocsDateTimeGraph from "app/components/Dashboards/Gadgets/DateTimeChart/g
 import AhoraTextAreaField from "app/components/Forms/Fields/AhoraTextAreaField";
 import AhoraOrganizationUrlField from "app/components/Forms/Fields/AhoraOrganizationUrlField";
 import AhoraUserField from "app/components/Forms/Fields/AhoraUserField";
+import AhoraUsersField from "app/components/Forms/Fields/AhoraUsersField";
 import AhoraEnumField from "app/components/Forms/Fields/AhoraEnumField";
 import AhoraDocTypeField from "app/components/Forms/Fields/AhoraDocTypeField";
 import AhoraLabelsField from "app/components/Forms/Fields/AhoraLabelsField";
@@ -59,6 +60,7 @@ sdkInstance.formComponents.register("doctype", AhoraDocTypeField);
 sdkInstance.formComponents.register("labels", AhoraLabelsField);
 sdkInstance.formComponents.register("docsgroup", AhoraGroupDocField);
 sdkInstance.formComponents.register("markdown", AhoraMarkdownField);
+sdkInstance.formComponents.register("users", AhoraUsersField);
 
 sdkInstance.dashboardGadgets.registerGadget("AhoraBarsPie", {
     title: "Pie or Bars Chart",

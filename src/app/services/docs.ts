@@ -35,8 +35,6 @@ export interface Doc {
     htmlDescription: string;
     statusId: number;
     milestoneId?: number;
-    assignee?: UserItem
-    reporter: UserItem,
     milestone?: {
         title: string;
     }

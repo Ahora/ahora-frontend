@@ -38,6 +38,7 @@ export interface Doc {
     milestone?: {
         title: string;
     }
+    watchers: number[],
     lastView: null | {
         updatedAt: Date
     }

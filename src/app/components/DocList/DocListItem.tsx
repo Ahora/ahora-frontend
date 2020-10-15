@@ -9,9 +9,9 @@ import { DocType } from 'app/services/docTypes';
 import LabelsList from 'app/components/Labels/LabelList';
 import { Organization } from 'app/services/organizations';
 import { List, Typography, Tag } from 'antd';
-import UserDetails from '../users/UserDetails';
 
 import './style.scss';
+import UsersAvatarList from '../users/UsersAvatarList';
 
 interface injectedParams {
     statuses: Map<number, Status>;
@@ -49,8 +49,13 @@ class DocListItem extends React.Component<AllProps> {
                         </div>
                     </div>
                     <div>
-                        <div className="title"><Typography.Text strong={!isViewed}><Link to={`/organizations/${this.props.currentOrganization!.login}/${this.props.section || "docs"}/${doc.id}`}>{doc.subject}</Link> | {(doc.reporterUserId) && <UserDetails hideDisplayName={true} userId={doc.reporterUserId}></UserDetails>}</Typography.Text></div>
+                        <div className="title">
+                            <Typography.Text strong={!isViewed}>
+                                <Link to={`/organizations/${this.props.currentOrganization!.login}/${this.props.section || "docs"}/${doc.id}`}>{doc.subject}</Link>
+                            </Typography.Text>
+                        </div>
                         <div><LabelsList defaultSelected={doc.labels}></LabelsList></div>
+                        <div><UsersAvatarList userIds={doc.watchers}></UsersAvatarList></div>
                     </div>
                 </div>
             </List.Item >

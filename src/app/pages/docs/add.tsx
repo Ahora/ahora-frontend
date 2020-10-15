@@ -39,9 +39,8 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
         this.props.onDocAdded(addedDoc);
     }
 
-    async onUpdate(data: any): Promise<void> {
+    onUpdate(data: any): void {
         this.props.setLastDocTypeId(data.docTypeId);
-
     }
 
     onCancel() {

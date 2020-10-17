@@ -4,6 +4,8 @@ import { AhoraFormStateField, AhoraFormField } from './data';
 import { Form, Button, Space } from 'antd';
 import AhoraSpinner from '../Basics/Spinner';
 
+export declare type FormLayout = 'horizontal' | 'inline' | 'vertical';
+
 interface AhoraFormState {
     form: any;
     error?: any;
@@ -13,8 +15,10 @@ interface AhoraFormState {
 
 interface AhoraFormProps {
     data?: any;
-    submitButtonText?: string;
+    layout?: FormLayout;
+    submitButtonText?: string | React.ReactNode;
     fields?: AhoraFormField[];
+    hideButtons?: boolean;
     showError?: (error: any) => React.ReactNode;
     onUpdate?: (data: any) => void | any;
     onSumbit: (data: any) => Promise<void>;
@@ -89,7 +93,7 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
 
     render() {
         return (
-            <Form onValuesChange={this.onValuesChange.bind(this)} layout="vertical" initialValues={this.props.data} onFinish={this.onSubmit.bind(this)}>
+            <Form onValuesChange={this.onValuesChange.bind(this)} layout={this.props.layout || "vertical"} initialValues={this.props.data} onFinish={this.onSubmit.bind(this)}>
                 {this.state.fields.map((field) => {
                     const Element = field.instance;
                     return <Form.Item key={field.fieldName} name={field.fieldName} rules={[{ required: field.required, message: `${field.displayName} is required` }]} label={field.displayName}>
@@ -97,15 +101,18 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
                     </Form.Item>
                 })}
                 {this.state.error && <div>{this.props.showError ? this.props.showError(this.state.error) : <>Unexpected Error</>}</div>}
-                <Space>
-                    <Button disabled={this.state.isSubmitting} htmlType="submit" type="primary">
-                        {
-                            this.state.isSubmitting ?
-                                <AhoraSpinner /> : <>{this.props.submitButtonText || "Send"}</>
-                        }
-                    </Button>
-                    {this.props.onCancel && <Button danger onClick={this.cancel.bind(this)}>Cancel</Button>}
-                </Space>
+                {
+                    this.props.hideButtons !== true &&
+                    <Space>
+                        <Button disabled={this.state.isSubmitting} htmlType="submit" type="primary">
+                            {
+                                this.state.isSubmitting ?
+                                    <AhoraSpinner /> : <>{this.props.submitButtonText || "Send"}</>
+                            }
+                        </Button>
+                        {this.props.onCancel && <Button danger onClick={this.cancel.bind(this)}>Cancel</Button>}
+                    </Space>
+                }
 
             </Form>
         );

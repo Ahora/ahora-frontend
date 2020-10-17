@@ -17,7 +17,7 @@ import LabelsList from 'app/components/Labels/LabelList';
 import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
-import { Comment, Descriptions, Button, Space, Popconfirm } from 'antd';
+import { Comment, Descriptions, Space, Popconfirm } from 'antd';
 import { Dispatch } from 'redux';
 import { reduceUnReadCount } from 'app/store/organizations/actions';
 import UserDetails from 'app/components/users/UserDetails';
@@ -185,7 +185,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                             </EditableHeader>
                             <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
                             <UserAvatarList userIds={doc.watchers} />
-                            <Descriptions title="Details">
+                            <Descriptions>
                                 <Descriptions.Item label="Assignee">
                                     <SelectUser editMode={false} defaultSelected={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
                                 </Descriptions.Item>
@@ -211,6 +211,13 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                     datetime={
                                         <Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.createdAt}></Moment>
                                     }
+                                    actions={
+                                        canEdit ? [
+                                            <Popconfirm onConfirm={this.delete.bind(this)} title="Are you sure?">
+                                                <span>Delete discussion</span>
+                                            </Popconfirm>
+                                        ] : undefined
+                                    }
                                     avatar={
                                         <UserAvatar userId={doc.reporterUserId}></UserAvatar>
                                     }
@@ -224,10 +231,6 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 </Comment>
                             </EditableMarkDown>
                             <CommentListComponent doc={doc} login={this.props.match.params.login}></CommentListComponent>
-                            {canEdit &&
-                                <Popconfirm onConfirm={this.delete.bind(this)} title="Are you sure?">
-                                    <Button danger>Delete Doc</Button>
-                                </Popconfirm>}
                         </div>
                     </>
                     : <AhoraSpinner />

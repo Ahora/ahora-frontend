@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { addComment, Comment } from 'app/services/comments';
-import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
-import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
+import { SendOutlined } from '@ant-design/icons';
+import AhoraMarkdownField from 'app/components/Forms/Fields/AhoraMarkdownField';
+import { Button } from 'antd';
+import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 require("./style.scss")
-
 
 interface CommentsProps {
     docId: number;
@@ -14,20 +15,22 @@ interface CommentsProps {
 
 interface State {
     comment?: string;
-    editMode: boolean;
+    rawComment?: string;
     submittingComment: boolean;
 }
 
 export class AddCommentComponent extends React.Component<CommentsProps, State> {
+    private markdownRef: React.RefObject<AhoraMarkdownField>;
 
     constructor(props: CommentsProps) {
         super(props);
 
         this.state = {
             comment: "",
-            submittingComment: false,
-            editMode: false
+            submittingComment: false
         }
+
+        this.markdownRef = React.createRef();
     }
 
     componentDidUpdate(prevProps: CommentsProps) {
@@ -39,58 +42,47 @@ export class AddCommentComponent extends React.Component<CommentsProps, State> {
 
             this.setState({
                 comment: commentRows.join("\n") + "\n\n",
-                editMode: true
             });
         }
     }
 
-    discard() {
-        this.setState({
-            editMode: false
-        });
-    }
-
-    async post(data: any): Promise<void> {
-        if (data.comment) {
+    async post(): Promise<void> {
+        if (this.state.rawComment) {
             this.setState({
                 submittingComment: true
             });
-            const newComment: Comment = await addComment(this.props.login, this.props.docId, data.comment, this.props.qouteComment && this.props.qouteComment.id);
+            if (this.markdownRef.current) {
+                this.markdownRef.current.focus();
+            }
+            const newComment: Comment = await addComment(this.props.login, this.props.docId, this.state.rawComment, this.props.qouteComment && this.props.qouteComment.id);
             this.setState({
-                comment: undefined,
+                comment: "",
+                rawComment: "",
                 submittingComment: false,
-                editMode: false
             });
-            this.props.commentAdded(newComment)
+            this.props.commentAdded(newComment);
         }
     }
 
     handleChange(text: string) {
         this.setState({
-            comment: text
+            rawComment: text
         });
     }
-
-    editMode() {
-        this.setState({
-            editMode: true
-        });
-    }
-
 
     render() {
         return (
-            <div className="mt-2">
-                {
-                    this.state.editMode ?
-                        <>
-                            <AhoraForm submitButtonText="Post" data={{ comment: this.state.comment }} onCancel={this.discard.bind(this)} onSumbit={this.post.bind(this)}>
-                                <AhoraField fieldType="markdown" fieldName="comment" displayName=""></AhoraField>
-                            </AhoraForm>
-                        </> :
-                        <div className="AddCommentPlaceHolder" onClick={this.editMode.bind(this)}>Add a comment</div>
-                }
-            </div>
+            <>
+                <div className="add-comment-space"></div>
+                <div className="mt-2 add-comment-container">
+                    <AhoraMarkdownField ref={this.markdownRef} autoFocus={true} onChange={this.handleChange.bind(this)} value={this.state.rawComment} fieldData={{ displayName: "", fieldName: "comment", fieldType: "markdown" }}></AhoraMarkdownField>
+                    <div className="buttons">
+                        <Button onClick={this.post.bind(this)} size="small" disabled={this.state.rawComment === undefined || this.state.rawComment.length === 0} type="primary">
+                            {this.state.submittingComment ? <AhoraSpinner /> : <SendOutlined />}
+                        </Button>
+                    </div>
+                </div>
+            </>
         );
     }
 }

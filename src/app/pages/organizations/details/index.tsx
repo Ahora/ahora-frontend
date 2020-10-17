@@ -70,8 +70,6 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
   }
 
   async componentDidMount() {
-
-
     const organization = await getOrganizationByLogin(this.props.match.params.login);
 
     if (organization) {

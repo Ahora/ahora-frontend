@@ -4,6 +4,7 @@ import { CommentDetailsComponent } from '../Details';
 import { AddCommentComponent } from 'app/components/Comments/AddComment';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import { Doc } from 'app/services/docs';
+import pusher from "app/services/pusher";
 
 interface CommentsProps {
     doc: Doc;
@@ -14,6 +15,7 @@ interface State {
     comments?: Comment[];
     pinnedComments?: Comment[];
     qouteComment?: Comment;
+    focusId?: number;
 }
 
 export class CommentListComponent extends React.Component<CommentsProps, State> {
@@ -34,6 +36,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
         const comments: Comment[] = [...this.state.comments, comment];
         this.setState({
             comments,
+            focusId: comment.id,
             qouteComment: undefined
         });
     }
@@ -59,6 +62,27 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
             comments,
             pinnedComments: comments.filter(comment => comment.pinned)
         });
+
+        var channel = pusher.subscribe('my-channel');
+        channel.bind('comment-post', (comment: Comment) => {
+            if (comment.docId === this.props.doc.id) {
+                this.commentAdded(comment);
+            }
+        });
+
+        channel.bind('comment-put', (comment: Comment) => {
+            if (this.state.comments && comment.docId === this.props.doc.id) {
+                this.setState({
+                    comments: this.state.comments.map((currentComment) => currentComment.id === comment.id ? comment : currentComment)
+                });
+            }
+        });
+
+        channel.bind('comment-delete', (comment: Comment) => {
+            if (comment.docId === this.props.doc.id) {
+                this.onDeleteComment(comment.id);
+            }
+        });
     }
 
     render() {
@@ -68,33 +92,27 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
                     (<>
                         <div className="list">
                             {this.state.pinnedComments.map((comment: Comment) => {
-                                return (<CommentDetailsComponent onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} key={comment.id} comment={comment}></CommentDetailsComponent>);
+                                return (<CommentDetailsComponent focus={false} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} key={comment.id} comment={comment}></CommentDetailsComponent>);
                             })}
                         </div>
                     </>)
                 }
-                <div style={{ margin: "5px 0px" }}>
-                    <AddCommentComponent qouteComment={this.state.qouteComment} commentAdded={(comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.doc.id}></AddCommentComponent>
-                </div>
+
 
                 {this.state.comments ?
                     (<>
                         {this.state.comments.length > 0 &&
                             <div className="list">
                                 {this.state.comments.map((comment: Comment) => {
-                                    return (<CommentDetailsComponent onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} key={comment.id} comment={comment}></CommentDetailsComponent>);
+                                    return (<CommentDetailsComponent focus={comment.id === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} key={`${comment.id}-${comment.updatedAt}`} comment={comment}></CommentDetailsComponent>);
                                 })}
-                            </div>
-                        }
-                        {this.state.comments.length > 1 &&
-                            <div style={{ margin: "5px 0px" }}>
-                                <AddCommentComponent qouteComment={this.state.qouteComment} commentAdded={(comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.doc.id}></AddCommentComponent>
                             </div>
                         }
                     </>)
                     :
                     (<AhoraSpinner />)
                 }
+                <AddCommentComponent qouteComment={this.state.qouteComment} commentAdded={(comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.doc.id}></AddCommentComponent>
             </div>
         );
     }

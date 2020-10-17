@@ -49,3 +49,11 @@ Header * {
 .navbar-menu {
     margin:  0px 10px;
 }
+
+.markdown-body {
+    font-size: 14px;
+}
+
+textarea:focus, input:focus{
+    outline: none;
+}

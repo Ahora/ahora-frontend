@@ -16,6 +16,7 @@ interface CommentsProps {
     comment: Comment;
     login: string;
     doc: Doc;
+    focus: boolean;
     onDelete(id: number): void;
     onQoute(comment: Comment): void;
 }
@@ -29,6 +30,9 @@ interface State {
 }
 
 export class CommentDetailsComponent extends React.Component<CommentsProps, State> {
+
+    private containerRef: React.RefObject<HTMLDivElement>;
+
     constructor(props: CommentsProps) {
         super(props);
         this.state = {
@@ -36,6 +40,17 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
             comment: this.props.comment,
             editMode: false,
             submittingComment: false
+        }
+        this.containerRef = React.createRef();
+    }
+
+    componentDidMount() {
+        if (this.props.focus && this.containerRef.current) {
+            this.containerRef.current.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+                inline: "nearest"
+            });
         }
     }
 
@@ -100,37 +115,42 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
     }
 
     render() {
-        return <CommentComponent className="comment"
-            author={
-                <>
-                    {this.state.pinned && <span className="pinned"><CheckOutlined /></span>}
-                    <UserDetails userId={this.props.comment.authorUserId}></UserDetails>
-                </>
-            }
-            avatar={
-                <UserAvatar userId={this.props.comment.authorUserId}></UserAvatar>
-            }
-            datetime={<Moment titleFormat="YYYY-MM-DD HH:mm" withTitle fromNow format="YYYY-MM-DD HH:mm" date={this.props.comment.createdAt}></Moment>}
-            actions={[
-                <span key="comment-basic-reply-to" onClick={this.props.onQoute.bind(this, this.props.comment)}>Quote</span>,
-                <CanEditOrDeleteComment comment={this.props.comment}>
-                    <span onClick={this.editMode.bind(this)}>Edit</span>
-                    <span onClick={this.deleteCommentHandle.bind(this)}>Delete</span>
-                </CanEditOrDeleteComment>,
-                <CanPinComment doc={this.props.doc} comment={this.props.comment}>
-                    <span onClick={this.pinToggle.bind(this)}>{this.state.pinned ? "Unpin" : "Pin"}</span>
-                </CanPinComment>
-            ]}
-            content={
-                this.state.editMode ?
-                    <AhoraForm submitButtonText="Update" data={{ comment: this.state.comment.comment }} onCancel={this.discard.bind(this)} onSumbit={this.post.bind(this)}>
-                        <AhoraField fieldType="markdown" fieldName="comment" displayName=""></AhoraField>
-                    </AhoraForm>
-                    :
-                    <p className="markdown-body" dangerouslySetInnerHTML={{ __html: this.state.comment.htmlComment }}></p>
-            }>
+        return <div ref={this.containerRef} >
+            <CommentComponent className="comment"
+                author={
+                    <>
+                        <UserDetails userId={this.props.comment.authorUserId}></UserDetails>
+                    </>
+                }
 
-        </CommentComponent>;
+                avatar={
+                    <>
+                        {this.state.pinned && <span className="pinned"><CheckOutlined /></span>}
+                        <UserAvatar userId={this.props.comment.authorUserId}></UserAvatar>
+                    </>
+                }
+                datetime={<Moment titleFormat="YYYY-MM-DD HH:mm" withTitle fromNow format="YYYY-MM-DD HH:mm" date={this.props.comment.createdAt}></Moment>}
+                actions={[
+                    <span key="comment-basic-reply-to" onClick={this.props.onQoute.bind(this, this.props.comment)}>Quote</span>,
+                    <CanEditOrDeleteComment comment={this.props.comment}>
+                        <span onClick={this.editMode.bind(this)}>Edit</span>
+                        <span onClick={this.deleteCommentHandle.bind(this)}>Delete</span>
+                    </CanEditOrDeleteComment>,
+                    <CanPinComment doc={this.props.doc} comment={this.props.comment}>
+                        <span onClick={this.pinToggle.bind(this)}>{this.state.pinned ? "Unpin" : "Pin"}</span>
+                    </CanPinComment>
+                ]}
+                content={
+                    this.state.editMode ?
+                        <AhoraForm submitButtonText="Update" data={{ comment: this.state.comment.comment }} onCancel={this.discard.bind(this)} onSumbit={this.post.bind(this)}>
+                            <AhoraField fieldType="markdown" fieldName="comment" displayName=""></AhoraField>
+                        </AhoraForm>
+                        :
+                        <p className="markdown-body" dangerouslySetInnerHTML={{ __html: this.state.comment.htmlComment }}></p>
+                }>
+
+            </CommentComponent>
+        </div>;
     }
 
 }

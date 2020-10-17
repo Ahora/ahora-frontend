@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RouteComponentProps, Switch, Route } from "react-router";
+import { RouteComponentProps, Switch, Route, Redirect } from "react-router";
 import { Organization, getOrganizationByLogin } from "../../../services/organizations";
 import DocsPage from "app/pages/docs";
 import DashboardDetailsPage from "app/pages/dashboards/details";
@@ -105,9 +105,11 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
               selectedKeys={[this.props.match.params.section || "dashboards"]}
               style={{ height: '100%' }}
             >
-              <Menu.Item icon={<><InboxOutlined /></>} key="inbox">
-                <Link to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.unReadCount}>Inbox</Badge></Link>
-              </Menu.Item>
+              {this.props.currentUser &&
+                <Menu.Item icon={<><InboxOutlined /></>} key="inbox">
+                  <Link to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.unReadCount}>Inbox</Badge></Link>
+                </Menu.Item>
+              }
               <Menu.Item icon={<PieChartOutlined />} key="dashboards"><Link to={`/organizations/${organization.login}/dashboards`}>Dashboards</Link></Menu.Item>
               <Menu.Item icon={<UnorderedListOutlined />} key="docs"><Link to={`/organizations/${organization.login}/docs`}>Browse</Link></Menu.Item>
               <Menu.Item icon={<TeamOutlined />} key="teams"><Link to={`/organizations/${organization.login}/teams`}>Teams</Link></Menu.Item>
@@ -126,7 +128,16 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
                 <Route path={`/organizations/:login/notifications`} component={NotificationsPage} />
                 <Route path={`/organizations/:login/milestones`} component={MilestonesPage} />
                 <Route path={`/organizations/:login/teams`} component={OrganizationTeamRootPage} />
-                <Route path={`/organizations/:login/:section(docs|inbox)/:docId?`} component={DocsPage} />
+                {this.props.currentUser ?
+                  <Route path={`/organizations/:login/:section(docs|inbox)/:docId?`} component={DocsPage} />
+                  :
+                  <>
+                    <Route path={`/organizations/:login/:section(docs)/:docId?`} component={DocsPage} />
+                    <Route path={`/organizations/:login/:section(inbox)/:docId?`} >
+                      <Redirect to={`/organizations/${this.props.match.params.login}/docs`} />
+                    </Route>
+                  </>
+                }
                 <Route path={`/organizations/:login`} component={DashboardsPage}>
                 </Route>
               </Switch>

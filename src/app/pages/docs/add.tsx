@@ -53,7 +53,6 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
                 <AhoraForm onUpdate={this.onUpdate.bind(this)} data={this.state.form} onCancel={this.onCancel.bind(this)} onSumbit={this.onSubmit.bind(this)}>
                     <AhoraField displayName="Subject" fieldName="subject" fieldType="text" required={true}></AhoraField>
                     <AhoraField displayName="Type" fieldName="docTypeId" fieldType="doctype" required={true}></AhoraField>
-                    <AhoraField displayName="Users" fieldName="users" fieldType="users"></AhoraField>
                     <AhoraField displayName="Labels" fieldName="labels" fieldType="labels"></AhoraField>
                     <AhoraField displayName="Description" fieldName="description" fieldType="markdown"></AhoraField>
                 </AhoraForm>

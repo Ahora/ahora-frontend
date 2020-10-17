@@ -2,9 +2,8 @@ import * as React from 'react';
 import { Doc, getDocs, SearchDocResult } from 'app/services/docs';
 import { SearchCriterias } from 'app/components/SearchDocsInput';
 import AhoraSpinner from '../Forms/Basics/Spinner';
-import UltimatePagination from '../Paginations';
 import DocListItem from './DocListItem';
-import { List } from 'antd';
+import { List, Pagination } from 'antd';
 
 interface DocsPageState {
     docs: Doc[] | null;
@@ -100,14 +99,13 @@ class DocList extends React.Component<DocListProps, DocsPageState> {
                                 renderItem={doc => <DocListItem section={this.props.section} isActive={doc.id === this.props.activeDocId} doc={doc}></DocListItem>}></List>
                             :
                             <> {this.props.children}</>}
-
-                        {this.state.totalPages > 1 &&
-                            <UltimatePagination onChange={this.onChange.bind(this)} currentPage={this.state.page} totalPages={this.state.totalPages}></UltimatePagination>
-                        }
                     </> :
                     (
                         <AhoraSpinner />
                     )
+                }
+                {this.state.totalPages > 1 &&
+                    <Pagination onChange={this.onChange.bind(this)} defaultCurrent={this.state.page} total={this.state.totalPages} />
                 }
             </div>
         );

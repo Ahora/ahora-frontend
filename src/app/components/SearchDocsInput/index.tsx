@@ -8,7 +8,6 @@ import { searchTeams } from 'app/services/organizationTeams';
 const autoCompleteOptions: Map<string, (text: string) => Promise<string[]>> = new Map();
 
 const usersSearch = async (text: string): Promise<string[]> => {
-
     if (text && text.length > 1) {
         const users = await searchUsers(text);
         return users.map((user) => user.username);

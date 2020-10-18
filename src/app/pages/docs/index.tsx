@@ -64,17 +64,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         this.state = {
         }
     }
-
-    printTextOfQuery(field: string, val: string | string[]): string {
-        if (typeof (val) === "string") {
-            return `${field}:${val}`;
-        }
-        else {
-            return val.map((itemVal) => `${field}:${itemVal}`).join(" ");
-
-        }
-    }
-
     setSearchCriterias() {
         if (this.props.location.search.length > 0) {
             const parsedUrl: ParsedUrl = parseUrl(this.props.location.search);

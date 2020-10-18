@@ -10,10 +10,10 @@ import { setCurrentOrganization, setSearchCriteria, requestUnReadNumber } from "
 import { connect } from "react-redux";
 import { ApplicationState } from "app/store";
 import { Link } from "react-router-dom";
-import { DocType } from "app/services/docTypes";
 import { requestDocTypesData } from "app/store/docTypes/actions";
 import OrganizationTeamRootPage from "app/pages/teams/root";
 import DashboardsPage from "app/pages/dashboards";
+import AddShortcutPage from "app/pages/shortcuts/add";
 import { User } from "app/services/users";
 import { requestCurrentUserData } from "app/store/currentuser/actions";
 import AhoraSpinner from "app/components/Forms/Basics/Spinner";
@@ -21,17 +21,21 @@ import { OrganizationTeamUser } from "app/services/organizationTeams";
 import { canManageOrganization } from "app/services/authentication";
 import NotificationsPage from "app/pages/notifications";
 import MilestonesPage from "app/pages/milestones";
+import ShortcutsPage from "app/pages/shortcuts";
 import { requestMilestonesData } from "app/store/milestones/actions";
 import { requestLabelsData } from "app/store/labels/actions";
 import { requestStatusesData } from "app/store/statuses/actions";
 import OrganizationNew from "./new";
 import { SearchCriterias } from "app/components/SearchDocsInput";
 import { Layout, Menu, Badge } from 'antd';
-import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined, InboxOutlined } from '@ant-design/icons';
-
+import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined, InboxOutlined, PlusCircleOutlined, MessageOutlined, StarFilled } from '@ant-design/icons';
+import { requestShortcutsData } from "app/store/shortcuts/actions";
+import { OrganizationShortcut } from "app/services/OrganizationShortcut";
+import SubMenu from "antd/lib/menu/SubMenu";
+require("./style.scss")
 
 interface OrganizationDetailsPageProps {
-  docTypes?: DocType[];
+  shortcuts?: OrganizationShortcut[];
   currentOrgPermission?: OrganizationTeamUser;
   currentUser?: User | undefined;
   unReadCount?: number;
@@ -53,6 +57,7 @@ interface DispatchProps {
   requestDocTypes(): void;
   requestLabels(): void;
   requestUnread(): void;
+  requestShortcuts(): void;
   requestStatuses(): void;
   requestMilestones(): void;
   requestCurrentUser(): void;
@@ -83,6 +88,7 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
     this.props.requestDocTypes();
     this.props.requestMilestones();
     this.props.requestLabels();
+    this.props.requestShortcuts();
     this.props.requestStatuses();
     this.props.requestCurrentUser();
   }
@@ -101,14 +107,36 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
           <Sider theme="dark" breakpoint="sm" collapsedWidth="0" collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
             <Menu
               theme="dark"
-              mode="vertical"
+              mode="inline"
+              defaultOpenKeys={["shortcuts"]}
               selectedKeys={[this.props.match.params.section || "dashboards"]}
               style={{ height: '100%' }}
             >
               {this.props.currentUser &&
-                <Menu.Item icon={<><InboxOutlined /></>} key="inbox">
-                  <Link to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.unReadCount}>Inbox</Badge></Link>
-                </Menu.Item>
+                <>
+                  <Menu.Item icon={<InboxOutlined />} key="inbox">
+                    <Link to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.unReadCount}>Inbox</Badge></Link>
+                  </Menu.Item>
+
+                  <SubMenu key="shortcuts" className="shortcuts" icon={<MessageOutlined />} title={<span>
+                    <Link to={`/organizations/${organization.login}/shortcuts`}>Shortcuts</Link>
+                    <Link className="ant-menu-submenu-plus" to={`/organizations/${organization.login}/shortcuts/add`}>
+                      <PlusCircleOutlined />
+                    </Link></span>
+                  }>
+                    {this.props.shortcuts ?
+                      <>
+                        {this.props.shortcuts.map((shortcut) => <Menu.Item icon={shortcut.star && <StarFilled />} key={shortcut.id}>{shortcut.title}</Menu.Item>)}
+                        <Menu.Item key="shortcuts">
+                          <Link to={`/organizations/${organization.login}/shortcuts`}>Manage</Link>
+                        </Menu.Item>
+                      </>
+
+                      :
+                      <Menu.Item key="loader"><AhoraSpinner /></Menu.Item>
+                    }
+                  </SubMenu>
+                </>
               }
               <Menu.Item icon={<PieChartOutlined />} key="dashboards"><Link to={`/organizations/${organization.login}/dashboards`}>Dashboards</Link></Menu.Item>
               <Menu.Item icon={<UnorderedListOutlined />} key="docs"><Link to={`/organizations/${organization.login}/docs`}>Browse</Link></Menu.Item>
@@ -126,6 +154,8 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
                 <Route path={`/organizations/:login/dashboards/:id`} component={DashboardDetailsPage} />
                 <Route path={`/organizations/:login/dashboards`} component={DashboardsPage} />
                 <Route path={`/organizations/:login/notifications`} component={NotificationsPage} />
+                <Route path={`/organizations/:login/shortcuts/add`} component={AddShortcutPage} />
+                <Route path={`/organizations/:login/shortcuts`} component={ShortcutsPage} />
                 <Route path={`/organizations/:login/milestones`} component={MilestonesPage} />
                 <Route path={`/organizations/:login/teams`} component={OrganizationTeamRootPage} />
                 {this.props.currentUser ?
@@ -156,7 +186,7 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
 const mapStateToProps = (state: ApplicationState): OrganizationDetailsPageProps => {
   return {
     currentOrgPermission: state.organizations.currentOrgPermission,
-    docTypes: state.docTypes.docTypes,
+    shortcuts: state.shortcuts.shortcuts,
     currentUser: state.currentUser.user,
     unReadCount: state.organizations.unreatCount && state.organizations.unreatCount.length
   };
@@ -169,6 +199,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     requestStatuses: () => dispatch(requestStatusesData()),
     requestUnread: () => dispatch(requestUnReadNumber()),
     requestLabels: () => dispatch(requestLabelsData()),
+    requestShortcuts: () => dispatch(requestShortcutsData()),
     setSearchCriterias: (data: SearchCriterias) => dispatch(setSearchCriteria(data)),
     setOrganizationToState: (organization: Organization, permission?: OrganizationTeamUser) => dispatch(setCurrentOrganization(organization, permission)),
     requestCurrentUser: () => dispatch(requestCurrentUserData())

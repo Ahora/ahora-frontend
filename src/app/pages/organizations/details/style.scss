@@ -1,0 +1,12 @@
+.ant-menu-submenu.shortcuts {
+    > .ant-menu-submenu-title {
+         > .ant-menu-submenu-arrow {
+            display: none;
+        }
+
+        .ant-menu-submenu-plus {
+            right: 16px;
+            position: absolute;
+        }
+    }
+}

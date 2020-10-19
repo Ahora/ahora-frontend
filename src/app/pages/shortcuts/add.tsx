@@ -37,6 +37,7 @@ class AddShortcutsPage extends React.Component<AddShortcutsPageProps, AddShortcu
     async onSubmit(data: any) {
         const addedShortcut = await addShortcut(data);
         this.props.addShortcutToState(addedShortcut);
+        this.props.history.replace(`/organizations/${this.props.organizationId}/${addedShortcut.id}`);
     }
 
     cancelAdd() {

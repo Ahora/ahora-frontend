@@ -126,7 +126,9 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
                   }>
                     {this.props.shortcuts ?
                       <>
-                        {this.props.shortcuts.map((shortcut) => <Menu.Item icon={shortcut.star && <StarFilled />} key={shortcut.id}>{shortcut.title}</Menu.Item>)}
+                        {this.props.shortcuts.map((shortcut) => <Menu.Item icon={shortcut.star && <StarFilled />} key={shortcut.id}>
+                          <Link to={`/organizations/${organization.login}/${shortcut.id}`}>{shortcut.title}</Link>
+                        </Menu.Item>)}
                         <Menu.Item key="shortcuts">
                           <Link to={`/organizations/${organization.login}/shortcuts`}>Manage</Link>
                         </Menu.Item>
@@ -159,7 +161,7 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
                 <Route path={`/organizations/:login/milestones`} component={MilestonesPage} />
                 <Route path={`/organizations/:login/teams`} component={OrganizationTeamRootPage} />
                 {this.props.currentUser ?
-                  <Route path={`/organizations/:login/:section(docs|inbox)/:docId?`} component={DocsPage} />
+                  <Route path={`/organizations/:login/:section/:docId?`} component={DocsPage} />
                   :
                   <>
                     <Route path={`/organizations/:login/:section(docs)/:docId?`} component={DocsPage} />

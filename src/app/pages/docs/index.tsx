@@ -17,8 +17,8 @@ import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import DefaultDocsPage from './default';
-
 import { isMobile, isBrowser } from "react-device-detect";
+import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
 
 require('./styles.scss')
 
@@ -46,7 +46,6 @@ interface injectedParams {
 }
 
 interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedParams {
-
 }
 
 
@@ -55,7 +54,6 @@ interface DispatchProps {
 }
 
 interface AllProps extends DocsPageProps, DispatchProps {
-
 }
 
 class DocsPage extends React.Component<AllProps, DocsPageState> {
@@ -64,6 +62,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         this.state = {
         }
     }
+
     setSearchCriterias() {
         if (this.props.location.search.length > 0) {
             const parsedUrl: ParsedUrl = parseUrl(this.props.location.search);
@@ -79,8 +78,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                 this.searchSelected(this.props.searchCriteria);
 
             }
-        } else {
-            this.searchSelected({});
         }
     }
 
@@ -95,10 +92,15 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         }
     }
 
-    async searchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string) {
+    async onInputSearchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string) {
         if (this.props.match.params.section === "docs") {
             this.props.setSearchCriterias(searchCriterias);
         }
+
+        this.searchSelected(searchCriterias, searchCriteriasText);
+    }
+
+    async searchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string) {
         this.setState({
             searchCriteria: searchCriterias,
             searchCriteriasText,
@@ -112,7 +114,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     async componentDidUpdate(PrevProps: AllProps) {
         if (this.props.match.params.docId !== PrevProps.match.params.docId) {
-
             const docId: number = parseInt(this.props.match.params.docId);
             if (!isNaN(docId) && this.state.docs) {
                 const currentDoc: Doc | undefined = this.state.docs.find((doc) => doc.id === docId && doc.reporterUserId);
@@ -129,9 +130,10 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
             }
         }
 
-        if (this.props.match.params.section !== PrevProps.match.params.section) {
+        if (this.props.searchCriteria !== PrevProps.searchCriteria) {
             this.setSearchCriterias();
         }
+
     }
 
     onDocDeleted(updatedDoc: Doc) {
@@ -172,7 +174,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
             <section style={{ height: "100%" }} className="ant-layout site-layout">
                 {(isBrowser || (isMobile && this.props.match.params.docId === undefined)) &&
                     <div className="docsheader">
-                        <SearchDocsInput searchCriterias={this.state.searchCriteria} searchSelected={this.searchSelected.bind(this)}></SearchDocsInput>
+                        <SearchDocsInput searchCriterias={this.state.searchCriteria} searchSelected={this.onInputSearchSelected.bind(this)}></SearchDocsInput>
                     </div>
                 }
                 <section className="ant-layout site-layout">
@@ -226,12 +228,18 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     };
 }
 
-const mapStateToProps = (state: ApplicationState): injectedParams => {
+const mapStateToProps = (state: ApplicationState, props: AllProps): injectedParams => {
+    let availableShortcut: OrganizationShortcut | undefined;
+    const potentialShortCutId: number = parseInt(props.match.params.section);
+    if (!isNaN(potentialShortCutId)) {
+        availableShortcut = state.shortcuts.map.get(potentialShortCutId)
+    }
+
     return {
         statuses: state.statuses.map,
         docTypes: state.docTypes.mapById,
         loading: state.statuses.loading,
-        searchCriteria: state.organizations.searchCriterias
+        searchCriteria: potentialShortCutId ? availableShortcut && availableShortcut.searchCriteria : state.organizations.searchCriterias
     };
 };
 

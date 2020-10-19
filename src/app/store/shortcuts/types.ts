@@ -1,7 +1,7 @@
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
 
 export interface ShortcutsState {
-    shortcuts?: OrganizationShortcut[],
+    shortcuts: OrganizationShortcut[],
     loading: boolean,
     map: Map<number, OrganizationShortcut>
 }

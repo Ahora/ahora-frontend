@@ -49,7 +49,7 @@ class AddShortcutsPage extends React.Component<AddShortcutsPageProps, AddShortcu
             <div className="wrap-content">
                 <AhoraForm onCancel={this.cancelAdd.bind(this)} data={this.state.form} onSumbit={this.onSubmit.bind(this)}>
                     <AhoraField required={true} fieldName="title" displayName="Title" fieldType="text"></AhoraField>
-                    <AhoraField fieldName="searchCriteria" displayName="Search Criteria" fieldType="searchcriteria"></AhoraField>
+                    <AhoraField required={true} fieldName="searchCriteria" displayName="Search Criteria" fieldType="searchcriteria"></AhoraField>
                     <AhoraField fieldName="star" displayName="Star" fieldType="boolean"></AhoraField>
                 </AhoraForm>
             </div>

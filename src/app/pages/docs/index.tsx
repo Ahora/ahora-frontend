@@ -83,7 +83,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     async componentDidMount() {
         this.setSearchCriterias();
-
         const docId: number = parseInt(this.props.match.params.docId);
         if (!isNaN(docId)) {
             this.setState({
@@ -235,11 +234,13 @@ const mapStateToProps = (state: ApplicationState, props: AllProps): injectedPara
         availableShortcut = state.shortcuts.map.get(potentialShortCutId)
     }
 
+    console.log(potentialShortCutId, state.shortcuts.map, availableShortcut && availableShortcut.searchCriteria)
+
     return {
         statuses: state.statuses.map,
         docTypes: state.docTypes.mapById,
         loading: state.statuses.loading,
-        searchCriteria: potentialShortCutId ? availableShortcut && availableShortcut.searchCriteria : state.organizations.searchCriterias
+        searchCriteria: !isNaN(potentialShortCutId) ? availableShortcut && availableShortcut.searchCriteria : state.organizations.searchCriterias
     };
 };
 

@@ -3,7 +3,7 @@ import { OrganizationShortcut, deleteShortcut } from 'app/services/OrganizationS
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 import { ApplicationState } from 'app/store';
-import { requestShortcutsData, deleteShortcutFromState, updateShortcutToState } from 'app/store/shortcuts/actions';
+import { deleteShortcutFromState, updateShortcutToState } from 'app/store/shortcuts/actions';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { Button, Table, Space, Menu, Popconfirm } from 'antd';
@@ -22,7 +22,6 @@ interface ShortcutsPageParams {
 }
 
 interface DispatchProps {
-    requestShortcutData(): void;
     updateShortcutToState(shortcut: OrganizationShortcut): void,
     removeShortcutFromState(id: number): void
 }
@@ -38,10 +37,6 @@ class ShortcutsPage extends React.Component<ShortcutsPageProps, ShortcutsPageSta
         this.state = {
 
         }
-    }
-
-    async componentDidMount() {
-        this.props.requestShortcutData();
     }
 
     async ondeleteShortcut(shortcut: OrganizationShortcut) {
@@ -93,7 +88,6 @@ const mapStateToProps = (state: ApplicationState): ShortcutsPageParams => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        requestShortcutData: () => dispatch(requestShortcutsData()),
         removeShortcutFromState: (id: number) => { dispatch(deleteShortcutFromState(id)) },
         updateShortcutToState: (status: OrganizationShortcut) => { dispatch(updateShortcutToState(status)) }
     }

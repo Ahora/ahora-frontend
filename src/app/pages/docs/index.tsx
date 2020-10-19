@@ -234,8 +234,6 @@ const mapStateToProps = (state: ApplicationState, props: AllProps): injectedPara
         availableShortcut = state.shortcuts.map.get(potentialShortCutId)
     }
 
-    console.log(potentialShortCutId, state.shortcuts.map, availableShortcut && availableShortcut.searchCriteria)
-
     return {
         statuses: state.statuses.map,
         docTypes: state.docTypes.mapById,

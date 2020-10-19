@@ -33,7 +33,6 @@ export default class UserList extends React.Component<LabelsSelectorProps, Users
     }
 
     componentDidUpdate(prevProps: LabelsSelectorProps) {
-        console.log(prevProps, this.props);
         if (prevProps.selectedUsers != this.props.selectedUsers && this.props.selectedUsers) {
             this.setState({ selectedUsers: this.props.selectedUsers });
         }

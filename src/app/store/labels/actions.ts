@@ -8,7 +8,6 @@ export function addLabelFromState(newLabel: Label): LabelActionTypes {
     }
 }
 
-
 export function updateLabelToState(label: Label): LabelActionTypes {
     return {
         type: UPDATE_LABEL,

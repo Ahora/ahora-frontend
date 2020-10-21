@@ -11,10 +11,14 @@ const initialState: LabelsState = {
 export function labelsReducer(state = initialState, action: LabelActionTypes): LabelsState {
     switch (action.type) {
         case ADD_LABEL:
+            const mapById1 = state.mapById;
+            const mapByName1 = state.mapByName;
+            mapById1.set(action.payload.id!, action.payload);
+            mapByName1.set(action.payload.name, action.payload);
             return { ...state, labels: [...state.labels, action.payload] }
         case RECEIVE_LABELS:
-            const mapById = new Map<number, Label>();
-            const mapByName = new Map<string, Label>();
+            const mapById = state.mapById;
+            const mapByName = state.mapByName;
 
             action.data.forEach((label) => {
                 mapById.set(label.id!, label);

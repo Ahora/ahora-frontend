@@ -20,6 +20,16 @@ export const getList = async (): Promise<Label[]> => {
     return result.data;
 };
 
+export const searchLabels = async (q: string): Promise<Label[]> => {
+    const result = await labelesClient.get({
+        params: {
+            organizationId: store.getState().organizations.currentOrganization!.login
+        },
+        query: { q }
+    });
+    return result.data;
+}
+
 export const addLabel = async (label: Label): Promise<Label> => {
     const result = await labelesClient.post({
         data: label,

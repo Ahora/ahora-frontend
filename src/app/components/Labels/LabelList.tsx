@@ -4,6 +4,7 @@ import { ApplicationState } from 'app/store';
 import { Label } from 'app/services/labels';
 import { Tag, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import LabelTag from './LabelTag';
 
 interface LabelsSelectorState {
     selectedLabels?: Label[];
@@ -103,7 +104,7 @@ class LabelsList extends React.Component<AllProps, LabelsSelectorState> {
         return (
             <>
                 {this.state.selectedLabels && this.state.selectedLabels.map((label: Label) => {
-                    return <Tag onClose={this.onClose.bind(this, label)} closable={this.props.canEdit} color={`#${label.color}`} key={label.id}>{label.name}</Tag>;
+                    return <LabelTag onClose={this.onClose.bind(this, label)} closable={this.props.canEdit} label={label} key={label.id}></LabelTag>;
                 })}
                 {
                     (this.props.canEdit && possibleLabelsToAdd.length > 0) &&

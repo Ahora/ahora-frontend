@@ -1,12 +1,11 @@
-.ant-menu-submenu.shortcuts {
-    > .ant-menu-submenu-title {
-         > .ant-menu-submenu-arrow {
-            display: none;
-        }
+.ant-menu.shortcuts {
+    .anticon-plus-circle {
+        position: absolute;
+        right: 5px;
+        top: 13px;
+    }
 
-        .ant-menu-submenu-plus {
-            right: 16px;
-            position: absolute;
-        }
+    .ant-menu-submenu-title {
+        display: none;
     }
 }

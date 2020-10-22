@@ -13,7 +13,8 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             state.map.set(action.payload.id!, action.payload);
             return { ...state, shortcuts: [...state.shortcuts, action.payload], map: state.map }
         case RECEIVE_SHORTCUTS:
-            const shortcuts = [...state.shortcuts]
+            const shortcuts: OrganizationShortcut[] = [];
+            state.map.clear();
             action.data.forEach((shortcut) => {
                 shortcuts.push(shortcut);
                 state.map.set(shortcut.id!, shortcut);

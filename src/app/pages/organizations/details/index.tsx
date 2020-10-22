@@ -28,11 +28,10 @@ import { requestStatusesData } from "app/store/statuses/actions";
 import OrganizationNew from "./new";
 import { SearchCriterias } from "app/components/SearchDocsInput";
 import { Layout, Menu, Badge } from 'antd';
-import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined, InboxOutlined, PlusCircleOutlined, MessageOutlined, StarFilled } from '@ant-design/icons';
+import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined, InboxOutlined } from '@ant-design/icons';
 import { requestShortcutsData } from "app/store/shortcuts/actions";
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
-import SubMenu from "antd/lib/menu/SubMenu";
-require("./style.scss")
+import ShortcutMenuItem from "./shortcuts"
 
 interface OrganizationDetailsPageProps {
   shortcuts?: OrganizationShortcut[];
@@ -118,26 +117,7 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
                     <Link to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.unReadCount}>Inbox</Badge></Link>
                   </Menu.Item>
 
-                  <SubMenu key="shortcuts" className="shortcuts" icon={<MessageOutlined />} title={<span>
-                    <Link to={`/organizations/${organization.login}/shortcuts`}>Shortcuts</Link>
-                    <Link className="ant-menu-submenu-plus" to={`/organizations/${organization.login}/shortcuts/add`}>
-                      <PlusCircleOutlined />
-                    </Link></span>
-                  }>
-                    {this.props.shortcuts ?
-                      <>
-                        {this.props.shortcuts.map((shortcut) => <Menu.Item icon={shortcut.star && <StarFilled />} key={shortcut.id}>
-                          <Link to={`/organizations/${organization.login}/${shortcut.id}`}>{shortcut.title}</Link>
-                        </Menu.Item>)}
-                        <Menu.Item key="shortcuts">
-                          <Link to={`/organizations/${organization.login}/shortcuts`}>Manage</Link>
-                        </Menu.Item>
-                      </>
-
-                      :
-                      <Menu.Item key="loader"><AhoraSpinner /></Menu.Item>
-                    }
-                  </SubMenu>
+                  <ShortcutMenuItem shortcuts={this.props.shortcuts} />
                 </>
               }
               <Menu.Item icon={<PieChartOutlined />} key="dashboards"><Link to={`/organizations/${organization.login}/dashboards`}>Dashboards</Link></Menu.Item>

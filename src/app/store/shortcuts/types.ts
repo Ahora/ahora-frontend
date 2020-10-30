@@ -1,4 +1,5 @@
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
+import { SET_URRENT_ORGANIZATION } from "../organizations/types";
 
 export interface ShortcutsState {
     shortcuts: OrganizationShortcut[],
@@ -12,6 +13,10 @@ export const DELETE_SHORTCUT = 'DELETE_SHORTCUT';
 export const UPDATE_SHORTCUT = 'UPDATE_SHORTCUT';
 export const FETCH_SHORTCUTS = 'FETCH_SHORTCUTS';
 export const RECEIVE_SHORTCUTS = 'RECEIVE_SHORTCUTS';
+
+interface SetOrg {
+    type: typeof SET_URRENT_ORGANIZATION
+}
 
 interface AddShortcutAction {
     type: typeof ADD_SHORTCUT
@@ -35,4 +40,4 @@ interface FetchShortcutesAction {
     data: OrganizationShortcut[]
 }
 
-export type ShortcutActionTypes = AddShortcutAction | DeleteShortcutAction | FetchShortcutesAction | UpdateShortcutAction
+export type ShortcutActionTypes = AddShortcutAction | DeleteShortcutAction | FetchShortcutesAction | UpdateShortcutAction | SetOrg

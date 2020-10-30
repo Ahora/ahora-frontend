@@ -1,5 +1,6 @@
 import { ShortcutsState, ShortcutActionTypes, ADD_SHORTCUT, DELETE_SHORTCUT, RECEIVE_SHORTCUTS, UPDATE_SHORTCUT } from './types'
 import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
+import { SET_URRENT_ORGANIZATION } from '../organizations/types';
 
 const initialState: ShortcutsState = {
     shortcuts: [],
@@ -9,6 +10,8 @@ const initialState: ShortcutsState = {
 
 export function shortcutsReducer(state = initialState, action: ShortcutActionTypes): ShortcutsState {
     switch (action.type) {
+        case SET_URRENT_ORGANIZATION:
+            return { ...initialState }
         case ADD_SHORTCUT:
             state.map.set(action.payload.id!, action.payload);
             return { ...state, shortcuts: [...state.shortcuts, action.payload], map: state.map }

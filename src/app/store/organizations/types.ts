@@ -9,7 +9,7 @@ export interface OrganizationsState {
     unreatCount?: number[];
 }
 
-export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const SET_URRENT_ORGANIZATION = 'SET_URRENT_ORGANIZATION';
 export const FETCH_UNREAD_NUMBER = 'FETCH_UNREAD_NUMBER';
 export const RECIEVED_UNREAD_NUMBER = 'RECIEVED_UNREAD_NUMBER';
 export const SET_SEARCH_CRITERIAS = 'SET_SEARCH_CRITERIAS';
@@ -17,7 +17,7 @@ export const REDUCE_UNREAD_COUNT = 'REDUCE_UNREAD_COUNT';
 
 
 interface SetCurrentOrganizationAction {
-    type: typeof SET_CURRENT_USER,
+    type: typeof SET_URRENT_ORGANIZATION,
     data: {
         currentOrganization: Organization | undefined,
         currentOrgPermission?: OrganizationTeamUser;

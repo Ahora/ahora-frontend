@@ -1,10 +1,7 @@
 import { store } from "app/store";
 import { DecorateRequest, RestCollectorClient, RestCollectorOptions, RestCollectorRequest, RestCollectorResult } from "rest-collector";
-import pusher from "./pusher";
-let socketId: string | undefined;
-pusher.connection.bind('connected', function () {
-    socketId = pusher.connection.socket_id;
-});
+import io from 'socket.io-client';
+let socketId: string | undefined = io().id;
 export default class AhoraRestCollector<E = any, B = any> extends RestCollectorClient<E, B> {
 
     constructor(entityRestAPI?: string, decorateRequests?: DecorateRequest<B>) {

@@ -4,7 +4,7 @@ import { CommentDetailsComponent } from '../Details';
 import { AddCommentComponent } from 'app/components/Comments/AddComment';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import { Doc } from 'app/services/docs';
-import pusher from "app/services/pusher";
+import io from 'socket.io-client';
 
 interface CommentsProps {
     doc: Doc;
@@ -62,15 +62,24 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
             comments,
             pinnedComments: comments.filter(comment => comment.pinned)
         });
+        var socket = io.connect({ transports: ['websocket'], upgrade: false });
+        // on reconnection, reset the transports option, as the Websocket
+        // connection may have failed (caused by proxy, firewall, browser, ...)
+        socket.on('reconnect_attempt', () => {
+            socket.io.opts.transports = ['websocket'];
+        });
+        socket.on('connect', () => {
+            // Connected, let's sign-up for to receive messages for this room
+            socket.emit('room', `doc-${this.props.doc.id}`);
+        });
 
-        var channel = pusher.subscribe('my-channel');
-        channel.bind('comment-post', (comment: Comment) => {
+        socket.on('comment-post', (comment: Comment) => {
             if (comment.docId === this.props.doc.id) {
                 this.commentAdded(comment);
             }
         });
 
-        channel.bind('comment-put', (comment: Comment) => {
+        socket.on('comment-put', (comment: Comment) => {
             if (this.state.comments && comment.docId === this.props.doc.id) {
                 this.setState({
                     comments: this.state.comments.map((currentComment) => currentComment.id === comment.id ? comment : currentComment)
@@ -78,7 +87,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
             }
         });
 
-        channel.bind('comment-delete', (comment: Comment) => {
+        socket.on('comment-delete', (comment: Comment) => {
             if (comment.docId === this.props.doc.id) {
                 this.onDeleteComment(comment.id);
             }

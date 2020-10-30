@@ -20,9 +20,10 @@ interface State {
 
 export class CommentListComponent extends React.Component<CommentsProps, State> {
 
+    private socket?: any;
+
     constructor(props: CommentsProps) {
         super(props);
-
         this.state = {}
     }
 
@@ -45,15 +46,64 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
         this.setState({ qouteComment: comment });
     }
 
+    componentWillUnmount() {
+        this.closeSocket();
+    }
+
+    closeSocket() {
+        if (this.socket) {
+            this.socket.close();
+        }
+    }
+
     async componentDidUpdate(prevProps: CommentsProps) {
         if (this.props.doc.id !== prevProps.doc.id) {
+            this.closeSocket();
             this.setState({ comments: undefined, pinnedComments: [] });
             const comments: Comment[] = await getComments(this.props.login, this.props.doc.id);
+            this.loadSockets();
             this.setState({
                 comments,
                 pinnedComments: comments.filter(comment => comment.pinned)
             });
         }
+    }
+
+    loadSockets() {
+        if (this.socket) {
+            this.socket.close();
+        }
+        this.socket = io.connect({ transports: ['websocket'], upgrade: false });
+
+        // on reconnection, reset the transports option, as the Websocket
+        // connection may have failed (caused by proxy, firewall, browser, ...)
+        this.socket.on('reconnect_attempt', () => {
+            this.socket.io.opts.transports = ['websocket'];
+        });
+        this.socket.on('connect', () => {
+            // Connected, let's sign-up for to receive messages for this room
+            this.socket.emit('room', `doc-${this.props.doc.id}`);
+        });
+
+        this.socket.on('comment-post', (comment: Comment) => {
+            if (comment.docId === this.props.doc.id) {
+                this.commentAdded(comment);
+            }
+        });
+
+        this.socket.on('comment-put', (comment: Comment) => {
+            if (this.state.comments && comment.docId === this.props.doc.id) {
+                this.setState({
+                    comments: this.state.comments.map((currentComment) => currentComment.id === comment.id ? comment : currentComment)
+                });
+            }
+        });
+
+        this.socket.on('comment-delete', (comment: Comment) => {
+            if (comment.docId === this.props.doc.id) {
+                this.onDeleteComment(comment.id);
+            }
+        });
     }
 
     async componentDidMount() {
@@ -62,36 +112,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
             comments,
             pinnedComments: comments.filter(comment => comment.pinned)
         });
-        var socket = io.connect({ transports: ['websocket'], upgrade: false });
-        // on reconnection, reset the transports option, as the Websocket
-        // connection may have failed (caused by proxy, firewall, browser, ...)
-        socket.on('reconnect_attempt', () => {
-            socket.io.opts.transports = ['websocket'];
-        });
-        socket.on('connect', () => {
-            // Connected, let's sign-up for to receive messages for this room
-            socket.emit('room', `doc-${this.props.doc.id}`);
-        });
-
-        socket.on('comment-post', (comment: Comment) => {
-            if (comment.docId === this.props.doc.id) {
-                this.commentAdded(comment);
-            }
-        });
-
-        socket.on('comment-put', (comment: Comment) => {
-            if (this.state.comments && comment.docId === this.props.doc.id) {
-                this.setState({
-                    comments: this.state.comments.map((currentComment) => currentComment.id === comment.id ? comment : currentComment)
-                });
-            }
-        });
-
-        socket.on('comment-delete', (comment: Comment) => {
-            if (comment.docId === this.props.doc.id) {
-                this.onDeleteComment(comment.id);
-            }
-        });
+        this.loadSockets();
     }
 
     render() {

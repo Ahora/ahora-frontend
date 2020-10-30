@@ -70,11 +70,17 @@ export class AddCommentComponent extends React.Component<CommentsProps, State> {
         });
     }
 
+    onkeyDown(event: any) {
+        if (event && event.keyCode === 13) {
+            this.post();
+        }
+    }
+
     render() {
         return (
             <>
                 <div className="add-comment-space"></div>
-                <div className="mt-2 add-comment-container">
+                <div onKeyDown={this.onkeyDown.bind(this)} className="mt-2 add-comment-container">
                     <AhoraMarkdownField ref={this.markdownRef} autoFocus={true} onChange={this.handleChange.bind(this)} value={this.state.rawComment} fieldData={{ displayName: "", fieldName: "comment", fieldType: "markdown" }}></AhoraMarkdownField>
                     <div className="buttons">
                         <Button onClick={this.post.bind(this)} size="small" disabled={this.state.rawComment === undefined || this.state.rawComment.length === 0} type="primary">

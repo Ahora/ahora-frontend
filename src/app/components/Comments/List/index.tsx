@@ -47,6 +47,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
     }
 
     async onQoute(comment: Comment) {
+        console.log(comment);
         this.setState({ qouteComment: comment });
     }
 

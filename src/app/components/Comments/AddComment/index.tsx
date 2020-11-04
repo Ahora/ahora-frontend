@@ -46,15 +46,19 @@ class AddCommentComponent extends React.Component<CommentsProps, State> {
     }
 
     componentDidUpdate(prevProps: CommentsProps) {
-        if (prevProps.qouteComment !== this.props.qouteComment && this.props.qouteComment) {
+        if (prevProps.qouteComment !== this.props.qouteComment && this.props.qouteComment && this.props.qouteComment.comment !== this.state.rawComment) {
             const commentRows = this.props.qouteComment.comment.split("\n");
             for (let index = 0; index < commentRows.length; index++) {
                 commentRows[index] = ">" + commentRows[index];
             }
 
             this.setState({
-                comment: commentRows.join("\n") + "\n\n",
+                rawComment: commentRows.join("\n") + "\n\n",
             });
+
+            if (this.markdownRef.current) {
+                this.markdownRef.current.focus();
+            }
         }
     }
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Comment, getComments } from 'app/services/comments';
+import { addComment, Comment, getComments } from 'app/services/comments';
 import { CommentDetailsComponent } from '../Details';
-import { AddCommentComponent } from 'app/components/Comments/AddComment';
+import AddCommentComponent from 'app/components/Comments/AddComment';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import { Doc } from 'app/services/docs';
 import io from 'socket.io-client';
@@ -33,13 +33,17 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
         })
     }
 
-    commentAdded(comment: Comment): void {
+    async commentAdded(comment: Comment) {
         const comments: Comment[] = [...this.state.comments, comment];
         this.setState({
             comments,
             focusId: comment.id,
             qouteComment: undefined
         });
+
+        const newComment: Comment = await addComment(this.props.login, this.props.doc.id, comment.comment, comment.parentId);
+        this.setState({ focusId: newComment.id, comments: this.state.comments!.map((currentComment) => comment.id === currentComment.id ? newComment : currentComment) })
+
     }
 
     async onQoute(comment: Comment) {
@@ -63,6 +67,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
             const comments: Comment[] = await getComments(this.props.login, this.props.doc.id);
             this.loadSockets();
             this.setState({
+                focusId: comments.length > 0 ? comments[comments.length - 1].id : undefined,
                 comments,
                 pinnedComments: comments.filter(comment => comment.pinned)
             });
@@ -109,6 +114,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
     async componentDidMount() {
         const comments: Comment[] = await getComments(this.props.login, this.props.doc.id);
         this.setState({
+            focusId: comments.length > 0 ? comments[comments.length - 1].id : undefined,
             comments,
             pinnedComments: comments.filter(comment => comment.pinned)
         });
@@ -134,7 +140,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
                         {this.state.comments.length > 0 &&
                             <div className="list">
                                 {this.state.comments.map((comment: Comment) => {
-                                    return (<CommentDetailsComponent focus={comment.id === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} key={`${comment.id}-${comment.updatedAt}`} comment={comment}></CommentDetailsComponent>);
+                                    return (<CommentDetailsComponent key={`${comment.id}-${comment.updatedAt}`} focus={comment.id === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} comment={comment}></CommentDetailsComponent>);
                                 })}
                             </div>
                         }
@@ -142,7 +148,7 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
                     :
                     (<AhoraSpinner />)
                 }
-                <AddCommentComponent qouteComment={this.state.qouteComment} commentAdded={(comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.doc.id}></AddCommentComponent>
+                <AddCommentComponent qouteComment={this.state.qouteComment} commentAdded={(comment: Comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.doc.id}></AddCommentComponent>
             </div>
         );
     }

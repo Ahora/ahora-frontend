@@ -74,6 +74,21 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
         }
     }
 
+    commentSyncedFromSockets(comment: Comment) {
+        if (this.state.comments && comment.docId === this.props.doc.id) {
+            const comments = [...this.state.comments];
+            const index = this.state.comments.findIndex((currentComment) => currentComment.id === comment.id);
+            if (index > 0) {
+                comments[index] = comment;
+            }
+            else {
+                comments.push(comment);
+            }
+            this.setState({ comments });
+        }
+
+    }
+
     loadSockets() {
         if (this.socket) {
             this.socket.close();
@@ -91,17 +106,11 @@ export class CommentListComponent extends React.Component<CommentsProps, State> 
         });
 
         this.socket.on('comment-post', (comment: Comment) => {
-            if (comment.docId === this.props.doc.id) {
-                this.commentAdded(comment);
-            }
+            this.commentSyncedFromSockets(comment);
         });
 
         this.socket.on('comment-put', (comment: Comment) => {
-            if (this.state.comments && comment.docId === this.props.doc.id) {
-                this.setState({
-                    comments: this.state.comments.map((currentComment) => currentComment.id === comment.id ? comment : currentComment)
-                });
-            }
+            this.commentSyncedFromSockets(comment);
         });
 
         this.socket.on('comment-delete', (comment: Comment) => {

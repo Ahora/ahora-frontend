@@ -20,6 +20,7 @@ import { DocTypesState } from './docTypes/types';
 import { MilestonesState } from './milestones/types';
 import { UsersState } from './users/types';
 import { ShortcutsState } from './shortcuts/types';
+import thunk from 'redux-thunk';
 
 // The top-level state object
 export interface ApplicationState {
@@ -37,8 +38,9 @@ export const history: History = createBrowserHistory();
 const sagaMiddleware = createSagaMiddleware();
 export const appState = createRootReducer(history);
 export const store = createStore(
-    appState, // root reducer with router state
+    appState,
     compose(
+        applyMiddleware(thunk),
         applyMiddleware(sagaMiddleware),
         applyMiddleware(
             routerMiddleware(history),

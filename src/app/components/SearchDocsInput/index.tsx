@@ -2,7 +2,6 @@ import * as React from 'react';
 import { parse, SearchParserOptions, } from "search-query-parser";
 import { Mentions } from 'antd';
 import { searchUsers } from 'app/services/users';
-
 import { store } from "app/store";
 import { searchTeams } from 'app/services/organizationTeams';
 const autoCompleteOptions: Map<string, (text: string) => Promise<string[]>> = new Map();
@@ -70,8 +69,8 @@ interface Props {
 interface State {
     searchCriteriaText?: string;
     searchCriterias?: SearchCriterias;
-    isFocused: boolean;
-    possibleOptions: string[]
+    possibleOptions: string[];
+    isLoading: boolean;
 }
 
 const printTextOfQuery = (field: string, val: string | string[]): string => {
@@ -115,19 +114,19 @@ export default class SearchDocsInput extends React.Component<Props, State> {
         super(props);
 
         this.state = {
+            isLoading: false,
             possibleOptions: [],
             searchCriteriaText: this.props.searchCriteriaText,
-            searchCriterias: this.props.searchCriterias,
-            isFocused: false
+            searchCriterias: this.props.searchCriterias
         }
     }
 
     componentDidUpdate(prevProps: Props) {
         if (prevProps.searchCriterias !== this.props.searchCriterias) {
-
             this.setState({
                 searchCriterias: this.props.searchCriterias
             });
+
             this.reloadData(this.props.searchCriterias);
         }
     }
@@ -148,8 +147,7 @@ export default class SearchDocsInput extends React.Component<Props, State> {
         if (this.state.searchCriteriaText) {
             const queryObject: SearchCriterias = parse(this.state.searchCriteriaText, searchOptions) as any;
             this.setState({
-                searchCriterias: queryObject,
-                searchCriteriaText: this.state.searchCriteriaText
+                searchCriterias: queryObject
             });
 
             const result: any = {};
@@ -174,31 +172,25 @@ export default class SearchDocsInput extends React.Component<Props, State> {
         }
     }
 
-    handleFocus() {
-        this.setState({ isFocused: true });
-    }
-
     handleBlur() {
         this.search();
-        this.setState({ isFocused: false });
-    }
-
-    handleKeyDown(e: any) {
-        if (e.key === 'Enter') {
-            e.preventDefault()
-            e.stopPropagation();
-            this.search();
-        }
     }
 
     async searchAutoComplete(text: string, prefix: string) {
         const autoCompleteHandler = autoCompleteOptions.get(prefix);
         if (autoCompleteHandler) {
-            this.setState({ possibleOptions: await autoCompleteHandler(text) });
+            this.setState({ isLoading: true });
+            this.setState({ isLoading: false, possibleOptions: await autoCompleteHandler(text) });
         }
         else {
-            this.setState({ possibleOptions: [] });
+            this.setState({ possibleOptions: [], isLoading: false });
         }
+    }
+
+    onPressEnter(e: any) {
+        e.preventDefault()
+        e.stopPropagation();
+        this.search();
     }
 
     async componentDidMount() {
@@ -213,9 +205,9 @@ export default class SearchDocsInput extends React.Component<Props, State> {
                     value={this.state.searchCriteriaText}
                     placeholder="enter your search criteria"
                     prefix={autoComleteTokens}
+                    loading={this.state.isLoading}
                     onChange={this.onTextChange.bind(this)}
-                    onFocus={this.handleFocus.bind(this)}
-                    onKeyDownCapture={this.handleKeyDown.bind(this)}
+                    onPressEnter={this.onPressEnter.bind(this)}
                     onBlur={this.handleBlur.bind(this)}
                     onSearch={this.searchAutoComplete.bind(this)}
                 >

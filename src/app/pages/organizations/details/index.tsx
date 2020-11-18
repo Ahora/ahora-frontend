@@ -6,7 +6,7 @@ import DashboardDetailsPage from "app/pages/dashboards/details";
 import AddDashboardPage from "app/pages/dashboards/add";
 import OrganizationSettingsPage from "../settings";
 import { Dispatch } from "redux";
-import { setCurrentOrganization, setSearchCriteria, requestUnReadNumber } from "app/store/organizations/actions";
+import { setCurrentOrganization, requestUnReadNumber } from "app/store/organizations/actions";
 import { connect } from "react-redux";
 import { ApplicationState } from "app/store";
 import { requestDocTypesData } from "app/store/docTypes/actions";
@@ -24,7 +24,6 @@ import { requestMilestonesData } from "app/store/milestones/actions";
 import { requestLabelsData } from "app/store/labels/actions";
 import { requestStatusesData } from "app/store/statuses/actions";
 import OrganizationNew from "./new";
-import { SearchCriterias } from "app/components/SearchDocsInput";
 import { requestShortcutsData } from "app/store/shortcuts/actions";
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
 import OrganizationMenu from "./OrganizationMenu"
@@ -48,7 +47,6 @@ interface OrganizationPageParams {
 
 interface DispatchProps {
   setOrganizationToState(organization: Organization | null, permission?: OrganizationTeamUser): void;
-  setSearchCriterias(data?: SearchCriterias): void;
   requestDocTypes(): void;
   requestLabels(): void;
   requestUnread(): void;
@@ -74,7 +72,6 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
 
     if (organization) {
       this.props.setOrganizationToState(organization, organization.permission);
-      this.props.setSearchCriterias({ status: ["open"] });
       this.setState({ organization });
 
       this.props.requestUnread();
@@ -150,7 +147,6 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     requestUnread: () => dispatch(requestUnReadNumber()),
     requestLabels: () => dispatch(requestLabelsData()),
     requestShortcuts: () => dispatch(requestShortcutsData()),
-    setSearchCriterias: (data: SearchCriterias) => dispatch(setSearchCriteria(data)),
     setOrganizationToState: (organization: Organization, permission?: OrganizationTeamUser) => dispatch(setCurrentOrganization(organization, permission)),
     requestCurrentUser: () => dispatch(requestCurrentUserData())
   };

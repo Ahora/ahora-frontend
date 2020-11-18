@@ -1,6 +1,7 @@
 import { Doc } from "app/services/docs";
 
 export const SET_DOC = 'LOAD_DOC';
+export const SET_DOCS = 'SET_DOCS';
 export const DELETE_DOC = 'DELETE_DOC';
 export const LOAD_DOCS = 'LOAD_DOCS';
 
@@ -17,19 +18,20 @@ export interface DocShortcuts {
     docs: number[];
 }
 
-interface LoadDocsAction {
-    type: typeof LOAD_DOCS
-    payload: string | number
-}
-
 interface SetDocAction {
     type: typeof SET_DOC
     payload: Doc
 }
+
+interface SetDocsAction {
+    type: typeof SET_DOCS
+    payload: Doc[]
+}
+
 
 interface DELETE_DOC_ACTION {
     type: typeof DELETE_DOC
     payload: number
 }
 
-export type DocsActionTypes = LoadDocsAction | SetDocAction | DELETE_DOC_ACTION;
+export type DocsActionTypes = SetDocAction | DELETE_DOC_ACTION | SetDocsAction;

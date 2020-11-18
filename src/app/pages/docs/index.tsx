@@ -6,7 +6,6 @@ import { Status } from 'app/services/statuses';
 import { Dispatch } from 'redux';
 import SearchDocsInput, { SearchCriterias } from 'app/components/SearchDocsInput';
 import { DocType } from 'app/services/docTypes';
-import { setSearchCriteria } from 'app/store/organizations/actions';
 import { parseUrl, ParsedUrl } from "query-string";
 import { Doc } from 'app/services/docs';
 import DocList from 'app/components/DocList';
@@ -18,10 +17,10 @@ import { Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import DefaultDocsPage from './default';
 import { isMobile, isBrowser } from "react-device-detect";
-import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
+import StoreOrganizationShortcut from 'app/store/shortcuts/StoreOrganizationShortcut';
+import { updateShortcutsearchCriteria } from 'app/store/shortcuts/actions';
 
 require('./styles.scss')
-
 
 interface DocsPageState {
     searchCriteria?: SearchCriterias;
@@ -50,7 +49,7 @@ interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedPar
 
 
 interface DispatchProps {
-    setSearchCriterias(data?: SearchCriterias): void;
+    setSearchCriterias(section: string, data?: SearchCriterias): void;
 }
 
 interface AllProps extends DocsPageProps, DispatchProps {
@@ -70,14 +69,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
             this.searchSelected(searchCriterias);
         }
         else if (this.props.searchCriteria) {
-            if (this.props.match.params.section === "inbox") {
-                this.searchSelected({ mention: "me" });
-
-            }
-            else {
-                this.searchSelected(this.props.searchCriteria);
-
-            }
+            this.searchSelected(this.props.searchCriteria);
         }
     }
 
@@ -92,10 +84,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     }
 
     async onInputSearchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string) {
-        if (this.props.match.params.section === "docs") {
-            this.props.setSearchCriterias(searchCriterias);
-        }
-
+        this.props.setSearchCriterias(this.props.match.params.section, searchCriterias);
         this.searchSelected(searchCriterias, searchCriteriasText);
     }
 
@@ -130,6 +119,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         }
 
         if (this.props.searchCriteria !== PrevProps.searchCriteria) {
+            console.log("componentDidUpdate", this.props.searchCriteria);
             this.setSearchCriterias();
         }
 
@@ -228,23 +218,19 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 }
 
 const mapStateToProps = (state: ApplicationState, props: AllProps): injectedParams => {
-    let availableShortcut: OrganizationShortcut | undefined;
-    const potentialShortCutId: number = parseInt(props.match.params.section);
-    if (!isNaN(potentialShortCutId)) {
-        availableShortcut = state.shortcuts.map.get(potentialShortCutId)
-    }
-
+    let availableShortcut: StoreOrganizationShortcut | undefined = state.shortcuts.map.get(props.match.params.section);
+    console.log("maptostate", props.match.params.section, availableShortcut && availableShortcut.searchCriteria, state.shortcuts.map)
     return {
         statuses: state.statuses.map,
         docTypes: state.docTypes.mapById,
         loading: state.statuses.loading,
-        searchCriteria: !isNaN(potentialShortCutId) ? availableShortcut && availableShortcut.searchCriteria : state.organizations.searchCriterias
+        searchCriteria: availableShortcut && availableShortcut.searchCriteria
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        setSearchCriterias: (data: SearchCriterias) => dispatch(setSearchCriteria(data))
+        setSearchCriterias: (shurtcutdId: string, data: SearchCriterias) => dispatch(updateShortcutsearchCriteria(shurtcutdId, data))
     }
 }
 

@@ -29,12 +29,12 @@ interface AddShortcutAction {
     payload: OrganizationShortcut
 }
 
-interface UpdateUnreadShortcut {
+interface UpdateShortcutDocs {
     type: typeof UPDATE_UNREAD_DOCS_SHORTCUT
     payload: {
         shortcutId: string | number;
         docs: number[],
-        unReadDocsCount: number
+        unreadDocs: number[]
     }
 }
 
@@ -63,4 +63,4 @@ interface FetchShortcutesAction {
     data: OrganizationShortcut[]
 }
 
-export type ShortcutActionTypes = AddShortcutAction | DeleteShortcutAction | FetchShortcutesAction | UpdateShortcutAction | SetOrg | UpdateUnreadShortcut | UpdateShortcutSearchCriterias
+export type ShortcutActionTypes = AddShortcutAction | DeleteShortcutAction | FetchShortcutesAction | UpdateShortcutAction | SetOrg | UpdateShortcutDocs | UpdateShortcutSearchCriterias

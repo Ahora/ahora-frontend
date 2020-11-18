@@ -6,16 +6,8 @@ import StoreOrganizationShortcut from './StoreOrganizationShortcut';
 const initialState: ShortcutsState = {
     shortcuts: [],
     map: new Map<string, StoreOrganizationShortcut>([
-        ["docs", {
-            searchCriteria: {
-                status: ["open"]
-            }
-        }],
-        ["inbox", {
-            searchCriteria: {
-                mention: ["me"]
-            }
-        }],
+        ["docs", { searchCriteria: { status: ["open"] } }],
+        ["inbox", { searchCriteria: { mention: ["me"] } }],
     ]),
     loading: false
 }

@@ -72,7 +72,7 @@ export const getDocGroup = async (group: string | string[], query?: SearchCriter
 
 export const getDocUnreadMessage = async (searchCriterias: SearchCriterias): Promise<number[]> => {
     const result = await docsClient.get({
-        query: { ...searchCriterias, unread: true, limit: 2000 }
+        query: { ...searchCriterias, unread: true, limit: 2000, group: "dummy" }
     });
 
     const data: Doc[] = result.data;

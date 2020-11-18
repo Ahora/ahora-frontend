@@ -119,7 +119,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         }
 
         if (this.props.searchCriteria !== PrevProps.searchCriteria) {
-            console.log("componentDidUpdate", this.props.searchCriteria);
             this.setSearchCriterias();
         }
 
@@ -219,7 +218,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
 const mapStateToProps = (state: ApplicationState, props: AllProps): injectedParams => {
     let availableShortcut: StoreOrganizationShortcut | undefined = state.shortcuts.map.get(props.match.params.section);
-    console.log("maptostate", props.match.params.section, availableShortcut && availableShortcut.searchCriteria, state.shortcuts.map)
     return {
         statuses: state.statuses.map,
         docTypes: state.docTypes.mapById,

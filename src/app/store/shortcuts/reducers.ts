@@ -27,8 +27,6 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             if (shortcutStore) {
                 shortcutStore = { ...shortcutStore, searchCriteria: action.payload.searchCriterias }
                 state.map.set(action.payload.shortcutId, shortcutStore);
-
-                console.log("state", action.payload.shortcutId, shortcutStore, state);
             }
             return { ...state };
         case SET_CURRENT_ORGANIZATION:

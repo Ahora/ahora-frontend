@@ -20,6 +20,8 @@ export const FETCH_SHORTCUTS = 'FETCH_SHORTCUTS';
 export const REFRESH_SHORTCUTS = 'REFRESH_SHORTCUTS';
 export const RECEIVE_SHORTCUTS = 'RECEIVE_SHORTCUTS';
 export const UPDATE_UNREAD_DOCS_SHORTCUT = 'UPDATE_UNREAD_DOCS_SHORTCUT';
+export const REPORT_DOC_READ = 'REPORT_DOC_READ';
+
 
 interface SetOrg {
     type: typeof SET_CURRENT_ORGANIZATION
@@ -43,12 +45,17 @@ interface UpdateShortcutAction {
     payload: OrganizationShortcut
 }
 
-interface UpdateShortcutSearchCriterias {
+interface UpdateShortcutSearchCriteriasAction {
     type: typeof UPDATE_SHURTCUT_SEARCH_CRITERIAS
     payload: {
         shortcutId: string,
         searchCriterias: SearchCriterias
     }
+}
+
+interface ReportDocReadAction {
+    type: typeof REPORT_DOC_READ
+    payload: number
 }
 
 interface DeleteShortcutAction {
@@ -63,4 +70,4 @@ interface FetchShortcutesAction {
     data: OrganizationShortcut[]
 }
 
-export type ShortcutActionTypes = AddShortcutAction | DeleteShortcutAction | FetchShortcutesAction | UpdateShortcutAction | SetOrg | UpdateShortcutDocs | UpdateShortcutSearchCriterias
+export type ShortcutActionTypes = AddShortcutAction | DeleteShortcutAction | ReportDocReadAction | FetchShortcutesAction | UpdateShortcutAction | SetOrg | UpdateShortcutDocs | UpdateShortcutSearchCriteriasAction

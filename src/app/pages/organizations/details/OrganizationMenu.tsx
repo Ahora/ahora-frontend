@@ -61,7 +61,7 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
                 {this.props.currentUser &&
                     <>
                         <Menu.Item icon={<InboxOutlined />} key="inbox">
-                            <Link to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("inbox")?.unreadDocs?.length}>Inbox</Badge></Link>
+                            <Link to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("inbox")?.unreadDocs?.size}>Inbox</Badge></Link>
                         </Menu.Item>
                         <Menu.Item style={{ display: "none" }} icon={<MessageOutlined />}>
                             Shortcuts
@@ -72,7 +72,7 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
                         {this.props.shortcuts ?
                             <SubMenu key={"shortcuts"} icon={<MessageOutlined />} title="shortcuts">
                                 {this.props.shortcuts.map((shortcut) => <Menu.Item className="ant-menu-item" icon={shortcut.star && <StarFilled />} key={shortcut.id}>
-                                    <Link to={`/organizations/${this.props.organization && this.props.organization.login}/${shortcut.id}`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get(shortcut.id!.toString())?.unreadDocs?.length}>{shortcut.title}</Badge></Link>
+                                    <Link to={`/organizations/${this.props.organization && this.props.organization.login}/${shortcut.id}`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get(shortcut.id!.toString())?.unreadDocs?.size}>{shortcut.title}</Badge></Link>
                                 </Menu.Item>
                                 )}
                                 <Menu.Item key="shortcuts">

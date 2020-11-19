@@ -1,4 +1,4 @@
-import { ShortcutsState, ShortcutActionTypes, ADD_SHORTCUT, DELETE_SHORTCUT, RECEIVE_SHORTCUTS, UPDATE_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, UPDATE_UNREAD_DOCS_SHORTCUT } from './types'
+import { ShortcutsState, ShortcutActionTypes, ADD_SHORTCUT, DELETE_SHORTCUT, RECEIVE_SHORTCUTS, UPDATE_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, UPDATE_UNREAD_DOCS_SHORTCUT, REPORT_DOC_READ } from './types'
 import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
 import { SET_CURRENT_ORGANIZATION } from '../organizations/types';
 import StoreOrganizationShortcut from './StoreOrganizationShortcut';
@@ -52,8 +52,17 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
         case UPDATE_UNREAD_DOCS_SHORTCUT:
             const shortcutFromState = state.map.get(action.payload.shortcutId);
             if (shortcutFromState) {
-                state.map.set(action.payload.shortcutId, { ...shortcutFromState, unreadDocs: action.payload.unreadDocs });
+                const map = new Map<number, boolean>();
+                action.payload.unreadDocs.forEach((docId) => {
+                    map.set(docId, true);
+                });
+                state.map.set(action.payload.shortcutId, { ...shortcutFromState, unreadDocs: map });
             }
+            return { ...state, map: new Map(state.map) };
+        case REPORT_DOC_READ:
+            state.map.forEach((shortcut, key) => {
+                shortcut.unreadDocs?.delete(action.payload);
+            })
             return { ...state, map: new Map(state.map) };
 
         default:

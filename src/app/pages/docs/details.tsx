@@ -22,6 +22,7 @@ import { Dispatch } from 'redux';
 import UserDetails from 'app/components/users/UserDetails';
 import UserAvatar from 'app/components/users/UserAvatar';
 import UserAvatarList from 'app/components/users/UsersAvatarList';
+import { reportDocRead } from 'app/store/shortcuts/actions';
 
 interface DocsDetailsPageState {
     doc: Doc | null;
@@ -42,7 +43,7 @@ interface injectedParams {
 }
 
 interface DispatchProps {
-    reduceUnReadCount(docId: number): void;
+    reduceUnreadCount(docId: number): void;
 }
 
 interface AllProps extends RouteComponentProps<DocsDetailsPageParams>, injectedParams, DispatchProps {
@@ -70,12 +71,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
     updateDoc(doc: Doc) {
         this.props.onDocUpdated(doc);
-        this.props.reduceUnReadCount(doc.id);
-
-        if (doc.lastView && doc.lastView.updatedAt < doc.updatedAt) {
-            this.props.reduceUnReadCount(doc.id);
-        }
-
+        this.props.reduceUnreadCount(doc.id);
         this.setState({ doc });
     }
 
@@ -252,9 +248,7 @@ const mapStateToProps = (state: ApplicationState): injectedParams => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        reduceUnReadCount: (docId: number) => {
-
-        }//dispatch(reduceUnReadCount(docId))
+        reduceUnreadCount: (docId: number) => dispatch(reportDocRead(docId))
     }
 }
 

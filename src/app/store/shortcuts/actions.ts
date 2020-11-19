@@ -1,4 +1,4 @@
-import { ADD_SHORTCUT, RECEIVE_SHORTCUTS, ShortcutActionTypes, FETCH_SHORTCUTS, DELETE_SHORTCUT, UPDATE_SHORTCUT, UPDATE_UNREAD_DOCS_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS } from './types'
+import { ADD_SHORTCUT, RECEIVE_SHORTCUTS, ShortcutActionTypes, FETCH_SHORTCUTS, DELETE_SHORTCUT, UPDATE_SHORTCUT, UPDATE_UNREAD_DOCS_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, REPORT_DOC_READ } from './types'
 import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
 import { SearchCriterias } from 'app/components/SearchDocsInput';
 
@@ -17,7 +17,13 @@ export function setShortcutUnReadAndDocs(shortcutId: string, unreadDocs: number[
             unreadDocs
         }
     }
+}
 
+export function reportDocRead(docId: number) {
+    return {
+        type: REPORT_DOC_READ,
+        payload: docId
+    }
 }
 
 export function updateShortcutToState(newShortcut: OrganizationShortcut): ShortcutActionTypes {

@@ -17,6 +17,7 @@ export const UPDATE_SHURTCUT_SEARCH_CRITERIAS = 'UPDATE_SHURTCUT_SEARCH_CRITERIA
 export const DELETE_SHORTCUT = 'DELETE_SHORTCUT';
 export const UPDATE_SHORTCUT = 'UPDATE_SHORTCUT';
 export const FETCH_SHORTCUTS = 'FETCH_SHORTCUTS';
+export const REFRESH_SHORTCUTS = 'REFRESH_SHORTCUTS';
 export const RECEIVE_SHORTCUTS = 'RECEIVE_SHORTCUTS';
 export const UPDATE_UNREAD_DOCS_SHORTCUT = 'UPDATE_UNREAD_DOCS_SHORTCUT';
 
@@ -32,8 +33,7 @@ interface AddShortcutAction {
 interface UpdateShortcutDocs {
     type: typeof UPDATE_UNREAD_DOCS_SHORTCUT
     payload: {
-        shortcutId: string | number;
-        docs: number[],
+        shortcutId: string;
         unreadDocs: number[]
     }
 }

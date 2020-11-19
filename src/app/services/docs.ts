@@ -70,13 +70,13 @@ export const getDocGroup = async (group: string | string[], query?: SearchCriter
     return result.data;
 }
 
-export const getDocUnreadMessage = async (searchCriterias: SearchCriterias): Promise<number[]> => {
+export const getDocUnreadMessage = async (searchCriterias: SearchCriterias, shortcutdId: string): Promise<Doc[]> => {
     const result = await docsClient.get({
-        query: { ...searchCriterias, unread: true, limit: 2000, group: "dummy" }
+        query: { ...searchCriterias, unread: true, limit: 2000 }
     });
 
-    const data: Doc[] = result.data;
-    return data.map((doc) => doc.id);
+    return result.data;
+
 }
 
 export const getDoc = async (login: string, id: number): Promise<Doc> => {

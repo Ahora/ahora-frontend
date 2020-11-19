@@ -9,12 +9,11 @@ export function addShortcutFromState(newShortcut: OrganizationShortcut): Shortcu
     }
 }
 
-export function setShortcutUnReadAndDocs(shortcutId: string | number, unreadDocs: number[], docs: number[]): ShortcutActionTypes {
+export function setShortcutUnReadAndDocs(shortcutId: string, unreadDocs: number[]): ShortcutActionTypes {
     return {
         type: UPDATE_UNREAD_DOCS_SHORTCUT,
         payload: {
             shortcutId,
-            docs,
             unreadDocs
         }
     }

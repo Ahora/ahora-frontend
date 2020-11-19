@@ -78,7 +78,7 @@ class Dashboard extends React.Component<Props, State> {
 const mapStateToProps = (state: ApplicationState): InjectedProps => {
   return {
     organization: state.organizations.currentOrganization,
-    unReadCount: state.organizations.unreatCount && state.organizations.unreatCount.length
+    unReadCount: state.shortcuts.map.get("inbox")?.unreadDocs?.length
   };
 };
 

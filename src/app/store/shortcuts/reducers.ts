@@ -1,4 +1,4 @@
-import { ShortcutsState, ShortcutActionTypes, ADD_SHORTCUT, DELETE_SHORTCUT, RECEIVE_SHORTCUTS, UPDATE_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS } from './types'
+import { ShortcutsState, ShortcutActionTypes, ADD_SHORTCUT, DELETE_SHORTCUT, RECEIVE_SHORTCUTS, UPDATE_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, UPDATE_UNREAD_DOCS_SHORTCUT } from './types'
 import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
 import { SET_CURRENT_ORGANIZATION } from '../organizations/types';
 import StoreOrganizationShortcut from './StoreOrganizationShortcut';
@@ -6,8 +6,7 @@ import StoreOrganizationShortcut from './StoreOrganizationShortcut';
 const initialState: ShortcutsState = {
     shortcuts: [],
     map: new Map<string, StoreOrganizationShortcut>([
-        ["docs", { searchCriteria: { status: ["open"] } }],
-        ["inbox", { searchCriteria: { mention: ["me"] } }],
+        ["inbox", { searchCriteria: { mention: ["me"] } }]
     ]),
     loading: false
 }
@@ -28,7 +27,7 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             return { ...state, shortcuts: [...state.shortcuts, action.payload], map: state.map }
         case RECEIVE_SHORTCUTS:
             const shortcuts: OrganizationShortcut[] = [];
-            action.data.forEach((shortcut) => {
+            action.data.forEach(async (shortcut) => {
                 shortcuts.push(shortcut);
                 state.map.set(shortcut.id!.toString(), { shortcut: shortcut, searchCriteria: shortcut.searchCriteria });
             });
@@ -49,6 +48,14 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
                 ...state,
                 shortcuts: state.shortcuts ? state.shortcuts.map((shortcut) => shortcut.id === action.payload.id ? action.payload : shortcut) : [action.payload]
             }
+
+        case UPDATE_UNREAD_DOCS_SHORTCUT:
+            const shortcutFromState = state.map.get(action.payload.shortcutId);
+            if (shortcutFromState) {
+                state.map.set(action.payload.shortcutId, { ...shortcutFromState, unreadDocs: action.payload.unreadDocs });
+            }
+            return { ...state, map: new Map(state.map) };
+
         default:
             return state
     }

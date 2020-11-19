@@ -19,7 +19,6 @@ import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import { Comment, Descriptions, Space, Popconfirm } from 'antd';
 import { Dispatch } from 'redux';
-import { reduceUnReadCount } from 'app/store/organizations/actions';
 import UserDetails from 'app/components/users/UserDetails';
 import UserAvatar from 'app/components/users/UserAvatar';
 import UserAvatarList from 'app/components/users/UsersAvatarList';
@@ -253,7 +252,9 @@ const mapStateToProps = (state: ApplicationState): injectedParams => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        reduceUnReadCount: (docId: number) => dispatch(reduceUnReadCount(docId))
+        reduceUnReadCount: (docId: number) => {
+
+        }//dispatch(reduceUnReadCount(docId))
     }
 }
 

@@ -6,7 +6,7 @@ import DashboardDetailsPage from "app/pages/dashboards/details";
 import AddDashboardPage from "app/pages/dashboards/add";
 import OrganizationSettingsPage from "../settings";
 import { Dispatch } from "redux";
-import { setCurrentOrganization, requestUnReadNumber } from "app/store/organizations/actions";
+import { setCurrentOrganization } from "app/store/organizations/actions";
 import { connect } from "react-redux";
 import { ApplicationState } from "app/store";
 import { requestDocTypesData } from "app/store/docTypes/actions";
@@ -33,7 +33,6 @@ interface OrganizationDetailsPageProps {
   shortcuts?: OrganizationShortcut[];
   currentOrgPermission?: OrganizationTeamUser;
   currentUser?: User | undefined;
-  unReadCount?: number;
 }
 
 interface OrganizationDetailsPageState {
@@ -49,7 +48,6 @@ interface DispatchProps {
   setOrganizationToState(organization: Organization | null, permission?: OrganizationTeamUser): void;
   requestDocTypes(): void;
   requestLabels(): void;
-  requestUnread(): void;
   requestShortcuts(): void;
   requestStatuses(): void;
   requestMilestones(): void;
@@ -73,8 +71,6 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
     if (organization) {
       this.props.setOrganizationToState(organization, organization.permission);
       this.setState({ organization });
-
-      this.props.requestUnread();
     }
 
     this.props.requestDocTypes();
@@ -134,8 +130,7 @@ const mapStateToProps = (state: ApplicationState): OrganizationDetailsPageProps 
   return {
     currentOrgPermission: state.organizations.currentOrgPermission,
     shortcuts: state.shortcuts.shortcuts,
-    currentUser: state.currentUser.user,
-    unReadCount: state.organizations.unreatCount && state.organizations.unreatCount.length
+    currentUser: state.currentUser.user
   };
 };
 
@@ -144,7 +139,6 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     requestDocTypes: () => dispatch(requestDocTypesData()),
     requestMilestones: () => dispatch(requestMilestonesData()),
     requestStatuses: () => dispatch(requestStatusesData()),
-    requestUnread: () => dispatch(requestUnReadNumber()),
     requestLabels: () => dispatch(requestLabelsData()),
     requestShortcuts: () => dispatch(requestShortcutsData()),
     setOrganizationToState: (organization: Organization, permission?: OrganizationTeamUser) => dispatch(setCurrentOrganization(organization, permission)),

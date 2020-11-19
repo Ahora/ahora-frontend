@@ -7,13 +7,15 @@ import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined,
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
 import SubMenu from "antd/lib/menu/SubMenu";
 import AhoraSpinner from "app/components/Forms/Basics/Spinner";
-import { getDocUnreadMessage } from "app/services/docs";
 import { User } from "app/services/users";
 import { OrganizationTeamUser } from "app/services/organizationTeams";
 import { canManageOrganization } from "app/services/authentication";
+import { ApplicationState } from "app/store";
+import StoreOrganizationShortcut from "app/store/shortcuts/StoreOrganizationShortcut";
+import { connect } from "react-redux";
 require("./style.scss")
 
-interface OrganizationDetailsPageProps {
+interface OrganizationDetailsPageProps extends InjectableProps {
     shortcuts?: OrganizationShortcut[];
     currentOrgPermission?: OrganizationTeamUser;
     currentUser?: User | undefined;
@@ -22,43 +24,26 @@ interface OrganizationDetailsPageProps {
 
 }
 
+interface InjectableProps {
+    shortcutsMap: Map<string, StoreOrganizationShortcut>;
+}
+
 interface OrganizationDetailsPageState {
-    unread: Map<number, number>;
     collapsed: boolean;
 }
 
-export default class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, OrganizationDetailsPageState> {
+class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, OrganizationDetailsPageState> {
     constructor(props: OrganizationDetailsPageProps) {
         super(props);
 
         this.state = {
-            collapsed: false,
-            unread: new Map()
+            collapsed: false
         };
-    }
-
-    componentDidMount() {
-
-        if (this.props.shortcuts) {
-            this.props.shortcuts.forEach(async (shortcut) => {
-                const unRead = await getDocUnreadMessage(shortcut.searchCriteria);
-                this.setState({
-                    unread: new Map(this.state.unread.set(shortcut.id!, unRead.length))
-                })
-            });
-        }
     }
 
     onCollapse(collapsed: boolean) {
         this.setState({ collapsed });
     };
-
-    componentDidUpdate(prevProps: OrganizationDetailsPageProps) {
-        if (this.props.shortcuts !== prevProps.shortcuts) {
-            this.componentDidMount();
-        }
-    }
-
 
     render() {
         const { Sider } = Layout;
@@ -76,7 +61,7 @@ export default class OrganizationMenu extends React.Component<OrganizationDetail
                 {this.props.currentUser &&
                     <>
                         <Menu.Item icon={<InboxOutlined />} key="inbox">
-                            <Link to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={1}>Inbox</Badge></Link>
+                            <Link to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("inbox")?.unreadDocs?.length}>Inbox</Badge></Link>
                         </Menu.Item>
                         <Menu.Item style={{ display: "none" }} icon={<MessageOutlined />}>
                             Shortcuts
@@ -87,7 +72,7 @@ export default class OrganizationMenu extends React.Component<OrganizationDetail
                         {this.props.shortcuts ?
                             <SubMenu key={"shortcuts"} icon={<MessageOutlined />} title="shortcuts">
                                 {this.props.shortcuts.map((shortcut) => <Menu.Item className="ant-menu-item" icon={shortcut.star && <StarFilled />} key={shortcut.id}>
-                                    <Link to={`/organizations/${this.props.organization && this.props.organization.login}/${shortcut.id}`}><Badge offset={[15, 0]} count={this.state.unread.get(shortcut.id!)}>{shortcut.title}</Badge></Link>
+                                    <Link to={`/organizations/${this.props.organization && this.props.organization.login}/${shortcut.id}`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get(shortcut.id!.toString())?.unreadDocs?.length}>{shortcut.title}</Badge></Link>
                                 </Menu.Item>
                                 )}
                                 <Menu.Item key="shortcuts">
@@ -109,3 +94,9 @@ export default class OrganizationMenu extends React.Component<OrganizationDetail
         </Sider>
     }
 }
+
+const mapStateToProps = (state: ApplicationState): InjectableProps => {
+    return { shortcutsMap: state.shortcuts.map };
+};
+
+export default connect(mapStateToProps)(OrganizationMenu as any);

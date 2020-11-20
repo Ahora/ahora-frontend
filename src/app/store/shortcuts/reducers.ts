@@ -1,7 +1,8 @@
-import { ShortcutsState, ShortcutActionTypes, ADD_SHORTCUT, DELETE_SHORTCUT, RECEIVE_SHORTCUTS, UPDATE_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, UPDATE_UNREAD_DOCS_SHORTCUT, REPORT_DOC_READ } from './types'
+import { ShortcutsState, ShortcutActionTypes, ADD_SHORTCUT, DELETE_SHORTCUT, RECEIVE_SHORTCUTS, UPDATE_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, UPDATE_UNREAD_DOCS_SHORTCUT, REPORT_DOC_READ, SHORTCUT_DOCS_RECEIVED } from './types'
 import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
 import { SET_CURRENT_ORGANIZATION } from '../organizations/types';
 import StoreOrganizationShortcut from './StoreOrganizationShortcut';
+import { DELETE_DOC } from '../docs/types';
 
 const initialState: ShortcutsState = {
     shortcuts: [],
@@ -53,9 +54,9 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
         case UPDATE_UNREAD_DOCS_SHORTCUT:
             const shortcutFromState = state.map.get(action.payload.shortcutId);
             if (shortcutFromState) {
-                const map = new Map<number, boolean>();
+                const map = new Map<number, void>();
                 action.payload.unreadDocs.forEach((docId) => {
-                    map.set(docId, true);
+                    map.set(docId);
                 });
                 state.map.set(action.payload.shortcutId, { ...shortcutFromState, unreadDocs: map });
             }
@@ -63,6 +64,23 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
         case REPORT_DOC_READ:
             state.map.forEach((shortcut, key) => {
                 shortcut.unreadDocs?.delete(action.payload);
+            })
+            return { ...state, map: new Map(state.map) };
+        case SHORTCUT_DOCS_RECEIVED:
+            const shortcut = state.map.get(action.payload.shortcutId);
+            if (shortcut) {
+                let docMap: Map<number, void> | undefined;
+                if (action.payload.docs) {
+                    docMap = new Map();
+                    action.payload.docs.forEach((docId) => docMap!.set(docId));
+                }
+                state.map.set(action.payload.shortcutId, { ...shortcut, docs: docMap, page: action.payload.page, totalDocs: action.payload.totalDocs });
+            }
+            return { ...state, map: new Map(state.map) };
+
+        case DELETE_DOC:
+            state.map.forEach((shortcut) => {
+                shortcut.docs?.delete(action.payload);
             })
             return { ...state, map: new Map(state.map) };
 

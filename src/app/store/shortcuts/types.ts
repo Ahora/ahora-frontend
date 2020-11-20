@@ -1,5 +1,6 @@
 import { SearchCriterias } from "app/components/SearchDocsInput";
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
+import { DeleteDocAction } from "../docs/types";
 import { SET_CURRENT_ORGANIZATION } from "../organizations/types";
 import StoreOrganizationShortcut from "./StoreOrganizationShortcut";
 
@@ -17,7 +18,10 @@ export const UPDATE_SHURTCUT_SEARCH_CRITERIAS = 'UPDATE_SHURTCUT_SEARCH_CRITERIA
 export const DELETE_SHORTCUT = 'DELETE_SHORTCUT';
 export const UPDATE_SHORTCUT = 'UPDATE_SHORTCUT';
 export const FETCH_SHORTCUTS = 'FETCH_SHORTCUTS';
+export const SHORTCUT_DOCS_RECEIVED = 'SHORTCUT_DOCS_RECEIVED';
+export const SHORTCUT_DOCS_ADD = 'SHORTCUT_DOCS_ADD';
 export const REFRESH_SHORTCUTS = 'REFRESH_SHORTCUTS';
+export const LOAD_SHORTCUT_DOCS = 'LOAD_SHORTCUT_DOCS';
 export const RECEIVE_SHORTCUTS = 'RECEIVE_SHORTCUTS';
 export const UPDATE_UNREAD_DOCS_SHORTCUT = 'UPDATE_UNREAD_DOCS_SHORTCUT';
 export const REPORT_DOC_READ = 'REPORT_DOC_READ';
@@ -45,6 +49,32 @@ interface UpdateShortcutAction {
     payload: OrganizationShortcut
 }
 
+export interface LoadShortcutActions {
+    type: typeof LOAD_SHORTCUT_DOCS,
+    payload: {
+        shortcutId: string,
+        page: number
+    }
+}
+
+export interface ShortcutDocsReceivedAction {
+    type: typeof SHORTCUT_DOCS_RECEIVED,
+    payload: {
+        shortcutId: string,
+        docs?: number[],
+        page?: number;
+        totalDocs?: number;
+    }
+}
+
+export interface ShortcutAddDocAction {
+    type: typeof SHORTCUT_DOCS_ADD,
+    payload: {
+        shortcutId: string,
+        doc: number
+    }
+}
+
 interface UpdateShortcutSearchCriteriasAction {
     type: typeof UPDATE_SHURTCUT_SEARCH_CRITERIAS
     payload: {
@@ -70,4 +100,4 @@ interface FetchShortcutesAction {
     data: OrganizationShortcut[]
 }
 
-export type ShortcutActionTypes = AddShortcutAction | DeleteShortcutAction | ReportDocReadAction | FetchShortcutesAction | UpdateShortcutAction | SetOrg | UpdateShortcutDocs | UpdateShortcutSearchCriteriasAction
+export type ShortcutActionTypes = ShortcutAddDocAction | DeleteDocAction | AddShortcutAction | ShortcutDocsReceivedAction | LoadShortcutActions | DeleteShortcutAction | ReportDocReadAction | FetchShortcutesAction | UpdateShortcutAction | SetOrg | UpdateShortcutDocs | UpdateShortcutSearchCriteriasAction

@@ -2,10 +2,8 @@ import * as React from 'react';
 import { RouteComponentProps, Switch, Route } from 'react-router';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
-import { Status } from 'app/services/statuses';
 import { Dispatch } from 'redux';
 import SearchDocsInput, { SearchCriterias } from 'app/components/SearchDocsInput';
-import { DocType } from 'app/services/docTypes';
 import { parseUrl, ParsedUrl } from "query-string";
 import { Doc } from 'app/services/docs';
 import DocList from 'app/components/DocList';
@@ -18,7 +16,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import DefaultDocsPage from './default';
 import { isMobile, isBrowser } from "react-device-detect";
 import StoreOrganizationShortcut from 'app/store/shortcuts/StoreOrganizationShortcut';
-import { updateShortcutsearchCriteria } from 'app/store/shortcuts/actions';
+import { addDocToShortcut, loadShortcutDocs, updateShortcutsearchCriteria } from 'app/store/shortcuts/actions';
+import { deleteDocInState, setDocInState } from 'app/store/docs/actions';
 
 require('./styles.scss')
 
@@ -27,7 +26,6 @@ interface DocsPageState {
     searchCriteriasText?: string;
     currentDocId?: number;
     currentDoc?: Doc;
-    docs?: Doc[]
 }
 
 interface DocsPageParams {
@@ -38,10 +36,11 @@ interface DocsPageParams {
 
 
 interface injectedParams {
-    statuses: Map<number, Status>;
-    docTypes: Map<number, DocType>;
+    page: number;
+    totalPages: number;
     loading: boolean;
     searchCriteria?: SearchCriterias;
+    docs?: Doc[]
 }
 
 interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedParams {
@@ -50,6 +49,10 @@ interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedPar
 
 interface DispatchProps {
     setSearchCriterias(section: string, data?: SearchCriterias): void;
+    loadShortcutDocs(shortcutId: string, page: number): void;
+    deleteDoc(docId: number): void;
+    updateDoc(doc: Doc): void;
+    addDoc(shortcutdId: string, doc: Doc): void;
 }
 
 interface AllProps extends DocsPageProps, DispatchProps {
@@ -71,6 +74,14 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         else if (this.props.searchCriteria) {
             this.searchSelected(this.props.searchCriteria);
         }
+
+        if (!this.props.docs) {
+            this.props.loadShortcutDocs(this.props.match.params.section, 1);
+        }
+    }
+
+    pageChanged(newPage: number) {
+        this.props.loadShortcutDocs(this.props.match.params.section, newPage);
     }
 
     async componentDidMount() {
@@ -85,26 +96,21 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     async onInputSearchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string) {
         this.props.setSearchCriterias(this.props.match.params.section, searchCriterias);
+        this.props.loadShortcutDocs(this.props.match.params.section, 1);
         this.searchSelected(searchCriterias, searchCriteriasText);
     }
 
     async searchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string) {
         this.setState({
             searchCriteria: searchCriterias,
-            searchCriteriasText,
-            docs: undefined
+            searchCriteriasText
         });
     }
-
-    onDocListUpdated(docs: Doc[]) {
-        this.setState({ docs });
-    }
-
     async componentDidUpdate(PrevProps: AllProps) {
         if (this.props.match.params.docId !== PrevProps.match.params.docId) {
             const docId: number = parseInt(this.props.match.params.docId);
-            if (!isNaN(docId) && this.state.docs) {
-                const currentDoc: Doc | undefined = this.state.docs.find((doc) => doc.id === docId && doc.reporterUserId);
+            if (!isNaN(docId) && this.props.docs) {
+                const currentDoc: Doc | undefined = this.props.docs.find((doc) => doc.id === docId && doc.reporterUserId);
                 this.setState({
                     currentDoc,
                     currentDocId: isNaN(docId) ? undefined : docId
@@ -124,21 +130,12 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     }
 
-    onDocDeleted(updatedDoc: Doc) {
-        if (this.state.docs) {
-            this.setState({
-                docs: this.state.docs.filter((doc) => doc.id !== updatedDoc.id)
-            });
-            this.props.history.replace(`/organizations/${this.props.match.params.login}/${this.props.match.params.section}`);
-        }
+    onDocDeleted(docToBeDeleted: Doc) {
+        this.props.deleteDoc(docToBeDeleted.id)
     }
 
     onDocUpdated(updatedDoc: Doc) {
-        if (this.state.docs) {
-            this.setState({
-                docs: [...this.state.docs.map((doc) => (doc.id === updatedDoc.id) ? updatedDoc : doc)]
-            })
-        }
+        this.props.updateDoc(updatedDoc);
     }
 
     onAddCancel() {
@@ -152,7 +149,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     }
 
     onDocAdded(addedDoc: Doc) {
-        this.setState({ docs: [addedDoc, ...this.state.docs] });
+        this.props.addDoc(this.props.match.params.section, addedDoc);
         this.props.history.replace(`/organizations/${this.props.match.params.login}/${this.props.match.params.section}/${addedDoc.id}`)
     }
 
@@ -183,7 +180,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                             </Link>
                                                         </CanAddDoc>
                                                         <div className="doc-list-wrapper scrollable">
-                                                            <DocList section={this.props.match.params.section} docs={this.state.docs} onDocListUpdated={this.onDocListUpdated.bind(this)} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>
+                                                            <DocList onPageChanged={this.pageChanged.bind(this)} pageSize={30} totalPages={this.props.totalPages} page={this.props.page} section={this.props.match.params.section} docs={this.props.docs} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>
                                                                 <div className="no-docs">No Results</div>
                                                             </DocList>
                                                         </div>
@@ -218,17 +215,36 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
 const mapStateToProps = (state: ApplicationState, props: AllProps): injectedParams => {
     let availableShortcut: StoreOrganizationShortcut | undefined = state.shortcuts.map.get(props.match.params.section);
+    let docs: Doc[] | undefined;
+    if (availableShortcut?.docs) {
+        docs = [];
+
+        availableShortcut.docs?.forEach((val, docId) => {
+            const docState = state.docs.docs?.get(docId);
+            if (docState) {
+                docs?.push(docState.doc);
+            }
+        })
+    }
     return {
-        statuses: state.statuses.map,
-        docTypes: state.docTypes.mapById,
-        loading: state.statuses.loading,
-        searchCriteria: availableShortcut && availableShortcut.searchCriteria
+        page: availableShortcut?.page || 0,
+        loading: false,
+        docs,
+        totalPages: (availableShortcut && availableShortcut.totalDocs) ? Math.ceil(availableShortcut.totalDocs / 30) : 0,
+        searchCriteria: availableShortcut?.searchCriteria
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        setSearchCriterias: (shurtcutdId: string, data: SearchCriterias) => dispatch(updateShortcutsearchCriteria(shurtcutdId, data))
+        setSearchCriterias: (shortcutdId: string, data: SearchCriterias) => dispatch(updateShortcutsearchCriteria(shortcutdId, data)),
+        loadShortcutDocs: (shortcutdId: string, page: number) => dispatch(loadShortcutDocs(shortcutdId, page)),
+        deleteDoc: (docId: number) => dispatch(deleteDocInState(docId)),
+        updateDoc: (doc: Doc) => dispatch(setDocInState(doc)),
+        addDoc: (shortcutdId: string, doc: Doc) => {
+            dispatch(setDocInState(doc));
+            dispatch(addDocToShortcut(shortcutdId, doc.id));
+        },
     }
 }
 

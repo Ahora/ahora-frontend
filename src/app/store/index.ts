@@ -12,6 +12,7 @@ import refreshShortcutSaga from "./shortcuts/refreshShortctsData";
 import docTypeSaga from "./docTypes/sagas";
 import usersSaga from "./users/sagas";
 import currentUserSaga from "./currentuser/sagas";
+import loadShortcutDocsSaga from "./shortcuts/loadShortcutDocs";
 import { StatusesState } from './statuses/types';
 import { CurrentUserState } from './currentuser/types';
 import { createBrowserHistory } from 'history';
@@ -21,12 +22,14 @@ import { MilestonesState } from './milestones/types';
 import { UsersState } from './users/types';
 import { ShortcutsState } from './shortcuts/types';
 import thunk from 'redux-thunk';
+import { DocsState } from './docs/types';
 
 // The top-level state object
 export interface ApplicationState {
     labels: LabelsState,
     statuses: StatusesState,
     currentUser: CurrentUserState,
+    docs: DocsState,
     users: UsersState,
     organizations: OrganizationsState,
     milestones: MilestonesState,
@@ -54,5 +57,6 @@ sagaMiddleware.run(statusesSaga);
 sagaMiddleware.run(milestoneSaga);
 sagaMiddleware.run(shortcutSaga);
 sagaMiddleware.run(refreshShortcutSaga);
+sagaMiddleware.run(loadShortcutDocsSaga);
 sagaMiddleware.run(currentUserSaga);
 sagaMiddleware.run(usersSaga);

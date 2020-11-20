@@ -12,8 +12,12 @@ class DocListGadget extends React.Component<AllProps> {
         super(props);
     }
 
+    pageChanged(newPage: number) {
+
+    }
+
     render() {
-        return (<DocList pageSize={this.props.data.numberofdocs} searchCriteria={this.props.data.searchCriterias}></DocList>);
+        return (<DocList onPageChanged={this.pageChanged.bind(this)} page={1} totalPages={1} pageSize={this.props.data.numberofdocs} searchCriteria={this.props.data.searchCriterias}></DocList>);
     }
 }
 

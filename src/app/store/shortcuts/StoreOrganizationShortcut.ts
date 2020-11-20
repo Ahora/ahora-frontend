@@ -2,10 +2,11 @@ import { SearchCriterias } from "app/components/SearchDocsInput";
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
 
 export default interface StoreOrganizationShortcut {
-    unreadDocs?: Map<number, boolean>;
+    unreadDocs?: Map<number, void>;
     onReadComments?: number;
     searchCriteria: SearchCriterias;
     shortcut?: OrganizationShortcut;
-    docs?: number[],
+    docs?: Map<number, void>,
     page?: number;
+    totalDocs?: number;
 }

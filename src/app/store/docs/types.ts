@@ -29,9 +29,9 @@ interface SetDocsAction {
 }
 
 
-interface DELETE_DOC_ACTION {
+export interface DeleteDocAction {
     type: typeof DELETE_DOC
     payload: number
 }
 
-export type DocsActionTypes = SetDocAction | DELETE_DOC_ACTION | SetDocsAction;
+export type DocsActionTypes = SetDocAction | DeleteDocAction | SetDocsAction;

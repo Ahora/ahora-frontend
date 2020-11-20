@@ -6,12 +6,7 @@ export const DELETE_DOC = 'DELETE_DOC';
 export const LOAD_DOCS = 'LOAD_DOCS';
 
 export interface DocsState {
-    docs: Map<number, DocState>;
-}
-
-export interface DocState {
-    unReadComments?: number;
-    doc: Doc;
+    docs: Map<number, Doc>;
 }
 
 export interface DocShortcuts {

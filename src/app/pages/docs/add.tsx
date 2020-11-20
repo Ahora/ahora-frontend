@@ -16,14 +16,18 @@ interface AddDocsPageParams {
     login: string;
 }
 
+interface InjectableProps {
+    lastDocTypeId?: number;
+
+}
+
 interface DispatchProps {
     setLastDocTypeId: (docTypeId: number) => void;
 }
 
-interface Props extends RouteComponentProps<AddDocsPageParams>, DispatchProps {
+interface Props extends RouteComponentProps<AddDocsPageParams>, DispatchProps, InjectableProps {
     onDocAdded: (doc: Doc) => void;
     onCancel: () => void;
-    lastDocTypeId?: number;
 }
 
 class AddDocPage extends React.Component<Props, AddDocsPageState> {
@@ -40,7 +44,6 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
     }
 
     onUpdate(data: any): void {
-
         //this.props.setLastDocTypeId(data.docTypeId);
     }
 
@@ -49,6 +52,7 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
     }
 
     render() {
+        console.log("render");
         return (
             <div style={{ padding: "8px" }}>
                 <AhoraForm onUpdate={this.onUpdate.bind(this)} data={this.state.form} onCancel={this.onCancel.bind(this)} onSumbit={this.onSubmit.bind(this)}>
@@ -62,9 +66,8 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
     };
 }
 
-const mapStateToProps = (state: ApplicationState) => {
+const mapStateToProps = (state: ApplicationState, OwnProps: Props): InjectableProps => {
     return {
-        organization: state.organizations.currentOrganization,
         lastDocTypeId: state.docTypes.lastDocTypeId
     };
 };

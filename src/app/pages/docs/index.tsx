@@ -221,9 +221,9 @@ const mapStateToProps = (state: ApplicationState, props: AllProps): injectedPara
         docs = [];
 
         availableShortcut.docs?.forEach((val, docId) => {
-            const docState = state.docs.docs?.get(docId);
-            if (docState) {
-                docs?.push(docState.doc);
+            const doc = state.docs.docs?.get(docId);
+            if (doc) {
+                docs?.push(doc);
             }
         })
     }

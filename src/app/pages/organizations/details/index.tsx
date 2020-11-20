@@ -81,7 +81,10 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
     this.props.requestDocTypes();
     this.props.requestMilestones();
     this.props.requestLabels();
-    this.props.requestShortcuts();
+
+    if (this.props.currentUser) {
+      this.props.requestShortcuts();
+    }
     this.props.requestStatuses();
     this.props.requestCurrentUser();
   }

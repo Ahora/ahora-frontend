@@ -60,34 +60,38 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
         this.setState({ qouteComment: comment });
     }
 
-    /*
+
     async componentDidUpdate(prevProps: CommentsProps) {
         if (this.props.doc.id !== prevProps.doc.id) {
-            this.setState({ comments: undefined, pinnedComments: [] });
-            const comments: Comment[] = await getComments(this.props.login, this.props.doc.id);
-            this.setState({
-                focusId: comments.length > 0 ? comments[comments.length - 1].id : undefined,
-                comments,
-                pinnedComments: comments.filter(comment => comment.pinned)
-            });
+            if (!this.props.comments) {
+                this.props.loadComments();
+            }
         }
         else if (this.props.moreComments?.length == 1) {
             this.setState({
                 focusId: this.props.moreComments[0].id
             });
         }
+
+        /*else {
+            if (this.props.comments) {
+                this.setState({
+                    focusId: this.props.comments.length > 0 ? this.props.comments[this.props.comments.length - 1].id : undefined,
+                    pinnedComments: this.props.comments.filter(comment => comment.pinned)
+                });
+            }
+        }
+        */
     }
-    */
+
 
     async componentDidMount() {
-        this.props.loadComments();
+        if (!this.props.comments) {
+            this.props.loadComments();
 
-        if (this.props.comments) {
-            this.setState({
-                focusId: this.props.comments.length > 0 ? this.props.comments[this.props.comments.length - 1].id : undefined,
-                pinnedComments: this.props.comments.filter(comment => comment.pinned)
-            });
         }
+
+
     }
 
     render() {

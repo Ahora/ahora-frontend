@@ -41,12 +41,12 @@ export function UpdateShortcutDocs(shortcutId: string, docs?: number[], totalDoc
     }
 }
 
-export function addDocToShortcut(shortcutId: string, doc: number): ShortcutAddDocAction {
+export function addDocToShortcut(shortcutId: string, docId: number): ShortcutAddDocAction {
     return {
         type: SHORTCUT_DOCS_ADD,
         payload: {
             shortcutId,
-            doc,
+            docId,
         }
     }
 }

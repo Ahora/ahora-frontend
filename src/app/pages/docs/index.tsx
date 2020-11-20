@@ -131,7 +131,8 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     }
 
     onDocDeleted(docToBeDeleted: Doc) {
-        this.props.deleteDoc(docToBeDeleted.id)
+        this.props.deleteDoc(docToBeDeleted.id);
+        this.props.history.push(`/organizations/${this.props.match.params.login}/${this.props.match.params.section}`)
     }
 
     onDocUpdated(updatedDoc: Doc) {

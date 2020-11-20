@@ -71,7 +71,7 @@ export interface ShortcutAddDocAction {
     type: typeof SHORTCUT_DOCS_ADD,
     payload: {
         shortcutId: string,
-        doc: number
+        docId: number
     }
 }
 

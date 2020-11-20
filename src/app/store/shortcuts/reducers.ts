@@ -14,7 +14,6 @@ const initialState: ShortcutsState = {
 }
 
 export function shortcutsReducer(state = initialState, action: ShortcutActionTypes): ShortcutsState {
-    console.log(action);
     switch (action.type) {
         case UPDATE_SHURTCUT_SEARCH_CRITERIAS:
             let shortcutStore = state.map.get(action.payload.shortcutId);

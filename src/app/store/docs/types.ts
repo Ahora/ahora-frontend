@@ -1,6 +1,6 @@
 import { Doc } from "app/services/docs";
 
-export const SET_DOC = 'LOAD_DOC';
+export const SET_DOC = 'SET_DOC';
 export const SET_DOCS = 'SET_DOCS';
 export const DELETE_DOC = 'DELETE_DOC';
 export const LOAD_DOCS = 'LOAD_DOCS';

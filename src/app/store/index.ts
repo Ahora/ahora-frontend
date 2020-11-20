@@ -23,6 +23,7 @@ import { UsersState } from './users/types';
 import { ShortcutsState } from './shortcuts/types';
 import thunk from 'redux-thunk';
 import { DocsState } from './docs/types';
+import { CommentsState } from './comments/types';
 
 // The top-level state object
 export interface ApplicationState {
@@ -30,6 +31,7 @@ export interface ApplicationState {
     statuses: StatusesState,
     currentUser: CurrentUserState,
     docs: DocsState,
+    comments: CommentsState,
     users: UsersState,
     organizations: OrganizationsState,
     milestones: MilestonesState,

@@ -1,4 +1,7 @@
 
+import { store } from 'app/store';
+import { Comment } from "app/services/comments";
+import { deleteCommentInState, setCommentInState } from 'app/store/comments/actions';
 import io from 'socket.io-client';
 
 export default class OrganizationWebSocket {
@@ -6,29 +9,29 @@ export default class OrganizationWebSocket {
     private socket: any;
 
     constructor(organizationId: string) {
-        const socket = io.connect({ transports: ['websocket'], upgrade: false });
-        this.socket = socket;
+        const socket = io({ transports: ['websocket'] });
 
-        this.socket.on('reconnect_attempt', () => {
-            this.socket.io.opts.transports = ['websocket'];
-        });
-
-        socket.on('connect', () => {
-            this.socket.emit('room', organizationId);
+        socket.on('reconnect_attempt', () => {
+            socket.io.opts.transports = ['websocket'];
         });
 
         socket.on('comment-post', (comment: Comment) => {
-            //this.commentSyncedFromSockets(comment);
+            console.log(comment);
+            store.dispatch(setCommentInState(comment));
         });
 
         socket.on('comment-put', (comment: Comment) => {
-            //this.commentSyncedFromSockets(comment);
+            console.log(comment);
+            store.dispatch(setCommentInState(comment));
         });
 
         socket.on('comment-delete', (comment: Comment) => {
-            //if (comment.docId === this.props.doc.id) {
-            //this.onDeleteComment(comment.id);
-            //}
+            console.log(comment);
+            store.dispatch(deleteCommentInState(comment.docId, comment.id));
         });
+    }
+
+    close() {
+        this.socket.close();
     }
 }

@@ -28,6 +28,7 @@ import { requestShortcutsData } from "app/store/shortcuts/actions";
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
 import OrganizationMenu from "./OrganizationMenu"
 import { Layout } from "antd";
+import OrganizationWebSocket from "app/websockets/organizationWS";
 
 interface OrganizationDetailsPageProps {
   shortcuts?: OrganizationShortcut[];
@@ -59,6 +60,8 @@ interface Props extends RouteComponentProps<OrganizationPageParams>, DispatchPro
 }
 
 class OrganizationDetailsPage extends React.Component<Props, OrganizationDetailsPageState> {
+
+  private currentOrgSocket: OrganizationWebSocket | undefined;
   constructor(props: Props) {
     super(props);
 
@@ -67,6 +70,8 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
 
   async componentDidMount() {
     const organization = await getOrganizationByLogin(this.props.match.params.login);
+
+    this.currentOrgSocket = new OrganizationWebSocket(this.props.match.params.login);
 
     if (organization) {
       this.props.setOrganizationToState(organization, organization.permission);
@@ -79,6 +84,12 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
     this.props.requestShortcuts();
     this.props.requestStatuses();
     this.props.requestCurrentUser();
+  }
+
+  componentWillUnmount() {
+    if (this.currentOrgSocket) {
+      this.currentOrgSocket.close();
+    }
   }
 
   render = () => {

@@ -52,7 +52,6 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
     }
 
     render() {
-        console.log("render");
         return (
             <div style={{ padding: "8px" }}>
                 <AhoraForm onUpdate={this.onUpdate.bind(this)} data={this.state.form} onCancel={this.onCancel.bind(this)} onSumbit={this.onSubmit.bind(this)}>

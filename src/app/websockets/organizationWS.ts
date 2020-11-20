@@ -9,26 +9,21 @@ export default class OrganizationWebSocket {
     private socket: any;
 
     constructor(organizationId: string) {
-        const socket = io({ transports: ['websocket'] });
+        const socket = io();
 
-        socket.on('reconnect_attempt', () => {
-            socket.io.opts.transports = ['websocket'];
-        });
 
         socket.on('comment-post', (comment: Comment) => {
-            console.log(comment);
             store.dispatch(setCommentInState(comment));
         });
 
         socket.on('comment-put', (comment: Comment) => {
-            console.log(comment);
             store.dispatch(setCommentInState(comment));
         });
 
         socket.on('comment-delete', (comment: Comment) => {
-            console.log(comment);
             store.dispatch(deleteCommentInState(comment.docId, comment.id));
         });
+
     }
 
     close() {

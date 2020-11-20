@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Doc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc, updateDocStatus, getDoc } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
-import { CommentListComponent } from 'app/components/Comments/List';
+import CommentListComponent from 'app/components/Comments/List';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Status } from 'app/services/statuses';

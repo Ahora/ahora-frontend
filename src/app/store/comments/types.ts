@@ -1,11 +1,20 @@
 import { Comment } from "app/services/comments";
 
 export const SET_COMMENT = 'SET_COMMENT';
+export const ADD_COMMENT = 'ADD_COMMENT';
+export const REQUEST_COMMENTS = 'REQUEST_COMMENTS';
+export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const CLEAR_UNREAD_COMMENTS = 'CLEAR_UNREAD_COMMENTS';
 
 export interface CommentsState {
-    docs: Map<number, Map<number, Comment>>;
+    docs: Map<number, DocCommentsState>;
+}
+
+export interface DocCommentsState {
+    comments?: Comment[];
+    moreComments?: Comment[];
+    map: Map<number, Comment>;
 }
 
 interface SetCommentAction {
@@ -13,6 +22,27 @@ interface SetCommentAction {
     payload: Comment
 }
 
+interface AddCommentAction {
+    type: typeof ADD_COMMENT
+    payload: Comment
+}
+
+export interface RequestCommentsAction {
+    type: typeof REQUEST_COMMENTS
+    payload: {
+        docId: number;
+        fromDate: number
+    }
+}
+
+interface ReceiveCommentsAction {
+    type: typeof RECEIVE_COMMENTS,
+    payload: {
+        comments: Comment[],
+        docId: number
+    }
+
+}
 
 interface DeletedCommentAction {
     type: typeof DELETE_COMMENT
@@ -27,4 +57,4 @@ interface ClearUnreadCommentsAction {
     payload: number
 }
 
-export type CommentsActionTypes = DeletedCommentAction | ClearUnreadCommentsAction | SetCommentAction
+export type CommentsActionTypes = ReceiveCommentsAction | RequestCommentsAction | DeletedCommentAction | ClearUnreadCommentsAction | SetCommentAction | AddCommentAction

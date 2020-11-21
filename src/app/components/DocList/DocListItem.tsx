@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { DocType } from 'app/services/docTypes';
 import LabelsList from 'app/components/Labels/LabelList';
 import { Organization } from 'app/services/organizations';
-import { List, Typography, Tag } from 'antd';
+import { List, Typography, Tag, Badge } from 'antd';
 
 import './style.scss';
 import UsersAvatarList from '../users/UsersAvatarList';
@@ -16,6 +16,7 @@ import UsersAvatarList from '../users/UsersAvatarList';
 interface injectedParams {
     statuses: Map<number, Status>;
     docTypes: Map<number, DocType>;
+    unReadComments?: number;
     currentOrganization: Organization | undefined,
 }
 
@@ -47,6 +48,9 @@ class DocListItem extends React.Component<AllProps> {
                             <Tag>{(currentDocType) ? currentDocType.name : ""}</Tag>
                             <Tag>{(currentStatus) ? currentStatus.name : ""}</Tag>
                         </div>
+                        <div>
+                            <Badge count={this.props.unReadComments} ></Badge>
+                        </div>
                     </div>
                     <div>
                         <div className="title">
@@ -63,11 +67,15 @@ class DocListItem extends React.Component<AllProps> {
     };
 }
 
-const mapStateToProps = (state: ApplicationState): injectedParams => {
+const mapStateToProps = (state: ApplicationState, ownProps: DocsPageProps): injectedParams => {
+
+    const docFromStore = state.comments.docs.get(ownProps.doc.id);
+    console.log("moreComments", docFromStore?.moreComments)
     return {
         currentOrganization: state.organizations.currentOrganization,
         statuses: state.statuses.map,
-        docTypes: state.docTypes.mapById
+        docTypes: state.docTypes.mapById,
+        unReadComments: docFromStore?.moreComments?.length
     };
 };
 

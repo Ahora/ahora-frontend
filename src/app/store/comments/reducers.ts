@@ -12,6 +12,7 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
                 docComments = { map: new Map() }
             }
             docComments.map.set(action.payload.id, action.payload);
+            docComments.moreComments = [...docComments.moreComments || [], action.payload];
             state.docs.set(action.payload.docId, docComments);
             return { ...state, docs: new Map(state.docs) };
         case DELETE_COMMENT:

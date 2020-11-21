@@ -66,7 +66,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                 this.props.loadComments();
             }
         }
-        else if (this.props.moreComments?.length == 1) {
+        else if (this.props.moreComments?.length == 1 && this.state.focusId !== this.props.moreComments[0].id) {
             this.setState({
                 focusId: this.props.moreComments[0].id
             });

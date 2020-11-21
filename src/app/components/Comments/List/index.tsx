@@ -20,7 +20,7 @@ interface DispatchProps {
     clearUnReadComments: () => void;
     addComment: (comment: Comment) => void;
     deleteComment: (commentId: number) => void;
-    loadComments: (fromDate?: Date) => void;
+    loadComments: (toDate?: Date) => void;
 }
 
 interface CommentsProps extends InjectableProps, DispatchProps {
@@ -60,7 +60,6 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
         this.setState({ qouteComment: comment });
     }
 
-
     async componentDidUpdate(prevProps: CommentsProps) {
         if (this.props.doc.id !== prevProps.doc.id) {
             if (!this.props.comments) {
@@ -73,25 +72,20 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
             });
         }
 
-        /*else {
-            if (this.props.comments) {
-                this.setState({
-                    focusId: this.props.comments.length > 0 ? this.props.comments[this.props.comments.length - 1].id : undefined,
-                    pinnedComments: this.props.comments.filter(comment => comment.pinned)
-                });
-            }
-        }
-        */
+        this.setState({ pinnedComments: this.props.comments?.filter(comment => comment.pinned) });
     }
 
 
     async componentDidMount() {
         if (!this.props.comments) {
-            this.props.loadComments();
 
+            const comments = [...this.props.comments || [], ...this.props.moreComments || [],]
+            let toDate: Date | undefined;
+            if (comments?.length > 0) {
+                toDate = comments[0].createdAt
+            }
+            this.props.loadComments(toDate);
         }
-
-
     }
 
     render() {
@@ -146,7 +140,7 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): Dispat
         clearUnReadComments: () => dispatch(clearUnReadCommentsInState(ownProps.doc.id)),
         deleteComment: (commentId: number) => dispatch(deleteCommentInState(ownProps.doc.id, commentId)),
         addComment: (comment: Comment) => dispatch(AddCommentInState(comment)),
-        loadComments: (fromDate?: Date) => dispatch(requestCommentsToState(ownProps.doc.id, fromDate))
+        loadComments: (toDate?: Date) => dispatch(requestCommentsToState(ownProps.doc.id, toDate))
     }
 }
 const mapStateToProps = (state: ApplicationState, props: CommentsProps): InjectableProps => {

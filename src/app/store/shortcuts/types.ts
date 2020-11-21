@@ -1,5 +1,6 @@
 import { SearchCriterias } from "app/components/SearchDocsInput";
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
+import { AddCommentAction, ClearUnreadCommentsAction, SetCommentAction } from "../comments/types";
 import { DeleteDocAction } from "../docs/types";
 import { SET_CURRENT_ORGANIZATION } from "../organizations/types";
 import StoreOrganizationShortcut from "./StoreOrganizationShortcut";
@@ -100,4 +101,4 @@ interface FetchShortcutesAction {
     data: OrganizationShortcut[]
 }
 
-export type ShortcutActionTypes = ShortcutAddDocAction | DeleteDocAction | AddShortcutAction | ShortcutDocsReceivedAction | LoadShortcutActions | DeleteShortcutAction | ReportDocReadAction | FetchShortcutesAction | UpdateShortcutAction | SetOrg | UpdateShortcutDocs | UpdateShortcutSearchCriteriasAction
+export type ShortcutActionTypes = AddCommentAction | ClearUnreadCommentsAction | SetCommentAction | ShortcutAddDocAction | DeleteDocAction | AddShortcutAction | ShortcutDocsReceivedAction | LoadShortcutActions | DeleteShortcutAction | ReportDocReadAction | FetchShortcutesAction | UpdateShortcutAction | SetOrg | UpdateShortcutDocs | UpdateShortcutSearchCriteriasAction

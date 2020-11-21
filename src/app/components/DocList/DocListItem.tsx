@@ -70,7 +70,6 @@ class DocListItem extends React.Component<AllProps> {
 const mapStateToProps = (state: ApplicationState, ownProps: DocsPageProps): injectedParams => {
 
     const docFromStore = state.comments.docs.get(ownProps.doc.id);
-    console.log("moreComments", docFromStore?.moreComments)
     return {
         currentOrganization: state.organizations.currentOrganization,
         statuses: state.statuses.map,

@@ -3,6 +3,7 @@ import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
 import { SET_CURRENT_ORGANIZATION } from '../organizations/types';
 import StoreOrganizationShortcut from './StoreOrganizationShortcut';
 import { DELETE_DOC } from '../docs/types';
+import { ADD_COMMENT, CLEAR_UNREAD_COMMENTS, SET_COMMENT } from '../comments/types';
 
 const initialState: ShortcutsState = {
     shortcuts: [],
@@ -14,6 +15,7 @@ const initialState: ShortcutsState = {
 }
 
 export function shortcutsReducer(state = initialState, action: ShortcutActionTypes): ShortcutsState {
+    console.log(action);
     switch (action.type) {
         case UPDATE_SHURTCUT_SEARCH_CRITERIAS:
             let shortcutStore = state.map.get(action.payload.shortcutId);
@@ -62,9 +64,7 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             }
             return { ...state, map: new Map(state.map) };
         case REPORT_DOC_READ:
-            state.map.forEach((shortcut, key) => {
-                shortcut.unreadDocs?.delete(action.payload);
-            })
+            state.map.forEach((shortcut) => { shortcut.unreadDocs?.delete(action.payload); });
             return { ...state, map: new Map(state.map) };
         case SHORTCUT_DOCS_RECEIVED:
             const shortcut = state.map.get(action.payload.shortcutId);
@@ -81,6 +81,7 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
         case DELETE_DOC:
             state.map.forEach((shortcut) => {
                 shortcut.docs?.delete(action.payload);
+                shortcut.unreadDocs?.delete(action.payload);
             })
             return { ...state, map: new Map(state.map) };
         case SHORTCUT_DOCS_ADD:
@@ -88,7 +89,31 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             if (addedshortcut) {
                 addedshortcut.docs?.set(action.payload.docId)
             }
+            return { ...state, map: new Map(state.map) };
+        case SET_COMMENT:
+            let docId: number = action.payload.docId;
+            state.map.forEach((shortcut) => {
+                if (shortcut.unreadDocs?.has(docId) || shortcut.docs?.has(docId)) {
+                    shortcut.unreadDocs?.set(docId);
+                }
+            });
+            return { ...state, map: new Map(state.map) };
 
+        case CLEAR_UNREAD_COMMENTS:
+            docId = action.payload;
+            state.map.forEach((shortcut) => {
+                if (shortcut.unreadDocs?.has(docId) || shortcut.docs?.has(docId)) {
+                    shortcut.unreadDocs?.delete(docId);
+                }
+            });
+            return { ...state, map: new Map(state.map) };
+        case ADD_COMMENT:
+            docId = action.payload.docId;
+            state.map.forEach((shortcut) => {
+                if (shortcut.unreadDocs?.has(docId) || shortcut.docs?.has(docId)) {
+                    shortcut.unreadDocs?.delete(docId);
+                }
+            });
             return { ...state, map: new Map(state.map) };
 
         default:

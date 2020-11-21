@@ -17,12 +17,12 @@ export interface DocCommentsState {
     map: Map<number, Comment>;
 }
 
-interface SetCommentAction {
+export interface SetCommentAction {
     type: typeof SET_COMMENT
     payload: Comment
 }
 
-interface AddCommentAction {
+export interface AddCommentAction {
     type: typeof ADD_COMMENT
     payload: Comment
 }
@@ -52,7 +52,7 @@ interface DeletedCommentAction {
     }
 }
 
-interface ClearUnreadCommentsAction {
+export interface ClearUnreadCommentsAction {
     type: typeof CLEAR_UNREAD_COMMENTS
     payload: number
 }

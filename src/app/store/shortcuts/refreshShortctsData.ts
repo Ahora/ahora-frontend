@@ -1,4 +1,4 @@
-import { call, put, takeEvery } from 'redux-saga/effects'
+import { call, put, takeEvery, delay } from 'redux-saga/effects'
 import { REFRESH_SHORTCUTS } from './types';
 import { store } from '..';
 import StoreOrganizationShortcut from './StoreOrganizationShortcut';
@@ -23,8 +23,11 @@ function* getShortcutsData(action: any) {
         const shortcut = array[index];
         const docs: Doc[] = yield call(getDocUnreadMessage, shortcut.searchCriteria, shortcut.shortcutId);
         yield put(setShortcutUnReadAndDocs(shortcut.shortcutId, docs.map((doc: Doc) => doc.id)));
-
     }
+
+    //Run periodic refresh every 20 minutes
+    yield delay(20000)
+    yield put({ type: REFRESH_SHORTCUTS });
 }
 
 function* mySaga() {

@@ -11,7 +11,7 @@ export default class OrganizationWebSocket {
     private socket: any;
 
     constructor(organizationId: string) {
-        const socket = io();
+        const socket = io({ "transports": ['websocket'] });
 
         //Comments
         socket.on('comment-post', (comment: Comment) => {

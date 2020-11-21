@@ -14,6 +14,7 @@ interface InjectableProps {
     moreComments?: Comment[];
     canPostComment: boolean;
     comments?: Comment[];
+    pinnedComments?: Comment[];
 }
 
 interface DispatchProps {
@@ -29,7 +30,6 @@ interface CommentsProps extends InjectableProps, DispatchProps {
 }
 
 interface State {
-    pinnedComments?: Comment[];
     qouteComment?: Comment;
     focusId?: number;
 }
@@ -71,8 +71,6 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                 focusId: this.props.moreComments[0].id
             });
         }
-
-        this.setState({ pinnedComments: this.props.comments?.filter(comment => comment.pinned) });
     }
 
 
@@ -91,10 +89,10 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
     render() {
         return (
             <div>
-                {this.state.pinnedComments && this.state.pinnedComments.length > 0 &&
+                {this.props.pinnedComments && this.props.pinnedComments.length > 0 &&
                     (<>
                         <div className="list">
-                            {this.state.pinnedComments.map((comment: Comment) => {
+                            {this.props.pinnedComments.map((comment: Comment) => {
                                 return (<CommentDetailsComponent focus={false} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} key={comment.id} comment={comment}></CommentDetailsComponent>);
                             })}
                         </div>
@@ -148,7 +146,8 @@ const mapStateToProps = (state: ApplicationState, props: CommentsProps): Injecta
     return {
         canPostComment: !!state.currentUser.user,
         moreComments: mapOfComments?.moreComments,
-        comments: mapOfComments?.comments
+        comments: mapOfComments?.comments,
+        pinnedComments: mapOfComments?.comments?.filter(comment => comment.pinned)
     };
 };
 

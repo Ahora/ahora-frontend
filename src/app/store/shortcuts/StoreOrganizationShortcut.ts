@@ -5,6 +5,7 @@ export default interface StoreOrganizationShortcut {
     unreadDocs?: Map<number, void>;
     onReadComments?: number;
     searchCriteria: SearchCriterias;
+    disableNotification: boolean;
     shortcut?: OrganizationShortcut;
     docs?: Map<number, void>,
     page?: number;

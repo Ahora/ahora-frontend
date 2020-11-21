@@ -8,8 +8,8 @@ import { ADD_COMMENT, CLEAR_UNREAD_COMMENTS, SET_COMMENT } from '../comments/typ
 const initialState: ShortcutsState = {
     shortcuts: [],
     map: new Map<string, StoreOrganizationShortcut>([
-        ["inbox", { searchCriteria: { mention: ["me"] } }],
-        ["docs", { searchCriteria: { status: ["open"] } }]
+        ["inbox", { searchCriteria: { mention: ["me"] }, disableNotification: false }],
+        ["docs", { searchCriteria: { status: ["open"] }, disableNotification: true }]
     ]),
     loading: false
 }
@@ -26,13 +26,13 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
         case SET_CURRENT_ORGANIZATION:
             return { ...initialState }
         case ADD_SHORTCUT:
-            state.map.set(action.payload.id!.toString(), { shortcut: action.payload, searchCriteria: action.payload.searchCriteria });
+            state.map.set(action.payload.id!.toString(), { shortcut: action.payload, searchCriteria: action.payload.searchCriteria, disableNotification: false });
             return { ...state, shortcuts: [...state.shortcuts, action.payload], map: state.map }
         case RECEIVE_SHORTCUTS:
             const shortcuts: OrganizationShortcut[] = [];
             action.data.forEach(async (shortcut) => {
                 shortcuts.push(shortcut);
-                state.map.set(shortcut.id!.toString(), { shortcut: shortcut, searchCriteria: shortcut.searchCriteria });
+                state.map.set(shortcut.id!.toString(), { shortcut: shortcut, searchCriteria: shortcut.searchCriteria, disableNotification: false });
             });
             return { ...state, shortcuts, map: state.map, loading: false }
         case DELETE_SHORTCUT:
@@ -46,7 +46,7 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
 
             }
         case UPDATE_SHORTCUT:
-            state.map.set(action.payload.id!.toString(), { shortcut: action.payload, searchCriteria: action.payload.searchCriteria });
+            state.map.set(action.payload.id!.toString(), { shortcut: action.payload, searchCriteria: action.payload.searchCriteria, disableNotification: false });
             return {
                 ...state,
                 shortcuts: state.shortcuts ? state.shortcuts.map((shortcut) => shortcut.id === action.payload.id ? action.payload : shortcut) : [action.payload]

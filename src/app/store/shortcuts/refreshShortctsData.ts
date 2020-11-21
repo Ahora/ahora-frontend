@@ -21,8 +21,11 @@ function* getShortcutsData(action: any) {
 
     for (let index = 0; index < array.length; index++) {
         const shortcut = array[index];
-        const docs: Doc[] = yield call(getDocUnreadMessage, shortcut.searchCriteria, shortcut.shortcutId);
-        yield put(setShortcutUnReadAndDocs(shortcut.shortcutId, docs.map((doc: Doc) => doc.id)));
+
+        if (!shortcutsMap.get(shortcut.shortcutId)?.disableNotification) {
+            const docs: Doc[] = yield call(getDocUnreadMessage, shortcut.searchCriteria, shortcut.shortcutId);
+            yield put(setShortcutUnReadAndDocs(shortcut.shortcutId, docs.map((doc: Doc) => doc.id)));
+        }
     }
 
     //Run periodic refresh every 20 minutes

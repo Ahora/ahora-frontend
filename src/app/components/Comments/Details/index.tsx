@@ -49,8 +49,7 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
             if (this.props.focus && this.containerRef.current) {
                 this.containerRef.current.scrollIntoView({
                     behavior: "smooth",
-                    block: "start",
-                    inline: "nearest"
+                    block: "nearest"
                 });
             }
         }, 0);

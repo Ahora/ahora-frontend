@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { addComment, Comment } from 'app/services/comments';
+import { Comment } from 'app/services/comments';
 import { CommentDetailsComponent } from '../Details';
-import AddCommentComponent from 'app/components/Comments/AddComment';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import { Doc } from 'app/services/docs';
 import { connect } from 'react-redux';
@@ -9,18 +8,20 @@ import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { AddCommentInState, clearUnReadCommentsInState, deleteCommentInState, requestCommentsToState } from 'app/store/comments/actions';
 import { Divider } from 'antd';
+import VisibilitySensor from 'react-visibility-sensor';
 
 interface InjectableProps {
     moreComments?: Comment[];
     canPostComment: boolean;
     comments?: Comment[];
     pinnedComments?: Comment[];
+    focusId?: number;
 }
 
 interface DispatchProps {
     clearUnReadComments: () => void;
-    addComment: (comment: Comment) => void;
     deleteComment: (commentId: number) => void;
+    addComment: (omment: Comment) => void;
     loadComments: (toDate?: Date) => void;
 }
 
@@ -38,22 +39,11 @@ interface State {
 class CommentListComponent extends React.Component<CommentsProps, State>  {
     constructor(props: CommentsProps) {
         super(props);
-        this.state = {}
+        this.state = { focusId: props.focusId }
     }
 
     onDeleteComment(id: number): void {
         this.props.deleteComment(id);
-    }
-
-    async commentAdded(comment: Comment) {
-        this.props.addComment(comment);
-        this.setState({ focusId: comment.id, qouteComment: undefined });
-
-        const newComment: Comment = await addComment(this.props.login, this.props.doc.id, comment.comment, comment.parentId);
-
-        this.props.deleteComment(comment.id);
-        this.props.addComment(newComment);
-        this.setState({ focusId: newComment.id })
     }
 
     async onQoute(comment: Comment) {
@@ -66,10 +56,18 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                 this.props.loadComments();
             }
         }
-        else if (this.props.moreComments?.length == 1 && this.state.focusId !== this.props.moreComments[0].id) {
-            this.setState({
-                focusId: this.props.moreComments[0].id
-            });
+
+        let focusId = this.state.focusId;
+        if (prevProps.focusId != this.props.focusId) {
+            focusId = this.props.focusId;
+        }
+
+        if (this.props.moreComments && this.props.moreComments.length > 0 && this.props.moreComments[0].id !== focusId) {
+            focusId = this.props.moreComments[0].id;
+        }
+
+        if (focusId !== this.state.focusId) {
+            this.setState({ focusId });
         }
     }
 
@@ -88,12 +86,12 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
     render() {
         return (
-            <div>
+            <>
                 {this.props.pinnedComments && this.props.pinnedComments.length > 0 &&
                     (<>
                         <div className="list">
                             {this.props.pinnedComments.map((comment: Comment) => {
-                                return (<CommentDetailsComponent focus={false} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} key={comment.id} comment={comment}></CommentDetailsComponent>);
+                                return (<CommentDetailsComponent focus={comment.id === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} key={comment.id} comment={comment}></CommentDetailsComponent>);
                             })}
                         </div>
                     </>)
@@ -116,19 +114,21 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
                 {this.props.moreComments && this.props.moreComments.length > 0 &&
                     <div>
-                        <Divider orientation="left">New comments</Divider>
+                        <Divider orientation="right">New comments {this.props.focusId}</Divider>
                         <div className="list">
                             {this.props.moreComments.map((comment: Comment) => {
                                 return (<CommentDetailsComponent key={`${comment.id}-${comment.updatedAt}`} focus={comment.id === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} comment={comment}></CommentDetailsComponent>);
                             })}
                         </div>
+                        <br /><br /><br />
+                        <VisibilitySensor onChange={(visible: boolean) => {
+                            if (visible) this.props.clearUnReadComments();
+                        }}>
+                            <span>&nbsp;</span>
+                        </VisibilitySensor>
                     </div>
                 }
-
-                {this.props.canPostComment &&
-                    <AddCommentComponent qouteComment={this.state.qouteComment} commentAdded={(comment: Comment) => { this.commentAdded(comment) }} login={this.props.login} docId={this.props.doc.id}></AddCommentComponent>
-                }
-            </div>
+            </>
         );
     }
 }
@@ -141,13 +141,34 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): Dispat
         loadComments: (toDate?: Date) => dispatch(requestCommentsToState(ownProps.doc.id, toDate))
     }
 }
+
+function idToComment(commentId: number, map: Map<number, Comment>): Comment | undefined {
+    return map.get(commentId);
+}
+
+function numberIdsToComments(commentIds?: number[], map?: Map<number, Comment>): Comment[] | undefined {
+    if (commentIds && map) {
+        const comments: Comment[] = [];
+        for (let index = 0; index < commentIds.length; index++) {
+            const comment = idToComment(commentIds[index], map);
+
+            if (comment) {
+                comments.push(comment);
+            }
+        }
+        return comments;
+    }
+    return undefined;
+}
+
 const mapStateToProps = (state: ApplicationState, props: CommentsProps): InjectableProps => {
     const mapOfComments = state.comments.docs.get(props.doc.id);
+    const comments = numberIdsToComments(mapOfComments?.comments, mapOfComments?.map);
     return {
         canPostComment: !!state.currentUser.user,
-        moreComments: mapOfComments?.moreComments,
-        comments: mapOfComments?.comments,
-        pinnedComments: mapOfComments?.comments?.filter(comment => comment.pinned)
+        moreComments: numberIdsToComments(mapOfComments?.moreComments, mapOfComments?.map),
+        comments,
+        pinnedComments: comments?.filter(comment => comment.pinned)
     };
 };
 

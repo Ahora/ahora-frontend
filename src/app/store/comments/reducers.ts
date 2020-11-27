@@ -11,18 +11,23 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
             if (!docComments) {
                 docComments = { map: new Map() }
             }
+
+            if (!docComments.map.has(action.payload.id)) {
+                docComments.moreComments = [...docComments.moreComments || [], action.payload.id];
+            }
+
             docComments.map.set(action.payload.id, action.payload);
-            docComments.moreComments = [...docComments.moreComments || [], action.payload];
             state.docs.set(action.payload.docId, docComments);
             return { ...state, docs: new Map(state.docs) };
         case DELETE_COMMENT:
             const docToDeleteComments = state.docs.get(action.payload.docId);
             if (docToDeleteComments) {
                 docToDeleteComments.map.delete(action.payload.commentId);
-                docToDeleteComments.comments = docToDeleteComments.comments?.filter((currentDoc) => currentDoc.id !== action.payload.commentId)
-                docToDeleteComments.moreComments = docToDeleteComments.moreComments?.filter((currentDoc) => currentDoc.id !== action.payload.commentId)
-                state.docs.set(action.payload.docId, docToDeleteComments)
+                docToDeleteComments.comments = docToDeleteComments.comments?.filter((currentCommentId) => currentCommentId !== action.payload.commentId)
+                docToDeleteComments.moreComments = docToDeleteComments.moreComments?.filter((currentCommentId) => currentCommentId !== action.payload.commentId)
+                state.docs.set(action.payload.docId, docToDeleteComments);
             }
+
 
             return { ...state, docs: new Map(state.docs) };
         case ADD_COMMENT:
@@ -33,14 +38,14 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
 
             //Update comment in a map and clear more comments.
             docCommentsAdded.map.set(action.payload.id, action.payload);
-            docCommentsAdded.comments = [...docCommentsAdded.comments || [], ...docCommentsAdded.moreComments || [], action.payload]
+            docCommentsAdded.comments = [...docCommentsAdded.comments || [], ...docCommentsAdded.moreComments || [], action.payload.id]
             docCommentsAdded.moreComments = undefined;
             state.docs.set(action.payload.docId, docCommentsAdded);
             return { ...state, docs: new Map(state.docs) };
         case CLEAR_UNREAD_COMMENTS:
             let clearDocComments = state.docs.get(action.payload);
             if (clearDocComments) {
-                clearDocComments = { ...clearDocComments, comments: [...clearDocComments.comments, ...clearDocComments.moreComments], moreComments: undefined }
+                clearDocComments = { ...clearDocComments, comments: [...clearDocComments.comments || [], ...clearDocComments.moreComments || []], moreComments: undefined }
                 state.docs.set(action.payload, clearDocComments);
             }
             return { ...state, docs: new Map(state.docs) };
@@ -50,7 +55,14 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
             if (!receivedCommentsDoc) {
                 receivedCommentsDoc = { map: new Map() }
             }
-            receivedCommentsDoc.comments = [...action.payload.comments, ...receivedCommentsDoc.comments || []];
+
+            const commentIds: number[] = [];
+            action.payload.comments.forEach((comment) => {
+                receivedCommentsDoc?.map.set(comment.id, comment);
+                commentIds.push(comment.id);
+            })
+
+            receivedCommentsDoc.comments = [...commentIds, ...receivedCommentsDoc.comments || []];
             state.docs.set(action.payload.docId, receivedCommentsDoc);
 
             return { ...state, docs: new Map(state.docs) };

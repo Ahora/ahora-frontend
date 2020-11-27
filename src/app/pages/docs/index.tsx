@@ -189,16 +189,14 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                 }
                                                 {(isBrowser || (isMobile && this.props.match.params.docId)) &&
                                                     <div className="main-content">
-                                                        <div className="scrollable">
-                                                            {this.state.currentDocId ?
-                                                                <DocsDetailsPage onDocDeleted={this.onDocDeleted.bind(this)} onDocUpdated={this.onDocUpdated.bind(this)} doc={this.state.currentDoc} {...this.props}></DocsDetailsPage>
-                                                                :
-                                                                <Switch>
-                                                                    <Route path={`/organizations/:login/:section/add`} component={(props: any) => <AddDocPage {...props} onCancel={this.onAddCancel.bind(this)} onDocAdded={this.onDocAdded.bind(this)} />} />
-                                                                    <Route path={`/organizations/:login/:section`} component={DefaultDocsPage} />
-                                                                </Switch>
-                                                            }
-                                                        </div>
+                                                        {this.state.currentDocId ?
+                                                            <DocsDetailsPage onDocDeleted={this.onDocDeleted.bind(this)} onDocUpdated={this.onDocUpdated.bind(this)} doc={this.state.currentDoc} {...this.props}></DocsDetailsPage>
+                                                            :
+                                                            <Switch>
+                                                                <Route path={`/organizations/:login/:section/add`} component={(props: any) => <AddDocPage {...props} onCancel={this.onAddCancel.bind(this)} onDocAdded={this.onDocAdded.bind(this)} />} />
+                                                                <Route path={`/organizations/:login/:section`} component={DefaultDocsPage} />
+                                                            </Switch>
+                                                        }
                                                     </div>
                                                 }
                                             </div>

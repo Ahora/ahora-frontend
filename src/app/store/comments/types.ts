@@ -12,8 +12,8 @@ export interface CommentsState {
 }
 
 export interface DocCommentsState {
-    comments?: Comment[];
-    moreComments?: Comment[];
+    comments?: number[];
+    moreComments?: number[];
     map: Map<number, Comment>;
 }
 

@@ -95,6 +95,7 @@
     "react-router-dom": "^5.0.1",
     "react-router-redux": "^5.0.0-alpha.9",
     "react-split-pane": "^0.1.92",
+    "react-visibility-sensor": "^5.1.1",
     "recharts": "^1.8.5",
     "redux": "^4.0.4",
     "redux-devtools-extension": "^2.13.5",

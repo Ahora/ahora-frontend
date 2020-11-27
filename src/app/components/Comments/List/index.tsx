@@ -114,7 +114,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
                 {this.props.moreComments && this.props.moreComments.length > 0 &&
                     <div>
-                        <Divider orientation="right">New comments {this.props.focusId}</Divider>
+                        <Divider orientation="right">New comments</Divider>
                         <div className="list">
                             {this.props.moreComments.map((comment: Comment) => {
                                 return (<CommentDetailsComponent key={`${comment.id}-${comment.updatedAt}`} focus={comment.id === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} comment={comment}></CommentDetailsComponent>);

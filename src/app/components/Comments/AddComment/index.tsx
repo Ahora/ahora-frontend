@@ -8,6 +8,7 @@ import { ApplicationState } from 'app/store';
 import { User } from 'app/services/users';
 import { connect } from 'react-redux';
 import { KeyboardEvent } from 'react';
+import { markdownToHTML } from 'app/sdk/markdown';
 require("./style.scss")
 
 
@@ -78,7 +79,7 @@ class AddCommentComponent extends React.Component<CommentsProps, State> {
                 pinned: false,
                 parentId: this.props.qouteComment && this.props.qouteComment.id,
                 comment: this.state.rawComment,
-                htmlComment: this.state.rawComment,
+                htmlComment: await markdownToHTML(this.state.rawComment),
                 docId: this.props.docId,
                 updatedAt: new Date()
             };

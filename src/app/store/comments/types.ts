@@ -1,11 +1,13 @@
 import { Comment } from "app/services/comments";
+import { REPORT_DOC_READ } from "../shortcuts/types";
 
 export const SET_COMMENT = 'SET_COMMENT';
+export const RECEIVE_UNREAD_COMMENTS = 'RECEIVE_UNREAD_COMMENTS';
+export const LOADING_COMMENTS = 'LOADING_COMMENTS';
 export const ADD_COMMENT = 'ADD_COMMENT';
 export const REQUEST_COMMENTS = 'REQUEST_COMMENTS';
 export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
-export const CLEAR_UNREAD_COMMENTS = 'CLEAR_UNREAD_COMMENTS';
 
 export interface CommentsState {
     docs: Map<number, DocCommentsState>;
@@ -37,7 +39,7 @@ export interface RequestCommentsAction {
 }
 
 interface ReceiveCommentsAction {
-    type: typeof RECEIVE_COMMENTS,
+    type: typeof RECEIVE_COMMENTS | typeof RECEIVE_UNREAD_COMMENTS,
     payload: {
         comments: Comment[],
         docId: number
@@ -53,9 +55,17 @@ interface DeletedCommentAction {
     }
 }
 
+
+interface LoadingCommentsAction {
+    type: typeof LOADING_COMMENTS
+    payload: number;
+}
+
+LOADING_COMMENTS
+
 export interface ClearUnreadCommentsAction {
-    type: typeof CLEAR_UNREAD_COMMENTS
+    type: typeof REPORT_DOC_READ
     payload: number
 }
 
-export type CommentsActionTypes = ReceiveCommentsAction | RequestCommentsAction | DeletedCommentAction | ClearUnreadCommentsAction | SetCommentAction | AddCommentAction
+export type CommentsActionTypes = ReceiveCommentsAction | LoadingCommentsAction | RequestCommentsAction | DeletedCommentAction | ClearUnreadCommentsAction | SetCommentAction | AddCommentAction

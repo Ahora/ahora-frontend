@@ -13,6 +13,7 @@ import docTypeSaga from "./docTypes/sagas";
 import receiveCommentsSaga from "./comments/receiveCommentsSaga";
 import usersSaga from "./users/sagas";
 import currentUserSaga from "./currentuser/sagas";
+import reportDocReadSaga from "./docs/reportDocReadSaga";
 import loadShortcutDocsSaga from "./shortcuts/loadShortcutDocs";
 import { StatusesState } from './statuses/types';
 import { CurrentUserState } from './currentuser/types';
@@ -55,7 +56,9 @@ export const store = createStore(
 );
 
 
+
 sagaMiddleware.run(receiveCommentsSaga);
+sagaMiddleware.run(reportDocReadSaga);
 sagaMiddleware.run(labelSaga);
 sagaMiddleware.run(docTypeSaga);
 sagaMiddleware.run(statusesSaga);

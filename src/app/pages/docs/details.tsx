@@ -171,7 +171,6 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                             <div className="main-content">
                                 <div className="scrollable">
                                     <div className="doc-details">
-                                        <img style={{ display: "none" }} src={`/api/organizations/${this.props.match.params.login}/docs/${doc.id}/view`} />
                                         <Space className="extra">
                                             <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
                                             <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>

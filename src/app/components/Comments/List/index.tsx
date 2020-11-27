@@ -6,9 +6,10 @@ import { Doc } from 'app/services/docs';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
-import { AddCommentInState, clearUnReadCommentsInState, deleteCommentInState, requestCommentsToState } from 'app/store/comments/actions';
+import { AddCommentInState, deleteCommentInState, requestCommentsToState } from 'app/store/comments/actions';
 import { Divider } from 'antd';
 import VisibilitySensor from 'react-visibility-sensor';
+import { reportDocRead } from 'app/store/shortcuts/actions';
 
 interface InjectableProps {
     moreComments?: Comment[];
@@ -134,7 +135,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): DispatchProps => {
     return {
-        clearUnReadComments: () => dispatch(clearUnReadCommentsInState(ownProps.doc.id)),
+        clearUnReadComments: () => dispatch(reportDocRead(ownProps.doc.id)),
         deleteComment: (commentId: number) => dispatch(deleteCommentInState(ownProps.doc.id, commentId)),
         addComment: (comment: Comment) => dispatch(AddCommentInState(comment)),
         loadComments: (toDate?: Date) => dispatch(requestCommentsToState(ownProps.doc.id, toDate))

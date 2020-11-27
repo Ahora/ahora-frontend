@@ -84,7 +84,7 @@ interface UpdateShortcutSearchCriteriasAction {
     }
 }
 
-interface ReportDocReadAction {
+export interface ReportDocReadAction {
     type: typeof REPORT_DOC_READ
     payload: number
 }

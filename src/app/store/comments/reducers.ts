@@ -1,4 +1,5 @@
-import { ADD_COMMENT, CLEAR_UNREAD_COMMENTS, CommentsActionTypes, CommentsState, DELETE_COMMENT, RECEIVE_COMMENTS, REQUEST_COMMENTS, SET_COMMENT } from "./types";
+import { REPORT_DOC_READ } from "../shortcuts/types";
+import { ADD_COMMENT, CommentsActionTypes, CommentsState, DELETE_COMMENT, LOADING_COMMENTS, RECEIVE_COMMENTS, RECEIVE_UNREAD_COMMENTS, SET_COMMENT } from "./types";
 
 const initialState: CommentsState = {
     docs: new Map()
@@ -42,19 +43,34 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
             docCommentsAdded.moreComments = undefined;
             state.docs.set(action.payload.docId, docCommentsAdded);
             return { ...state, docs: new Map(state.docs) };
-        case CLEAR_UNREAD_COMMENTS:
+        case REPORT_DOC_READ:
             let clearDocComments = state.docs.get(action.payload);
             if (clearDocComments) {
-                clearDocComments = { ...clearDocComments, comments: [...clearDocComments.comments || [], ...clearDocComments.moreComments || []], moreComments: undefined }
+                clearDocComments = { ...clearDocComments, comments: [...clearDocComments.comments || [], ...clearDocComments.moreComments || []], moreComments: [] }
                 state.docs.set(action.payload, clearDocComments);
             }
             return { ...state, docs: new Map(state.docs) };
-        case REQUEST_COMMENTS:
-            let requetCommentsDoc = state.docs.get(action.payload.docId);
-            requetCommentsDoc = requetCommentsDoc ? { ...requetCommentsDoc, loading: true } : { map: new Map(), loading: true };
-            state.docs.set(action.payload.docId, requetCommentsDoc);
+        case LOADING_COMMENTS:
+            let loadingCommentsDoc = state.docs.get(action.payload);
+            loadingCommentsDoc = loadingCommentsDoc ? { ...loadingCommentsDoc, loading: true } : { map: new Map(), loading: true };
+            state.docs.set(action.payload, loadingCommentsDoc);
             return { ...state, docs: new Map(state.docs) };
 
+        case RECEIVE_UNREAD_COMMENTS:
+            let unreadCommentsDoc = state.docs.get(action.payload.docId);
+            unreadCommentsDoc = unreadCommentsDoc ? { ...unreadCommentsDoc } : { map: new Map(), loading: false };
+
+            const unreadCommentIds: number[] = [];
+            action.payload.comments.forEach((comment) => {
+                unreadCommentsDoc?.map.set(comment.id, comment);
+                unreadCommentIds.push(comment.id);
+            });
+
+            unreadCommentsDoc.moreComments = unreadCommentIds;
+
+            state.docs.set(action.payload.docId, unreadCommentsDoc);
+
+            return { ...state, docs: new Map(state.docs) };
         case RECEIVE_COMMENTS:
             let receivedCommentsDoc = state.docs.get(action.payload.docId);
             if (!receivedCommentsDoc) {
@@ -66,7 +82,7 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
             action.payload.comments.forEach((comment) => {
                 receivedCommentsDoc?.map.set(comment.id, comment);
                 commentIds.push(comment.id);
-            })
+            });
 
             receivedCommentsDoc.comments = [...commentIds, ...receivedCommentsDoc.comments || []];
             state.docs.set(action.payload.docId, receivedCommentsDoc);

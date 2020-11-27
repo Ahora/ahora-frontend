@@ -1,4 +1,5 @@
 import { Doc } from "app/services/docs";
+import { ReportDocReadAction } from "../shortcuts/types";
 
 export const SET_DOC = 'SET_DOC';
 export const SET_DOCS = 'SET_DOCS';
@@ -29,4 +30,4 @@ export interface DeleteDocAction {
     payload: number
 }
 
-export type DocsActionTypes = SetDocAction | DeleteDocAction | SetDocsAction;
+export type DocsActionTypes = ReportDocReadAction | SetDocAction | DeleteDocAction | SetDocsAction;

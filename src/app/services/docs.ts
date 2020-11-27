@@ -51,6 +51,7 @@ export interface SearchDocResult {
 }
 
 const docsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}");
+const reportDocReadClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/view");
 export const getDocs = async (query?: SearchCriterias, offset: number = 0, limit: number = 30): Promise<SearchDocResult> => {
     const result = await docsClient.get({
         query: { ...query, offset, limit }
@@ -77,6 +78,12 @@ export const getDocUnreadMessage = async (searchCriterias: SearchCriterias, shor
 
     return result.data;
 
+}
+
+export const reportDocReadToServer = (id: number) => {
+    reportDocReadClient.get({
+        params: { id }
+    });
 }
 
 export const getDoc = async (login: string, id: number): Promise<Doc> => {

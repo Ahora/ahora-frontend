@@ -14,6 +14,7 @@ export interface CommentsState {
 export interface DocCommentsState {
     comments?: number[];
     moreComments?: number[];
+    loading: boolean;
     map: Map<number, Comment>;
 }
 

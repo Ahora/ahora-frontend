@@ -1,4 +1,4 @@
-import { ADD_COMMENT, CLEAR_UNREAD_COMMENTS, CommentsActionTypes, CommentsState, DELETE_COMMENT, RECEIVE_COMMENTS, SET_COMMENT } from "./types";
+import { ADD_COMMENT, CLEAR_UNREAD_COMMENTS, CommentsActionTypes, CommentsState, DELETE_COMMENT, RECEIVE_COMMENTS, REQUEST_COMMENTS, SET_COMMENT } from "./types";
 
 const initialState: CommentsState = {
     docs: new Map()
@@ -9,7 +9,7 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
         case SET_COMMENT:
             let docComments = state.docs.get(action.payload.docId);
             if (!docComments) {
-                docComments = { map: new Map() }
+                docComments = { map: new Map(), loading: false }
             }
 
             if (!docComments.map.has(action.payload.id)) {
@@ -33,7 +33,7 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
         case ADD_COMMENT:
             let docCommentsAdded = state.docs.get(action.payload.docId);
             if (!docCommentsAdded) {
-                docCommentsAdded = { map: new Map() }
+                docCommentsAdded = { map: new Map(), loading: false }
             }
 
             //Update comment in a map and clear more comments.
@@ -49,12 +49,18 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
                 state.docs.set(action.payload, clearDocComments);
             }
             return { ...state, docs: new Map(state.docs) };
+        case REQUEST_COMMENTS:
+            let requetCommentsDoc = state.docs.get(action.payload.docId);
+            requetCommentsDoc = requetCommentsDoc ? { ...requetCommentsDoc, loading: true } : { map: new Map(), loading: true };
+            state.docs.set(action.payload.docId, requetCommentsDoc);
+            return { ...state, docs: new Map(state.docs) };
 
         case RECEIVE_COMMENTS:
             let receivedCommentsDoc = state.docs.get(action.payload.docId);
             if (!receivedCommentsDoc) {
-                receivedCommentsDoc = { map: new Map() }
+                receivedCommentsDoc = { map: new Map(), loading: false }
             }
+            receivedCommentsDoc.loading = false;
 
             const commentIds: number[] = [];
             action.payload.comments.forEach((comment) => {

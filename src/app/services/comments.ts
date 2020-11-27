@@ -16,8 +16,10 @@ export interface Comment {
 
 const commentsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{docId}/Comments/{id}");
 export const getComments = async (login: string, docId: number, toDate?: Date): Promise<Comment[]> => {
+    console.log("toDate", toDate)
     const result = await commentsClient.get({
-        params: { login, docId, createdAt: toDate }
+        params: { login, docId },
+        query: { createdAt: toDate }
     });
 
     return result.data;

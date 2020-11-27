@@ -6,8 +6,18 @@ import { receiveCommentsToState } from './actions';
 
 function* getShortcutsFromServer(action: RequestCommentsAction) {
     const state = store.getState();
-    const data: Comment[] = yield call(getComments, state.organizations.currentOrganization!.login, action.payload.docId);
-    yield put(receiveCommentsToState(data, action.payload.docId));
+    let toDate: Date | undefined;
+
+    const commentState = state.comments.docs.get(action.payload.docId);
+    if (commentState?.comments && commentState?.comments.length > 0) {
+        const commentId = commentState.comments[0];
+        const toComment = commentState.map.get(commentId);
+
+        toDate = toComment?.createdAt;
+    }
+
+    const data: Comment[] = yield call(getComments, state.organizations.currentOrganization!.login, action.payload.docId, toDate);
+    yield put(receiveCommentsToState(data.reverse(), action.payload.docId));
 }
 
 function* mySaga() {

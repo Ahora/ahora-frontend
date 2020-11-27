@@ -50,13 +50,11 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
         this.setState({ qouteComment: comment });
     }
 
-    async componentDidUpdate(prevProps: CommentsProps) {
-        if (this.props.doc.id !== prevProps.doc.id) {
-            if (!this.props.comments) {
-                this.props.loadComments();
-            }
-        }
+    loadMoreComments() {
+        this.props.loadComments();
+    }
 
+    async componentDidUpdate(prevProps: CommentsProps) {
         let focusId = this.state.focusId;
         if (prevProps.focusId != this.props.focusId) {
             focusId = this.props.focusId;
@@ -87,6 +85,9 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
     render() {
         return (
             <>
+                <VisibilitySensor onChange={(visible: boolean) => { if (visible) this.loadMoreComments(); }}>
+                    <span>&nbsp;</span>
+                </VisibilitySensor>
                 {this.props.pinnedComments && this.props.pinnedComments.length > 0 &&
                     (<>
                         <div className="list">
@@ -167,8 +168,7 @@ const mapStateToProps = (state: ApplicationState, props: CommentsProps): Injecta
     return {
         canPostComment: !!state.currentUser.user,
         moreComments: numberIdsToComments(mapOfComments?.moreComments, mapOfComments?.map),
-        comments,
-        pinnedComments: comments?.filter(comment => comment.pinned)
+        comments
     };
 };
 

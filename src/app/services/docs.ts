@@ -86,9 +86,9 @@ export const reportDocReadToServer = (id: number) => {
     });
 }
 
-export const getDoc = async (login: string, id: number): Promise<Doc> => {
+export const getDoc = async (id: number): Promise<Doc> => {
     const result = await docsClient.get({
-        params: { id, login }
+        params: { id }
     });
 
     return result.data;

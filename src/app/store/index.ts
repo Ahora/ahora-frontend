@@ -12,6 +12,7 @@ import refreshShortcutSaga from "./shortcuts/refreshShortctsData";
 import docTypeSaga from "./docTypes/sagas";
 import receiveCommentsSaga from "./comments/receiveCommentsSaga";
 import usersSaga from "./users/sagas";
+import requestDocSaga from "./docs/requestDocSaga";
 import currentUserSaga from "./currentuser/sagas";
 import reportDocReadSaga from "./docs/reportDocReadSaga";
 import loadShortcutDocsSaga from "./shortcuts/loadShortcutDocs";
@@ -55,8 +56,7 @@ export const store = createStore(
     ),
 );
 
-
-
+sagaMiddleware.run(requestDocSaga);
 sagaMiddleware.run(receiveCommentsSaga);
 sagaMiddleware.run(reportDocReadSaga);
 sagaMiddleware.run(labelSaga);

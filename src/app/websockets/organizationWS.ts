@@ -42,6 +42,8 @@ export default class OrganizationWebSocket {
     }
 
     close() {
-        this.socket.close();
+        if (this.socket) {
+            this.socket.close();
+        }
     }
 }

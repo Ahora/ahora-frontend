@@ -27,6 +27,7 @@ import { reportDocRead } from 'app/store/shortcuts/actions';
 import AddCommentComponent from 'app/components/Comments/AddComment';
 import { addComment } from 'app/services/comments';
 import { AddCommentInState, deleteCommentInState } from 'app/store/comments/actions';
+import { requestDocToState } from 'app/store/docs/actions';
 
 interface DocsDetailsPageState {
     focusCommentId?: number;
@@ -48,8 +49,9 @@ interface injectedParams {
 }
 
 interface DispatchProps {
-    reduceUnreadCount(docId: number): void;
+    reportAsRead(docId: number): void;
     deleteComment: (commentId: number) => void;
+    requestDoc: () => void;
     addComment: (comment: Comment) => void;
 }
 
@@ -75,7 +77,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
     updateDoc(doc: Doc) {
         this.props.onDocUpdated(doc);
-        this.props.reduceUnreadCount(doc.id);
+        this.props.reportAsRead(doc.id);
     }
 
     async changeMilestone(milestoneId?: number) {
@@ -100,16 +102,16 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     async componentDidUpdate(PrevProps: AllProps) {
         const prevDocId: number | undefined = PrevProps.doc ? PrevProps.doc.id : undefined;
         if (this.props.doc && this.props.doc.id !== prevDocId) {
-
-            this.updateDoc({
-                ...this.props.doc,
-                lastView: { updatedAt: new Date() }
-            })
+            if (prevDocId) {
+                this.props.reportAsRead(prevDocId)
+            }
         }
     }
 
     async componentDidMount() {
-        //TODO: Ask for doc from saga if it's not available. 
+        if (!this.props.doc) {
+            this.props.requestDoc();
+        }
     }
 
     async onLabelsUpdate(labels: number[]): Promise<void> {
@@ -254,7 +256,8 @@ const mapStateToProps = (state: ApplicationState, ownProps: AllProps): injectedP
 
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: AllProps): DispatchProps => {
     return {
-        reduceUnreadCount: (docId: number) => dispatch(reportDocRead(docId)),
+        requestDoc: () => dispatch(requestDocToState(parseInt(ownProps.match.params.docId))),
+        reportAsRead: (docId: number) => dispatch(reportDocRead(docId)),
         deleteComment: (commentId: number) => dispatch(deleteCommentInState(ownProps.doc!.id, commentId)),
         addComment: (comment: Comment) => dispatch(AddCommentInState(comment)),
     }

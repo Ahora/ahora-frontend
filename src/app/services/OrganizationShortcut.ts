@@ -16,7 +16,6 @@ export interface OrganizationShortcut {
 const notificationsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/shortcuts/{id}");
 export const getShortcuts = async (): Promise<OrganizationShortcut[]> => {
     const result = await notificationsClient.get({});
-
     return result.data;
 }
 

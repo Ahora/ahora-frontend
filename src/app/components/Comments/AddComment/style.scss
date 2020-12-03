@@ -1,12 +1,4 @@
 .add-comment-container {
-    bottom: 0px;
-    left:0px;
-    padding: 0px 0px;
-    right: 0px;
-    width: 100%;
-    position: sticky;
-    z-index: 1;
-    margin-right: 16px;
     background-color: #FFFFFF;
 
     .ant-form-item {
@@ -19,36 +11,5 @@
         padding: 5px 2px;
         text-align: right;
         margin-bottom: 3px;
-    }
-}
-
-.add-comment-space {
-    height: 0px;
-}
-
-.AddCommentPlaceHolder {
-    height: 40px;
-    line-height: 28px;
-    border: 1px solid #f0f0f0;
-    cursor: pointer;
-    padding: 5px;
-
-    &:hover {
-        color: rgb(3, 102, 214);
-    }
-}
-
-.button-container {
-    text-align: right;
-    margin-top: 5px;
-
-    button {
-        margin: 0px 4px;
-    }
-
-    .ant-btn-primary[disabled] {
-        background-color: #246fe0;
-        color: #FFFFFF;
-        opacity: 0.5;
     }
 }

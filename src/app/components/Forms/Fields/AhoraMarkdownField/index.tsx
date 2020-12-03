@@ -9,7 +9,7 @@ const { Option } = Mentions;
 
 
 interface State {
-    value: string;
+    value?: string;
     users?: UserItem[];
     loading: boolean;
     autoFocus: boolean;
@@ -31,7 +31,7 @@ export default class AhoraMarkdownField extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            value: this.props.value || "",
+            value: this.props.value,
             loading: false,
             autoFocus: false
         };
@@ -42,17 +42,6 @@ export default class AhoraMarkdownField extends React.Component<Props, State> {
     public focus() {
         this.mentionRef.current.focus();
     }
-
-    componentDidUpdate() {
-        if (this.props.value === "" && this.state.value !== "") {
-            this.setState({ value: "" });
-
-            if (this.props.autoFocus) {
-                this.setState({ autoFocus: true });
-            }
-        }
-    }
-
 
     async onSearch(search: string) {
         if (search && search.length > 2) {
@@ -83,7 +72,7 @@ export default class AhoraMarkdownField extends React.Component<Props, State> {
     render() {
         return (
             <>
-                <Mentions ref={this.mentionRef} autoFocus={this.state.autoFocus} placeholder="Message" autoSize={true} rows={1} loading={this.state.loading} value={this.state.value} defaultValue={this.props.value} onChange={this.onChange.bind(this)} onSearch={this.onSearch.bind(this)}>
+                <Mentions ref={this.mentionRef} autoFocus={this.state.autoFocus} placeholder="Message" autoSize={true} rows={1} loading={this.state.loading} value={this.props.value} defaultValue={this.props.value} onChange={this.onChange.bind(this)} onSearch={this.onSearch.bind(this)}>
                     {this.state.users && this.state.users.map((user) => (
                         <Option key={user.username} value={user.username}>
                             <span>{user.username}</span>

@@ -45,13 +45,15 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
     }
 
     componentDidMount() {
-        if (this.props.focus && this.containerRef.current) {
-            this.containerRef.current.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-                inline: "nearest"
-            });
-        }
+        setTimeout(() => {
+            if (this.props.focus && this.containerRef.current) {
+                this.containerRef.current.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest"
+                });
+            }
+        }, 0);
+
     }
 
     editMode() {
@@ -64,6 +66,10 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
         this.setState({
             newCommentText: text
         });
+    }
+
+    isDraft(): boolean {
+        return this.props.comment.id < 0;
     }
 
     async deleteCommentHandle() {
@@ -130,7 +136,7 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
                     </>
                 }
                 datetime={<Moment titleFormat="YYYY-MM-DD HH:mm" withTitle fromNow format="YYYY-MM-DD HH:mm" date={this.props.comment.createdAt}></Moment>}
-                actions={[
+                actions={(this.isDraft()) ? undefined : [ //Don't show actions if comment is not created yet in the server
                     <span key="comment-basic-reply-to" onClick={this.props.onQoute.bind(this, this.props.comment)}>Quote</span>,
                     <CanEditOrDeleteComment comment={this.props.comment}>
                         <span onClick={this.editMode.bind(this)}>Edit</span>

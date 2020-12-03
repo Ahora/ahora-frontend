@@ -6,10 +6,9 @@ import DashboardDetailsPage from "app/pages/dashboards/details";
 import AddDashboardPage from "app/pages/dashboards/add";
 import OrganizationSettingsPage from "../settings";
 import { Dispatch } from "redux";
-import { setCurrentOrganization, setSearchCriteria, requestUnReadNumber } from "app/store/organizations/actions";
+import { setCurrentOrganization } from "app/store/organizations/actions";
 import { connect } from "react-redux";
 import { ApplicationState } from "app/store";
-import { Link } from "react-router-dom";
 import { requestDocTypesData } from "app/store/docTypes/actions";
 import OrganizationTeamRootPage from "app/pages/teams/root";
 import DashboardsPage from "app/pages/dashboards";
@@ -18,7 +17,6 @@ import { User } from "app/services/users";
 import { requestCurrentUserData } from "app/store/currentuser/actions";
 import AhoraSpinner from "app/components/Forms/Basics/Spinner";
 import { OrganizationTeamUser } from "app/services/organizationTeams";
-import { canManageOrganization } from "app/services/authentication";
 import NotificationsPage from "app/pages/notifications";
 import MilestonesPage from "app/pages/milestones";
 import ShortcutsPage from "app/pages/shortcuts";
@@ -26,24 +24,20 @@ import { requestMilestonesData } from "app/store/milestones/actions";
 import { requestLabelsData } from "app/store/labels/actions";
 import { requestStatusesData } from "app/store/statuses/actions";
 import OrganizationNew from "./new";
-import { SearchCriterias } from "app/components/SearchDocsInput";
-import { Layout, Menu, Badge } from 'antd';
-import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined, InboxOutlined, PlusCircleOutlined, MessageOutlined, StarFilled } from '@ant-design/icons';
 import { requestShortcutsData } from "app/store/shortcuts/actions";
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
-import SubMenu from "antd/lib/menu/SubMenu";
-require("./style.scss")
+import OrganizationMenu from "./OrganizationMenu"
+import { Layout } from "antd";
+import OrganizationWebSocket from "app/websockets/organizationWS";
 
 interface OrganizationDetailsPageProps {
   shortcuts?: OrganizationShortcut[];
   currentOrgPermission?: OrganizationTeamUser;
   currentUser?: User | undefined;
-  unReadCount?: number;
 }
 
 interface OrganizationDetailsPageState {
   organization: Organization | null;
-  collapsed: boolean;
 }
 
 interface OrganizationPageParams {
@@ -53,10 +47,8 @@ interface OrganizationPageParams {
 
 interface DispatchProps {
   setOrganizationToState(organization: Organization | null, permission?: OrganizationTeamUser): void;
-  setSearchCriterias(data?: SearchCriterias): void;
   requestDocTypes(): void;
   requestLabels(): void;
-  requestUnread(): void;
   requestShortcuts(): void;
   requestStatuses(): void;
   requestMilestones(): void;
@@ -68,85 +60,48 @@ interface Props extends RouteComponentProps<OrganizationPageParams>, DispatchPro
 }
 
 class OrganizationDetailsPage extends React.Component<Props, OrganizationDetailsPageState> {
+
+  private currentOrgSocket: OrganizationWebSocket | undefined;
   constructor(props: Props) {
     super(props);
 
-    this.state = { organization: null, collapsed: false };
+    this.state = { organization: null };
   }
 
   async componentDidMount() {
     const organization = await getOrganizationByLogin(this.props.match.params.login);
 
+    this.currentOrgSocket = new OrganizationWebSocket(this.props.match.params.login);
+
     if (organization) {
       this.props.setOrganizationToState(organization, organization.permission);
-      this.props.setSearchCriterias({ status: ["open"] });
       this.setState({ organization });
-
-      this.props.requestUnread();
     }
 
     this.props.requestDocTypes();
     this.props.requestMilestones();
     this.props.requestLabels();
-    this.props.requestShortcuts();
+
+    if (this.props.currentUser) {
+      this.props.requestShortcuts();
+    }
     this.props.requestStatuses();
     this.props.requestCurrentUser();
   }
 
-  onCollapse(collapsed: boolean) {
-    this.setState({ collapsed });
-  };
+  componentWillUnmount() {
+    if (this.currentOrgSocket) {
+      this.currentOrgSocket.close();
+    }
+  }
 
   render = () => {
-    const { Content, Sider } = Layout;
+    const { Content } = Layout;
     const organization = this.state.organization;
     if (organization) {
-      const canManageOrg: boolean = canManageOrganization(this.props.currentOrgPermission);
       return (
         <Layout>
-          <Sider theme="dark" breakpoint="sm" collapsedWidth="0" collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
-            <Menu
-              theme="dark"
-              mode="inline"
-              defaultOpenKeys={["shortcuts"]}
-              selectedKeys={[this.props.match.params.section || "dashboards"]}
-              style={{ height: '100%' }}
-            >
-              {this.props.currentUser &&
-                <>
-                  <Menu.Item icon={<InboxOutlined />} key="inbox">
-                    <Link to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.unReadCount}>Inbox</Badge></Link>
-                  </Menu.Item>
-
-                  <SubMenu key="shortcuts" className="shortcuts" icon={<MessageOutlined />} title={<span>
-                    <Link to={`/organizations/${organization.login}/shortcuts`}>Shortcuts</Link>
-                    <Link className="ant-menu-submenu-plus" to={`/organizations/${organization.login}/shortcuts/add`}>
-                      <PlusCircleOutlined />
-                    </Link></span>
-                  }>
-                    {this.props.shortcuts ?
-                      <>
-                        {this.props.shortcuts.map((shortcut) => <Menu.Item icon={shortcut.star && <StarFilled />} key={shortcut.id}>
-                          <Link to={`/organizations/${organization.login}/${shortcut.id}`}>{shortcut.title}</Link>
-                        </Menu.Item>)}
-                        <Menu.Item key="shortcuts">
-                          <Link to={`/organizations/${organization.login}/shortcuts`}>Manage</Link>
-                        </Menu.Item>
-                      </>
-
-                      :
-                      <Menu.Item key="loader"><AhoraSpinner /></Menu.Item>
-                    }
-                  </SubMenu>
-                </>
-              }
-              <Menu.Item icon={<PieChartOutlined />} key="dashboards"><Link to={`/organizations/${organization.login}/dashboards`}>Dashboards</Link></Menu.Item>
-              <Menu.Item icon={<UnorderedListOutlined />} key="docs"><Link to={`/organizations/${organization.login}/docs`}>Browse</Link></Menu.Item>
-              <Menu.Item icon={<TeamOutlined />} key="teams"><Link to={`/organizations/${organization.login}/teams`}>Teams</Link></Menu.Item>
-              <Menu.Item icon={<FlagOutlined />} key="milestones"><Link to={`/organizations/${organization.login}/milestones`}>Milestones</Link></Menu.Item>
-              {canManageOrg && <Menu.Item icon={<SettingOutlined />} key="settings"><Link to={`/organizations/${organization.login}/settings`}>Settings</Link></Menu.Item>}
-            </Menu>
-          </Sider>
+          <OrganizationMenu match={this.props.match.params.section} organization={organization} currentUser={this.props.currentUser} currentOrgPermission={this.props.currentOrgPermission} shortcuts={this.props.shortcuts} />
           <Layout className="site-layout-content">
             <Content>
               <Switch>
@@ -189,8 +144,7 @@ const mapStateToProps = (state: ApplicationState): OrganizationDetailsPageProps 
   return {
     currentOrgPermission: state.organizations.currentOrgPermission,
     shortcuts: state.shortcuts.shortcuts,
-    currentUser: state.currentUser.user,
-    unReadCount: state.organizations.unreatCount && state.organizations.unreatCount.length
+    currentUser: state.currentUser.user
   };
 };
 
@@ -199,10 +153,8 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     requestDocTypes: () => dispatch(requestDocTypesData()),
     requestMilestones: () => dispatch(requestMilestonesData()),
     requestStatuses: () => dispatch(requestStatusesData()),
-    requestUnread: () => dispatch(requestUnReadNumber()),
     requestLabels: () => dispatch(requestLabelsData()),
     requestShortcuts: () => dispatch(requestShortcutsData()),
-    setSearchCriterias: (data: SearchCriterias) => dispatch(setSearchCriteria(data)),
     setOrganizationToState: (organization: Organization, permission?: OrganizationTeamUser) => dispatch(setCurrentOrganization(organization, permission)),
     requestCurrentUser: () => dispatch(requestCurrentUserData())
   };

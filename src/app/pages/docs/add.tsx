@@ -16,14 +16,18 @@ interface AddDocsPageParams {
     login: string;
 }
 
+interface InjectableProps {
+    lastDocTypeId?: number;
+
+}
+
 interface DispatchProps {
     setLastDocTypeId: (docTypeId: number) => void;
 }
 
-interface Props extends RouteComponentProps<AddDocsPageParams>, DispatchProps {
+interface Props extends RouteComponentProps<AddDocsPageParams>, DispatchProps, InjectableProps {
     onDocAdded: (doc: Doc) => void;
     onCancel: () => void;
-    lastDocTypeId?: number;
 }
 
 class AddDocPage extends React.Component<Props, AddDocsPageState> {
@@ -40,7 +44,7 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
     }
 
     onUpdate(data: any): void {
-        this.props.setLastDocTypeId(data.docTypeId);
+        //this.props.setLastDocTypeId(data.docTypeId);
     }
 
     onCancel() {
@@ -61,9 +65,8 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
     };
 }
 
-const mapStateToProps = (state: ApplicationState) => {
+const mapStateToProps = (state: ApplicationState, OwnProps: Props): InjectableProps => {
     return {
-        organization: state.organizations.currentOrganization,
         lastDocTypeId: state.docTypes.lastDocTypeId
     };
 };

@@ -51,6 +51,7 @@ export interface SearchDocResult {
 }
 
 const docsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}");
+const reportDocReadClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/view");
 export const getDocs = async (query?: SearchCriterias, offset: number = 0, limit: number = 30): Promise<SearchDocResult> => {
     const result = await docsClient.get({
         query: { ...query, offset, limit }
@@ -70,18 +71,24 @@ export const getDocGroup = async (group: string | string[], query?: SearchCriter
     return result.data;
 }
 
-export const getDocUnreadMessage = async (): Promise<number[]> => {
+export const getDocUnreadMessage = async (searchCriterias: SearchCriterias, shortcutdId: string): Promise<Doc[]> => {
     const result = await docsClient.get({
-        query: { unread: true, mention: ["me"], limit: 2000 }
+        query: { ...searchCriterias, unread: true, limit: 2000 }
     });
 
-    const data: Doc[] = result.data;
-    return data.map((doc) => doc.id);
+    return result.data;
+
 }
 
-export const getDoc = async (login: string, id: number): Promise<Doc> => {
+export const reportDocReadToServer = (id: number) => {
+    reportDocReadClient.get({
+        params: { id }
+    });
+}
+
+export const getDoc = async (id: number): Promise<Doc> => {
     const result = await docsClient.get({
-        params: { id, login }
+        params: { id }
     });
 
     return result.data;

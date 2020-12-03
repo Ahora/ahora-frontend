@@ -8,12 +8,16 @@ import { currentUserReducer } from './currentuser/reducers';
 import { currentOrganizationsReducer } from './organizations/reducers';
 import { docTypesReducer } from './docTypes/reducers';
 import { usersReducer } from './users/reducers';
+import { commentsReducer } from './comments/reducers';
+import { docsReducer } from './docs/reducers';
 import { shortcutsReducer } from './shortcuts/reducers';
 
 const createRootReducer = (history: History) => combineReducers({
     router: connectRouter(history),
     labels: labelsReducer,
     users: usersReducer,
+    comments: commentsReducer,
+    docs: docsReducer,
     statuses: statusesReducer,
     shortcuts: shortcutsReducer,
     currentUser: currentUserReducer,

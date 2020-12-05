@@ -3,10 +3,10 @@ import * as React from 'react';
 import { AhoraFormField } from '../../AhoraForm/data';
 import debounce from 'lodash/debounce';
 import { addLabel, Label, searchLabels } from 'app/services/labels';
-import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { addLabelToState } from 'app/store/labels/actions';
+import LabelTag from 'app/components/Labels/LabelTag';
 
 class LabelSelect extends Select<number[]> {
 
@@ -18,16 +18,11 @@ interface GroupBySelectState {
     fetchingData: boolean;
 }
 
-interface InjectableProps {
-    mapByName: Map<string, Label>;
-    mapById: Map<number, Label>;
-}
-
 interface DispatchProps {
     addLabel(label: Label): void;
 }
 
-interface Props extends InjectableProps, DispatchProps {
+interface Props extends DispatchProps {
     value?: number[];
     fieldData: AhoraFormField;
     onChange: (value: number[]) => void;
@@ -65,20 +60,21 @@ class AhoraLabelsField extends React.Component<Props, GroupBySelectState> {
     async onSelectUpdate(value: number[]) {
         const newLabelIndex = value.indexOf(-1);
         if (newLabelIndex > -1 && this.newLabelText) {
+            this.setState({ value, searchedLabels: [], fetchingData: true });
             const addedLabel = await addLabel({ name: this.newLabelText });
             this.props.addLabel(addedLabel);
             value[newLabelIndex] = addedLabel.id;
         }
 
-        this.setState({ value });
+        this.setState({ value, fetchingData: false });
         this.props.onChange(value);
     }
 
     tagRender(props: any) {
-        const { value } = props;
+        const { value, closable, onClose } = props;
 
         return (
-            <div> { value}</div>
+            <LabelTag labelId={value} closable={closable} onClose={onClose} />
         );
     }
 
@@ -86,6 +82,7 @@ class AhoraLabelsField extends React.Component<Props, GroupBySelectState> {
         return <LabelSelect
             mode="multiple"
             value={this.props.value}
+            loading={this.state.fetchingData}
             placeholder="Select labels"
             notFoundContent={this.state.fetchingData ? <Spin size="small" /> : null}
             filterOption={false}
@@ -95,17 +92,16 @@ class AhoraLabelsField extends React.Component<Props, GroupBySelectState> {
             style={{ width: '100%' }}
         >
             {this.state.searchedLabels.map((label) => (
-                <Select.Option value={label.id!} key={label.id}>{label.name}</Select.Option>
+                <Select.Option value={label.id!} key={label.id}>
+                    {label.id === -1 ?
+                        <>{label.name}</> :
+                        <LabelTag label={label} />
+                    }</Select.Option>
             ))}
         </LabelSelect>
     }
 }
 
-
-
-const mapStateToProps = (state: ApplicationState): InjectableProps => {
-    return { mapByName: state.labels.mapByName, mapById: state.labels.mapById };
-};
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
@@ -114,5 +110,5 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
 }
 
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(null, mapDispatchToProps);
 export default connector(AhoraLabelsField as any)

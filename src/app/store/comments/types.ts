@@ -8,6 +8,7 @@ export const ADD_COMMENT = 'ADD_COMMENT';
 export const REQUEST_COMMENTS = 'REQUEST_COMMENTS';
 export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
+export const UPDATE_COMMENT = 'UPDATE_COMMENT';
 
 export interface CommentsState {
     docs: Map<number, DocCommentsState>;
@@ -35,6 +36,14 @@ export interface RequestCommentsAction {
     payload: {
         docId: number;
         fromDate: number
+    }
+}
+
+export interface UpdateCommentAction {
+    type: typeof UPDATE_COMMENT
+    payload: {
+        docId: number;
+        comment: Comment
     }
 }
 
@@ -68,4 +77,4 @@ export interface ClearUnreadCommentsAction {
     payload: number
 }
 
-export type CommentsActionTypes = ReceiveCommentsAction | LoadingCommentsAction | RequestCommentsAction | DeletedCommentAction | ClearUnreadCommentsAction | SetCommentAction | AddCommentAction
+export type CommentsActionTypes = UpdateCommentAction | ReceiveCommentsAction | LoadingCommentsAction | RequestCommentsAction | DeletedCommentAction | ClearUnreadCommentsAction | SetCommentAction | AddCommentAction

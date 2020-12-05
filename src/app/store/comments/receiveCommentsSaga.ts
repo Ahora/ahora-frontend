@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from 'redux-saga/effects'
+import { call, put, takeEvery } from 'redux-saga/effects'
 import { REQUEST_COMMENTS, RequestCommentsAction } from './types';
 import { getComments, Comment } from 'app/services/comments';
 import { store } from '..';
@@ -42,7 +42,7 @@ function* getShortcutsFromServer(action: RequestCommentsAction) {
 }
 
 function* mySaga() {
-    yield takeLatest(REQUEST_COMMENTS, getShortcutsFromServer);
+    yield takeEvery(REQUEST_COMMENTS, getShortcutsFromServer);
 }
 
 export default mySaga;

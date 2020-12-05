@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Comment } from 'app/services/comments';
-import { CommentDetailsComponent } from '../Details';
+import CommentDetailsComponent from '../Details';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import { Doc } from 'app/services/docs';
 import { connect } from 'react-redux';
@@ -14,11 +14,11 @@ import { reportDocRead } from 'app/store/shortcuts/actions';
 require("./style.scss")
 
 interface InjectableProps {
-    moreComments?: Comment[];
+    moreComments?: number[];
     loading?: boolean;
     canPostComment: boolean;
-    comments?: Comment[];
-    pinnedComments?: Comment[];
+    comments?: number[];
+    pinnedComments?: number[];
     focusId?: number;
 }
 
@@ -64,39 +64,31 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
             focusId = this.props.focusId;
         }
 
-        if (this.props.moreComments && this.props.moreComments.length > 0 && this.props.moreComments[0].id !== focusId) {
-            focusId = this.props.moreComments[0].id;
+        if (this.props.moreComments && this.props.moreComments.length > 0 && this.props.moreComments[0] !== focusId) {
+            focusId = this.props.moreComments[0];
         }
 
         if (focusId !== this.state.focusId) {
             this.setState({ focusId });
         }
-    }
 
-
-    async componentDidMount() {
-        if (!this.props.comments) {
-
-            const comments = [...this.props.comments || [], ...this.props.moreComments || [],]
-            let toDate: Date | undefined;
-            if (comments?.length > 0) {
-                toDate = comments[0].createdAt
-            }
-            this.props.loadComments(toDate);
+        if (this.props.doc.id !== prevProps.doc.id) {
+            this.loadMoreComments();
         }
     }
 
     render() {
         return (
             <>
+
                 <VisibilitySensor onChange={(visible: boolean) => { if (visible) this.loadMoreComments(); }}>
                     <span>&nbsp;</span>
                 </VisibilitySensor>
                 {this.props.pinnedComments && this.props.pinnedComments.length > 0 &&
                     (<>
                         <div className="list">
-                            {this.props.pinnedComments.map((comment: Comment) => {
-                                return (<CommentDetailsComponent focus={comment.id === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} key={comment.id} comment={comment}></CommentDetailsComponent>);
+                            {this.props.pinnedComments.map((commentId: number) => {
+                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
                             })}
                         </div>
                     </>)
@@ -107,8 +99,8 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
                 {this.props.comments && this.props.comments.length > 0 &&
                     <div className="list">
-                        {this.props.comments.map((comment: Comment) => {
-                            return (<CommentDetailsComponent key={`${comment.id}-${comment.updatedAt}`} focus={comment.id === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} comment={comment}></CommentDetailsComponent>);
+                        {this.props.comments.map((commentId: number) => {
+                            return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
                         })}
                     </div>
 
@@ -118,8 +110,8 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                     <div>
                         <Divider className="divider-new-comments" orientation="right">New comments</Divider>
                         <div className="list">
-                            {this.props.moreComments.map((comment: Comment) => {
-                                return (<CommentDetailsComponent key={`${comment.id}-${comment.updatedAt}`} focus={comment.id === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} comment={comment}></CommentDetailsComponent>);
+                            {this.props.moreComments.map((commentId: number) => {
+                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
                             })}
                         </div>
                         <br /><br /><br />
@@ -144,33 +136,13 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): Dispat
     }
 }
 
-function idToComment(commentId: number, map: Map<number, Comment>): Comment | undefined {
-    return map.get(commentId);
-}
-
-function numberIdsToComments(commentIds?: number[], map?: Map<number, Comment>): Comment[] | undefined {
-    if (commentIds && map) {
-        const comments: Comment[] = [];
-        for (let index = 0; index < commentIds.length; index++) {
-            const comment = idToComment(commentIds[index], map);
-
-            if (comment) {
-                comments.push(comment);
-            }
-        }
-        return comments;
-    }
-    return undefined;
-}
-
 const mapStateToProps = (state: ApplicationState, props: CommentsProps): InjectableProps => {
     const mapOfComments = state.comments.docs.get(props.doc.id);
-    const comments = numberIdsToComments(mapOfComments?.comments, mapOfComments?.map);
     return {
         loading: mapOfComments?.loading,
         canPostComment: !!state.currentUser.user,
-        moreComments: numberIdsToComments(mapOfComments?.moreComments, mapOfComments?.map),
-        comments
+        moreComments: mapOfComments?.moreComments,
+        comments: mapOfComments?.comments
     };
 };
 

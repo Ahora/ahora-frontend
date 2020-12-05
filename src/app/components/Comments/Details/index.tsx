@@ -11,9 +11,21 @@ import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
 import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
 import UserDetails from 'app/components/users/UserDetails';
 import UserAvatar from 'app/components/users/UserAvatar';
+import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
+import { Dispatch } from 'redux';
+import { ApplicationState } from 'app/store';
+import { connect } from 'react-redux';
+import { updateCommentInState } from 'app/store/comments/actions';
 
-interface CommentsProps {
-    comment: Comment;
+interface InjectableProps {
+    comment?: Comment;
+}
+
+interface DispatchProps {
+    updateComment: (comment: Comment) => void;
+}
+interface CommentsProps extends InjectableProps, DispatchProps {
+    commentId: number;
     login: string;
     doc: Doc;
     focus: boolean;
@@ -21,23 +33,21 @@ interface CommentsProps {
     onQoute(comment: Comment): void;
 }
 
+
+
 interface State {
-    pinned: boolean;
     editMode: boolean;
-    comment: Comment;
     newCommentText?: string;
     submittingComment: boolean;
 }
 
-export class CommentDetailsComponent extends React.Component<CommentsProps, State> {
+class CommentDetailsComponent extends React.Component<CommentsProps, State> {
 
     private containerRef: React.RefObject<HTMLDivElement>;
 
     constructor(props: CommentsProps) {
         super(props);
         this.state = {
-            pinned: props.comment.pinned,
-            comment: this.props.comment,
             editMode: false,
             submittingComment: false
         }
@@ -69,13 +79,13 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
     }
 
     isDraft(): boolean {
-        return this.props.comment.id < 0;
+        return this.props.comment ? this.props.comment.id < 0 : false;
     }
 
     async deleteCommentHandle() {
-        if (confirm("Are you sure you want to delete this?")) {
-            await deleteComment(this.props.login, this.state.comment);
-            this.props.onDelete(this.state.comment.id);
+        if (this.props.comment && confirm("Are you sure you want to delete this?")) {
+            await deleteComment(this.props.login, this.props.comment);
+            this.props.onDelete(this.props.comment.id);
         }
     }
 
@@ -94,13 +104,13 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
     }
 
     async post(data: any) {
-        if (data.comment) {
+        if (data.comment && this.props.comment) {
             this.setState({
                 submittingComment: true
             });
-            const newComment: Comment = await updateComment(this.props.login, this.state.comment.docId, this.state.comment.id, data.comment);
+            const newComment: Comment = await updateComment(this.props.login, this.props.comment.docId, this.props.comment.id, data.comment);
+            this.props.updateComment(newComment);
             this.setState({
-                comment: newComment,
                 newCommentText: undefined,
                 submittingComment: false,
                 editMode: false
@@ -108,55 +118,77 @@ export class CommentDetailsComponent extends React.Component<CommentsProps, Stat
         }
     }
     async pinToggle() {
-        if (this.state.pinned) {
-            await unpinComment(this.props.login, this.props.comment);
-        }
-        else {
-            await pinComment(this.props.login, this.props.comment);
+        if (this.props.comment) {
+            if (this.props.comment.pinned) {
+                await unpinComment(this.props.login, this.props.comment);
+            }
+            else {
+                await pinComment(this.props.login, this.props.comment);
 
+            }
+
+            this.props.updateComment({ ...this.props.comment, pinned: !this.props.comment.pinned });
         }
-        this.setState({
-            pinned: !this.state.pinned
-        });
     }
 
     render() {
-        return <div ref={this.containerRef} >
-            <CommentComponent className="comment"
-                author={
-                    <>
-                        <UserDetails userId={this.props.comment.authorUserId}></UserDetails>
-                    </>
-                }
+        if (this.props.comment) {
+            return <div ref={this.containerRef} >
+                <CommentComponent className="comment"
+                    author={
+                        <>
+                            <UserDetails userId={this.props.comment.authorUserId}></UserDetails>
+                        </>
+                    }
 
-                avatar={
-                    <>
-                        {this.state.pinned && <span className="pinned"><CheckOutlined /></span>}
-                        <UserAvatar userId={this.props.comment.authorUserId}></UserAvatar>
-                    </>
-                }
-                datetime={<Moment titleFormat="YYYY-MM-DD HH:mm" withTitle fromNow format="YYYY-MM-DD HH:mm" date={this.props.comment.createdAt}></Moment>}
-                actions={(this.isDraft()) ? undefined : [ //Don't show actions if comment is not created yet in the server
-                    <span key="comment-basic-reply-to" onClick={this.props.onQoute.bind(this, this.props.comment)}>Quote</span>,
-                    <CanEditOrDeleteComment comment={this.props.comment}>
-                        <span onClick={this.editMode.bind(this)}>Edit</span>
-                        <span onClick={this.deleteCommentHandle.bind(this)}>Delete</span>
-                    </CanEditOrDeleteComment>,
-                    <CanPinComment doc={this.props.doc} comment={this.props.comment}>
-                        <span onClick={this.pinToggle.bind(this)}>{this.state.pinned ? "Unpin" : "Pin"}</span>
-                    </CanPinComment>
-                ]}
-                content={
-                    this.state.editMode ?
-                        <AhoraForm submitButtonText="Update" data={{ comment: this.state.comment.comment }} onCancel={this.discard.bind(this)} onSumbit={this.post.bind(this)}>
-                            <AhoraField fieldType="markdown" fieldName="comment" displayName=""></AhoraField>
-                        </AhoraForm>
-                        :
-                        <p className="markdown-body" dangerouslySetInnerHTML={{ __html: this.state.comment.htmlComment }}></p>
-                }>
+                    avatar={
+                        <>
+                            {this.props.comment.pinned && <span className="pinned"><CheckOutlined /></span>}
+                            <UserAvatar userId={this.props.comment.authorUserId}></UserAvatar>
+                        </>
+                    }
+                    datetime={<Moment titleFormat="YYYY-MM-DD HH:mm" withTitle fromNow format="YYYY-MM-DD HH:mm" date={this.props.comment.createdAt}></Moment>}
+                    actions={(this.isDraft()) ? undefined : [ //Don't show actions if comment is not created yet in the server
+                        <span key="comment-basic-reply-to" onClick={this.props.onQoute.bind(this, this.props.comment)}>Quote</span>,
+                        <CanEditOrDeleteComment comment={this.props.comment}>
+                            <span onClick={this.editMode.bind(this)}>Edit</span>
+                            <span onClick={this.deleteCommentHandle.bind(this)}>Delete</span>
+                        </CanEditOrDeleteComment>,
+                        <CanPinComment doc={this.props.doc} comment={this.props.comment}>
+                            <span onClick={this.pinToggle.bind(this)}>{this.props.comment.pinned ? "Unpin" : "Pin"}</span>
+                        </CanPinComment>
+                    ]}
+                    content={
+                        this.state.editMode ?
+                            <AhoraForm submitButtonText="Update" data={{ comment: this.props.comment.comment }} onCancel={this.discard.bind(this)} onSumbit={this.post.bind(this)}>
+                                <AhoraField fieldType="markdown" fieldName="comment" displayName=""></AhoraField>
+                            </AhoraForm>
+                            :
+                            <p className="markdown-body" dangerouslySetInnerHTML={{ __html: this.props.comment.htmlComment }}></p>
+                    }>
 
-            </CommentComponent>
-        </div>;
+                </CommentComponent>
+            </div>;
+        }
+        else {
+            return <AhoraSpinner />
+        }
     }
 
 }
+
+const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): DispatchProps => {
+    return {
+        updateComment: (comment: Comment) => dispatch(updateCommentInState(ownProps.doc.id, comment))
+    }
+}
+
+const mapStateToProps = (state: ApplicationState, props: CommentsProps): InjectableProps => {
+    const mapOfComments = state.comments.docs.get(props.doc.id);
+
+    return {
+        comment: mapOfComments?.map.get(props.commentId)
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CommentDetailsComponent as any); 

@@ -258,7 +258,7 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: AllProps): DispatchPro
     return {
         requestDoc: () => dispatch(requestDocToState(parseInt(ownProps.match.params.docId))),
         reportAsRead: (docId: number) => dispatch(reportDocRead(docId)),
-        deleteComment: (commentId: number) => dispatch(deleteCommentInState(ownProps.doc!.id, commentId)),
+        deleteComment: (commentId: number) => dispatch(deleteCommentInState(parseInt(ownProps.match.params.docId), commentId)),
         addComment: (comment: Comment) => dispatch(AddCommentInState(comment)),
     }
 }

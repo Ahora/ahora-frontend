@@ -6,12 +6,12 @@ import io from 'socket.io-client';
 import { deleteDocInState, setDocInState } from 'app/store/docs/actions';
 import { Doc } from 'app/services/docs';
 
+export const socket = io({ "transports": ['websocket'] });
 export default class OrganizationWebSocket {
 
-    private socket: any;
 
     constructor(organizationId: string) {
-        const socket = io({ "transports": ['websocket'] });
+        ;
 
         //Comments
         socket.on('comment-post', (comment: Comment) => {
@@ -42,8 +42,6 @@ export default class OrganizationWebSocket {
     }
 
     close() {
-        if (this.socket) {
-            this.socket.close();
-        }
+
     }
 }

@@ -53,17 +53,19 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             }
 
         case UPDATE_UNREAD_DOCS_SHORTCUT:
-            const shortcutFromState = state.map.get(action.payload.shortcutId);
+            let shortcutFromState = state.map.get(action.payload.shortcutId);
+            shortcutFromState ? { ...shortcutFromState } : { unreadDocs: new Set() }
+            action.payload.unreadDocs.forEach((docId) => {
+                shortcutFromState?.unreadDocs?.add(docId);
+            });
             if (shortcutFromState) {
-                const map = new Map<number, void>();
-                action.payload.unreadDocs.forEach((docId) => {
-                    map.set(docId);
-                });
-                state.map.set(action.payload.shortcutId, { ...shortcutFromState, unreadDocs: map });
+                state.map.set(action.payload.shortcutId, shortcutFromState);
             }
             return { ...state, map: new Map(state.map) };
         case REPORT_DOC_READ:
-            state.map.forEach((shortcut) => { shortcut.unreadDocs?.delete(action.payload); });
+            state.map.forEach((shortcut) => {
+                shortcut.unreadDocs?.delete(action.payload);
+            });
             return { ...state, map: new Map(state.map) };
         case SHORTCUT_DOCS_RECEIVED:
             const shortcut = state.map.get(action.payload.shortcutId);
@@ -93,7 +95,11 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             let docId: number = action.payload.docId;
             state.map.forEach((shortcut) => {
                 if (shortcut.unreadDocs?.has(docId) || shortcut.docs?.has(docId)) {
-                    shortcut.unreadDocs?.set(docId);
+                    shortcut.unreadDocs?.delete(docId);
+                    shortcut.unreadDocs?.add(docId);
+
+                    shortcut.docs?.delete(docId);
+                    shortcut.docs?.add(docId);
                 }
             });
             return { ...state, map: new Map(state.map) };
@@ -103,6 +109,9 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             state.map.forEach((shortcut) => {
                 if (shortcut.unreadDocs?.has(docId) || shortcut.docs?.has(docId)) {
                     shortcut.unreadDocs?.delete(docId);
+
+                    shortcut.docs?.delete(docId);
+                    shortcut.docs?.add(docId);
                 }
             });
             return { ...state, map: new Map(state.map) };
@@ -111,6 +120,9 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             state.map.forEach((shortcut) => {
                 if (shortcut.unreadDocs?.has(docId) || shortcut.docs?.has(docId)) {
                     shortcut.unreadDocs?.delete(docId);
+
+                    shortcut.docs?.delete(docId);
+                    shortcut.docs?.add(docId);
                 }
             });
             return { ...state, map: new Map(state.map) };

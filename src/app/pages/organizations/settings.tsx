@@ -53,9 +53,6 @@ export default class OrganizationSettingsPage extends React.Component<
             <Menu.Item key="doctypes">
               <Link to={`/organizations/${organization.login}/settings/doctypes`}>Doc Types</Link>
             </Menu.Item>
-            <Menu.Item key="labels">
-              <Link to={`/organizations/${organization.login}/settings/labels`}>Labels</Link>
-            </Menu.Item>
             <Menu.Item key="docsources">
               <Link to={`/organizations/${organization.login}/settings/docsources`}>Doc Sources</Link>
             </Menu.Item>

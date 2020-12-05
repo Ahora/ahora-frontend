@@ -5,15 +5,13 @@ export interface LabelsState {
     loading: boolean,
     mapById: Map<number, Label>,
     mapByName: Map<string, Label>
-
 }
 
 // src/store/chat/types.ts
 export const ADD_LABEL = 'ADD_LABEL';
 export const DELETE_LABEL = 'DELETE_LABEL';
 export const UPDATE_LABEL = 'UPDATE_LABEL';
-export const FETCH_LABELS = 'FETCH_LABELS';
-export const RECEIVE_LABELS = 'RECEIVE_LABELS';
+export const REQUEST_LABEL = 'REQUEST_LABEL';
 
 interface AddLabelAction {
     type: typeof ADD_LABEL
@@ -27,14 +25,12 @@ interface UpdateLabelAction {
 
 interface DeleteLabelAction {
     type: typeof DELETE_LABEL
-    meta: {
-        id: number
-    }
+    payload: number
 }
 
-interface FetchLabelesAction {
-    type: typeof RECEIVE_LABELS,
-    data: Label[]
+export interface RequestLabelAction {
+    type: typeof REQUEST_LABEL,
+    payload: number
 }
 
-export type LabelActionTypes = AddLabelAction | DeleteLabelAction | FetchLabelesAction | UpdateLabelAction
+export type LabelActionTypes = AddLabelAction | DeleteLabelAction | RequestLabelAction | UpdateLabelAction

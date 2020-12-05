@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Label, addLabel, deleteLabel, editLabel } from 'app/services/labels';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
-import { addLabelFromState, deleteLabelFromState, updateLabelToState } from 'app/store/labels/actions';
+import { addLabelToState, deleteLabelFromState, updateLabelToState } from 'app/store/labels/actions';
 import { connect } from 'react-redux';
 import { Menu, Space, Button, Table, Input, Popconfirm, Tag } from 'antd';
 
@@ -183,7 +183,7 @@ const mapStateToProps = (state: ApplicationState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        addLabelToState: (label: Label) => { dispatch(addLabelFromState(label)) },
+        addLabelToState: (label: Label) => { dispatch(addLabelToState(label)) },
         removeLabelFromState: (id: number) => { dispatch(deleteLabelFromState(id)) },
         updateLabelToState: (label: Label) => { dispatch(updateLabelToState(label)) }
     }

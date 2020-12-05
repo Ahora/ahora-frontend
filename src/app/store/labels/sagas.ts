@@ -1,12 +1,12 @@
 import { call, put, takeLatest } from 'redux-saga/effects'
-import { FETCH_LABELS } from './types';
-import { receiveLabelsData } from "./actions";
-import { getList } from "app/services/labels"
+import { getLabel } from "app/services/labels"
+import { RequestLabelAction, REQUEST_LABEL } from './types';
+import { addLabelToState } from './actions';
 
-function* getLabelsFromServer(action: any) {
+function* getLabelsFromServer(action: RequestLabelAction) {
     try {
-        const data = yield call(getList);
-        yield put(receiveLabelsData(data));
+        const data = yield call(getLabel, action.payload);
+        yield put(addLabelToState(data));
     } catch (e) {
         console.log(e);
     }
@@ -20,7 +20,7 @@ function* getLabelsFromServer(action: any) {
   and only the latest one will be run.
 */
 function* mySaga() {
-    yield takeLatest(FETCH_LABELS, getLabelsFromServer);
+    yield takeLatest(REQUEST_LABEL, getLabelsFromServer);
 }
 
 export default mySaga;

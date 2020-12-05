@@ -2,10 +2,9 @@ import * as React from 'react';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { requestUserInfo } from 'app/store/users/actions';
 import { Label } from 'app/services/labels';
 import { Tag } from 'antd';
-import { addLabelFromState } from 'app/store/labels/actions';
+import { addLabelToState, requestLabelData } from 'app/store/labels/actions';
 import AhoraSpinner from '../Forms/Basics/Spinner';
 
 interface State {
@@ -70,8 +69,8 @@ const mapStateToProps = (state: ApplicationState, props: LabelTagProps): Injecta
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        requestLabelInfo: (labelId) => dispatch(requestUserInfo(labelId)),
-        addLabelToState: label => dispatch(addLabelFromState(label))
+        requestLabelInfo: (labelId) => dispatch(requestLabelData(labelId)),
+        addLabelToState: label => dispatch(addLabelToState(label))
     }
 }
 

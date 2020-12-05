@@ -24,6 +24,16 @@ export const getList = async (): Promise<Label[]> => {
     return result.data;
 };
 
+export const getLabel = async (id: number): Promise<Label> => {
+    const result = await labelesClient.get({
+        params: {
+            id,
+            organizationId: store.getState().organizations.currentOrganization!.login
+        }
+    });
+    return result.data;
+};
+
 export const searchLabels = async (q: string): Promise<Label[]> => {
     const result = await labelesClient.get({
         params: {

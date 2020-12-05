@@ -1,4 +1,4 @@
-import { LabelsState, LabelActionTypes, ADD_LABEL, DELETE_LABEL, RECEIVE_LABELS, UPDATE_LABEL } from './types'
+import { LabelsState, LabelActionTypes, ADD_LABEL, DELETE_LABEL, UPDATE_LABEL } from './types'
 import { Label } from 'app/services/labels'
 
 const initialState: LabelsState = {
@@ -16,23 +16,14 @@ export function labelsReducer(state = initialState, action: LabelActionTypes): L
             mapById1.set(action.payload.id!, action.payload);
             mapByName1.set(action.payload.name, action.payload);
             return { ...state, labels: [...state.labels, action.payload] }
-        case RECEIVE_LABELS:
-            const mapById = state.mapById;
-            const mapByName = state.mapByName;
-
-            action.data.forEach((label) => {
-                mapById.set(label.id!, label);
-                mapByName.set(label.name, label);
-            });
-            return { ...state, labels: action.data, mapById, mapByName }
         case DELETE_LABEL:
             const mapByIdDelete = state.mapById;
             const mapByNameDelete = state.mapByName;
 
             //Clear maps by id & code
-            const typeToDelete: Label | undefined = mapByIdDelete.get(action.meta.id);
+            const typeToDelete: Label | undefined = mapByIdDelete.get(action.payload);
             if (typeToDelete) {
-                mapByIdDelete.delete(action.meta.id);
+                mapByIdDelete.delete(action.payload);
                 mapByNameDelete.delete(typeToDelete.name);
             }
 
@@ -40,7 +31,7 @@ export function labelsReducer(state = initialState, action: LabelActionTypes): L
                 ...state,
                 mapById: mapByIdDelete,
                 mapByName: mapByNameDelete,
-                labels: state.labels.filter(label => label.id !== action.meta.id)
+                labels: state.labels.filter(label => label.id !== action.payload)
             }
         case UPDATE_LABEL:
             const mapByIdUpdate = state.mapById;

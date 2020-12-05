@@ -21,7 +21,6 @@ import NotificationsPage from "app/pages/notifications";
 import MilestonesPage from "app/pages/milestones";
 import ShortcutsPage from "app/pages/shortcuts";
 import { requestMilestonesData } from "app/store/milestones/actions";
-import { requestLabelsData } from "app/store/labels/actions";
 import { requestStatusesData } from "app/store/statuses/actions";
 import OrganizationNew from "./new";
 import { requestShortcutsData } from "app/store/shortcuts/actions";
@@ -48,7 +47,6 @@ interface OrganizationPageParams {
 interface DispatchProps {
   setOrganizationToState(organization: Organization | null, permission?: OrganizationTeamUser): void;
   requestDocTypes(): void;
-  requestLabels(): void;
   requestShortcuts(): void;
   requestStatuses(): void;
   requestMilestones(): void;
@@ -80,7 +78,6 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
 
     this.props.requestDocTypes();
     this.props.requestMilestones();
-    this.props.requestLabels();
 
     if (this.props.currentUser) {
       this.props.requestShortcuts();
@@ -153,7 +150,6 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     requestDocTypes: () => dispatch(requestDocTypesData()),
     requestMilestones: () => dispatch(requestMilestonesData()),
     requestStatuses: () => dispatch(requestStatusesData()),
-    requestLabels: () => dispatch(requestLabelsData()),
     requestShortcuts: () => dispatch(requestShortcutsData()),
     setOrganizationToState: (organization: Organization, permission?: OrganizationTeamUser) => dispatch(setCurrentOrganization(organization, permission)),
     requestCurrentUser: () => dispatch(requestCurrentUserData())

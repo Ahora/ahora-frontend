@@ -6,7 +6,7 @@ import { addLabel, Label, searchLabels } from 'app/services/labels';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { addLabelFromState } from 'app/store/labels/actions';
+import { addLabelToState } from 'app/store/labels/actions';
 
 class LabelSelect extends Select<number[]> {
 
@@ -109,7 +109,7 @@ const mapStateToProps = (state: ApplicationState): InjectableProps => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        addLabel: (label: Label) => dispatch(addLabelFromState(label))
+        addLabel: (label: Label) => dispatch(addLabelToState(label))
     }
 }
 

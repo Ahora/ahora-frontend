@@ -68,10 +68,10 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
         case SHORTCUT_DOCS_RECEIVED:
             const shortcut = state.map.get(action.payload.shortcutId);
             if (shortcut) {
-                let docMap: Map<number, void> | undefined;
+                let docMap: Set<number> | undefined;
                 if (action.payload.docs) {
-                    docMap = new Map();
-                    action.payload.docs.forEach((docId) => docMap!.set(docId));
+                    docMap = new Set();
+                    action.payload.docs.forEach((docId) => docMap!.add(docId));
                 }
                 state.map.set(action.payload.shortcutId, { ...shortcut, docs: docMap, page: action.payload.page, totalDocs: action.payload.totalDocs });
             }
@@ -86,7 +86,7 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
         case SHORTCUT_DOCS_ADD:
             const addedshortcut = state.map.get(action.payload.shortcutId);
             if (addedshortcut) {
-                addedshortcut.docs?.set(action.payload.docId)
+                addedshortcut.docs?.add(action.payload.docId)
             }
             return { ...state, map: new Map(state.map) };
         case SET_COMMENT:

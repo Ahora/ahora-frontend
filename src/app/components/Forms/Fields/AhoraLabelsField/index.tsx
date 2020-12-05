@@ -1,18 +1,19 @@
 import { Select, Spin } from 'antd';
-import LabelTag from 'app/components/Labels/LabelTag';
 import * as React from 'react';
 import { AhoraFormField } from '../../AhoraForm/data';
 import debounce from 'lodash/debounce';
-import { Label, searchLabels } from 'app/services/labels';
+import { addLabel, Label, searchLabels } from 'app/services/labels';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { addLabelFromState } from 'app/store/labels/actions';
 
+class LabelSelect extends Select<number[]> {
+
+}
+
 interface GroupBySelectState {
     value: number[];
-    defaultTags: string[];
-    currentTags: string[];
     searchedLabels: Label[];
     fetchingData: boolean;
 }
@@ -33,13 +34,12 @@ interface Props extends InjectableProps, DispatchProps {
 }
 
 class AhoraLabelsField extends React.Component<Props, GroupBySelectState> {
+    private newLabelText?: string;
     constructor(props: Props) {
         super(props);
 
         this.state = {
             value: this.props.value || [],
-            defaultTags: [],
-            currentTags: [],
             fetchingData: false,
             searchedLabels: []
         };
@@ -56,44 +56,36 @@ class AhoraLabelsField extends React.Component<Props, GroupBySelectState> {
         let labels: Label[] = await searchLabels(q);
 
         if (labels.length === 0) {
-            labels = [{ name: q }];
+            labels = [{ name: q, id: -1 }];
         }
+        this.newLabelText = q;
         this.setState({ searchedLabels: labels, fetchingData: false });
     }
 
-    onSelectUpdate(value: string[]) {
-        this.onUpdate(value);
-    }
-
-    onUpdate(value: string[], newLabel: Label | undefined = undefined) {
-
-        if (newLabel) {
-            this.props.mapByName.set(newLabel.name, newLabel);
+    async onSelectUpdate(value: number[]) {
+        const newLabelIndex = value.indexOf(-1);
+        if (newLabelIndex > -1 && this.newLabelText) {
+            const addedLabel = await addLabel({ name: this.newLabelText });
+            this.props.addLabel(addedLabel);
+            value[newLabelIndex] = addedLabel.id;
         }
-        const numberValue = value.map((tagName: string) => {
-            const label = this.props.mapByName.get(tagName);
-            return label ? label.id! : -1;
-        }).filter((val: number) => val > 0);
-        this.setState({ currentTags: value, value: numberValue });
-        this.props.onChange(numberValue);
-    }
 
-    onLabelAdded(newLabel: Label) {
-        this.onUpdate(this.state.currentTags, newLabel);
+        this.setState({ value });
+        this.props.onChange(value);
     }
 
     tagRender(props: any) {
-        const { value, closable, onClose } = props;
+        const { value } = props;
 
         return (
-            <LabelTag onLabelAdded={this.onLabelAdded.bind(this)} labelName={value} closable={closable} onClose={onClose} style={{ marginRight: 3 }}></LabelTag>
+            <div> { value}</div>
         );
     }
 
     render() {
-        return <Select
+        return <LabelSelect
             mode="multiple"
-            defaultValue={this.state.defaultTags}
+            value={this.props.value}
             placeholder="Select labels"
             notFoundContent={this.state.fetchingData ? <Spin size="small" /> : null}
             filterOption={false}
@@ -103,9 +95,9 @@ class AhoraLabelsField extends React.Component<Props, GroupBySelectState> {
             style={{ width: '100%' }}
         >
             {this.state.searchedLabels.map((label) => (
-                <Select.Option value={label.name} key={label.id}><LabelTag label={label}></LabelTag></Select.Option>
+                <Select.Option value={label.id!} key={label.id}>{label.name}</Select.Option>
             ))}
-        </Select>
+        </LabelSelect>
     }
 }
 

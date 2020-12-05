@@ -2,11 +2,15 @@
 import { RestCollectorClient } from "rest-collector";
 import { store } from "app/store";
 
-export interface Label {
-    id?: number;
+export interface RawLabel {
     name: string;
     description?: string;
     color?: string;
+}
+
+export interface Label extends RawLabel {
+    id: number;
+
 }
 
 const labelesClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{organizationId}/labels/{id}");
@@ -30,7 +34,7 @@ export const searchLabels = async (q: string): Promise<Label[]> => {
     return result.data;
 }
 
-export const addLabel = async (label: Label): Promise<Label> => {
+export const addLabel = async (label: RawLabel): Promise<Label> => {
     const result = await labelesClient.post({
         data: label,
         params: {

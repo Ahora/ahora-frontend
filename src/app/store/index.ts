@@ -42,18 +42,21 @@ export interface ApplicationState {
     docTypes: DocTypesState
 }
 
+const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 export const history: History = createBrowserHistory();
 const sagaMiddleware = createSagaMiddleware();
 export const appState = createRootReducer(history);
 export const store = createStore(
     appState,
-    compose(
+    composeEnhancers(
         applyMiddleware(thunk),
         applyMiddleware(sagaMiddleware),
         applyMiddleware(
             routerMiddleware(history),
         ),
     ),
+
 );
 
 sagaMiddleware.run(requestDocSaga);

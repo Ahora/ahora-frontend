@@ -12,21 +12,24 @@ import { List, Typography, Tag, Badge } from 'antd';
 
 import './style.scss';
 import UsersAvatarList from '../users/UsersAvatarList';
+import AhoraSpinner from '../Forms/Basics/Spinner';
 
 interface injectedParams {
     statuses: Map<number, Status>;
     docTypes: Map<number, DocType>;
     unReadComments?: number;
     currentOrganization: Organization | undefined,
+    doc?: Doc;
+
 }
 
-interface DocsPageProps extends injectedParams {
-    doc: Doc;
+interface DocListItemProps extends injectedParams {
+    docId: number;
     section?: string;
     isActive: boolean;
 }
 
-interface AllProps extends DocsPageProps {
+interface AllProps extends DocListItemProps {
 
 }
 class DocListItem extends React.Component<AllProps> {
@@ -36,45 +39,52 @@ class DocListItem extends React.Component<AllProps> {
 
     render() {
         const doc = this.props.doc;
-        const currentStatus: Status | undefined = this.props.statuses.get(doc.statusId);
-        const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId);
-        const isViewed: boolean = this.props.unReadComments || (doc.lastView && new Date(doc.lastView.updatedAt) > new Date(doc.updatedAt)) ? true : false;
-        return (
-            <List.Item className={`${this.props.isActive ? "active" : ""} doc-list-item`}>
-                <div className="item-wrapper">
-                    <div className="extra">
-                        <Moment titleFormat="YYYY-MM-DD HH:mm" format="YYYY-MM-DD HH:mm" withTitle date={doc.updatedAt || doc.createdAt}></Moment>
-                        <div className="tags">
-                            <Tag>{(currentDocType) ? currentDocType.name : ""}</Tag>
-                            <Tag>{(currentStatus) ? currentStatus.name : ""}</Tag>
+        if (doc) {
+            const currentStatus: Status | undefined = this.props.statuses.get(doc.statusId);
+            const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId);
+            const isViewed: boolean = this.props.unReadComments || (doc.lastView && new Date(doc.lastView.updatedAt) > new Date(doc.updatedAt)) ? true : false;
+            return (
+                <List.Item className={`${this.props.isActive ? "active" : ""} doc-list-item`}>
+                    <div className="item-wrapper">
+                        <div className="extra">
+                            <Moment titleFormat="YYYY-MM-DD HH:mm" format="YYYY-MM-DD HH:mm" withTitle date={doc.updatedAt || doc.createdAt}></Moment>
+                            <div className="tags">
+                                <Tag>{(currentDocType) ? currentDocType.name : ""}</Tag>
+                                <Tag>{(currentStatus) ? currentStatus.name : ""}</Tag>
+                            </div>
+                            <div>
+                                <Badge count={this.props.unReadComments} ></Badge>
+                            </div>
                         </div>
                         <div>
-                            <Badge count={this.props.unReadComments} ></Badge>
+                            <div className="title">
+                                <Typography.Text strong={!isViewed}>
+                                    <Link to={`/organizations/${this.props.currentOrganization!.login}/${this.props.section || "docs"}/${doc.id}`}>{doc.subject}</Link>
+                                </Typography.Text>
+                            </div>
+                            <div><LabelsList defaultSelected={doc.labels}></LabelsList></div>
+                            <div><UsersAvatarList maxCount={5} userIds={doc.watchers}></UsersAvatarList></div>
                         </div>
                     </div>
-                    <div>
-                        <div className="title">
-                            <Typography.Text strong={!isViewed}>
-                                <Link to={`/organizations/${this.props.currentOrganization!.login}/${this.props.section || "docs"}/${doc.id}`}>{doc.subject}</Link>
-                            </Typography.Text>
-                        </div>
-                        <div><LabelsList defaultSelected={doc.labels}></LabelsList></div>
-                        <div><UsersAvatarList maxCount={5} userIds={doc.watchers}></UsersAvatarList></div>
-                    </div>
-                </div>
-            </List.Item >
-        );
-    };
+                </List.Item >
+            );
+        }
+        else {
+            return <AhoraSpinner />
+        }
+    }
 }
 
-const mapStateToProps = (state: ApplicationState, ownProps: DocsPageProps): injectedParams => {
+const mapStateToProps = (state: ApplicationState, ownProps: DocListItemProps): injectedParams => {
 
-    const docFromStore = state.comments.docs.get(ownProps.doc.id);
+    const docCommentFromStore = state.comments.docs.get(ownProps.docId);
+    const docFromSource = state.docs.docs.get(ownProps.docId);
     return {
+        doc: docFromSource,
         currentOrganization: state.organizations.currentOrganization,
         statuses: state.statuses.map,
         docTypes: state.docTypes.mapById,
-        unReadComments: docFromStore?.moreComments?.length
+        unReadComments: docCommentFromStore?.moreComments?.length
     };
 };
 

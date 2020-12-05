@@ -25,7 +25,6 @@ interface DocsPageState {
     searchCriteria?: SearchCriterias;
     searchCriteriasText?: string;
     currentDocId?: number;
-    currentDoc?: Doc;
 }
 
 interface DocsPageParams {
@@ -40,7 +39,7 @@ interface injectedParams {
     totalPages: number;
     loading: boolean;
     searchCriteria?: SearchCriterias;
-    docs?: Doc[]
+    docs?: Set<number>
 }
 
 interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedParams {
@@ -109,19 +108,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     async componentDidUpdate(PrevProps: AllProps) {
         if (this.props.match.params.docId !== PrevProps.match.params.docId) {
             const docId: number = parseInt(this.props.match.params.docId);
-            if (!isNaN(docId) && this.props.docs) {
-                const currentDoc: Doc | undefined = this.props.docs.find((doc) => doc.id === docId && doc.reporterUserId);
-                this.setState({
-                    currentDoc,
-                    currentDocId: isNaN(docId) ? undefined : docId
-                });
-            }
-            else {
-                this.setState({
-                    currentDoc: undefined,
-                    currentDocId: undefined
-                });
-            }
+            this.setState({ currentDocId: isNaN(docId) ? undefined : docId });
         }
 
         if (this.props.searchCriteria !== PrevProps.searchCriteria) {
@@ -190,7 +177,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                 {(isBrowser || (isMobile && this.props.match.params.docId)) &&
                                                     <div className="main-content">
                                                         {this.state.currentDocId ?
-                                                            <DocsDetailsPage onDocDeleted={this.onDocDeleted.bind(this)} onDocUpdated={this.onDocUpdated.bind(this)} doc={this.state.currentDoc} {...this.props}></DocsDetailsPage>
+                                                            <DocsDetailsPage onDocDeleted={this.onDocDeleted.bind(this)} onDocUpdated={this.onDocUpdated.bind(this)} {...this.props}></DocsDetailsPage>
                                                             :
                                                             <Switch>
                                                                 <Route path={`/organizations/:login/:section/add`} component={(props: any) => <AddDocPage {...props} onCancel={this.onAddCancel.bind(this)} onDocAdded={this.onDocAdded.bind(this)} />} />
@@ -214,21 +201,11 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
 const mapStateToProps = (state: ApplicationState, props: AllProps): injectedParams => {
     let availableShortcut: StoreOrganizationShortcut | undefined = state.shortcuts.map.get(props.match.params.section);
-    let docs: Doc[] | undefined;
-    if (availableShortcut?.docs) {
-        docs = [];
 
-        availableShortcut.docs?.forEach((val, docId) => {
-            const doc = state.docs.docs?.get(docId);
-            if (doc) {
-                docs?.push(doc);
-            }
-        })
-    }
     return {
         page: availableShortcut?.page || 0,
         loading: false,
-        docs,
+        docs: availableShortcut?.docs,
         totalPages: (availableShortcut && availableShortcut.totalDocs) ? Math.ceil(availableShortcut.totalDocs / 30) : 0,
         searchCriteria: availableShortcut?.searchCriteria
     };

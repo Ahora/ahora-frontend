@@ -7,7 +7,7 @@ export default interface StoreOrganizationShortcut {
     searchCriteria: SearchCriterias;
     disableNotification: boolean;
     shortcut?: OrganizationShortcut;
-    docs?: Map<number, void>,
+    docs?: Set<number>,
     page?: number;
     totalDocs?: number;
 }

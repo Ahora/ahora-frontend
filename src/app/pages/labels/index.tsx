@@ -56,6 +56,7 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
                 organizationId: this.props.organizationId,
                 name: "",
                 label: {
+                    id: -1,
                     name: "",
                 }
             }

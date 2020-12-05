@@ -3,7 +3,7 @@ import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { requestUserInfo } from 'app/store/users/actions';
-import { addLabel, Label } from 'app/services/labels';
+import { Label } from 'app/services/labels';
 import { Tag } from 'antd';
 import { addLabelFromState } from 'app/store/labels/actions';
 import AhoraSpinner from '../Forms/Basics/Spinner';
@@ -42,14 +42,6 @@ class LabelTag extends React.Component<LabelTagProps, State> {
     async componentDidMount() {
         if (this.props.labelId && !this.props.labelId) {
             this.props.requestLabelInfo(this.props.labelId);
-        }
-
-        if (this.props.labelName && !this.props.label) {
-            const newLabel = await addLabel({ name: this.props.labelName });
-            this.props.addLabelToState(newLabel);
-            if (this.props.onLabelAdded) {
-                this.props.onLabelAdded(newLabel);
-            }
         }
     }
 

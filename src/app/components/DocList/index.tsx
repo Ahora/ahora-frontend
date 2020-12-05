@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Doc } from 'app/services/docs';
 import { SearchCriterias } from 'app/components/SearchDocsInput';
 import AhoraSpinner from '../Forms/Basics/Spinner';
 import DocListItem from './DocListItem';
@@ -9,7 +8,7 @@ interface DocListProps {
     searchCriteria?: SearchCriterias;
     pageSize?: number;
     activeDocId?: number;
-    docs?: Doc[],
+    docs?: Set<number>,
     page: number;
     totalPages: number;
     section?: string;
@@ -30,12 +29,12 @@ class DocList extends React.Component<DocListProps> {
             <div>
                 {this.props.docs ?
                     <>
-                        {this.props.docs.length > 0 ?
+                        {this.props.docs.size > 0 ?
                             <List
                                 className="doc-list"
                                 itemLayout="horizontal"
-                                dataSource={this.props.docs}
-                                renderItem={doc => <DocListItem section={this.props.section} isActive={doc.id === this.props.activeDocId} doc={doc}></DocListItem>}></List>
+                                dataSource={[...this.props.docs || []]}
+                                renderItem={docId => <DocListItem section={this.props.section} isActive={docId === this.props.activeDocId} docId={docId}></DocListItem>}></List>
                             :
                             <> {this.props.children}</>}
                     </> :

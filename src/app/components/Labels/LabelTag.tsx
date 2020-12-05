@@ -29,7 +29,6 @@ class LabelTag extends React.Component<LabelTagProps> {
 
     async componentDidMount() {
         if (this.props.labelId && !this.props.label) {
-            console.log("request", this.props.labelId);
             this.props.requestLabelInfo(this.props.labelId);
         }
     }

@@ -30,7 +30,7 @@ interface State {
 }
 
 class AddCommentComponent extends React.Component<CommentsProps, State> {
-    private markdownRef: React.RefObject<AhoraMarkdownField>;
+    private markdownRef: React.RefObject<any>;
     private tempId: number;
 
     constructor(props: CommentsProps) {

@@ -4,10 +4,8 @@ import { RequestLabelAction, REQUEST_LABEL } from './types';
 import { addLabelToState } from './actions';
 
 function* getLabelsFromServer(action: RequestLabelAction) {
-    console.log(action);
-    const data = yield call(getLabel, action.payload);
-    console.log(addLabelToState(data));
-    yield put(addLabelToState(data));
+  const data = yield call(getLabel, action.payload);
+  yield put(addLabelToState(data));
 
 }
 
@@ -19,7 +17,7 @@ function* getLabelsFromServer(action: RequestLabelAction) {
   and only the latest one will be run.
 */
 function* mySaga() {
-    yield takeEvery(REQUEST_LABEL, getLabelsFromServer);
+  yield takeEvery(REQUEST_LABEL, getLabelsFromServer);
 }
 
 export default mySaga;

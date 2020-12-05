@@ -77,14 +77,15 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
                 receivedCommentsDoc = { map: new Map(), loading: false }
             }
             receivedCommentsDoc.loading = false;
+            if (action.payload.comments.length > 0) {
 
-            const commentIds: number[] = [];
-            action.payload.comments.forEach((comment) => {
-                receivedCommentsDoc?.map.set(comment.id, comment);
-                commentIds.push(comment.id);
-            });
-
-            receivedCommentsDoc.comments = [...commentIds, ...receivedCommentsDoc.comments || []];
+                const commentIds: number[] = [];
+                action.payload.comments.forEach((comment) => {
+                    receivedCommentsDoc?.map.set(comment.id, comment);
+                    commentIds.push(comment.id);
+                });
+                receivedCommentsDoc.comments = [...commentIds, ...receivedCommentsDoc.comments || []];
+            }
             state.docs.set(action.payload.docId, receivedCommentsDoc);
 
             return { ...state, docs: new Map(state.docs) };

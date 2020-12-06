@@ -73,12 +73,9 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
             return { ...state, docs: new Map(state.docs) };
         case RECEIVE_COMMENTS:
             let receivedCommentsDoc = state.docs.get(action.payload.docId);
-            if (!receivedCommentsDoc) {
-                receivedCommentsDoc = { map: new Map(), loading: false }
-            }
-            receivedCommentsDoc.loading = false;
-            if (action.payload.comments.length > 0) {
+            receivedCommentsDoc = receivedCommentsDoc ? { ...receivedCommentsDoc, loading: false } : { map: new Map(), loading: false };
 
+            if (action.payload.comments.length > 0) {
                 const commentIds: number[] = [];
                 action.payload.comments.forEach((comment) => {
                     receivedCommentsDoc?.map.set(comment.id, comment);
@@ -90,7 +87,6 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
 
             return { ...state, docs: new Map(state.docs) };
         case UPDATE_COMMENT:
-
             let updateCommentsDoc = state.docs.get(action.payload.docId);
             if (updateCommentsDoc) {
                 updateCommentsDoc.map.set(action.payload.comment.id, action.payload.comment);

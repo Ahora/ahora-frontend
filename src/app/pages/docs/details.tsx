@@ -97,6 +97,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         this.setState({ focusCommentId: newComment.id });
         this.props.deleteComment(comment.id);
         this.props.addComment(newComment);
+        this.props.reportAsRead(newComment.docId);
     }
 
     async componentDidUpdate(PrevProps: AllProps) {
@@ -149,6 +150,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     render() {
         const doc: Doc | undefined = this.props.doc;
         let canEdit: boolean = false;
+        let canAddComment: boolean = !!this.props.currentUser;
         let docType: DocType | undefined;
         let currentStatus: Status | undefined;
         let currentMilestone: OrganizationMilestone | undefined;
@@ -230,7 +232,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                         <CommentListComponent focusId={this.state.focusCommentId} doc={doc} login={this.props.match.params.login}></CommentListComponent>
                                     </div>
                                 </div>
-                                <AddCommentComponent commentAdded={this.commentAdded.bind(this)} login={this.props.match.params.login} docId={doc.id}></AddCommentComponent>
+                                {canAddComment && <AddCommentComponent commentAdded={this.commentAdded.bind(this)} login={this.props.match.params.login} docId={doc.id}></AddCommentComponent>}
                             </div>
                         </div>
 

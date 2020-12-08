@@ -25,14 +25,15 @@ function* getShortcutsFromServer(action: RequestCommentsAction) {
             toDate = toComment?.createdAt;
         }
 
-        yield put(setLoadingComments(action.payload.docId));
+
         if (toDate) {
+            yield put(setLoadingComments(action.payload.docId));
             const data: Comment[] = yield call(getComments, state.organizations.currentOrganization!.login, action.payload.docId, toDate);
             //Using reverse because we are adding more 
             yield put(receiveCommentsToState(data.reverse(), action.payload.docId));
         }
 
-        if (commentState?.moreComments === undefined) {
+        if (commentState?.moreComments === undefined && fromDate) {
             const unreadComments: Comment[] = yield call(getComments, state.organizations.currentOrganization!.login, action.payload.docId, undefined, fromDate);
             //Using reverse because we are adding more 
             yield put(receiveUnreadCommentsToState(action.payload.docId, unreadComments.reverse()));

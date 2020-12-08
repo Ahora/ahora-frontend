@@ -23,7 +23,7 @@ interface InjectableProps {
 }
 
 interface DispatchProps {
-    clearUnReadComments: () => void;
+    reportDocRead: () => void;
     deleteComment: (commentId: number) => void;
     addComment: (omment: Comment) => void;
     loadComments: (toDate?: Date) => void;
@@ -116,7 +116,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                         </div>
                         <br /><br /><br />
                         <VisibilitySensor onChange={(visible: boolean) => {
-                            if (visible) this.props.clearUnReadComments();
+                            if (visible) this.props.reportDocRead();
                         }}>
                             <span>&nbsp;</span>
                         </VisibilitySensor>
@@ -129,7 +129,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): DispatchProps => {
     return {
-        clearUnReadComments: () => dispatch(reportDocRead(ownProps.doc.id)),
+        reportDocRead: () => dispatch(reportDocRead(ownProps.doc.id)),
         deleteComment: (commentId: number) => dispatch(deleteCommentInState(ownProps.doc.id, commentId)),
         addComment: (comment: Comment) => dispatch(AddCommentInState(comment)),
         loadComments: (toDate?: Date) => dispatch(requestCommentsToState(ownProps.doc.id, toDate))
@@ -139,7 +139,7 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): Dispat
 const mapStateToProps = (state: ApplicationState, props: CommentsProps): InjectableProps => {
     const mapOfComments = state.comments.docs.get(props.doc.id);
     return {
-        loading: mapOfComments?.loading,
+        loading: mapOfComments ? mapOfComments.loading : false,
         canPostComment: !!state.currentUser.user,
         moreComments: mapOfComments?.moreComments,
         comments: mapOfComments?.comments

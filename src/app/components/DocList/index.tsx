@@ -2,7 +2,9 @@ import * as React from 'react';
 import { SearchCriterias } from 'app/components/SearchDocsInput';
 import AhoraSpinner from '../Forms/Basics/Spinner';
 import DocListItem from './DocListItem';
-import { List, Pagination } from 'antd';
+import { Pagination } from 'antd';
+import FlipMove from 'react-flip-move';
+
 
 interface DocListProps {
     searchCriteria?: SearchCriterias;
@@ -26,22 +28,26 @@ class DocList extends React.Component<DocListProps> {
 
     render() {
         return (
-            <div>
-                {this.props.docs ?
-                    <>
-                        {this.props.docs.size > 0 ?
-                            <List
-                                className="doc-list"
-                                itemLayout="horizontal"
-                                dataSource={[...this.props.docs || []]}
-                                renderItem={docId => <DocListItem section={this.props.section} isActive={docId === this.props.activeDocId} docId={docId}></DocListItem>}></List>
-                            :
-                            <> {this.props.children}</>}
-                    </> :
-                    (
-                        <AhoraSpinner />
-                    )
-                }
+            <div className="doc-list">
+                <>
+                    {this.props.docs ?
+                        <div>
+                            {this.props.docs.size > 0 ?
+                                <FlipMove>
+                                    {[...this.props.docs].reverse().map((docId: number) =>
+                                        <div key={docId}>
+                                            <DocListItem section={this.props.section} isActive={docId === this.props.activeDocId} docId={docId}></DocListItem>
+                                        </div>)
+                                    }
+                                </FlipMove>
+                                :
+                                <> {this.props.children}</>}
+                        </div> :
+                        (
+                            <AhoraSpinner />
+                        )
+                    }
+                </>
                 {this.props.totalPages > 1 &&
                     <Pagination onChange={this.onChange.bind(this)} defaultCurrent={this.props.page} total={this.props.totalPages} />
                 }

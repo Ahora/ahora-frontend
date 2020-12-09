@@ -92,7 +92,6 @@ class DocsDateTimeGraph extends React.Component<AllProps, DocsDateTimeGraphState
     }
 
     componentDidUpdate(prevProps: AllProps) {
-        //TODO: Compare arrays better!
         if (prevProps.data.searchCriterias !== this.props.data.searchCriterias
             || prevProps.data.isCompulative !== this.props.data.isCompulative
             || prevProps.data.primaryGroup !== this.props.data.primaryGroup) {

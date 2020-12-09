@@ -1,5 +1,5 @@
 import { REPORT_DOC_READ } from "../shortcuts/types";
-import { ADD_COMMENT, CommentsActionTypes, CommentsState, DELETE_COMMENT, LOADING_COMMENTS, RECEIVE_COMMENTS, RECEIVE_UNREAD_COMMENTS, SET_COMMENT, UPDATE_COMMENT } from "./types";
+import { ADD_COMMENT, CommentsActionTypes, CommentsState, COMMENT_UPDATED, DELETE_COMMENT, LOADING_COMMENTS, RECEIVE_COMMENTS, RECEIVE_UNREAD_COMMENTS, COMMENT_ADDED, UPDATE_COMMENT } from "./types";
 
 const initialState: CommentsState = {
     docs: new Map()
@@ -7,7 +7,16 @@ const initialState: CommentsState = {
 
 export function commentsReducer(state: CommentsState = initialState, action: CommentsActionTypes): CommentsState {
     switch (action.type) {
-        case SET_COMMENT:
+        case COMMENT_UPDATED:
+            let docCommentUpdated = state.docs.get(action.payload.docId);
+            if (!docCommentUpdated) {
+                docCommentUpdated = { map: new Map(), loading: false }
+            }
+
+            docCommentUpdated.map.set(action.payload.id, action.payload);
+            state.docs.set(action.payload.docId, docCommentUpdated);
+            return { ...state, docs: new Map(state.docs) };
+        case COMMENT_ADDED:
             let docComments = state.docs.get(action.payload.docId);
             if (!docComments) {
                 docComments = { map: new Map(), loading: false }
@@ -32,16 +41,29 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
 
             return { ...state, docs: new Map(state.docs) };
         case ADD_COMMENT:
-            let docCommentsAdded = state.docs.get(action.payload.docId);
-            if (!docCommentsAdded) {
-                docCommentsAdded = { map: new Map(), loading: false }
+            let docCommentsAdded = state.docs.get(action.payload.comment.docId);
+            docCommentsAdded = docCommentsAdded ? { ...docCommentsAdded } : { map: new Map(), loading: false };
+            const commentArray = [...docCommentsAdded.comments || [], ...docCommentsAdded.moreComments || []];
+
+            //Replace temp comment once we have id from DB.
+            if (action.payload.tempCommentId) {
+                docCommentsAdded.map.delete(action.payload.tempCommentId);
+
+                const index = commentArray.lastIndexOf(action.payload.tempCommentId);
+                if (index > -1) {
+                    commentArray[index] = action.payload.comment.id;
+                }
+            }
+            else {
+                commentArray.push(action.payload.comment.id)
             }
 
+
             //Update comment in a map and clear more comments.
-            docCommentsAdded.map.set(action.payload.id, action.payload);
-            docCommentsAdded.comments = [...docCommentsAdded.comments || [], ...docCommentsAdded.moreComments || [], action.payload.id]
+            docCommentsAdded.map.set(action.payload.comment.id, action.payload.comment);
+            docCommentsAdded.comments = commentArray
             docCommentsAdded.moreComments = undefined;
-            state.docs.set(action.payload.docId, docCommentsAdded);
+            state.docs.set(action.payload.comment.docId, docCommentsAdded);
             return { ...state, docs: new Map(state.docs) };
         case REPORT_DOC_READ:
             let clearDocComments = state.docs.get(action.payload);

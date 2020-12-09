@@ -1,10 +1,12 @@
 import { Comment } from "app/services/comments";
 import { REPORT_DOC_READ } from "../shortcuts/types";
 
-export const SET_COMMENT = 'SET_COMMENT';
+export const COMMENT_ADDED = 'COMMENT_ADDED';
+export const COMMENT_UPDATED = 'COMMENT_UPDATED';
 export const RECEIVE_UNREAD_COMMENTS = 'RECEIVE_UNREAD_COMMENTS';
 export const LOADING_COMMENTS = 'LOADING_COMMENTS';
 export const ADD_COMMENT = 'ADD_COMMENT';
+export const ADD_TEMP_COMMENT = 'ADD_TEMP_COMMENT';
 export const REQUEST_COMMENTS = 'REQUEST_COMMENTS';
 export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
@@ -21,14 +23,22 @@ export interface DocCommentsState {
     map: Map<number, Comment>;
 }
 
-export interface SetCommentAction {
-    type: typeof SET_COMMENT
+export interface CommentAddedAction {
+    type: typeof COMMENT_ADDED
+    payload: Comment
+}
+
+export interface CommentUpdatedAction {
+    type: typeof COMMENT_UPDATED
     payload: Comment
 }
 
 export interface AddCommentAction {
     type: typeof ADD_COMMENT
-    payload: Comment
+    payload: {
+        tempCommentId: number
+        comment: Comment
+    }
 }
 
 export interface RequestCommentsAction {
@@ -77,4 +87,4 @@ export interface ClearUnreadCommentsAction {
     payload: number
 }
 
-export type CommentsActionTypes = UpdateCommentAction | ReceiveCommentsAction | LoadingCommentsAction | RequestCommentsAction | DeletedCommentAction | ClearUnreadCommentsAction | SetCommentAction | AddCommentAction
+export type CommentsActionTypes = UpdateCommentAction | ReceiveCommentsAction | LoadingCommentsAction | RequestCommentsAction | CommentUpdatedAction | DeletedCommentAction | ClearUnreadCommentsAction | CommentAddedAction | AddCommentAction

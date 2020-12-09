@@ -6,7 +6,7 @@ import { Doc } from 'app/services/docs';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
-import { AddCommentInState, deleteCommentInState, requestCommentsToState } from 'app/store/comments/actions';
+import { deleteCommentInState, requestCommentsToState } from 'app/store/comments/actions';
 import { Divider } from 'antd';
 import VisibilitySensor from 'react-visibility-sensor';
 import { reportDocRead } from 'app/store/shortcuts/actions';
@@ -25,7 +25,6 @@ interface InjectableProps {
 interface DispatchProps {
     reportDocRead: () => void;
     deleteComment: (commentId: number) => void;
-    addComment: (omment: Comment) => void;
     loadComments: (toDate?: Date) => void;
 }
 
@@ -131,7 +130,6 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): Dispat
     return {
         reportDocRead: () => dispatch(reportDocRead(ownProps.doc.id)),
         deleteComment: (commentId: number) => dispatch(deleteCommentInState(ownProps.doc.id, commentId)),
-        addComment: (comment: Comment) => dispatch(AddCommentInState(comment)),
         loadComments: (toDate?: Date) => dispatch(requestCommentsToState(ownProps.doc.id, toDate))
     }
 }

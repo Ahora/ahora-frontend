@@ -26,7 +26,7 @@ import UserAvatarList from 'app/components/users/UsersAvatarList';
 import { reportDocRead } from 'app/store/shortcuts/actions';
 import AddCommentComponent from 'app/components/Comments/AddComment';
 import { addComment } from 'app/services/comments';
-import { AddCommentInState, deleteCommentInState } from 'app/store/comments/actions';
+import { AddCommentInState } from 'app/store/comments/actions';
 import { requestDocToState } from 'app/store/docs/actions';
 
 interface DocsDetailsPageState {
@@ -50,9 +50,8 @@ interface injectedParams {
 
 interface DispatchProps {
     reportAsRead(docId: number): void;
-    deleteComment: (commentId: number) => void;
     requestDoc: () => void;
-    addComment: (comment: Comment) => void;
+    addComment: (comment: Comment, tempCommentId?: number) => void;
 }
 
 interface AllProps extends RouteComponentProps<DocsDetailsPageParams>, injectedParams, DispatchProps {
@@ -95,8 +94,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
         const newComment: Comment = await addComment(this.props.match.params.login, comment.docId, comment.comment, comment.parentId);
         this.setState({ focusCommentId: newComment.id });
-        this.props.deleteComment(comment.id);
-        this.props.addComment(newComment);
+        this.props.addComment(newComment, comment.id);
         this.props.reportAsRead(newComment.docId);
     }
 
@@ -260,8 +258,7 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: AllProps): DispatchPro
     return {
         requestDoc: () => dispatch(requestDocToState(parseInt(ownProps.match.params.docId))),
         reportAsRead: (docId: number) => dispatch(reportDocRead(docId)),
-        deleteComment: (commentId: number) => dispatch(deleteCommentInState(parseInt(ownProps.match.params.docId), commentId)),
-        addComment: (comment: Comment) => dispatch(AddCommentInState(comment)),
+        addComment: (comment: Comment, tempCommentId?: number) => dispatch(AddCommentInState(comment, tempCommentId)),
     }
 }
 

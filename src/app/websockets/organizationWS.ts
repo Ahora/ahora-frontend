@@ -1,7 +1,7 @@
 
 import { store } from 'app/store';
 import { Comment } from "app/services/comments";
-import { deleteCommentInState, setCommentInState } from 'app/store/comments/actions';
+import { deleteCommentInState, setCommentAddedInState, setCommentUpdatedInState } from 'app/store/comments/actions';
 import io from 'socket.io-client';
 import { deleteDocInState, setDocInState } from 'app/store/docs/actions';
 import { Doc } from 'app/services/docs';
@@ -11,15 +11,13 @@ export default class OrganizationWebSocket {
 
 
     constructor(organizationId: string) {
-        ;
-
         //Comments
         socket.on('comment-post', (comment: Comment) => {
-            store.dispatch(setCommentInState(comment));
+            store.dispatch(setCommentAddedInState(comment));
         });
 
         socket.on('comment-put', (comment: Comment) => {
-            store.dispatch(setCommentInState(comment));
+            store.dispatch(setCommentUpdatedInState(comment));
         });
 
         socket.on('comment-delete', (comment: Comment) => {

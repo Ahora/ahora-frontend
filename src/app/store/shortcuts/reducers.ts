@@ -3,7 +3,7 @@ import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
 import { SET_CURRENT_ORGANIZATION } from '../organizations/types';
 import StoreOrganizationShortcut from './StoreOrganizationShortcut';
 import { DELETE_DOC } from '../docs/types';
-import { ADD_COMMENT, SET_COMMENT } from '../comments/types';
+import { ADD_COMMENT, COMMENT_ADDED } from '../comments/types';
 
 const initialState: ShortcutsState = {
     shortcuts: [],
@@ -90,7 +90,7 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             const addedshortcut = state.map.get(action.payload.shortcutId);
             addedshortcut?.docs?.add(action.payload.docId);
             return { ...state, map: new Map(state.map) };
-        case SET_COMMENT:
+        case COMMENT_ADDED:
             let docId: number = action.payload.docId;
             state.map.forEach((shortcut) => {
                 if (shortcut.unreadDocs?.has(docId) || shortcut.docs?.has(docId)) {
@@ -118,7 +118,7 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             });
             return { ...state, map: new Map(state.map) };
         case ADD_COMMENT:
-            docId = action.payload.docId;
+            docId = action.payload.comment.id;
             state.map.forEach((shortcut) => {
                 if (shortcut.unreadDocs?.has(docId) || shortcut.docs?.has(docId)) {
                     shortcut.unreadDocs?.delete(docId);

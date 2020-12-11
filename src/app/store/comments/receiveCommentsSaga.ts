@@ -17,7 +17,7 @@ function* getShortcutsFromServer(action: RequestCommentsAction) {
             const doc = state.docs.docs.get(action.payload.docId);
             //Load old comments from the last update date
             //Load more unread messages as well from the same date
-            toDate = fromDate = doc?.lastView?.updatedAt;
+            toDate = fromDate = doc?.lastView ? doc?.lastView.updatedAt : doc?.createdAt;
         }
         else if (commentState?.comments.length > 0) {
             const commentId = commentState.comments[0];
@@ -29,13 +29,11 @@ function* getShortcutsFromServer(action: RequestCommentsAction) {
         if (toDate) {
             yield put(setLoadingComments(action.payload.docId));
             const data: Comment[] = yield call(getComments, state.organizations.currentOrganization!.login, action.payload.docId, toDate);
-            //Using reverse because we are adding more 
             yield put(receiveCommentsToState(data.reverse(), action.payload.docId));
         }
 
         if (commentState?.moreComments === undefined && fromDate) {
             const unreadComments: Comment[] = yield call(getComments, state.organizations.currentOrganization!.login, action.payload.docId, undefined, fromDate);
-            //Using reverse because we are adding more 
             yield put(receiveUnreadCommentsToState(action.payload.docId, unreadComments.reverse()));
 
         }

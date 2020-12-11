@@ -99,12 +99,14 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     }
 
     async componentDidUpdate(PrevProps: AllProps) {
-        const prevDocId: number | undefined = PrevProps.doc ? PrevProps.doc.id : undefined;
+
+        /*const prevDocId: number | undefined = PrevProps.doc ? PrevProps.doc.id : undefined;
         if (this.props.doc && this.props.doc.id !== prevDocId) {
             if (prevDocId) {
                 this.props.reportAsRead(prevDocId)
             }
         }
+        */
     }
 
     async componentDidMount() {

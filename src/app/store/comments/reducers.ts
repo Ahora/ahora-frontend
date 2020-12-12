@@ -1,5 +1,5 @@
 import { REPORT_DOC_READ } from "../shortcuts/types";
-import { ADD_COMMENT, CommentsActionTypes, CommentsState, COMMENT_UPDATED, DELETE_COMMENT, LOADING_COMMENTS, RECEIVE_COMMENTS, RECEIVE_UNREAD_COMMENTS, COMMENT_ADDED, UPDATE_COMMENT, SET_UNREAD_COMMENTS } from "./types";
+import { ADD_COMMENT, CommentsActionTypes, CommentsState, COMMENT_UPDATED, DELETE_COMMENT, LOADING_COMMENTS, RECEIVE_COMMENTS, RECEIVE_UNREAD_COMMENTS, COMMENT_ADDED, UPDATE_COMMENT, SET_UNREAD_COMMENTS, QOUTE_COMMENT } from "./types";
 
 const initialState: CommentsState = {
     docs: new Map()
@@ -39,6 +39,12 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
                 state.docs.set(action.payload.docId, docToDeleteComments);
             }
 
+            return { ...state, docs: new Map(state.docs) };
+        case QOUTE_COMMENT:
+            let docOfQoute = state.docs.get(action.payload.docId);
+            if (docOfQoute) {
+                state.docs.set(action.payload.docId, { ...docOfQoute, qouteComment: action.payload });
+            }
 
             return { ...state, docs: new Map(state.docs) };
         case ADD_COMMENT:

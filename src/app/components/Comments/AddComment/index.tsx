@@ -14,12 +14,12 @@ require("./style.scss")
 
 interface InjectableProps {
     currentUser: User | undefined | null;
+    qouteComment?: Comment;
 
 }
 interface CommentsProps extends InjectableProps {
     docId: number;
     login: string;
-    qouteComment?: Comment;
     commentAdded: (comment: Comment) => void;
 }
 
@@ -46,19 +46,34 @@ class AddCommentComponent extends React.Component<CommentsProps, State> {
         this.markdownRef = React.createRef();
     }
 
+    private quouteText(comment: string): string {
+        const commentRows = comment.split("\n");
+        for (let index = 0; index < commentRows.length; index++) {
+            commentRows[index] = ">" + commentRows[index];
+        }
+
+        return commentRows.join("\n") + "\n\n";
+    }
+
     componentDidUpdate(prevProps: CommentsProps) {
         if (prevProps.qouteComment !== this.props.qouteComment && this.props.qouteComment && this.props.qouteComment.comment !== this.state.rawComment) {
-            const commentRows = this.props.qouteComment.comment.split("\n");
-            for (let index = 0; index < commentRows.length; index++) {
-                commentRows[index] = ">" + commentRows[index];
-            }
 
             this.setState({
-                rawComment: commentRows.join("\n") + "\n\n",
+                rawComment: this.quouteText(this.props.qouteComment.comment)
             });
 
             if (this.markdownRef.current) {
                 this.markdownRef.current.focus();
+            }
+        }
+        else if (prevProps.qouteComment !== this.props.qouteComment) {
+            if (this.props.qouteComment) {
+                this.setState({
+                    rawComment: this.quouteText(this.props.qouteComment.comment)
+                });
+            }
+            else {
+                this.setState({ rawComment: undefined });
             }
         }
     }
@@ -124,8 +139,9 @@ class AddCommentComponent extends React.Component<CommentsProps, State> {
     }
 }
 
-const mapStateToProps = (state: ApplicationState): InjectableProps => {
+const mapStateToProps = (state: ApplicationState, ownProps: CommentsProps): InjectableProps => {
     return {
+        qouteComment: state.comments.docs.get(ownProps.docId)?.qouteComment,
         currentUser: state.currentUser.user
     };
 };

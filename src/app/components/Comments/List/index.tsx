@@ -6,7 +6,7 @@ import { Doc } from 'app/services/docs';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
-import { deleteCommentInState, requestCommentsToState } from 'app/store/comments/actions';
+import { requestCommentsToState } from 'app/store/comments/actions';
 import { Divider } from 'antd';
 import VisibilitySensor from 'react-visibility-sensor';
 import { reportDocRead } from 'app/store/shortcuts/actions';
@@ -24,7 +24,6 @@ interface InjectableProps {
 
 interface DispatchProps {
     reportDocRead: () => void;
-    deleteComment: (commentId: number) => void;
     loadComments: (toDate?: Date) => void;
 }
 
@@ -43,14 +42,6 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
     constructor(props: CommentsProps) {
         super(props);
         this.state = { focusId: props.focusId }
-    }
-
-    onDeleteComment(id: number): void {
-        this.props.deleteComment(id);
-    }
-
-    async onQoute(comment: Comment) {
-        this.setState({ qouteComment: comment });
     }
 
     loadMoreComments() {
@@ -87,7 +78,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                     (<>
                         <div className="list">
                             {this.props.pinnedComments.map((commentId: number) => {
-                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
+                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
                             })}
                         </div>
                     </>)
@@ -98,9 +89,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
                 {this.props.comments && this.props.comments.length > 0 &&
                     <div className="list">
-                        {this.props.comments.map((commentId: number) => {
-                            return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
-                        })}
+                        {this.props.comments.map((commentId: number) => <CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>)}
                     </div>
 
                 }
@@ -110,7 +99,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                         <Divider className="divider-new-comments" orientation="right">New comments</Divider>
                         <div className="list">
                             {this.props.moreComments.map((commentId: number) => {
-                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} onQoute={this.onQoute.bind(this)} doc={this.props.doc} onDelete={this.onDeleteComment.bind(this)} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
+                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
                             })}
                         </div>
                         <br /><br /><br />
@@ -129,7 +118,6 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): DispatchProps => {
     return {
         reportDocRead: () => dispatch(reportDocRead(ownProps.doc.id)),
-        deleteComment: (commentId: number) => dispatch(deleteCommentInState(ownProps.doc.id, commentId)),
         loadComments: (toDate?: Date) => dispatch(requestCommentsToState(ownProps.doc.id, toDate))
     }
 }

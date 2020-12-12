@@ -42,10 +42,11 @@ class RootPageComponent extends React.Component<AllProps, State> {
       <>
 
         <div className="main">
-          <Typography.Title>Ahora! Enhance your community.</Typography.Title>
+          <Typography.Title>Discuss & share your ideas any time</Typography.Title>
           <p className="lead text-muted">
-            Ahora! is a free, open source public repository solution. <br />Provides you tools to better manage repositories, putting communication and collaboration at the center of your organization.
-                </p>
+            Ahora is the right tool to have meaningful discussions based your GitHub &amp; Jira content.<br />
+            Having a chat like interface to your Github &amp; Jira accounts.
+          </p>
           <p>
             {
               this.state.organizations &&
@@ -63,9 +64,24 @@ class RootPageComponent extends React.Component<AllProps, State> {
             }
           </p>
         </div>
-
         <div className="main">
           <div className="row">
+            <div className="col-md-4">
+              <Card title="Blazing fast communication">
+                <div className="icon">
+                  <i className="fas fa-bolt"></i>
+                </div>
+                    Get notification from GitHub and Jira <br />in seconds
+              </Card>
+            </div>
+            <div className="col-md-4">
+              <Card title="Discussions">
+                <div className="icon">
+                  <i className="far fa-comments"></i>
+                </div>
+                    Share ideas and feedback<br /> easily with others
+              </Card>
+            </div>
             <div className="col-md-4">
               <Card title="Visualize your GitHub content">
                 <div className="icon">
@@ -74,6 +90,7 @@ class RootPageComponent extends React.Component<AllProps, State> {
                     Utilize smart graphs to display <br />Issues and Pull Requests
               </Card>
             </div>
+
             <div className="col-md-4">
               <Card title="Aggregate multiple repositories">
                 <div className="icon">
@@ -92,39 +109,13 @@ class RootPageComponent extends React.Component<AllProps, State> {
               </Card>
             </div>
             <div className="col-md-4">
-              <Card title="Discussions">
+              <Card title="Notifications">
                 <div className="icon">
-                  <i className="far fa-comments"></i>
+                  <i className="fas fa-bell"></i>
                 </div>
-                    Share ideas and feedback<br /> easily with others
-              </Card>
-            </div>
-            <div className="col-md-4">
-              <Card title="Free public repositories">
-                <div className="icon">
-                  <i className="fas fa-dollar-sign"></i>
-                </div>
-                    Use Ahora! free of cost <br /> for public repositories
-              </Card>
-            </div>
-            <div className="col-md-4">
-              <Card title="Open source">
-                <div className="icon">
-                  <i className="fab fa-git-square"></i>
-                </div>
-                    Ahora! will always be <a href="https://github.com/ahora">open source</a>
-              </Card>
-            </div>
-            {
-              false && <div className="col-md-4">
-                <Card title="Notifications">
-                  <div className="icon">
-                    <i className="fas fa-bell"></i>
-                  </div>
                     Custome and improved notifications <br />for Issues and Pull Requests
                 </Card>
-              </div>
-            }
+            </div>
           </div>
         </div>
       </>

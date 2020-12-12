@@ -15,7 +15,7 @@ import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import { Dispatch } from 'redux';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
-import { updateCommentInState } from 'app/store/comments/actions';
+import { deleteCommentInState, setQouteCommentInState, updateCommentInState } from 'app/store/comments/actions';
 
 interface InjectableProps {
     comment?: Comment;
@@ -23,14 +23,15 @@ interface InjectableProps {
 
 interface DispatchProps {
     updateComment: (comment: Comment) => void;
+    deleteComment: (commentId: number) => void;
+    qouteComment: (comment: Comment) => void;
+
 }
 interface CommentsProps extends InjectableProps, DispatchProps {
     commentId: number;
     login: string;
     doc: Doc;
     focus: boolean;
-    onDelete(id: number): void;
-    onQoute(comment: Comment): void;
 }
 
 
@@ -85,7 +86,7 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
     async deleteCommentHandle() {
         if (this.props.comment && confirm("Are you sure you want to delete this?")) {
             await deleteComment(this.props.login, this.props.comment);
-            this.props.onDelete(this.props.comment.id);
+            this.props.deleteComment(this.props.comment.id);
         }
     }
 
@@ -117,6 +118,11 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
             });
         }
     }
+
+    onQoute(comment: Comment) {
+        this.props.qouteComment(comment);
+
+    }
     async pinToggle() {
         if (this.props.comment) {
             if (this.props.comment.pinned) {
@@ -135,12 +141,7 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
         if (this.props.comment) {
             return <div ref={this.containerRef} >
                 <CommentComponent className="comment"
-                    author={
-                        <>
-                            <UserDetails userId={this.props.comment.authorUserId}></UserDetails>
-                        </>
-                    }
-
+                    author={<UserDetails userId={this.props.comment.authorUserId}></UserDetails>}
                     avatar={
                         <>
                             {this.props.comment.pinned && <span className="pinned"><CheckOutlined /></span>}
@@ -149,7 +150,7 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
                     }
                     datetime={<Moment titleFormat="YYYY-MM-DD HH:mm" withTitle fromNow format="YYYY-MM-DD HH:mm" date={this.props.comment.createdAt}></Moment>}
                     actions={(this.isDraft()) ? undefined : [ //Don't show actions if comment is not created yet in the server
-                        <span key="comment-basic-reply-to" onClick={this.props.onQoute.bind(this, this.props.comment)}>Quote</span>,
+                        <span key="comment-basic-reply-to" onClick={this.onQoute.bind(this, this.props.comment)}>Quote</span>,
                         <CanEditOrDeleteComment comment={this.props.comment}>
                             <span onClick={this.editMode.bind(this)}>Edit</span>
                             <span onClick={this.deleteCommentHandle.bind(this)}>Delete</span>
@@ -179,6 +180,8 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
 
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): DispatchProps => {
     return {
+        qouteComment: (comment: Comment) => dispatch(setQouteCommentInState(comment)),
+        deleteComment: (commentId: number) => dispatch(deleteCommentInState(ownProps.doc.id, commentId)),
         updateComment: (comment: Comment) => dispatch(updateCommentInState(ownProps.doc.id, comment))
     }
 }

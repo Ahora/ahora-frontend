@@ -12,6 +12,7 @@ export const REQUEST_COMMENTS = 'REQUEST_COMMENTS';
 export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const UPDATE_COMMENT = 'UPDATE_COMMENT';
+export const QOUTE_COMMENT = 'QOUTE_COMMENT';
 export const LOAD_UNREAD_COMMENTS = 'LOAD_UNREAD_COMMENTS';
 export const SET_UNREAD_COMMENTS = 'SET_UNREAD_COMMENTS';
 
@@ -23,6 +24,7 @@ export interface DocCommentsState {
     comments?: number[];
     moreComments?: number[];
     unReadCommentsCount: number;
+    qouteComment?: Comment
     loading: boolean;
     map: Map<number, Comment>;
 }
@@ -43,6 +45,11 @@ export interface AddCommentAction {
         tempCommentId: number
         comment: Comment
     }
+}
+
+export interface QouteCommentAction {
+    type: typeof QOUTE_COMMENT
+    payload: Comment
 }
 
 export interface LoadUnReadCommentsAction {
@@ -101,4 +108,15 @@ export interface ClearUnreadCommentsAction {
     payload: number
 }
 
-export type CommentsActionTypes = SetUnReadCommentsAction | LoadUnReadCommentsAction | UpdateCommentAction | ReceiveCommentsAction | LoadingCommentsAction | RequestCommentsAction | CommentUpdatedAction | DeletedCommentAction | ClearUnreadCommentsAction | CommentAddedAction | AddCommentAction
+export type CommentsActionTypes = SetUnReadCommentsAction |
+    LoadUnReadCommentsAction |
+    UpdateCommentAction |
+    ReceiveCommentsAction |
+    LoadingCommentsAction |
+    RequestCommentsAction |
+    CommentUpdatedAction |
+    DeletedCommentAction |
+    ClearUnreadCommentsAction |
+    CommentAddedAction |
+    AddCommentAction |
+    QouteCommentAction

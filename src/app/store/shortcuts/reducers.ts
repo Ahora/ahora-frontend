@@ -24,7 +24,12 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             }
             return { ...state };
         case SET_CURRENT_ORGANIZATION:
-            return { ...initialState }
+            return {
+                ...initialState, map: new Map<string, StoreOrganizationShortcut>([
+                    ["inbox", { searchCriteria: { mention: ["me"] }, disableNotification: false, unreadDocs: new Set() }],
+                    ["docs", { searchCriteria: { status: ["open"] }, disableNotification: true, unreadDocs: new Set() }]
+                ])
+            }
         case ADD_SHORTCUT:
             state.map.set(action.payload.id!.toString(), { shortcut: action.payload, searchCriteria: action.payload.searchCriteria, disableNotification: false, unreadDocs: new Set() });
             return { ...state, shortcuts: [...state.shortcuts, action.payload], map: state.map }

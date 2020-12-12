@@ -62,10 +62,9 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
 
                     shortcutState.docs?.delete(docId);
                     shortcutState.docs?.add(docId);
-
-                    shortcutState.unreadDocs = new Set(shortcutState.unreadDocs);
-                    shortcutState.docs = new Set(shortcutState.docs);
                 });
+                shortcutState.unreadDocs = new Set(shortcutState.unreadDocs);
+                shortcutState.docs = new Set(shortcutState.docs);
                 state.map.set(action.payload.shortcutId, shortcutFromState);
             }
             return { ...state, map: new Map(state.map) };

@@ -1,5 +1,5 @@
 import { REPORT_DOC_READ } from "../shortcuts/types";
-import { ADD_COMMENT, CommentsActionTypes, CommentsState, COMMENT_UPDATED, DELETE_COMMENT, LOADING_COMMENTS, RECEIVE_COMMENTS, RECEIVE_UNREAD_COMMENTS, COMMENT_ADDED, UPDATE_COMMENT } from "./types";
+import { ADD_COMMENT, CommentsActionTypes, CommentsState, COMMENT_UPDATED, DELETE_COMMENT, LOADING_COMMENTS, RECEIVE_COMMENTS, RECEIVE_UNREAD_COMMENTS, COMMENT_ADDED, UPDATE_COMMENT, SET_UNREAD_COMMENTS } from "./types";
 
 const initialState: CommentsState = {
     docs: new Map()
@@ -10,7 +10,7 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
         case COMMENT_UPDATED:
             let docCommentUpdated = state.docs.get(action.payload.docId);
             if (!docCommentUpdated) {
-                docCommentUpdated = { map: new Map(), loading: false }
+                docCommentUpdated = { map: new Map(), loading: false, unReadCommentsCount: 0 }
             }
 
             docCommentUpdated.map.set(action.payload.id, action.payload);
@@ -19,10 +19,11 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
         case COMMENT_ADDED:
             let docComments = state.docs.get(action.payload.docId);
             if (!docComments) {
-                docComments = { map: new Map(), loading: false }
+                docComments = { map: new Map(), loading: false, unReadCommentsCount: 0 }
             }
 
             if (!docComments.map.has(action.payload.id)) {
+                docComments.unReadCommentsCount = docComments.unReadCommentsCount + 1;
                 docComments.moreComments = [...docComments.moreComments || [], action.payload.id];
             }
 
@@ -42,7 +43,7 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
             return { ...state, docs: new Map(state.docs) };
         case ADD_COMMENT:
             let docCommentsAdded = state.docs.get(action.payload.comment.docId);
-            docCommentsAdded = docCommentsAdded ? { ...docCommentsAdded } : { map: new Map(), loading: false };
+            docCommentsAdded = docCommentsAdded ? { ...docCommentsAdded } : { map: new Map(), loading: false, unReadCommentsCount: 0 };
             const commentArray = [...docCommentsAdded.comments || [], ...docCommentsAdded.moreComments || []];
 
             //Replace temp comment once we have id from DB.
@@ -61,26 +62,27 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
 
             //Update comment in a map and clear more comments.
             docCommentsAdded.map.set(action.payload.comment.id, action.payload.comment);
-            docCommentsAdded.comments = commentArray
+            docCommentsAdded.comments = commentArray;
+            docCommentsAdded.unReadCommentsCount = 0;
             docCommentsAdded.moreComments = undefined;
             state.docs.set(action.payload.comment.docId, docCommentsAdded);
             return { ...state, docs: new Map(state.docs) };
         case REPORT_DOC_READ:
             let clearDocComments = state.docs.get(action.payload);
             if (clearDocComments) {
-                clearDocComments = { ...clearDocComments, comments: [...clearDocComments.comments || [], ...clearDocComments.moreComments || []], moreComments: [] }
+                clearDocComments = { ...clearDocComments, unReadCommentsCount: 0, comments: [...clearDocComments.comments || [], ...clearDocComments.moreComments || []], moreComments: [] }
                 state.docs.set(action.payload, clearDocComments);
             }
             return { ...state, docs: new Map(state.docs) };
         case LOADING_COMMENTS:
             let loadingCommentsDoc = state.docs.get(action.payload);
-            loadingCommentsDoc = loadingCommentsDoc ? { ...loadingCommentsDoc, loading: true } : { map: new Map(), loading: true };
+            loadingCommentsDoc = loadingCommentsDoc ? { ...loadingCommentsDoc, loading: true } : { map: new Map(), loading: true, unReadCommentsCount: 0 };
             state.docs.set(action.payload, loadingCommentsDoc);
             return { ...state, docs: new Map(state.docs) };
 
         case RECEIVE_UNREAD_COMMENTS:
             let unreadCommentsDoc = state.docs.get(action.payload.docId);
-            unreadCommentsDoc = unreadCommentsDoc ? { ...unreadCommentsDoc } : { map: new Map(), loading: false };
+            unreadCommentsDoc = unreadCommentsDoc ? { ...unreadCommentsDoc } : { map: new Map(), loading: false, unReadCommentsCount: 0 };
 
             const unreadCommentIds: number[] = [];
             action.payload.comments.forEach((comment) => {
@@ -89,13 +91,14 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
             });
 
             unreadCommentsDoc.moreComments = unreadCommentIds;
+            unreadCommentsDoc.unReadCommentsCount = unreadCommentIds.length;
 
             state.docs.set(action.payload.docId, unreadCommentsDoc);
 
             return { ...state, docs: new Map(state.docs) };
         case RECEIVE_COMMENTS:
             let receivedCommentsDoc = state.docs.get(action.payload.docId);
-            receivedCommentsDoc = receivedCommentsDoc ? { ...receivedCommentsDoc, loading: false } : { map: new Map(), loading: false };
+            receivedCommentsDoc = receivedCommentsDoc ? { ...receivedCommentsDoc, loading: false } : { map: new Map(), loading: false, unReadCommentsCount: 0 };
 
             if (action.payload.comments.length > 0) {
                 const commentIds: number[] = [];
@@ -114,7 +117,18 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
                 updateCommentsDoc.map.set(action.payload.comment.id, action.payload.comment);
             }
             return { ...state, docs: new Map(state.docs) };
+        case SET_UNREAD_COMMENTS:
+            for (const key in action.payload) {
+                if (Object.prototype.hasOwnProperty.call(action.payload, key)) {
+                    const element: number = action.payload[key];
+                    const docId = parseInt(key);
 
+                    let forEachCommentObj = state.docs.get(docId);
+                    forEachCommentObj = forEachCommentObj ? { ...forEachCommentObj, loading: false, unReadCommentsCount: element } : { map: new Map(), loading: false, unReadCommentsCount: element };
+                    state.docs.set(docId, forEachCommentObj);
+                }
+            }
+            return { ...state, docs: new Map(state.docs) };
         default:
             return state;
     }

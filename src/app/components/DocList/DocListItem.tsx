@@ -84,7 +84,7 @@ const mapStateToProps = (state: ApplicationState, ownProps: DocListItemProps): i
         currentOrganization: state.organizations.currentOrganization,
         statuses: state.statuses.map,
         docTypes: state.docTypes.mapById,
-        unReadComments: docCommentFromStore?.moreComments?.length
+        unReadComments: docCommentFromStore?.unReadCommentsCount
     };
 };
 

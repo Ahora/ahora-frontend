@@ -15,8 +15,9 @@ function* loadDocs(action: LoadShortcutActions) {
     if (shortcut) {
         yield put(UpdateShortcutDocs(action.payload.shortcutId));
         const searchResults: SearchDocResult = yield call(getDocs, shortcut.searchCriteria, pageSize * (action.payload.page - 1), pageSize);
-        yield put(setDocsInState(searchResults.docs));
-        yield put(UpdateShortcutDocs(action.payload.shortcutId, searchResults.docs.map((doc) => doc.id), searchResults.totalCount, action.payload.page));
+        const docs = searchResults.docs.reverse();
+        yield put(setDocsInState(docs));
+        yield put(UpdateShortcutDocs(action.payload.shortcutId, docs.map((doc) => doc.id), searchResults.totalCount, action.payload.page));
     }
 }
 

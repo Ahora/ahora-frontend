@@ -23,13 +23,15 @@ function* getShortcutsData(action: any) {
 
     for (let index = 0; index < array.length; index++) {
         const shortcut = array[index];
-
-        if (!shortcutsMap.get(shortcut.shortcutId)?.disableNotification) {
-            let docs: Doc[] = yield call(getDocUnreadMessage, shortcut.searchCriteria);
+        const shortcutData = shortcutsMap.get(shortcut.shortcutId);
+        if (!shortcutData?.disableNotification) {
+            const since = shortcutData?.shortcut?.since;
+            let docs: Doc[] = yield call(getDocUnreadMessage, shortcut.searchCriteria, since);
             docs = docs.reverse();
             yield put(setDocsInState(docs));
             yield put(setShortcutUnReadAndDocs(shortcut.shortcutId, docs.map((doc: Doc) => doc.id)));
-            yield put(loadUnReadComments(shortcut.searchCriteria));
+
+            yield put(loadUnReadComments(shortcut.searchCriteria, since));
         }
     }
 

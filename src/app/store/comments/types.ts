@@ -54,7 +54,10 @@ export interface QouteCommentAction {
 
 export interface LoadUnReadCommentsAction {
     type: typeof LOAD_UNREAD_COMMENTS
-    payload: SearchCriterias
+    payload: {
+        searchCriterias: SearchCriterias,
+        since?: Date
+    }
 }
 
 export interface SetUnReadCommentsAction {

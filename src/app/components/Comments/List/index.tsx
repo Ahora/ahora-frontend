@@ -102,14 +102,20 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                                 return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
                             })}
                         </div>
+                    </div>
+                }
+                {
+                    ((this.props.moreComments && this.props.moreComments.length > 0) || (this.props.comments && this.props.comments.length > 0)) &&
+                    <>
                         <br /><br /><br />
                         <VisibilitySensor onChange={(visible: boolean) => {
                             if (visible) this.props.reportDocRead();
                         }}>
                             <span>&nbsp;</span>
                         </VisibilitySensor>
-                    </div>
+                    </>
                 }
+
             </>
         );
     }

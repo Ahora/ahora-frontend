@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { OrganizationShortcut, deleteShortcut } from 'app/services/OrganizationShortcut';
+import { OrganizationShortcut, deleteShortcut, updateShortcut } from 'app/services/OrganizationShortcut';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 import { ApplicationState } from 'app/store';
@@ -44,6 +44,12 @@ class ShortcutsPage extends React.Component<ShortcutsPageProps, ShortcutsPageSta
         this.props.removeShortcutFromState(shortcut.id!);
     }
 
+    async clearNotifications(shortcut: OrganizationShortcut) {
+        const shortCutToUpdate = { ...shortcut, since: new Date() }
+        const updatedShortcut = await updateShortcut(shortCutToUpdate.id!, shortCutToUpdate);
+        this.props.updateShortcutToState(updatedShortcut);
+    }
+
     render() {
         return (
             <div>
@@ -65,6 +71,9 @@ class ShortcutsPage extends React.Component<ShortcutsPageProps, ShortcutsPageSta
                                 <Space>
                                     <Popconfirm onConfirm={this.ondeleteShortcut.bind(this, shortcut)} title="Are you sure?">
                                         <Button danger>Delete</Button>
+                                    </Popconfirm>
+                                    <Popconfirm onConfirm={this.clearNotifications.bind(this, shortcut)} title="Are you sure?">
+                                        <Button>Clear Notifications</Button>
                                     </Popconfirm>
                                 </Space>
                             </CanManageOrganization>

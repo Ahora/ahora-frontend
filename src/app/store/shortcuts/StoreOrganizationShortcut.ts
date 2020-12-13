@@ -10,4 +10,5 @@ export default interface StoreOrganizationShortcut {
     docs?: Set<number>,
     page?: number;
     totalDocs?: number;
+
 }

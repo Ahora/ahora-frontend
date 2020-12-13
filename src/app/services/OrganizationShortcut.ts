@@ -10,6 +10,7 @@ export interface OrganizationShortcut {
     star: boolean;
     muted: boolean;
     searchCriteria: SearchCriterias;
+    since?: Date;
 }
 
 

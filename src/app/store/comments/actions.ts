@@ -11,6 +11,6 @@ export const AddCommentInState = (comment: Comment, tempCommentId?: number) => (
 export const deleteCommentInState = (docId: number, commentId: number) => ({ type: DELETE_COMMENT, payload: { docId, commentId } });
 export const requestCommentsToState = (docId: number, fromDate?: Date) => ({ type: REQUEST_COMMENTS, payload: { docId, fromDate } });
 export const updateCommentInState = (docId: number, comment: Comment) => ({ type: UPDATE_COMMENT, payload: { docId, comment } });
-export const loadUnReadComments = (searchCriterias: SearchCriterias) => ({ type: LOAD_UNREAD_COMMENTS, payload: searchCriterias });
+export const loadUnReadComments = (searchCriterias: SearchCriterias, since?: Date) => ({ type: LOAD_UNREAD_COMMENTS, payload: { searchCriterias, since } });
 export const setCommentsDataInState = (docsItems: { [id: string]: number }) => ({ type: SET_UNREAD_COMMENTS, payload: docsItems });
 export const setQouteCommentInState = (comment: Comment) => ({ type: QOUTE_COMMENT, payload: comment });

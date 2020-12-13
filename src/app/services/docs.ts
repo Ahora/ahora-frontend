@@ -72,17 +72,17 @@ export const getDocGroup = async (group: string | string[], query?: SearchCriter
     return result.data;
 }
 
-export const getDocUnreadMessage = async (searchCriterias: SearchCriterias): Promise<Doc[]> => {
+export const getDocUnreadMessage = async (searchCriterias: SearchCriterias, since?: Date): Promise<Doc[]> => {
     const result = await docsClient.get({
-        query: { ...searchCriterias, unread: true, limit: 2000 }
+        query: { ...searchCriterias, unread: true, limit: 2000, updatedAt: since }
     });
 
     return result.data;
 }
 
-export const loadUnreadComments = async (searchCriterias: SearchCriterias): Promise<Doc[]> => {
+export const loadUnreadComments = async (searchCriterias: SearchCriterias, since?: Date): Promise<Doc[]> => {
     const result = await docsunReadCommentsClient.get({
-        query: { ...searchCriterias, unread: true }
+        query: { ...searchCriterias, unread: true, updatedAt: since }
     });
 
     return result.data;

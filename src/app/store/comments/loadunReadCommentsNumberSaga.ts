@@ -4,7 +4,7 @@ import { loadUnreadComments } from 'app/services/docs';
 import { setCommentsDataInState } from './actions';
 
 function* getUnReadComments(action: LoadUnReadCommentsAction) {
-    const data: any = yield call(loadUnreadComments, action.payload);
+    const data: any = yield call(loadUnreadComments, action.payload.searchCriterias, action.payload.since);
     yield put(setCommentsDataInState(data));
 }
 

@@ -105,9 +105,8 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                     </div>
                 }
                 {
-                    ((this.props.moreComments && this.props.moreComments.length > 0) || (this.props.comments && this.props.comments.length > 0)) &&
+                    (this.props.moreComments || this.props.comments) &&
                     <>
-                        <br /><br /><br />
                         <VisibilitySensor onChange={(visible: boolean) => {
                             if (visible) this.props.reportDocRead();
                         }}>

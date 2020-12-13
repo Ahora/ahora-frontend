@@ -12,7 +12,7 @@ interface DocListProps {
     activeDocId?: number;
     docs?: Set<number>,
     page: number;
-    totalPages: number;
+    totalDocs: number;
     section?: string;
     onPageChanged: (newPage: number) => void;
 }
@@ -27,6 +27,7 @@ class DocList extends React.Component<DocListProps> {
     }
 
     render() {
+        console.log(this.props);
         return (
             <div className="doc-list">
                 <>
@@ -48,9 +49,7 @@ class DocList extends React.Component<DocListProps> {
                         )
                     }
                 </>
-                {this.props.totalPages > 1 &&
-                    <Pagination onChange={this.onChange.bind(this)} defaultCurrent={this.props.page} total={this.props.totalPages} />
-                }
+                <Pagination showSizeChanger={false} hideOnSinglePage={true} onChange={this.onChange.bind(this)} current={this.props.page} total={this.props.totalDocs} defaultPageSize={30} />
             </div>
         );
     };

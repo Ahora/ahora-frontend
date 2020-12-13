@@ -36,7 +36,7 @@ interface DocsPageParams {
 
 interface injectedParams {
     page: number;
-    totalPages: number;
+    totalDocs: number;
     loading: boolean;
     searchCriteria?: SearchCriterias;
     docs?: Set<number>
@@ -143,7 +143,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     render() {
         return (
-
             <section style={{ height: "100%" }} className="ant-layout site-layout">
                 {(isBrowser || (isMobile && this.props.match.params.docId === undefined)) &&
                     <div className="docsheader">
@@ -168,7 +167,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                                                             </Link>
                                                         </CanAddDoc>
                                                         <div className="doc-list-wrapper scrollable">
-                                                            <DocList onPageChanged={this.pageChanged.bind(this)} pageSize={30} totalPages={this.props.totalPages} page={this.props.page} section={this.props.match.params.section} docs={this.props.docs} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>
+                                                            <DocList onPageChanged={this.pageChanged.bind(this)} pageSize={30} totalDocs={this.props.totalDocs} page={this.props.page} section={this.props.match.params.section} docs={this.props.docs} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>
                                                                 <div className="no-docs">No Results</div>
                                                             </DocList>
                                                         </div>
@@ -206,7 +205,7 @@ const mapStateToProps = (state: ApplicationState, props: AllProps): injectedPara
         page: availableShortcut?.page || 0,
         loading: false,
         docs: availableShortcut?.docs,
-        totalPages: (availableShortcut && availableShortcut.totalDocs) ? Math.ceil(availableShortcut.totalDocs / 30) : 0,
+        totalDocs: (availableShortcut && availableShortcut.totalDocs) ? availableShortcut.totalDocs : 0,
         searchCriteria: availableShortcut?.searchCriteria
     };
 };

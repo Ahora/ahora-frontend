@@ -94,15 +94,21 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
                 }
 
-                {this.props.moreComments && this.props.moreComments.length > 0 &&
-                    <div>
-                        <Divider className="divider-new-comments" orientation="right">New comments</Divider>
-                        <div className="list">
-                            {this.props.moreComments.map((commentId: number) => {
-                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
-                            })}
-                        </div>
-                    </div>
+                {this.props.moreComments ?
+                    <>
+                        {this.props.moreComments.length > 0 &&
+                            <div>
+                                <Divider className="divider-new-comments" orientation="right">New comments</Divider>
+                                <div className="list">
+                                    {this.props.moreComments.map((commentId: number) => {
+                                        return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
+                                    })}
+                                </div>
+                            </div>
+                        }
+                    </>
+                    :
+                    <AhoraSpinner />
                 }
                 {
                     (this.props.moreComments || this.props.comments) &&

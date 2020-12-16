@@ -200,7 +200,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
 const mapStateToProps = (state: ApplicationState, props: AllProps): injectedParams => {
     let availableShortcut: StoreOrganizationShortcut | undefined = state.shortcuts.map.get(props.match.params.section);
-
     return {
         page: availableShortcut?.page || 0,
         loading: false,

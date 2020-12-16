@@ -3,12 +3,14 @@ import { call, put, takeEvery } from 'redux-saga/effects'
 import { receiveUser } from './actions';
 import { REQUEST_USER_INFO } from './types';
 
+
+const users = new Set<number>();
+
 function* getUsersFromServer(action: any) {
-    try {
+    if (!users.has(action.payload)) {
+        users.add(action.payload);
         const data = yield call(getUserById, action.payload);
         yield put(receiveUser(data));
-    } catch (e) {
-        console.log(e);
     }
 }
 

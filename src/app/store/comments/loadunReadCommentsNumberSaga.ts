@@ -1,10 +1,10 @@
 import { call, put, takeEvery } from 'redux-saga/effects'
 import { LoadUnReadCommentsAction, LOAD_UNREAD_COMMENTS } from './types';
-import { loadUnreadComments } from 'app/services/docs';
+import { loadUnreadCommentsNumber } from 'app/services/docs';
 import { setCommentsDataInState } from './actions';
 
 function* getUnReadComments(action: LoadUnReadCommentsAction) {
-    const data: any = yield call(loadUnreadComments, action.payload.searchCriterias, action.payload.since);
+    const data: any = yield call(loadUnreadCommentsNumber, action.payload.searchCriterias, action.payload.since);
     yield put(setCommentsDataInState(data));
 }
 

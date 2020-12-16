@@ -9,6 +9,8 @@ export const LOADING_COMMENTS = 'LOADING_COMMENTS';
 export const ADD_COMMENT = 'ADD_COMMENT';
 export const ADD_TEMP_COMMENT = 'ADD_TEMP_COMMENT';
 export const REQUEST_COMMENTS = 'REQUEST_COMMENTS';
+export const REQUEST_READ_COMMENTS = 'REQUEST_READ_COMMENTS';
+export const REQUEST_UNREAD_COMMENTS = 'REQUEST_UNREAD_COMMENTS';
 export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const UPDATE_COMMENT = 'UPDATE_COMMENT';
@@ -67,10 +69,7 @@ export interface SetUnReadCommentsAction {
 
 export interface RequestCommentsAction {
     type: typeof REQUEST_COMMENTS
-    payload: {
-        docId: number;
-        fromDate: number
-    }
+    payload: number
 }
 
 export interface UpdateCommentAction {
@@ -103,8 +102,6 @@ interface LoadingCommentsAction {
     type: typeof LOADING_COMMENTS
     payload: number;
 }
-
-LOADING_COMMENTS
 
 export interface ClearUnreadCommentsAction {
     type: typeof REPORT_DOC_READ

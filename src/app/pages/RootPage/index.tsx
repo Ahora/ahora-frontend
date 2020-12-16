@@ -44,8 +44,9 @@ class RootPageComponent extends React.Component<AllProps, State> {
         <div className="main">
           <Typography.Title>Discuss & share your ideas any time</Typography.Title>
           <p className="lead text-muted">
-            Ahora is the right tool to have meaningful discussions based your GitHub &amp; Jira content.<br />
-            Having a chat like interface to your Github &amp; Jira accounts.
+            Ahora is a real time messaging platform built on top of a Github &amp; Jira layer that enables you to have quicker and easier collaboration with context-based discussions.
+            Slack tended to be too noisy and lacked the required tools for this level of collaboration.
+            <br />Ahora solves this gap by utilizing status updates, labels, team collaboration, and smart notifications.
           </p>
           <p>
             {

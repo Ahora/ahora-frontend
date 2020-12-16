@@ -67,6 +67,13 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
         }
     }
 
+    reportDocReadAndCleanFocusId() {
+        this.setState({ focusId: undefined });
+        setTimeout(() => {
+            this.props.reportDocRead();
+        }, 0);
+    }
+
     render() {
         return (
             <>
@@ -94,27 +101,22 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
                 }
 
-                {this.props.moreComments ?
-                    <>
-                        {this.props.moreComments.length > 0 &&
-                            <div>
-                                <Divider className="divider-new-comments" orientation="right">New comments</Divider>
-                                <div className="list">
-                                    {this.props.moreComments.map((commentId: number) => {
-                                        return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
-                                    })}
-                                </div>
-                            </div>
-                        }
-                    </>
-                    :
-                    <AhoraSpinner />
+                {(this.props.moreComments && this.props.moreComments.length > 0) &&
+                    <div>
+                        <Divider className="divider-new-comments" orientation="right">New comments</Divider>
+                        <div className="list">
+                            {this.props.moreComments.map((commentId: number) => {
+                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
+                            })}
+                        </div>
+                    </div>
                 }
                 {
                     (this.props.moreComments || this.props.comments) &&
                     <>
+                        <br /><br /><br />
                         <VisibilitySensor onChange={(visible: boolean) => {
-                            if (visible) this.props.reportDocRead();
+                            if (visible) this.reportDocReadAndCleanFocusId();
                         }}>
                             <span>&nbsp;</span>
                         </VisibilitySensor>
@@ -129,7 +131,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): DispatchProps => {
     return {
         reportDocRead: () => dispatch(reportDocRead(ownProps.doc.id)),
-        loadComments: (toDate?: Date) => dispatch(requestCommentsToState(ownProps.doc.id, toDate))
+        loadComments: () => dispatch(requestCommentsToState(ownProps.doc.id))
     }
 }
 

@@ -88,16 +88,14 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
 
         case RECEIVE_UNREAD_COMMENTS:
             let unreadCommentsDoc = state.docs.get(action.payload.docId);
-            unreadCommentsDoc = unreadCommentsDoc ? { ...unreadCommentsDoc } : { map: new Map(), loading: false, unReadCommentsCount: 0 };
+            unreadCommentsDoc = unreadCommentsDoc ? { ...unreadCommentsDoc, unReadCommentsCount: action.payload.comments.length } : { map: new Map(), loading: false, unReadCommentsCount: action.payload.comments.length };
 
             const unreadCommentIds: number[] = [];
             action.payload.comments.forEach((comment) => {
                 unreadCommentsDoc?.map.set(comment.id, comment);
                 unreadCommentIds.push(comment.id);
             });
-
             unreadCommentsDoc.moreComments = unreadCommentIds;
-            unreadCommentsDoc.unReadCommentsCount = unreadCommentIds.length;
 
             state.docs.set(action.payload.docId, unreadCommentsDoc);
 

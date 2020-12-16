@@ -80,7 +80,7 @@ export const getDocUnreadMessage = async (searchCriterias: SearchCriterias, sinc
     return result.data;
 }
 
-export const loadUnreadComments = async (searchCriterias: SearchCriterias, since?: Date): Promise<Doc[]> => {
+export const loadUnreadCommentsNumber = async (searchCriterias: SearchCriterias, since?: Date): Promise<Doc[]> => {
     const result = await docsunReadCommentsClient.get({
         query: { ...searchCriterias, unread: true, updatedAt: since }
     });

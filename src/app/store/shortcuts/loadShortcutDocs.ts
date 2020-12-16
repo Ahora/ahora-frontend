@@ -13,6 +13,7 @@ function* loadDocs(action: LoadShortcutActions) {
     const shortcutsMap: Map<string, StoreOrganizationShortcut> = store.getState().shortcuts.map;
     const shortcut: StoreOrganizationShortcut | undefined = shortcutsMap.get(action.payload.shortcutId);
     if (shortcut) {
+        //Clean the shortcuts!
         yield put(UpdateShortcutDocs(action.payload.shortcutId));
         const searchResults: SearchDocResult = yield call(getDocs, shortcut.searchCriteria, pageSize * (action.payload.page - 1), pageSize);
         const docs = searchResults.docs.reverse();

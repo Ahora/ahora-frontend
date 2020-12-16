@@ -13,9 +13,11 @@ import { canManageOrganization } from "app/services/authentication";
 import { ApplicationState } from "app/store";
 import StoreOrganizationShortcut from "app/store/shortcuts/StoreOrganizationShortcut";
 import { connect } from "react-redux";
+import { loadShortcutDocs } from "app/store/shortcuts/actions";
+import { Dispatch } from "redux";
 require("./style.scss")
 
-interface OrganizationDetailsPageProps extends InjectableProps {
+interface OrganizationDetailsPageProps extends InjectableProps, DispatchProps {
     shortcuts?: OrganizationShortcut[];
     currentOrgPermission?: OrganizationTeamUser;
     currentUser?: User | undefined;
@@ -23,6 +25,11 @@ interface OrganizationDetailsPageProps extends InjectableProps {
     match: string;
 
 }
+
+interface DispatchProps {
+    loadShortcutDocs(shortcutId: string, page: number): void;
+}
+
 
 interface InjectableProps {
     shortcutsMap: Map<string, StoreOrganizationShortcut>;
@@ -44,6 +51,10 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
     onCollapse(collapsed: boolean) {
         this.setState({ collapsed });
     };
+
+    forceReload(shortcut: OrganizationShortcut) {
+        this.props.loadShortcutDocs(shortcut.id!.toString(), 1);
+    }
 
     render() {
         const { Sider } = Layout;
@@ -72,7 +83,7 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
                         {this.props.shortcuts ?
                             <SubMenu key={"shortcuts"} icon={<MessageOutlined />} title="shortcuts">
                                 {this.props.shortcuts.map((shortcut) => <Menu.Item className="ant-menu-item" icon={shortcut.star && <StarFilled />} key={shortcut.id}>
-                                    <Link to={`/organizations/${this.props.organization && this.props.organization.login}/${shortcut.id}`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get(shortcut.id!.toString())?.unreadDocs?.size}>{shortcut.title}</Badge></Link>
+                                    <Link onDoubleClick={this.forceReload.bind(this, shortcut)} to={`/organizations/${this.props.organization && this.props.organization.login}/${shortcut.id}`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get(shortcut.id!.toString())?.unreadDocs?.size}>{shortcut.title}</Badge></Link>
                                 </Menu.Item>
                                 )}
                                 <Menu.Item key="shortcuts">
@@ -95,8 +106,14 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
     }
 }
 
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+    return {
+        loadShortcutDocs: (shortcutdId: string, page: number) => dispatch(loadShortcutDocs(shortcutdId, page)),
+    }
+}
+
 const mapStateToProps = (state: ApplicationState): InjectableProps => {
     return { shortcutsMap: state.shortcuts.map };
 };
 
-export default connect(mapStateToProps)(OrganizationMenu as any);
+export default connect(mapStateToProps, mapDispatchToProps)(OrganizationMenu as any);

@@ -76,8 +76,8 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
         case SHORTCUT_DOCS_RECEIVED:
             const shortcut = state.map.get(action.payload.shortcutId);
             if (shortcut) {
-                shortcut.docs = new Set();
-                if (action.payload.docs) {
+                shortcut.docs = action.payload.docs ? new Set() : undefined;
+                if (action.payload.docs && action.payload.docs) {
                     action.payload.docs.forEach((docId) => shortcut.docs?.add(docId));
                 }
                 state.map.set(action.payload.shortcutId, { ...shortcut, page: action.payload.page, totalDocs: action.payload.totalDocs });

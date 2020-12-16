@@ -52,8 +52,8 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
         this.setState({ collapsed });
     };
 
-    forceReload(shortcut: OrganizationShortcut) {
-        this.props.loadShortcutDocs(shortcut.id!.toString(), 1);
+    forceReload(shortcutId: string) {
+        this.props.loadShortcutDocs(shortcutId, 1);
     }
 
     render() {
@@ -72,7 +72,7 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
                 {this.props.currentUser &&
                     <>
                         <Menu.Item icon={<InboxOutlined />} key="inbox">
-                            <Link to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("inbox")?.unreadDocs?.size}>Inbox</Badge></Link>
+                            <Link onDoubleClick={this.forceReload.bind(this, "inbox")} to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("inbox")?.unreadDocs?.size}>Inbox</Badge></Link>
                         </Menu.Item>
                         <Menu.Item style={{ display: "none" }} icon={<MessageOutlined />}>
                             Shortcuts
@@ -83,7 +83,7 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
                         {this.props.shortcuts ?
                             <SubMenu key={"shortcuts"} icon={<MessageOutlined />} title="shortcuts">
                                 {this.props.shortcuts.map((shortcut) => <Menu.Item className="ant-menu-item" icon={shortcut.star && <StarFilled />} key={shortcut.id}>
-                                    <Link onDoubleClick={this.forceReload.bind(this, shortcut)} to={`/organizations/${this.props.organization && this.props.organization.login}/${shortcut.id}`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get(shortcut.id!.toString())?.unreadDocs?.size}>{shortcut.title}</Badge></Link>
+                                    <Link onDoubleClick={this.forceReload.bind(this, shortcut.id!.toString())} to={`/organizations/${this.props.organization && this.props.organization.login}/${shortcut.id}`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get(shortcut.id!.toString())?.unreadDocs?.size}>{shortcut.title}</Badge></Link>
                                 </Menu.Item>
                                 )}
                                 <Menu.Item key="shortcuts">
@@ -97,7 +97,7 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
                     </>
                 }
                 <Menu.Item icon={<PieChartOutlined />} key="dashboards"><Link to={`/organizations/${organization.login}/dashboards`}>Dashboards</Link></Menu.Item>
-                <Menu.Item icon={<UnorderedListOutlined />} key="docs"><Link to={`/organizations/${organization.login}/docs`}>Browse</Link></Menu.Item>
+                <Menu.Item icon={<UnorderedListOutlined />} key="docs"><Link onDoubleClick={this.forceReload.bind(this, "docs")} to={`/organizations/${organization.login}/docs`}>Browse</Link></Menu.Item>
                 <Menu.Item icon={<TeamOutlined />} key="teams"><Link to={`/organizations/${organization.login}/teams`}>Teams</Link></Menu.Item>
                 <Menu.Item icon={<FlagOutlined />} key="milestones"><Link to={`/organizations/${organization.login}/milestones`}>Milestones</Link></Menu.Item>
                 {canManageOrg && <Menu.Item icon={<SettingOutlined />} key="settings"><Link to={`/organizations/${organization.login}/settings`}>Settings</Link></Menu.Item>}

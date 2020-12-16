@@ -24,8 +24,6 @@ function* getShortcutsFromServer(action: RequestCommentsAction) {
             toDate = toComment?.createdAt;
         }
 
-        alert(toDate);
-
         if (toDate) {
             const data: Comment[] = yield call(getComments, state.organizations.currentOrganization!.login, action.payload, toDate);
             yield put(receiveCommentsToState(data.reverse(), action.payload));

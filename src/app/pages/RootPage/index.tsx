@@ -6,7 +6,7 @@ import { requestCurrentUserData } from 'app/store/currentuser/actions';
 import { ApplicationState } from 'app/store';
 import { Link } from 'react-router-dom';
 import { Organization, getOrganizations } from 'app/services/organizations';
-import { Card, Button, Typography } from 'antd';
+import { Card, Button, Typography, Space } from 'antd';
 require('./styles.scss')
 
 interface RootPageProps {
@@ -72,7 +72,7 @@ class RootPageComponent extends React.Component<AllProps, State> {
                 <div className="icon">
                   <i className="fas fa-bolt"></i>
                 </div>
-                    Get notification from GitHub and Jira <br />in seconds
+                    Get notification from <br /> GitHub &amp; Jira in seconds
               </Card>
             </div>
             <div className="col-md-4">
@@ -84,9 +84,12 @@ class RootPageComponent extends React.Component<AllProps, State> {
               </Card>
             </div>
             <div className="col-md-4">
-              <Card title="Visualize your GitHub content">
+              <Card title="Visualize your GitHub content &amp; Jira">
                 <div className="icon">
-                  <i className="fab fa-github"></i>
+                  <Space>
+                    <i className="fab fa-github"></i>
+                    <i className="fab fa-jira"></i>
+                  </Space>
                 </div>
                     Utilize smart graphs to display <br />Issues and Pull Requests
               </Card>

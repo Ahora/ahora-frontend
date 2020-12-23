@@ -1,5 +1,5 @@
 
-import { RestCollectorClient } from "rest-collector";
+import AhoraRestCollector from "../sdk/AhoraRestCollector";
 
 export interface DocWatcher {
     id: number;
@@ -12,7 +12,7 @@ export interface DocWatcher {
 }
 
 
-const watchersClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{login}/docs/{docId}/watchers");
+const watchersClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{login}/docs/{docId}/watchers");
 export const getWatchers = async (login: string, docId: number): Promise<DocWatcher[]> => {
     const result = await watchersClient.get({
         params: { login, docId }

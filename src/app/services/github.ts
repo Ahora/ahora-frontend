@@ -1,5 +1,5 @@
 
-import AhoraRestCollector from "./base";
+import AhoraRestCollector from "../sdk/AhoraRestCollector";
 
 const githubClient: AhoraRestCollector = new AhoraRestCollector("/api/github/search/users");
 const githubRepoClient: AhoraRestCollector = new AhoraRestCollector("/api/github/search/repositories");

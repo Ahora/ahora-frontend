@@ -108,7 +108,7 @@ class StatusesPage extends React.Component<AllProps, StatusesPageState> {
 
 
     render() {
-        let statuses: StatusRow[] | undefined = [...this.props.statuses];
+        let statuses: StatusRow[] | undefined = [...this.props.statuses || []];
         if (statuses && this.state.newStatus) {
             statuses = [this.state.newStatus, ...statuses]
         }

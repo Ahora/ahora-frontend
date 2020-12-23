@@ -83,7 +83,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
         if (data.teamNameVal && data.teamNameVal.trim().length > 0) {
             const addedTeam = await addOrganizationTeam(data.teamNameVal.trim(), this.state.team && this.state.team.id);
             this.setState({
-                subTeams: [addedTeam, ...this.state.subTeams],
+                subTeams: [addedTeam, ...this.state.subTeams || []],
                 teamNameVal: ""
             });
         }
@@ -98,7 +98,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
 
     onUserAdded(addedUser: OrganizationTeamUser) {
         this.setState({
-            users: [addedUser, ...this.state.users]
+            users: [addedUser, ...this.state.users || []]
         });
     }
 

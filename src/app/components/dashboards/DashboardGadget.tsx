@@ -41,7 +41,7 @@ class DashboardGadget extends React.Component<AllProps, EditableGraphState> {
         }];
 
         if (this.gadgetInstance) {
-            fields = [...fields, ...this.gadgetInstance.formComponent.fields]
+            fields = [...fields, ...this.gadgetInstance.formComponent.fields || []]
         }
 
         this.state = {

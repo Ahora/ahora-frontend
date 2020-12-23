@@ -1,5 +1,5 @@
 
-import AhoraRestCollector from "./base";
+import AhoraRestCollector from "../sdk/AhoraRestCollector";
 import { SearchCriterias } from "app/components/SearchDocsInput";
 import { UserItem } from "./users";
 import { DocWatcher } from "./watchers";

@@ -74,7 +74,7 @@ class NotificationsPage extends React.Component<AllProps, NotificationsPageState
         const addedNotification = await addNotification(data);
 
         this.setState({
-            notifications: [addedNotification, ...this.state.notifications],
+            notifications: [addedNotification, ...this.state.notifications || []],
             form: undefined
         });
     }

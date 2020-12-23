@@ -1,6 +1,6 @@
 
 import { RestCollectorClient } from "rest-collector";
-import AhoraRestCollector from "./base";
+import AhoraRestCollector from "../sdk/AhoraRestCollector";
 
 export interface PaymentFormDetails {
     token: string;

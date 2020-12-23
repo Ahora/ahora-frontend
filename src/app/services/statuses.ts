@@ -1,5 +1,4 @@
-import { RestCollectorClient } from "rest-collector";
-import { store } from "app/store";
+import AhoraRestCollector from "../sdk/AhoraRestCollector";
 
 export interface Status {
   id?: number;
@@ -8,15 +7,9 @@ export interface Status {
   organizationId?: number;
 }
 
-const statusesClient: RestCollectorClient = new RestCollectorClient(
-  "/api/organizations/{organizationId}/statuses/{id}"
-);
+const statusesClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/statuses/{id}");
 export const getList = async (): Promise<Status[]> => {
-  const result = await statusesClient.get({
-    params: {
-      organizationId: store.getState().organizations.currentOrganization!.login
-    }
-  });
+  const result = await statusesClient.get();
   return result.data;
 };
 

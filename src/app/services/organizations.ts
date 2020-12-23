@@ -1,5 +1,5 @@
 
-import { RestCollectorClient } from "rest-collector";
+import AhoraRestCollector from "../sdk/AhoraRestCollector";
 import { OrganizationTeamUser } from "./organizationTeams";
 
 export enum OrganizationType {
@@ -21,8 +21,8 @@ export interface OrganizationDetailsWithPermission extends Organization {
     permission?: OrganizationTeamUser;
 }
 
-const docsClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{login}");
-const availableorgClient: RestCollectorClient = new RestCollectorClient("/api/availableorg/{login}");
+const docsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{login}");
+const availableorgClient: AhoraRestCollector = new AhoraRestCollector("/api/availableorg/{login}");
 
 export const addOrg = async (org: Organization): Promise<Organization> => {
     const result = await docsClient.post({

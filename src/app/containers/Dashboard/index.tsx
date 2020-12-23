@@ -11,6 +11,7 @@ import { AlertFilled } from "@ant-design/icons";
 import { ApplicationState } from "app/store";
 import { connect } from "react-redux";
 import { Organization } from "app/services/organizations";
+import LoginPage from "app/pages/auth/login";
 
 
 
@@ -63,6 +64,7 @@ class Dashboard extends React.Component<Props, State> {
             <Layout className="site-layout-content">
               <Switch>
                 <Route exact path="/" component={RootPageComponent} />
+                <Route exact path="/login" component={LoginPage} />
                 <Route path="/organizations/add" component={AddOrganizationPage} />
                 <Route path="/organizations/:login/:section?" component={OrganizationDetailsPage} />
                 <Route path="/organizations" component={OrganizationsPage} />

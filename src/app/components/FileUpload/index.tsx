@@ -4,7 +4,6 @@ import { AttachmentUpload, AddAttachment, markUploaded } from 'app/services/atta
 import { RestCollectorClient, RestCollectorRequest } from 'rest-collector';
 import AhoraSpinner from '../Forms/Basics/Spinner';
 
-
 const bucketUploader: RestCollectorClient = new RestCollectorClient(undefined, {
     decorateRequest: (req: RestCollectorRequest, bag?: File): void => {
         if (bag) {

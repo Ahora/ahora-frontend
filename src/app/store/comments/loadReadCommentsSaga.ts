@@ -1,12 +1,15 @@
-import { call, put, takeEvery } from 'redux-saga/effects'
+import { call, put, select, takeEvery } from 'redux-saga/effects'
 import { REQUEST_READ_COMMENTS, RequestCommentsAction } from './types';
 import { getComments, Comment } from 'app/services/comments';
-import { store } from '..';
 import { receiveCommentsToState } from './actions';
+import { ApplicationState } from '../types';
+
+export const getStateFromStore = (state: ApplicationState) => state;
+
 
 function* getShortcutsFromServer(action: RequestCommentsAction) {
 
-    const state = store.getState();
+    const state = yield select(getStateFromStore);
     let toDate: Date | undefined;
 
     const commentState = state.comments.docs.get(action.payload);

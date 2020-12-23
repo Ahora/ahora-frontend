@@ -1,16 +1,18 @@
-import { call, put, takeEvery } from 'redux-saga/effects'
+import { call, put, select, takeEvery } from 'redux-saga/effects'
 import { LoadShortcutActions, LOAD_SHORTCUT_DOCS } from './types';
-import { store } from '..';
+import { ApplicationState } from '../types';
 import StoreOrganizationShortcut from './StoreOrganizationShortcut';
 import { getDocs, SearchDocResult } from 'app/services/docs';
 import { UpdateShortcutDocs } from './actions';
 import { setDocsInState } from '../docs/actions';
 
 const pageSize: number = 30;
+export const getStateFromStore = (state: ApplicationState) => state;
 
 function* loadDocs(action: LoadShortcutActions) {
+    const state = yield select(getStateFromStore);
 
-    const shortcutsMap: Map<string, StoreOrganizationShortcut> = store.getState().shortcuts.map;
+    const shortcutsMap: Map<string, StoreOrganizationShortcut> = state.shortcuts.map;
     const shortcut: StoreOrganizationShortcut | undefined = shortcutsMap.get(action.payload.shortcutId);
     if (shortcut) {
         //Clean the shortcuts!

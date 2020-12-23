@@ -1,12 +1,15 @@
-import { call, delay, put, takeEvery } from 'redux-saga/effects'
+import { call, delay, put, select, takeEvery } from 'redux-saga/effects'
 import { REFRESH_SHORTCUTS } from './types';
-import { store } from '..';
 import StoreOrganizationShortcut from './StoreOrganizationShortcut';
 import { SearchCriterias } from 'app/components/SearchDocsInput';
 import { Doc, getDocUnreadMessage } from 'app/services/docs';
 import { setShortcutUnReadAndDocs } from './actions';
 import { setDocsInState } from '../docs/actions';
 import { loadUnReadComments } from '../comments/actions';
+import { ApplicationState } from '../types';
+
+
+export const getStateFromStore = (state: ApplicationState) => state;
 
 interface ShortcutDef {
     shortcutId: string;
@@ -15,7 +18,8 @@ interface ShortcutDef {
 function* getShortcutsData(action: any) {
 
     const array: ShortcutDef[] = []
-    const shortcutsMap: Map<string, StoreOrganizationShortcut> = store.getState().shortcuts.map;
+    const state = yield select(getStateFromStore);
+    const shortcutsMap: Map<string, StoreOrganizationShortcut> = state.shortcuts.map;
 
     shortcutsMap.forEach((value, key) => {
         array.push({ shortcutId: key, searchCriteria: value.searchCriteria });

@@ -39,7 +39,6 @@ export const canAddDoc = (user: User | undefined | null): boolean => {
 }
 
 export const canEditDoc = (user: User | undefined | null, doc: Doc): boolean => {
-    //Check if the user is logged in and is assignee or reporter
     return !!user &&
         (doc.reporterUserId === user.id || doc.assigneeUserId === user.id)
 }

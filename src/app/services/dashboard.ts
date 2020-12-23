@@ -1,5 +1,5 @@
 
-import AhoraRestCollector from "./base";
+import AhoraRestCollector from "../sdk/AhoraRestCollector";
 import { UserItem } from "./users";
 import { BasicDashboardGadget } from "./dashboardGadgets";
 

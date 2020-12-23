@@ -59,7 +59,7 @@ class RootPageComponent extends React.Component<AllProps, State> {
                       <Link to="/organizations/add"><Button type="primary">Create Organization</Button></Link>
                     }
                   </> :
-                  <Button type="primary" href="/auth/github">Login with GitHub</Button>
+                  <Button type="primary" href="/login">Login to Ahora</Button>
                 }
               </>
             }

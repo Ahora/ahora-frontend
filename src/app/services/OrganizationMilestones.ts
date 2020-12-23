@@ -1,6 +1,5 @@
 
-import { RestCollectorClient } from "rest-collector";
-import { store } from "app/store";
+import AhoraRestCollector from "../sdk/AhoraRestCollector";
 
 
 export enum MilestoneStatus {
@@ -19,37 +18,28 @@ export interface OrganizationMilestone {
 }
 
 
-const milestonesClient: RestCollectorClient = new RestCollectorClient("/api/organizations/{organizationId}/milestones/{id}");
+const milestonesClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/milestones/{id}");
 export const getMilestones = async (): Promise<OrganizationMilestone[]> => {
-    const result = await milestonesClient.get({
-        params: {
-            organizationId: store.getState().organizations.currentOrganization!.login
-        }
-    });
+    const result = await milestonesClient.get();
 
     return result.data;
 }
 
 export const getMilestone = async (id: number): Promise<OrganizationMilestone> => {
     const result = await milestonesClient.get({
-        params: { id, organizationId: store.getState().organizations.currentOrganization!.login }
+        params: { id }
     });
 
     return result.data;
 }
 export const addMilestone = async (milestone: OrganizationMilestone): Promise<OrganizationMilestone> => {
-    const result = await milestonesClient.post({
-        params: {
-            organizationId: store.getState().organizations.currentOrganization!.login
-        },
-        data: milestone
-    });
+    const result = await milestonesClient.post({ data: milestone });
     return result.data;
 }
 
 export const updateMilestone = async (id: number, milestone: OrganizationMilestone): Promise<OrganizationMilestone> => {
     const result = await milestonesClient.put({
-        params: { id, organizationId: store.getState().organizations.currentOrganization!.login },
+        params: { id },
         data: milestone
     });
     return result.data;
@@ -58,7 +48,7 @@ export const updateMilestone = async (id: number, milestone: OrganizationMilesto
 
 export const updateMilestoneTitle = async (id: number, title: string): Promise<OrganizationMilestone> => {
     const result = await milestonesClient.put({
-        params: { id, organizationId: store.getState().organizations.currentOrganization!.login },
+        params: { id },
         data: { title }
     });
     return result.data;
@@ -66,7 +56,7 @@ export const updateMilestoneTitle = async (id: number, title: string): Promise<O
 
 export const updateMilestoneDescription = async (id: number, description: string): Promise<OrganizationMilestone> => {
     const result = await milestonesClient.put({
-        params: { id, organizationId: store.getState().organizations.currentOrganization!.login },
+        params: { id },
         data: { description }
     });
     return result.data;
@@ -75,7 +65,7 @@ export const updateMilestoneDescription = async (id: number, description: string
 
 export const deleteMilestone = async (id: number): Promise<void> => {
     await milestonesClient.delete({
-        params: { id, organizationId: store.getState().organizations.currentOrganization!.login },
+        params: { id },
     });
 }
 
@@ -86,7 +76,7 @@ export const reopenMilestone = async (id: number): Promise<OrganizationMilestone
             closedAt: null,
             state: MilestoneStatus.open
         },
-        params: { id, organizationId: store.getState().organizations.currentOrganization!.login },
+        params: { id },
     });
 
     return result.data;
@@ -98,7 +88,7 @@ export const closeMilestone = async (id: number): Promise<OrganizationMilestone>
             closedAt: new Date(),
             state: MilestoneStatus.closed
         },
-        params: { id, organizationId: store.getState().organizations.currentOrganization!.login },
+        params: { id },
     });
 
     return result.data;

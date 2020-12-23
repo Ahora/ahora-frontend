@@ -4,6 +4,7 @@ import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { User } from 'app/services/users';
 import { requestCurrentUserData } from 'app/store/currentuser/actions';
+import { Link } from 'react-router-dom';
 
 interface LabelsPageState {
 }
@@ -38,7 +39,7 @@ class CurrentUser extends React.Component<AllProps, LabelsPageState> {
                 {this.props.currentUser !== undefined && (<>
                     {this.props.currentUser ?
                         (<span>{this.props.currentUser.displayName || this.props.currentUser.username} | <a href="/auth/logout">Logout</a></span>) :
-                        (<a href="/auth/github">Login</a>)
+                        (<Link to="/login">Login</Link>)
                     }
                 </>)}
             </>

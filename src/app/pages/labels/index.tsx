@@ -112,7 +112,7 @@ class LabelsPage extends React.Component<AllProps, LabelesPageState> {
 
 
     render() {
-        let labels: LabelRow[] | undefined = [...this.props.labels];
+        let labels: LabelRow[] | undefined = [...this.props.labels || []];
         if (labels && this.state.newLabel) {
             labels = [this.state.newLabel, ...labels]
         }

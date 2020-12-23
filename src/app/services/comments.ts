@@ -1,5 +1,5 @@
 
-import AhoraRestCollector from "./base";
+import AhoraRestCollector from "../sdk/AhoraRestCollector";
 
 export interface Comment {
     id: number;

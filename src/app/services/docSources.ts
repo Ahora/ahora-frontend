@@ -1,5 +1,4 @@
-import { RestCollectorClient } from "rest-collector";
-import { store } from "app/store";
+import AhoraRestCollector from "../sdk/AhoraRestCollector";
 
 export interface DocSource {
   id?: number;
@@ -10,23 +9,15 @@ export interface DocSource {
   startSyncTime?: Date;
 }
 
-const docSourceClient: RestCollectorClient = new RestCollectorClient(
-  "/api/organizations/{organizationId}/docsources/{id}"
-);
+const docSourceClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docsources/{id}");
+const syncNowClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docsources/{id}/sync");
 export const getDocSources = async (): Promise<DocSource[]> => {
-  const result = await docSourceClient.get({
-    params: {
-      organizationId: store.getState().organizations.currentOrganization!.login
-    }
-  });
+  const result = await docSourceClient.get();
   return result.data;
 };
 
 export const addDocSource = async (docSource: DocSource): Promise<DocSource> => {
   const result = await docSourceClient.post({
-    params: {
-      organizationId: store.getState().organizations.currentOrganization!.login
-    },
     data: docSource
   });
   return result.data;
@@ -34,17 +25,13 @@ export const addDocSource = async (docSource: DocSource): Promise<DocSource> => 
 
 
 export const syncNowDocSource = async (id: number): Promise<DocSource> => {
-  const result = await docSourceClient.post({
-    url: `/api/organizations/${store.getState().organizations.currentOrganization!.login}/docsources/${id}/sync`,
-  });
+  const result = await syncNowClient.post({ params: { id } });
   return result.data;
 };
 
 export const editDocSource = async (docSource: DocSource): Promise<DocSource> => {
   const result = await docSourceClient.put({
-    params: {
-      organizationId: store.getState().organizations.currentOrganization!.login, id: docSource.id!
-    },
+    params: { id: docSource.id },
     data: docSource
   });
   return result.data;
@@ -53,7 +40,7 @@ export const editDocSource = async (docSource: DocSource): Promise<DocSource> =>
 export const deleteDocSource = async (id: number): Promise<void> => {
   await docSourceClient.delete({
     params: {
-      organizationId: store.getState().organizations.currentOrganization!.login, id
+      id
     }
   });
 };

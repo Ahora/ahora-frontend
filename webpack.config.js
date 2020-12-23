@@ -13,6 +13,7 @@ if (!fs.existsSync(outPath)) {
   fs.mkdirSync(outPath);
 }
 
+const CircularDependencyPlugin = require('circular-dependency-plugin')
 // plugins
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -220,6 +221,17 @@ module.exports = {
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development', // use 'development' unless process.env.NODE_ENV is defined
       DEBUG: false
+    }),
+    new CircularDependencyPlugin({
+      // exclude detection of files based on a RegExp
+      exclude: /a\.js|node_modules/,
+      // add errors to webpack instead of warnings
+      failOnError: true,
+      // allow import cycles that include an asyncronous import,
+      // e.g. via import(/* webpackMode: "weak" */ './file.js')
+      allowAsyncCycles: false,
+      // set the current working directory for displaying module paths
+      cwd: process.cwd(),
     }),
     new CopyWebpackPlugin([
       { from: path.join(sourcePath, 'assets/favicon.ico'), to: outPath },

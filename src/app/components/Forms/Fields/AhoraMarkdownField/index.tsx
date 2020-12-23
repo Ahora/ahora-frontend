@@ -8,6 +8,7 @@ import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { updateUserUsedInState } from 'app/store/users/actions';
 import { connect } from 'react-redux';
+import UserDetails from 'app/components/users/UserDetails';
 
 const { Option } = Mentions;
 
@@ -98,7 +99,7 @@ export class AhoraMarkdownField extends React.Component<Props, State> {
                     onSearch={this.onSearch.bind(this)}>
                     {this.state.users && this.state.users.map((user) => (
                         <Option key={user.id.toString()} value={user.username}>
-                            <span>{user.username}</span>
+                            <UserDetails user={user}></UserDetails>
                         </Option>
                     ))}
                 </Mentions>

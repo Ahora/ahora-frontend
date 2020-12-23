@@ -31,7 +31,7 @@ class UserAvatar extends React.Component<UserAvatarProps> {
     render() {
         if (this.props.user) {
             return <Tooltip title={<UserDetails user={this.props.user} />}>
-                <Avatar src={`https://github.com/${this.props.user.username}.png?size=32`}></Avatar>
+                <Avatar src={this.props.user.avatar || `https://github.com/${this.props.user.username}.png?size=32`}></Avatar>
             </Tooltip>
         } else {
             return <AhoraSpinner />

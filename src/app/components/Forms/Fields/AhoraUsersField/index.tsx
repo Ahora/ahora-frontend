@@ -46,7 +46,6 @@ class AhoraUsersField extends React.Component<Props, AhoraUsersFieldState> {
     }
 
     onUpdate(value: number[]) {
-        console.log(value);
         this.setState({ value });
         this.props.onChange(value);
     }

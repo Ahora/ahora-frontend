@@ -13,6 +13,7 @@ export interface DocGroup {
 export interface Doc {
     id: number;
     subject: string;
+    isPrivate: boolean;
     description: string;
     docTypeId: number;
     userAlias: string;
@@ -163,6 +164,14 @@ export const updateDocDescription = async (login: string, id: number, descriptio
     const result = await docsClient.put({
         params: { id, login },
         data: { description }
+    });
+    return result.data;
+}
+
+export const updateDocIsPrivate = async (login: string, id: number, isPrivate: boolean): Promise<Doc> => {
+    const result = await docsClient.put({
+        params: { id, login },
+        data: { isPrivate }
     });
     return result.data;
 }

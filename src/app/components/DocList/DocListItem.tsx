@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { DocType } from 'app/services/docTypes';
 import LabelsList from 'app/components/Labels/LabelList';
 import { Organization } from 'app/services/organizations';
-import { List, Typography, Tag, Badge } from 'antd';
+import { List, Typography, Tag } from 'antd';
 
 import './style.scss';
 import UsersAvatarList from '../users/UsersAvatarList';
@@ -52,8 +52,9 @@ class DocListItem extends React.Component<AllProps> {
                                 <Tag>{(currentDocType) ? currentDocType.name : ""}</Tag>
                                 <Tag>{(currentStatus) ? currentStatus.name : ""}</Tag>
                             </div>
-                            <div>
-                                <Badge count={this.props.unReadComments} ></Badge>
+                            <div className="tags" style={{ marginTop: "5px" }}>
+                                {this.props.unReadComments! > 0 && <Tag color="#f50">{this.props.unReadComments}</Tag>}
+                                {doc.isPrivate && <Tag color="#108ee9">Private</Tag>}
                             </div>
                         </div>
                         <div>

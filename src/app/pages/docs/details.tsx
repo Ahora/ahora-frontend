@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Doc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc, updateDocStatus } from 'app/services/docs';
+import { Doc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc, updateDocStatus, updateDocIsPrivate } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
 import CommentListComponent from 'app/components/Comments/List';
 import { connect } from 'react-redux';
@@ -18,7 +18,7 @@ import LabelsList from 'app/components/Labels/LabelList';
 import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
-import { Comment as CommentAnt, Descriptions, Space, Popconfirm } from 'antd';
+import { Comment as CommentAnt, Descriptions, Space, Popconfirm, Tag } from 'antd';
 import { Dispatch } from 'redux';
 import UserDetails from 'app/components/users/UserDetails';
 import UserAvatar from 'app/components/users/UserAvatar';
@@ -133,6 +133,12 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         this.updateDoc(updatedDoc);
     }
 
+    async updateIsPrivate(isPrivate: boolean) {
+        const updatedDoc: Doc = { ...this.props.doc!, isPrivate };
+        await updateDocIsPrivate(this.props.match.params.login, this.props.doc!.id, isPrivate);
+        this.updateDoc(updatedDoc);
+    }
+
     async delete() {
         if (this.props.doc) {
             if (this.props.onDocDeleted) {
@@ -178,6 +184,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                         <Space className="extra">
                                             <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
                                             <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
+                                            <Tag onClick={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} color="#108ee9">{doc.isPrivate ? "Private" : "Public"}</Tag>
                                         </Space>
                                         <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
                                             <h1>{doc.subject}</h1>

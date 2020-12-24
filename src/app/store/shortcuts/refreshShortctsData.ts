@@ -40,7 +40,7 @@ function* getShortcutsData(action: any) {
     }
 
     //Run periodic refresh every 20 minutes
-    yield delay(60000)
+    yield delay(30000)
     yield put({ type: REFRESH_SHORTCUTS });
 }
 

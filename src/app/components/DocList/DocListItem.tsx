@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { DocType } from 'app/services/docTypes';
 import LabelsList from 'app/components/Labels/LabelList';
 import { Organization } from 'app/services/organizations';
-import { List, Typography, Tag } from 'antd';
+import { List, Typography, Tag, Space } from 'antd';
 
 import './style.scss';
 import UsersAvatarList from '../users/UsersAvatarList';
@@ -47,15 +47,19 @@ class DocListItem extends React.Component<AllProps> {
                 <List.Item className={`${this.props.isActive ? "active" : ""} doc-list-item`}>
                     <div className="item-wrapper">
                         <div className="extra">
-                            <Moment titleFormat="YYYY-MM-DD HH:mm" format="YYYY-MM-DD HH:mm" withTitle date={doc.updatedAt || doc.createdAt}></Moment>
-                            <div className="tags">
-                                <Tag>{(currentDocType) ? currentDocType.name : ""}</Tag>
-                                <Tag>{(currentStatus) ? currentStatus.name : ""}</Tag>
+                            <div>
+                                <Moment titleFormat="YYYY-MM-DD HH:mm" ago={true} fromNow withTitle date={doc.updatedAt || doc.createdAt}></Moment>
                             </div>
-                            <div className="tags" style={{ marginTop: "5px" }}>
-                                {this.props.unReadComments! > 0 && <Tag color="#f50">{this.props.unReadComments}</Tag>}
-                                {doc.isPrivate && <Tag color="#108ee9">Private</Tag>}
-                            </div>
+                            <Space className="tags" direction="vertical">
+                                <div>
+                                    <Tag>{(currentDocType) ? currentDocType.name : ""}</Tag>
+                                    <Tag>{(currentStatus) ? currentStatus.name : ""}</Tag>
+                                </div>
+                                <div>
+                                    {this.props.unReadComments! > 0 && <Tag color="#f50">{this.props.unReadComments}</Tag>}
+                                    {doc.isPrivate && <Tag color="#108ee9">Private</Tag>}
+                                </div>
+                            </Space>
                         </div>
                         <div>
                             <div className="title">

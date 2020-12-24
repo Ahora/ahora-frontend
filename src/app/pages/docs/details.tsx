@@ -184,13 +184,17 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                         <Space className="extra">
                                             <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
                                             <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
-                                            <Tag onClick={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} color="#108ee9">{doc.isPrivate ? "Private" : "Public"}</Tag>
+                                            <Popconfirm onConfirm={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} title="Are you sure?">
+                                                <Tag color="#108ee9">{doc.isPrivate ? "Private" : "Public"}</Tag>
+                                            </Popconfirm>
                                         </Space>
                                         <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
                                             <h1>{doc.subject}</h1>
                                         </EditableHeader>
-                                        <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
-                                        <UserAvatarList userIds={doc.watchers} />
+                                        <Space direction="vertical">
+                                            <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
+                                            <UserAvatarList userIds={doc.watchers} />
+                                        </Space>
                                         <Descriptions>
                                             <Descriptions.Item label="Assignee">
                                                 <SelectUser editMode={false} defaultSelected={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>

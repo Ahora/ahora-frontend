@@ -8,7 +8,9 @@ import { ahoraDispatch } from 'app/store/dispatchHelpers';
 import { setWebSocketId } from ".";
 
 export const socket = io({ "transports": ['websocket'] });
-setWebSocketId(socket.id);
+socket.on('connect', () => { setWebSocketId(socket.id); });
+socket.on('reconnect', () => { setWebSocketId(socket.id); });
+
 export default class OrganizationWebSocket {
 
 

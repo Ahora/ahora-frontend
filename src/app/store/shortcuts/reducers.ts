@@ -95,7 +95,7 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             addedshortcut?.docs?.add(action.payload.docId);
             return { ...state, map: new Map(state.map) };
         case COMMENT_ADDED:
-            let docId: number = action.payload.docId;
+            const docId: number = action.payload.docId;
             state.map.forEach((shortcut) => {
                 if (shortcut.unreadDocs?.has(docId) || shortcut.docs?.has(docId)) {
                     shortcut.unreadDocs?.delete(docId);
@@ -112,22 +112,22 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             return { ...state, map: new Map(state.map) };
 
         case REPORT_DOC_READ:
-            docId = action.payload;
+            const reportedDocId = action.payload;
             state.map.forEach((shortcut) => {
-                if (shortcut.unreadDocs?.has(docId) || shortcut.docs?.has(docId)) {
-                    shortcut.unreadDocs?.delete(docId);
+                if (shortcut.unreadDocs?.has(reportedDocId) || shortcut.docs?.has(reportedDocId)) {
+                    shortcut.unreadDocs?.delete(reportedDocId);
                     shortcut.unreadDocs = new Set(shortcut.unreadDocs);
                 }
             });
             return { ...state, map: new Map(state.map) };
         case ADD_COMMENT:
-            docId = action.payload.comment.id;
+            const docIdAddComment = action.payload.comment.id;
             state.map.forEach((shortcut) => {
-                if (shortcut.unreadDocs?.has(docId) || shortcut.docs?.has(docId)) {
-                    shortcut.unreadDocs?.delete(docId);
+                if (shortcut.unreadDocs?.has(docIdAddComment) || shortcut.docs?.has(docIdAddComment)) {
+                    shortcut.unreadDocs?.delete(docIdAddComment);
 
-                    shortcut.docs?.delete(docId);
-                    shortcut.docs?.add(docId);
+                    shortcut.docs?.delete(docIdAddComment);
+                    shortcut.docs?.add(docIdAddComment);
                     shortcut.docs = new Set(shortcut.docs);
                     shortcut.unreadDocs = new Set(shortcut.unreadDocs);
                 }

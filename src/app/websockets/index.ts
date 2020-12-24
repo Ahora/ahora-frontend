@@ -1,10 +1,10 @@
 
-let socketId: string | undefined;
+let socketIdUser: string | undefined;
 
 export const setWebSocketId = (socketIdVal: string | undefined) => {
-    socketId = socketIdVal;
+    socketIdUser = socketIdVal;
 }
 
 export const getWebSocketId = () => {
-    return socketId;
+    return socketIdUser;
 } 

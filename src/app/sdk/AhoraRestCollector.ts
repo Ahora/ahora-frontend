@@ -12,7 +12,6 @@ export default class AhoraRestCollector<E = any, B = any> extends RestCollectorC
     constructor(entityRestAPI?: string, decorateRequests?: DecorateRequest<B>) {
         super(entityRestAPI, {
             decorateRequest: (req: RestCollectorRequest, bag?: B) => {
-                //TODO: Fix cicular reference!
                 req.headers.socketid = getWebSocketId();
             }
         })

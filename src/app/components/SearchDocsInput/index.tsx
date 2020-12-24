@@ -27,7 +27,9 @@ autoCompleteOptions.set("status:", async (text: string): Promise<string[]> => {
     return store.getState().statuses.statuses.map((status) => status.name);
 });
 
-
+autoCompleteOptions.set("private:", async (text: string): Promise<string[]> => {
+    return ["true", "false"]
+});
 
 autoCompleteOptions.set("label:", async (text: string): Promise<string[]> => {
     return store.getState().labels.labels.map((label) => label.name);
@@ -43,7 +45,7 @@ autoCompleteOptions.set("milestone:", async (text: string): Promise<string[]> =>
 
 
 
-var searchOptions: SearchParserOptions = { keywords: ['status', 'docType', 'assignee', 'reporter', 'mention', 'label', "repo", "milestone", "team", "createdAt", "closedAt", "unread"], alwaysArray: true }
+var searchOptions: SearchParserOptions = { keywords: ['status', 'docType', 'private', 'assignee', 'reporter', 'mention', 'label', "repo", "milestone", "team", "createdAt", "closedAt", "unread"], alwaysArray: true }
 const autoComleteTokens: string[] = searchOptions.keywords!.map((token) => `${token}:`);
 
 export interface SearchCriterias {
@@ -56,6 +58,7 @@ export interface SearchCriterias {
     text?: string | string[]
     docType?: string | string[]
     mention?: string | string[]
+    private?: string | string[]
 }
 
 

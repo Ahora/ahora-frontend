@@ -74,6 +74,9 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
                         <Menu.Item icon={<InboxOutlined />} key="inbox">
                             <Link onDoubleClick={this.forceReload.bind(this, "inbox")} to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("inbox")?.unreadDocs?.size}>Inbox</Badge></Link>
                         </Menu.Item>
+                        <Menu.Item icon={<InboxOutlined />} key="private">
+                            <Link onDoubleClick={this.forceReload.bind(this, "private")} to={`/organizations/${organization.login}/private`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("private")?.unreadDocs?.size}>Private</Badge></Link>
+                        </Menu.Item>
                         <Menu.Item style={{ display: "none" }} icon={<MessageOutlined />}>
                             Shortcuts
                 <Link className="ant-menu-submenu-plus" to={`/organizations/${this.props.organization.login}/shortcuts/add`}>

@@ -122,8 +122,8 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     }
 
     async onAssigneeSelect(user: UserItem) {
-        const addedUserItem: UserItem = await assignDoc(this.props.match.params.login, parseInt(this.props.match.params.docId), user.username);
-        const updatedDoc = { ...this.props.doc!, assignee: addedUserItem };
+        const addedUserItem: UserItem = await assignDoc(this.props.match.params.login, parseInt(this.props.match.params.docId), user.id);
+        const updatedDoc = { ...this.props.doc!, assigneeUserId: addedUserItem.id };
         this.updateDoc(updatedDoc);
     }
 
@@ -197,7 +197,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                         </Space>
                                         <Descriptions>
                                             <Descriptions.Item label="Assignee">
-                                                <SelectUser editMode={false} defaultSelected={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
+                                                <SelectUser editMode={false} currentUserId={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
                                             </Descriptions.Item>
                                             {docType && <Descriptions.Item label="Type"><>{docType.name}</></Descriptions.Item>}
                                             {doc.closedAt && <Descriptions.Item label="Closed At"><Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.closedAt}></Moment></Descriptions.Item>}

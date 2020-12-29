@@ -3,6 +3,7 @@ export interface AhoraFormField {
     displayName: string;
     fieldType: string;
     required?: boolean;
+    autoFocus?: boolean;
     settings?: any;
 }
 

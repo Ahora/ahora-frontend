@@ -3,7 +3,6 @@ import { AhoraFormField } from '../../AhoraForm/data';
 import { Mentions } from 'antd';
 import { UserItem, searchUsers } from 'app/services/users';
 import { debounce } from 'lodash';
-import FileUpload from 'app/components/FileUpload';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { updateUserUsedInState } from 'app/store/users/actions';
@@ -30,11 +29,11 @@ interface Props extends DispatchProps, InjectableProps {
     value?: string;
     autoFocus?: boolean;
     fieldData: AhoraFormField;
-    onChange: (value: string) => void;
+    onChange?: (value: string) => void;
 }
 
 
-export class AhoraMarkdownField extends React.Component<Props, State> {
+class AhoraMarkdownField extends React.Component<Props, State> {
 
     private mentionRef: React.RefObject<any>;
 
@@ -73,7 +72,8 @@ export class AhoraMarkdownField extends React.Component<Props, State> {
 
     onChange(value: string) {
         this.setState({ value });
-        this.props.onChange(value);
+        if (this.props.onChange)
+            this.props.onChange(value);
     }
 
     onFileUploaded(url: string) {
@@ -86,27 +86,22 @@ export class AhoraMarkdownField extends React.Component<Props, State> {
 
     render() {
         return (
-            <>
-                <Mentions
-                    ref={this.mentionRef}
-                    autoFocus={this.state.autoFocus}
-                    placeholder="Message" autoSize={true}
-                    rows={1} loading={this.state.loading}
-                    value={this.props.value}
-                    defaultValue={this.props.value}
-                    onSelect={this.onUserSelect.bind(this)}
-                    onChange={this.onChange.bind(this)}
-                    onSearch={this.onSearch.bind(this)}>
-                    {this.state.users && this.state.users.map((user) => (
-                        <Option key={user.id.toString()} value={user.username}>
-                            <UserDetails user={user}></UserDetails>
-                        </Option>
-                    ))}
-                </Mentions>
-                <div style={{ display: "none" }}>
-                    <FileUpload onFileUploaded={this.onFileUploaded.bind(this)}></FileUpload>
-                </div>
-            </>
+            <Mentions
+                ref={this.mentionRef}
+                autoFocus={this.state.autoFocus}
+                placeholder="Message"
+                autoSize={true}
+                loading={this.state.loading}
+                defaultValue={this.props.value}
+                onSelect={this.onUserSelect.bind(this)}
+                onChange={this.onChange.bind(this)}
+                onSearch={this.onSearch.bind(this)}>
+                {this.state.users && this.state.users.map((user) => (
+                    <Option key={user.id.toString()} value={user.username}>
+                        <UserDetails user={user}></UserDetails>
+                    </Option>
+                ))}
+            </Mentions>
         );
     }
 }

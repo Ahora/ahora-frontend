@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Comment, updateComment, deleteComment, pinComment, unpinComment } from 'app/services/comments';
-import Moment from 'react-moment';
 import CanEditOrDeleteComment from 'app/components/Authentication/CanEditOrDeleteComment';
 import CanPinComment from 'app/components/Authentication/CanPinComment';
 import { Doc } from 'app/services/docs';
@@ -16,6 +15,7 @@ import { Dispatch } from 'redux';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { deleteCommentInState, setQouteCommentInState, updateCommentInState } from 'app/store/comments/actions';
+import AhoraDate from 'app/components/DatesTimes/Time';
 
 interface InjectableProps {
     comment?: Comment;
@@ -148,7 +148,7 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
                             <UserAvatar userId={this.props.comment.authorUserId}></UserAvatar>
                         </>
                     }
-                    datetime={<Moment titleFormat="YYYY-MM-DD HH:mm" withTitle fromNow format="YYYY-MM-DD HH:mm" date={this.props.comment.createdAt}></Moment>}
+                    datetime={<AhoraDate date={this.props.comment.createdAt}></AhoraDate>}
                     actions={(this.isDraft()) ? undefined : [ //Don't show actions if comment is not created yet in the server
                         <span key="comment-basic-reply-to" onClick={this.onQoute.bind(this, this.props.comment)}>Quote</span>,
                         <CanEditOrDeleteComment comment={this.props.comment}>

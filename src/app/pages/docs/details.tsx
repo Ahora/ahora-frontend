@@ -9,7 +9,6 @@ import SelectUser from 'app/components/users/selectusers';
 import { UserItem, User } from 'app/services/users';
 import { DocType } from 'app/services/docTypes';
 import { Comment } from 'app/services/comments';
-import Moment from 'react-moment';
 import EditableHeader from 'app/components/EditableHeader';
 import EditableMarkDown from 'app/components/EditableMarkDown';
 import { canEditDoc } from 'app/services/authentication';
@@ -28,6 +27,7 @@ import AddCommentComponent from 'app/components/Comments/AddComment';
 import { addComment } from 'app/services/comments';
 import { AddCommentInState } from 'app/store/comments/actions';
 import { requestDocToState } from 'app/store/docs/actions';
+import AhoraDate from 'app/components/DatesTimes/Time';
 
 interface DocsDetailsPageState {
     focusCommentId?: number;
@@ -191,7 +191,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                         <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
                                             <h1>{doc.subject}</h1>
                                         </EditableHeader>
-                                        <Space direction="vertical">
+                                        <Space direction="vertical" style={{ width: "100%" }}>
                                             <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
                                             <UserAvatarList userIds={doc.watchers} />
                                         </Space>
@@ -200,9 +200,9 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                                 <SelectUser editMode={false} currentUserId={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
                                             </Descriptions.Item>
                                             {docType && <Descriptions.Item label="Type"><>{docType.name}</></Descriptions.Item>}
-                                            {doc.closedAt && <Descriptions.Item label="Closed At"><Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.closedAt}></Moment></Descriptions.Item>}
+                                            {doc.closedAt && <Descriptions.Item label="Closed At"><AhoraDate date={doc.closedAt}></AhoraDate></Descriptions.Item>}
                                             {doc.lastView && <Descriptions.Item label="Last viewd by me">
-                                                <Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.lastView.updatedAt}></Moment>
+                                                <AhoraDate date={doc.lastView.updatedAt}></AhoraDate>
                                             </Descriptions.Item>
                                             }
                                             {doc.source &&
@@ -219,7 +219,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                         <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
                                             <CommentAnt className="description"
                                                 datetime={
-                                                    <Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.createdAt}></Moment>
+                                                    <AhoraDate date={doc.createdAt}></AhoraDate>
                                                 }
                                                 actions={
                                                     canEdit ? [

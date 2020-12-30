@@ -45,7 +45,7 @@ class RootPageComponent extends React.Component<AllProps, State> {
           <Typography.Title>Discuss & share your ideas any time</Typography.Title>
           <p className="lead text-muted">
             Ahora is a real time discussions platform that enables you to have quicker and easier collaboration with context-based discussions. <br />
-            Current chat messaging platforms tended to be too noisy and lacked the required tools for this level of collaboration, Ahora solves this gap by utilizing status updates, labels, team collaboration, and smart notifications.
+            Current chat messaging platforms tend to be too noisy and lack the required tools for this level of collaboration. Ahora solves this gap by utilizing status updates, labels, team collaboration, and smart notifications.
           </p>
           <p>
             {
@@ -71,7 +71,7 @@ class RootPageComponent extends React.Component<AllProps, State> {
                 <div className="icon">
                   <i className="fas fa-bolt"></i>
                 </div>
-                    Get notification from <br /> GitHub &amp; Jira in seconds
+                    Get notifications from <br /> GitHub &amp; Jira in seconds
               </Card>
             </div>
             <div className="col-md-4">
@@ -116,7 +116,8 @@ class RootPageComponent extends React.Component<AllProps, State> {
                 <div className="icon">
                   <i className="fas fa-bell"></i>
                 </div>
-                    Custome and improved notifications <br />for Issues and Pull Requests
+                    Customized and improved notifications <br />
+                    for Issues and Pull Requests
                 </Card>
             </div>
           </div>

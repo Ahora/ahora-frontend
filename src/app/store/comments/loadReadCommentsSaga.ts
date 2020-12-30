@@ -22,14 +22,15 @@ function* getShortcutsFromServer(action: RequestCommentsAction) {
             toDate = doc?.lastView ? doc?.lastView.updatedAt : doc?.createdAt;
         }
         else if (commentState?.comments.length > 0) {
-            const commentId = commentState.comments[0];
+            const commentId = commentState.comments[commentState.comments.length - 1];
             const toComment = commentState.map.get(commentId);
             toDate = toComment?.createdAt;
         }
 
+
         if (toDate) {
             const data: Comment[] = yield call(getComments, state.organizations.currentOrganization!.login, action.payload, toDate);
-            yield put(receiveCommentsToState(data.reverse(), action.payload));
+            yield put(receiveCommentsToState(data, action.payload));
         }
     }
 }

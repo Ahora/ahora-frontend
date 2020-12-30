@@ -15,7 +15,7 @@ import { Dispatch } from 'redux';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { deleteCommentInState, setQouteCommentInState, updateCommentInState } from 'app/store/comments/actions';
-import AhoraDate from 'app/components/DatesTimes/Time';
+import AhoraDate from 'app/components/Basics/AhoraTime';
 
 interface InjectableProps {
     comment?: Comment;

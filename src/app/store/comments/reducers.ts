@@ -24,7 +24,7 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
 
             if (!docComments.map.has(action.payload.id)) {
                 docComments.unReadCommentsCount = docComments.unReadCommentsCount + 1;
-                docComments.moreComments = [...docComments.moreComments || [], action.payload.id];
+                docComments.moreComments = [action.payload.id, ...docComments.moreComments || []];
             }
 
             docComments.map.set(action.payload.id, action.payload);
@@ -50,7 +50,7 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
         case ADD_COMMENT:
             let docCommentsAdded = state.docs.get(action.payload.comment.docId);
             docCommentsAdded = docCommentsAdded ? { ...docCommentsAdded } : { map: new Map(), loading: false, unReadCommentsCount: 0 };
-            const commentArray = [...docCommentsAdded.comments || [], ...docCommentsAdded.moreComments || []];
+            let commentArray = [...docCommentsAdded.comments || [], ...docCommentsAdded.moreComments || []];
 
             //Replace temp comment once we have id from DB.
             if (action.payload.tempCommentId) {
@@ -62,7 +62,7 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
                 }
             }
             else {
-                commentArray.push(action.payload.comment.id)
+                commentArray.unshift(action.payload.comment.id);
             }
 
             //Update comment in a map and clear more comments.
@@ -75,7 +75,7 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
         case REPORT_DOC_READ:
             let clearDocComments = state.docs.get(action.payload);
             if (clearDocComments) {
-                clearDocComments = { ...clearDocComments, unReadCommentsCount: 0, comments: [...clearDocComments.comments || [], ...clearDocComments.moreComments || []], moreComments: [] }
+                clearDocComments = { ...clearDocComments, unReadCommentsCount: 0, comments: [...clearDocComments.moreComments || [], ...clearDocComments.comments || []], moreComments: [] }
                 state.docs.set(action.payload, clearDocComments);
             }
             return { ...state, docs: new Map(state.docs) };
@@ -109,7 +109,7 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
                     receivedCommentsDoc?.map.set(comment.id, comment);
                     commentIds.push(comment.id);
                 });
-                receivedCommentsDoc.comments = [...commentIds, ...receivedCommentsDoc.comments || []];
+                receivedCommentsDoc.comments = [...receivedCommentsDoc.comments || [], ...commentIds];
             }
             state.docs.set(action.payload.docId, receivedCommentsDoc);
 

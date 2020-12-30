@@ -7,7 +7,7 @@ import CanManageOrganization from 'app/components/Authentication/CanManageOrgani
 import { Link } from 'react-router-dom';
 import { AddDocSourceForm } from 'app/components/DocSources/AddDocSourceForm';
 import { Button, Table, Popconfirm, Menu, Space } from 'antd';
-import AhoraDate from 'app/components/DatesTimes/Time';
+import AhoraDate from 'app/components/Basics/AhoraTime';
 
 interface MilestonesPageState {
     form?: any;

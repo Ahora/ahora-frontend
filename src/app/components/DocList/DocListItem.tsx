@@ -12,7 +12,7 @@ import { List, Typography, Tag, Space } from 'antd';
 import './style.scss';
 import UsersAvatarList from '../users/UsersAvatarList';
 import AhoraSpinner from '../Forms/Basics/Spinner';
-import AhoraDate from '../DatesTimes/Time';
+import AhoraDate from '../Basics/AhoraTime';
 
 interface injectedParams {
     statuses: Map<number, Status>;

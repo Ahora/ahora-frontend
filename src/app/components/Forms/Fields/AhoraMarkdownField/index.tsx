@@ -91,6 +91,7 @@ class AhoraMarkdownField extends React.Component<Props, State> {
                 autoFocus={this.state.autoFocus}
                 placeholder="Message"
                 autoSize={true}
+                value={this.props.value}
                 loading={this.state.loading}
                 defaultValue={this.props.value}
                 onSelect={this.onUserSelect.bind(this)}

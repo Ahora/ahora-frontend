@@ -10,6 +10,8 @@ import { requestCommentsToState } from 'app/store/comments/actions';
 import { Divider } from 'antd';
 import VisibilitySensor from 'react-visibility-sensor';
 import { reportDocRead } from 'app/store/shortcuts/actions';
+import InfiniteScroll from 'react-infinite-scroll-component';
+
 
 require("./style.scss")
 
@@ -48,17 +50,25 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
         this.props.loadComments();
     }
 
+    componentDidMount() {
+        this.props.loadComments();
+    }
+
     async componentDidUpdate(prevProps: CommentsProps) {
         let focusId = this.state.focusId;
-        if (prevProps.focusId != this.props.focusId) {
+        if (!focusId && prevProps.focusId != this.props.focusId) {
             focusId = this.props.focusId;
         }
 
-        if (this.props.moreComments && this.props.moreComments.length > 0 && this.props.moreComments[0] !== focusId) {
-            focusId = this.props.moreComments[0];
+        if (this.props.moreComments && this.props.moreComments.length > 0 && this.props.moreComments[this.props.moreComments.length - 1] !== focusId) {
+            focusId = this.props.moreComments[this.props.moreComments.length - 1];
+        }
+        else if (this.props.comments && this.props.comments.length > 0) {
+            focusId = this.props.comments[0];
+
         }
 
-        if (focusId !== this.state.focusId) {
+        if (!focusId > !this.state.focusId) {
             this.setState({ focusId });
         }
 
@@ -69,18 +79,13 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
     reportDocReadAndCleanFocusId() {
         this.setState({ focusId: undefined });
-        setTimeout(() => {
-            this.props.reportDocRead();
-        }, 0);
+        this.props.reportDocRead();
     }
 
     render() {
         return (
             <>
 
-                <VisibilitySensor onChange={(visible: boolean) => { if (visible) this.loadMoreComments(); }}>
-                    <span>&nbsp;</span>
-                </VisibilitySensor>
                 {this.props.pinnedComments && this.props.pinnedComments.length > 0 &&
                     (<>
                         <div className="list">
@@ -93,23 +98,32 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
                 {this.props.loading && <AhoraSpinner />}
 
-
                 {this.props.comments && this.props.comments.length > 0 &&
-                    <div className="list">
+
+                    <InfiniteScroll
+                        dataLength={this.props.comments.length} //This is important field to render the next data
+                        next={() => { console.log("loadmore"); this.loadMoreComments() }}
+                        style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+                        hasMore={true}
+                        loader={<AhoraSpinner />}
+                        scrollableTarget={`scrollableComments${this.props.doc.id}`}
+                        endMessage={
+                            <p style={{ textAlign: 'center' }}>
+                                <b>Yay! You have seen it all</b>
+                            </p>
+                        }
+                    >
+                        {(this.props.moreComments && this.props.moreComments.length > 0) &&
+                            <>
+                                {this.props.moreComments.map((commentId: number) => { return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>); })}
+                                <Divider className="divider-new-comments" orientation="right">New comments</Divider>
+                            </>
+                        }
+
                         {this.props.comments.map((commentId: number) => <CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>)}
-                    </div>
 
-                }
 
-                {(this.props.moreComments && this.props.moreComments.length > 0) &&
-                    <div>
-                        <Divider className="divider-new-comments" orientation="right">New comments</Divider>
-                        <div className="list">
-                            {this.props.moreComments.map((commentId: number) => {
-                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
-                            })}
-                        </div>
-                    </div>
+                    </InfiniteScroll>
                 }
                 {
                     (this.props.moreComments || this.props.comments) &&

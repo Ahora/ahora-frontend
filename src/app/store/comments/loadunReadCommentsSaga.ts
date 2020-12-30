@@ -24,7 +24,7 @@ function* getShortcutsFromServer(action: RequestCommentsAction) {
 
         if ((commentState?.moreComments === undefined || commentState?.moreComments.length !== commentState.unReadCommentsCount) && fromDate) {
             const unreadComments: Comment[] = yield call(getComments, state.organizations.currentOrganization!.login, action.payload, undefined, fromDate);
-            yield put(receiveUnreadCommentsToState(action.payload, unreadComments.reverse()));
+            yield put(receiveUnreadCommentsToState(action.payload, unreadComments));
 
         }
     }

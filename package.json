@@ -88,6 +88,7 @@
     "react-flip-move": "^3.0.4",
     "react-graph-vis": "^1.0.5",
     "react-hot-loader": "^4.12.15",
+    "react-infinite-scroll-component": "^5.1.0",
     "react-intl": "^3.4.0",
     "react-loaders": "^3.0.1",
     "react-markdown-editor-lite": "^0.5.1",

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Comment, updateComment, deleteComment, pinComment, unpinComment } from 'app/services/comments';
 import CanEditOrDeleteComment from 'app/components/Authentication/CanEditOrDeleteComment';
 import CanPinComment from 'app/components/Authentication/CanPinComment';
-import { Doc } from 'app/services/docs';
 import { Comment as CommentComponent } from 'antd';
 import './style.scss';
 import { CheckOutlined } from '@ant-design/icons';
@@ -30,7 +29,7 @@ interface DispatchProps {
 interface CommentsProps extends InjectableProps, DispatchProps {
     commentId: number;
     login: string;
-    doc: Doc;
+    docId: number;
     focus: boolean;
 }
 
@@ -65,6 +64,20 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
             }
         }, 0);
 
+    }
+
+    componentDidUpdate(prevProps: CommentsProps) {
+        if (prevProps.comment !== this.props.comment) {
+            console.log("comment", prevProps, this.props);
+        }
+
+        if (prevProps.commentId !== this.props.commentId) {
+            console.log("commentId", prevProps, this.props);
+        }
+
+        if (prevProps.docId !== this.props.docId) {
+            console.log("docId", prevProps, this.props);
+        }
     }
 
     editMode() {
@@ -155,7 +168,7 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
                             <span onClick={this.editMode.bind(this)}>Edit</span>
                             <span onClick={this.deleteCommentHandle.bind(this)}>Delete</span>
                         </CanEditOrDeleteComment>,
-                        <CanPinComment doc={this.props.doc} comment={this.props.comment}>
+                        <CanPinComment docId={this.props.docId} comment={this.props.comment}>
                             <span onClick={this.pinToggle.bind(this)}>{this.props.comment.pinned ? "Unpin" : "Pin"}</span>
                         </CanPinComment>
                     ]}
@@ -181,13 +194,13 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): DispatchProps => {
     return {
         qouteComment: (comment: Comment) => dispatch(setQouteCommentInState(comment)),
-        deleteComment: (commentId: number) => dispatch(deleteCommentInState(ownProps.doc.id, commentId)),
-        updateComment: (comment: Comment) => dispatch(updateCommentInState(ownProps.doc.id, comment))
+        deleteComment: (commentId: number) => dispatch(deleteCommentInState(ownProps.docId, commentId)),
+        updateComment: (comment: Comment) => dispatch(updateCommentInState(ownProps.docId, comment))
     }
 }
 
 const mapStateToProps = (state: ApplicationState, props: CommentsProps): InjectableProps => {
-    const mapOfComments = state.comments.docs.get(props.doc.id);
+    const mapOfComments = state.comments.docs.get(props.docId);
 
     return {
         comment: mapOfComments?.map.get(props.commentId)

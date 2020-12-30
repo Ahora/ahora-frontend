@@ -65,10 +65,10 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
         }
         else if (this.props.comments && this.props.comments.length > 0) {
             focusId = this.props.comments[0];
-
         }
 
-        if (!focusId > !this.state.focusId) {
+
+        if (focusId !== this.state.focusId) {
             this.setState({ focusId });
         }
 
@@ -90,7 +90,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                     (<>
                         <div className="list">
                             {this.props.pinnedComments.map((commentId: number) => {
-                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
+                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} docId={this.props.doc.id} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
                             })}
                         </div>
                     </>)
@@ -115,12 +115,12 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                     >
                         {(this.props.moreComments && this.props.moreComments.length > 0) &&
                             <>
-                                {this.props.moreComments.map((commentId: number) => { return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>); })}
+                                {this.props.moreComments.map((commentId: number) => { return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} docId={this.props.doc.id} login={this.props.login} commentId={commentId}></CommentDetailsComponent>); })}
                                 <Divider className="divider-new-comments" orientation="right">New comments</Divider>
                             </>
                         }
 
-                        {this.props.comments.map((commentId: number) => <CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>)}
+                        {this.props.comments.map((commentId: number) => <CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} docId={this.props.doc.id} login={this.props.login} commentId={commentId}></CommentDetailsComponent>)}
 
 
                     </InfiniteScroll>

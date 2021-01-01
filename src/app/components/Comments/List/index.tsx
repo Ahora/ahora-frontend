@@ -5,8 +5,8 @@ import { Doc } from 'app/services/docs';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
-import { requestCommentsToState } from 'app/store/comments/actions';
-import { Divider } from 'antd';
+import { requestCommentsToState, requestPinnedCommentsToState } from 'app/store/comments/actions';
+import { Divider, Typography } from 'antd';
 import VisibilitySensor from 'react-visibility-sensor';
 import { reportDocRead } from 'app/store/shortcuts/actions';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -26,6 +26,7 @@ interface InjectableProps {
 
 interface DispatchProps {
     reportDocRead: () => void;
+    loadPinnedMessages: () => void;
     loadComments: (toDate?: Date) => void;
 }
 
@@ -52,6 +53,8 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
     componentDidMount() {
         this.props.loadComments();
+        this.props.loadPinnedMessages();
+
     }
 
     async componentDidUpdate(prevProps: CommentsProps) {
@@ -74,6 +77,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
         if (this.props.doc.id !== prevProps.doc.id) {
             this.loadMoreComments();
+            this.props.loadPinnedMessages();
         }
     }
 
@@ -85,33 +89,25 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
     render() {
         return (
             <>
-
                 {this.props.pinnedComments && this.props.pinnedComments.length > 0 &&
                     (<>
-                        <div className="list">
-                            {this.props.pinnedComments.map((commentId: number) => {
-                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} docId={this.props.doc.id} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
-                            })}
-                        </div>
+                        <Typography.Title level={3}>Pinned:</Typography.Title>
+                        {this.props.pinnedComments.map((commentId: number) => {
+                            return (<CommentDetailsComponent key={commentId} docId={this.props.doc.id} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
+                        })}
+                        <Typography.Title level={3}>Comments:</Typography.Title>
                     </>)
                 }
-                <div>{this.props.hasMore}</div>
-
                 {this.props.comments && this.props.comments.length > 0 &&
 
                     <InfiniteScroll
                         dataLength={this.props.comments.length} //This is important field to render the next data
-                        next={() => { console.log("loadmore"); this.loadMoreComments() }}
+                        next={() => { this.loadMoreComments() }}
                         style={{ overflow: "hidden", display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
                         hasMore={this.props.hasMore}
                         inverse={true}
                         loader={<></>}
                         scrollableTarget={`scrollableComments${this.props.doc.id}`}
-                        endMessage={
-                            <p style={{ textAlign: 'center' }}>
-                                <b>Yay! You have seen it all</b>
-                            </p>
-                        }
                     >
                         {(this.props.moreComments && this.props.moreComments.length > 0) &&
                             <>
@@ -145,7 +141,8 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): DispatchProps => {
     return {
         reportDocRead: () => dispatch(reportDocRead(ownProps.doc.id)),
-        loadComments: () => dispatch(requestCommentsToState(ownProps.doc.id))
+        loadComments: () => dispatch(requestCommentsToState(ownProps.doc.id)),
+        loadPinnedMessages: () => dispatch(requestPinnedCommentsToState(ownProps.doc.id))
     }
 }
 
@@ -156,6 +153,7 @@ const mapStateToProps = (state: ApplicationState, props: CommentsProps): Injecta
         canPostComment: !!state.currentUser.user,
         moreComments: mapOfComments?.moreComments,
         comments: mapOfComments?.comments,
+        pinnedComments: mapOfComments?.pinnedComments,
         hasMore: mapOfComments ? mapOfComments.hasMore : false
     };
 };

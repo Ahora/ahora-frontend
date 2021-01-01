@@ -27,6 +27,17 @@ export const getComments = async (login: string, docId: number, toDate?: Date | 
     return result.data;
 }
 
+export const getPinnedComments = async (docId: number): Promise<Comment[]> => {
+    const result = await commentsClient.get({
+        params: { docId },
+        query: {
+            pinned: true
+        }
+    });
+
+    return result.data;
+}
+
 export const getDoc = async (login: string, docId: number): Promise<Comment> => {
     const result = await commentsClient.get({
         params: {

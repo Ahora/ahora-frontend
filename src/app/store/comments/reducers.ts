@@ -1,5 +1,5 @@
 import { REPORT_DOC_READ } from "../shortcuts/types";
-import { ADD_COMMENT, CommentsActionTypes, CommentsState, COMMENT_UPDATED, DELETE_COMMENT, LOADING_COMMENTS, RECEIVE_COMMENTS, RECEIVE_UNREAD_COMMENTS, COMMENT_ADDED, UPDATE_COMMENT, SET_UNREAD_COMMENTS, QOUTE_COMMENT } from "./types";
+import { ADD_COMMENT, CommentsActionTypes, CommentsState, COMMENT_UPDATED, DELETE_COMMENT, LOADING_COMMENTS, RECEIVE_COMMENTS, RECEIVE_UNREAD_COMMENTS, COMMENT_ADDED, UPDATE_COMMENT, SET_UNREAD_COMMENTS, QOUTE_COMMENT, RECEIVE_PINNED_COMMENTS } from "./types";
 
 const initialState: CommentsState = {
     docs: new Map()
@@ -112,6 +112,21 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
                 receivedCommentsDoc.comments = [...receivedCommentsDoc.comments || [], ...commentIds];
             }
             state.docs.set(action.payload.docId, receivedCommentsDoc);
+
+            return { ...state, docs: new Map(state.docs) };
+        case RECEIVE_PINNED_COMMENTS:
+            let receivedPinnedCommentsDoc = state.docs.get(action.payload.docId);
+            receivedPinnedCommentsDoc = receivedPinnedCommentsDoc ? { ...receivedPinnedCommentsDoc, loading: false } : { map: new Map(), loading: false, unReadCommentsCount: 0, hasMore: action.payload.comments.length === 30 };
+
+            if (action.payload.comments.length > 0) {
+                const commentIds: number[] = [];
+                action.payload.comments.forEach((comment) => {
+                    receivedPinnedCommentsDoc?.map.set(comment.id, comment);
+                    commentIds.push(comment.id);
+                });
+                receivedPinnedCommentsDoc.pinnedComments = commentIds
+            }
+            state.docs.set(action.payload.docId, receivedPinnedCommentsDoc);
 
             return { ...state, docs: new Map(state.docs) };
         case UPDATE_COMMENT:

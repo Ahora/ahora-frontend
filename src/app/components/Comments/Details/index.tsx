@@ -66,20 +66,6 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
 
     }
 
-    componentDidUpdate(prevProps: CommentsProps) {
-        if (prevProps.comment !== this.props.comment) {
-            console.log("comment", prevProps, this.props);
-        }
-
-        if (prevProps.commentId !== this.props.commentId) {
-            console.log("commentId", prevProps, this.props);
-        }
-
-        if (prevProps.docId !== this.props.docId) {
-            console.log("docId", prevProps, this.props);
-        }
-    }
-
     editMode() {
         this.setState({
             editMode: true

@@ -179,7 +179,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                 {doc ?
                     <AhoraFlexPanel scrollId={`scrollableComments${doc.id}`} bottom={canAddComment && <AddCommentComponent commentAdded={this.commentAdded.bind(this)} login={this.props.match.params.login} docId={doc.id}></AddCommentComponent>}>
                         <div className="doc-details">
-                            <div style={{ display: "none" }}>
+                            <div>
                                 <Space className="extra">
                                     <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
                                     <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>

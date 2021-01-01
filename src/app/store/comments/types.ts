@@ -29,6 +29,7 @@ export interface DocCommentsState {
     qouteComment?: Comment
     loading: boolean;
     map: Map<number, Comment>;
+    hasMore: boolean
 }
 
 export interface CommentAddedAction {

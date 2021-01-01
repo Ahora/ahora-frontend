@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Comment } from 'app/services/comments';
 import CommentDetailsComponent from '../Details';
-import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import { Doc } from 'app/services/docs';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
@@ -22,6 +21,7 @@ interface InjectableProps {
     comments?: number[];
     pinnedComments?: number[];
     focusId?: number;
+    hasMore: boolean;
 }
 
 interface DispatchProps {
@@ -95,6 +95,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                         </div>
                     </>)
                 }
+                <div>{this.props.hasMore}</div>
 
                 {this.props.comments && this.props.comments.length > 0 &&
 
@@ -102,9 +103,9 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                         dataLength={this.props.comments.length} //This is important field to render the next data
                         next={() => { console.log("loadmore"); this.loadMoreComments() }}
                         style={{ overflow: "hidden", display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
-                        hasMore={true}
+                        hasMore={this.props.hasMore}
                         inverse={true}
-                        loader={<AhoraSpinner />}
+                        loader={<></>}
                         scrollableTarget={`scrollableComments${this.props.doc.id}`}
                         endMessage={
                             <p style={{ textAlign: 'center' }}>
@@ -154,7 +155,8 @@ const mapStateToProps = (state: ApplicationState, props: CommentsProps): Injecta
         loading: mapOfComments ? mapOfComments.loading : false,
         canPostComment: !!state.currentUser.user,
         moreComments: mapOfComments?.moreComments,
-        comments: mapOfComments?.comments
+        comments: mapOfComments?.comments,
+        hasMore: mapOfComments ? mapOfComments.hasMore : false
     };
 };
 

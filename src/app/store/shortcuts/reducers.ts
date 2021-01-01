@@ -7,10 +7,7 @@ import { ADD_COMMENT, COMMENT_ADDED } from '../comments/types';
 
 const initialState: ShortcutsState = {
     shortcuts: [],
-    map: new Map<string, StoreOrganizationShortcut>([
-        ["inbox", { searchCriteria: { mention: ["me"] }, disableNotification: false, unreadDocs: new Set() }],
-        ["docs", { searchCriteria: { status: ["open"] }, disableNotification: true, unreadDocs: new Set() }]
-    ]),
+    map: new Map<string, StoreOrganizationShortcut>(),
     loading: false
 }
 
@@ -27,6 +24,7 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             return {
                 ...initialState, map: new Map<string, StoreOrganizationShortcut>([
                     ["inbox", { searchCriteria: { mention: ["me"] }, disableNotification: false, unreadDocs: new Set() }],
+                    ["private", { searchCriteria: { private: ["true"] }, disableNotification: false, unreadDocs: new Set() }],
                     ["docs", { searchCriteria: { status: ["open"] }, disableNotification: true, unreadDocs: new Set() }]
                 ])
             }

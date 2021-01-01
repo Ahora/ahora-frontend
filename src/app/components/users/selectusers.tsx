@@ -56,7 +56,8 @@ class SelectUser extends React.Component<SelectUserProps, State> {
     onChange(user: any) {
         this.props.onSelect(user.label.props.user);
         this.setState({
-            editMode: (this.props.editMode === undefined) ? true : this.props.editMode
+            editMode: (this.props.editMode === undefined) ? true : this.props.editMode,
+            query: ''
         });
     }
 
@@ -65,7 +66,10 @@ class SelectUser extends React.Component<SelectUserProps, State> {
             return (
                 <Select
                     showSearch={true}
+                    mode="multiple"
+                    autoClearSearchValue={true}
                     labelInValue
+                    loading={this.state.isLoading}
                     style={{ minWidth: "300px" }}
                     placeholder="Select users"
                     notFoundContent={this.state.isLoading ? <AhoraSpinner /> : null}
@@ -74,7 +78,7 @@ class SelectUser extends React.Component<SelectUserProps, State> {
                     onSelect={this.onChange.bind(this)}
                     onChange={this._handleInputChange}>
                     {this.state.options.map(user => (
-                        <Select.Option key={user.id} value={user.id!.toString()}><UserDetails user={user} /></Select.Option>
+                        <Select.Option key={user.id} value={user.id.toString()}><UserDetails user={user} /></Select.Option>
                     ))}
                 </ Select>
             );

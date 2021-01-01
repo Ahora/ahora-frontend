@@ -96,15 +96,14 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                     </>)
                 }
 
-                {this.props.loading && <AhoraSpinner />}
-
                 {this.props.comments && this.props.comments.length > 0 &&
 
                     <InfiniteScroll
                         dataLength={this.props.comments.length} //This is important field to render the next data
                         next={() => { console.log("loadmore"); this.loadMoreComments() }}
-                        style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+                        style={{ overflow: "hidden", display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
                         hasMore={true}
+                        inverse={true}
                         loader={<AhoraSpinner />}
                         scrollableTarget={`scrollableComments${this.props.doc.id}`}
                         endMessage={

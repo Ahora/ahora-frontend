@@ -7,6 +7,7 @@ interface Props {
     top?: React.ReactNode;
     left?: React.ReactNode;
     leftClassName?: string;
+    scrollId?: string;
 }
 
 export default class AhoraFlexPanel extends React.Component<Props>{
@@ -23,7 +24,7 @@ export default class AhoraFlexPanel extends React.Component<Props>{
                     {this.props.children &&
                         <div className="main-content">
                             {this.props.top}
-                            <div className="scrollable">
+                            <div id={this.props.scrollId} className="scrollable">
                                 {this.props.children}
                             </div>
                             {this.props.bottom}

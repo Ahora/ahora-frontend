@@ -177,67 +177,69 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         return (
             <>
                 {doc ?
-                    <AhoraFlexPanel bottom={canAddComment && <AddCommentComponent commentAdded={this.commentAdded.bind(this)} login={this.props.match.params.login} docId={doc.id}></AddCommentComponent>}>
+                    <AhoraFlexPanel scrollId={`scrollableComments${doc.id}`} bottom={canAddComment && <AddCommentComponent commentAdded={this.commentAdded.bind(this)} login={this.props.match.params.login} docId={doc.id}></AddCommentComponent>}>
                         <div className="doc-details">
-                            <Space className="extra">
-                                <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
-                                <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
-                                <Popconfirm onConfirm={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} title="Are you sure?">
-                                    <Tag color="#108ee9">{doc.isPrivate ? "Private" : "Public"}</Tag>
-                                </Popconfirm>
-                            </Space>
-                            <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
-                                <h1>{doc.subject}</h1>
-                            </EditableHeader>
-                            <Space direction="vertical" style={{ width: "100%" }}>
-                                <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
-                                <UserAvatarList userIds={doc.watchers} />
-                            </Space>
-                            <Descriptions>
-                                <Descriptions.Item label="Assignee">
-                                    <SelectUser editMode={false} currentUserId={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
-                                </Descriptions.Item>
-                                {docType && <Descriptions.Item label="Type"><>{docType.name}</></Descriptions.Item>}
-                                {doc.closedAt && <Descriptions.Item label="Closed At"><AhoraDate date={doc.closedAt}></AhoraDate></Descriptions.Item>}
-                                {doc.lastView && <Descriptions.Item label="Last viewd by me">
-                                    <AhoraDate date={doc.lastView.updatedAt}></AhoraDate>
-                                </Descriptions.Item>
-                                }
-                                {doc.source &&
-                                    <>
-                                        <Descriptions.Item label="Github Issue Id">
-                                            <a target="_blank" href={doc.source.url}>{doc.sourceId}</a>
-                                        </Descriptions.Item>
-                                        <Descriptions.Item label="Repo">{doc.source.repo}</Descriptions.Item>
-                                        <Descriptions.Item label="Organization">{doc.source.organization}</Descriptions.Item>
-                                    </>
-                                }
-                                <Descriptions.Item label="Views">{doc.views}</Descriptions.Item>
-                            </Descriptions>
-                            <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
-                                <CommentAnt className="description"
-                                    datetime={
-                                        <AhoraDate date={doc.createdAt}></AhoraDate>
+                            <div style={{ display: "none" }}>
+                                <Space className="extra">
+                                    <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
+                                    <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
+                                    <Popconfirm onConfirm={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} title="Are you sure?">
+                                        <Tag color="#108ee9">{doc.isPrivate ? "Private" : "Public"}</Tag>
+                                    </Popconfirm>
+                                </Space>
+                                <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
+                                    <h1>{doc.subject}</h1>
+                                </EditableHeader>
+                                <Space direction="vertical" style={{ width: "100%" }}>
+                                    <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
+                                    <UserAvatarList userIds={doc.watchers} />
+                                </Space>
+                                <Descriptions>
+                                    <Descriptions.Item label="Assignee">
+                                        <SelectUser editMode={false} currentUserId={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
+                                    </Descriptions.Item>
+                                    {docType && <Descriptions.Item label="Type"><>{docType.name}</></Descriptions.Item>}
+                                    {doc.closedAt && <Descriptions.Item label="Closed At"><AhoraDate date={doc.closedAt}></AhoraDate></Descriptions.Item>}
+                                    {doc.lastView && <Descriptions.Item label="Last viewd by me">
+                                        <AhoraDate date={doc.lastView.updatedAt}></AhoraDate>
+                                    </Descriptions.Item>
                                     }
-                                    actions={
-                                        canEdit ? [
-                                            <Popconfirm onConfirm={this.delete.bind(this)} title="Are you sure?">
-                                                <span>Delete discussion</span>
-                                            </Popconfirm>
-                                        ] : undefined
+                                    {doc.source &&
+                                        <>
+                                            <Descriptions.Item label="Github Issue Id">
+                                                <a target="_blank" href={doc.source.url}>{doc.sourceId}</a>
+                                            </Descriptions.Item>
+                                            <Descriptions.Item label="Repo">{doc.source.repo}</Descriptions.Item>
+                                            <Descriptions.Item label="Organization">{doc.source.organization}</Descriptions.Item>
+                                        </>
                                     }
-                                    avatar={
-                                        <UserAvatar userId={doc.reporterUserId}></UserAvatar>
-                                    }
-                                    author={
-                                        <UserDetails userId={doc.reporterUserId}></UserDetails>
-                                    }
-                                    content={
-                                        <p className="markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
-                                    }>
+                                    <Descriptions.Item label="Views">{doc.views}</Descriptions.Item>
+                                </Descriptions>
+                                <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
+                                    <CommentAnt className="description"
+                                        datetime={
+                                            <AhoraDate date={doc.createdAt}></AhoraDate>
+                                        }
+                                        actions={
+                                            canEdit ? [
+                                                <Popconfirm onConfirm={this.delete.bind(this)} title="Are you sure?">
+                                                    <span>Delete discussion</span>
+                                                </Popconfirm>
+                                            ] : undefined
+                                        }
+                                        avatar={
+                                            <UserAvatar userId={doc.reporterUserId}></UserAvatar>
+                                        }
+                                        author={
+                                            <UserDetails userId={doc.reporterUserId}></UserDetails>
+                                        }
+                                        content={
+                                            <p className="markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
+                                        }>
 
-                                </CommentAnt>
-                            </EditableMarkDown>
+                                    </CommentAnt>
+                                </EditableMarkDown>
+                            </div>
                             <CommentListComponent focusId={this.state.focusCommentId} doc={doc} login={this.props.match.params.login}></CommentListComponent>
                         </div>
                     </AhoraFlexPanel>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Doc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc, updateDocStatus, updateDocIsPrivate } from 'app/services/docs';
+import { Doc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc, updateDocStatus, updateDocIsPrivate, addWatcherToDoc, deleteWatcherFromDoc } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
 import CommentListComponent from 'app/components/Comments/List';
 import { connect } from 'react-redux';
@@ -27,7 +27,7 @@ import { reportDocRead } from 'app/store/shortcuts/actions';
 import AddCommentComponent from 'app/components/Comments/AddComment';
 import { addComment } from 'app/services/comments';
 import { AddCommentInState } from 'app/store/comments/actions';
-import { requestDocToState } from 'app/store/docs/actions';
+import { addWatcheToDocInState, DeleteWatcheFromDocInState, requestDocToState } from 'app/store/docs/actions';
 
 interface DocsDetailsPageState {
     focusCommentId?: number;
@@ -52,6 +52,8 @@ interface DispatchProps {
     reportAsRead(docId: number): void;
     requestDoc: () => void;
     addComment: (comment: Comment, tempCommentId?: number) => void;
+    addWatcher: (userId: number) => void;
+    deleteWatcher: (userId: number) => void;
 }
 
 interface AllProps extends RouteComponentProps<DocsDetailsPageParams>, injectedParams, DispatchProps {
@@ -139,6 +141,26 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         this.updateDoc(updatedDoc);
     }
 
+    async onUserAddedToWatchers(user: UserItem) {
+        try {
+            this.props.addWatcher(user.id);
+            await addWatcherToDoc(this.props.doc!.id, user.id);
+        }
+        catch {
+            this.props.deleteWatcher(user.id);
+        }
+    }
+
+    async onUserDeletedFromWatchers(userId: number) {
+        try {
+            this.props.deleteWatcher(userId);
+            await deleteWatcherFromDoc(this.props.doc!.id, userId);
+        }
+        catch {
+            this.props.addWatcher(userId);
+        }
+    }
+
     async delete() {
         if (this.props.doc) {
             if (this.props.onDocDeleted) {
@@ -193,7 +215,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                         </EditableHeader>
                                         <Space direction="vertical">
                                             <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
-                                            <UserAvatarList userIds={doc.watchers} />
+                                            <UserAvatarList onUserDeleted={this.onUserDeletedFromWatchers.bind(this)} onUserSelected={this.onUserAddedToWatchers.bind(this)} canEdit={canEdit} userIds={doc.watchers} />
                                         </Space>
                                         <Descriptions>
                                             <Descriptions.Item label="Assignee">
@@ -269,6 +291,8 @@ const mapStateToProps = (state: ApplicationState, ownProps: AllProps): injectedP
 
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: AllProps): DispatchProps => {
     return {
+        addWatcher: (userId) => dispatch(addWatcheToDocInState(parseInt(ownProps.match.params.docId), userId)),
+        deleteWatcher: (userId) => dispatch(DeleteWatcheFromDocInState(parseInt(ownProps.match.params.docId), userId)),
         requestDoc: () => dispatch(requestDocToState(parseInt(ownProps.match.params.docId))),
         reportAsRead: (docId: number) => dispatch(reportDocRead(docId)),
         addComment: (comment: Comment, tempCommentId?: number) => dispatch(AddCommentInState(comment, tempCommentId)),

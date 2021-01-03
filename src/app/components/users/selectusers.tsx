@@ -22,7 +22,7 @@ interface SelectUserProps extends DispatchProps {
 
 interface State {
     isLoading: boolean,
-    options: UserItem[],
+    options?: UserItem[],
     query: string;
     editMode: boolean;
 }
@@ -42,10 +42,10 @@ class SelectUser extends React.Component<SelectUserProps, State> {
 
     }
 
-    onBlur() {
-        this.setState({
-            editMode: true,
-        });
+    componentDidMount() {
+        if (!this.state.options) {
+            this._handleSearch("");
+        }
     }
 
     onStartEdit() {
@@ -66,6 +66,7 @@ class SelectUser extends React.Component<SelectUserProps, State> {
         if (this.state.editMode) {
             return (
                 <Select
+                    defaultOpen={true}
                     autoFocus={this.props.autoFocus}
                     showSearch={true}
                     mode="multiple"
@@ -79,7 +80,7 @@ class SelectUser extends React.Component<SelectUserProps, State> {
                     onSearch={this._handleSearch}
                     onSelect={this.onChange.bind(this)}
                     onChange={this._handleInputChange}>
-                    {this.state.options.map(user => (
+                    {this.state.options && this.state.options.map(user => (
                         <Select.Option key={user.id} value={user.id.toString()}><UserDetails user={user} /></Select.Option>
                     ))}
                 </ Select>

@@ -16,14 +16,14 @@ export default class AddOrganizationPage extends React.Component<Props> {
 
     async onSumbit(orgData: Organization): Promise<void> {
         const addedOrg = await addOrg(orgData);
-        this.props.history.replace(`/organizations/${addedOrg.login}/onboarding`);
+        this.props.history.replace(`/organizations/${addedOrg.login}/inbox`);
     }
 
     render() {
         return (
             <div className="wrap-content">
                 <Typography.Title>Add Organization</Typography.Title>
-                <OrganizationForm initData={{ orgType: OrganizationType.Public }} onSumbit={this.onSumbit.bind(this)} />
+                <OrganizationForm submitButtonText="Add" initData={{ orgType: OrganizationType.Public }} onSumbit={this.onSumbit.bind(this)} />
             </div>
         );
     };

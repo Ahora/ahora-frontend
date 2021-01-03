@@ -56,7 +56,7 @@ class EditOrganizationPage extends React.Component<Props> {
             return (
                 <div className="wrap-content">
                     <Typography.Title level={2}>Edit {this.props.organization.displayName}</Typography.Title>
-                    <OrganizationForm initData={this.props.organization} onSumbit={this.onSubmit.bind(this)}></OrganizationForm>
+                    <OrganizationForm submitButtonText="Update" initData={this.props.organization} onSumbit={this.onSubmit.bind(this)}></OrganizationForm>
                     <Typography.Title level={2}>Danger Zone</Typography.Title>
                     <Popconfirm onConfirm={this.onDelete.bind(this)} title="Are you sure?">
                         <Button danger>Delete</Button>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Avatar } from "antd";
+import { Avatar, Popconfirm } from "antd";
 import UserAvatar from './UserAvatar';
 import SelectUser from 'app/components/users/selectusers';
 import { UserItem } from 'app/services/users';
@@ -49,9 +49,14 @@ export default class UserAvatarList extends React.Component<UserAvatarListProps,
             {
                 this.props.userIds &&
                 <>
-                    {this.props.userIds.map((userId: number) => <span onClick={this.props.canEdit ? this.onUserDeleted.bind(this, userId) : undefined}>
-                        <UserAvatar key={userId} userId={userId}></UserAvatar>
-                    </span>)
+                    {this.props.userIds.map((userId: number) =>
+                        this.props.canEdit ?
+                            <Popconfirm key={userId} onConfirm={this.onUserDeleted.bind(this, userId)} title="Are you sure?">
+                                <UserAvatar userId={userId}></UserAvatar>&nbsp;
+                            </Popconfirm>
+                            :
+                            <UserAvatar key={userId} userId={userId}></UserAvatar>
+                    )
                     }
                     {(this.props.canEdit && !this.state.addUserClicked) &&
                         <span onClick={this.onAddClick.bind(this)}>

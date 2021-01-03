@@ -3,6 +3,8 @@ import { AhoraFormField } from '../../AhoraForm/data';
 import { checkOrgAvailability } from 'app/services/organizations';
 import { Input } from 'antd';
 
+import './style.scss';
+
 interface GroupBySelectState {
     value: string;
     isValid: boolean;
@@ -31,6 +33,7 @@ class AhoraOrganizationUrlField extends React.Component<LoginFieldProps, GroupBy
     }
 
     componentDidUpdate(prevProps: LoginFieldProps) {
+        console.log(this.props.value);
         if (prevProps.value !== this.props.value && this.props.value != this.state.rawValue) {
             this.setState({ rawValue: this.props.value || "" });
         }
@@ -85,6 +88,7 @@ class AhoraOrganizationUrlField extends React.Component<LoginFieldProps, GroupBy
 
     render() {
         return <Input
+            className="urlfield"
             defaultValue={this.props.value}
             value={this.state.rawValue}
             onChange={this.handleChange.bind(this)}

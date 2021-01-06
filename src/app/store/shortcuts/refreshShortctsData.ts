@@ -34,12 +34,11 @@ function* getShortcutsData(action: any) {
             docs = docs.reverse();
             yield put(setDocsInState(docs));
             yield put(setShortcutUnReadAndDocs(shortcut.shortcutId, docs.map((doc: Doc) => doc.id)));
-
             yield put(loadUnReadComments(shortcut.searchCriteria, since));
         }
     }
 
-    //Run periodic refresh every 20 minutes
+    //Run periodic refresh every 30 seconds
     yield delay(30000)
     yield put({ type: REFRESH_SHORTCUTS });
 }

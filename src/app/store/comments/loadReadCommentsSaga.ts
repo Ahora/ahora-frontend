@@ -8,29 +8,19 @@ export const getStateFromStore = (state: ApplicationState) => state;
 
 
 function* getShortcutsFromServer(action: RequestCommentsAction) {
-
     const state = yield select(getStateFromStore);
     let toDate: Date | undefined;
 
     const commentState = state.comments.docs.get(action.payload);
     if (!commentState || !commentState.loading) {
-        //first load, we will want to load unread and read comment separatly.
-        if (commentState?.comments === undefined) {
-            const doc = state.docs.docs.get(action.payload);
-            //Load old comments from the last update date
-            //Load more unread messages as well from the same date
-            toDate = doc?.lastView ? doc?.lastView.updatedAt : doc?.createdAt;
-        }
-        else if (commentState?.comments.length > 0) {
+        if (commentState?.comments.length > 0) {
             const commentId = commentState.comments[0];
             const toComment = commentState.map.get(commentId);
             toDate = toComment?.createdAt;
         }
 
-        if (toDate) {
-            const data: Comment[] = yield call(getComments, state.organizations.currentOrganization!.login, action.payload, toDate);
-            yield put(receiveCommentsToState(data.reverse(), action.payload));
-        }
+        const data: Comment[] = yield call(getComments, action.payload, toDate);
+        yield put(receiveCommentsToState(data.reverse(), action.payload));
     }
 }
 

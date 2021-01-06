@@ -4,14 +4,12 @@ import { getComments, Comment } from 'app/services/comments';
 import { receiveUnreadCommentsToState } from './actions';
 import { ApplicationState } from '../types';
 
-export const getCommentsFromStore = (state: ApplicationState) => state;
+export const getCommentsFromStore = (state: ApplicationState): ApplicationState => { return state };
 
 
 function* getShortcutsFromServer(action: RequestCommentsAction) {
-
-    const state = yield select(getCommentsFromStore);
+    const state: ApplicationState = yield select(getCommentsFromStore);
     let fromDate: Date | undefined;
-
     const commentState = state.comments.docs.get(action.payload);
     if (!commentState || !commentState.loading) {
         //first load, we will want to load unread and read comment separatly.
@@ -21,9 +19,15 @@ function* getShortcutsFromServer(action: RequestCommentsAction) {
             //Load more unread messages as well from the same date
             fromDate = doc?.lastView ? doc?.lastView.updatedAt : doc?.createdAt;
         }
-
-        if ((commentState?.moreComments === undefined || commentState?.moreComments.length !== commentState.unReadCommentsCount) && fromDate) {
-            const unreadComments: Comment[] = yield call(getComments, state.organizations.currentOrganization!.login, action.payload, undefined, fromDate);
+        else if (commentState?.moreComments?.length !== commentState?.unReadCommentsCount) {
+            if (commentState?.comments.length > 0) {
+                const commentId = commentState.comments[commentState.comments.length - 1];
+                const toComment = commentState.map.get(commentId);
+                fromDate = toComment?.createdAt;
+            }
+        }
+        if (fromDate) {
+            const unreadComments: Comment[] = yield call(getComments, action.payload, undefined, fromDate);
             yield put(receiveUnreadCommentsToState(action.payload, unreadComments.reverse()));
 
         }

@@ -48,7 +48,6 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
 
             return { ...state, docs: new Map(state.docs) };
         case ADD_COMMENT:
-            console.log(action);
             let docCommentsAdded = state.docs.get(action.payload.comment.docId);
             docCommentsAdded = docCommentsAdded ? { ...docCommentsAdded } : { map: new Map(), loading: false, unReadCommentsCount: 0 };
             const commentArray = [...docCommentsAdded.comments || [], ...docCommentsAdded.moreComments || []];
@@ -65,10 +64,6 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
             else {
                 commentArray.push(action.payload.comment.id)
             }
-
-            console.log(commentArray);
-
-
             //Update comment in a map and clear more comments.
             docCommentsAdded.map.set(action.payload.comment.id, action.payload.comment);
             docCommentsAdded.comments = commentArray;

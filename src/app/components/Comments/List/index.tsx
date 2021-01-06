@@ -6,7 +6,7 @@ import { Doc } from 'app/services/docs';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
-import { requestCommentsToState } from 'app/store/comments/actions';
+import { requestCommentsToState, requestunReadCommentsToState } from 'app/store/comments/actions';
 import { Divider } from 'antd';
 import VisibilitySensor from 'react-visibility-sensor';
 import { reportDocRead } from 'app/store/shortcuts/actions';
@@ -20,11 +20,13 @@ interface InjectableProps {
     comments?: number[];
     pinnedComments?: number[];
     focusId?: number;
+    unReadCommentsCount?: number;
 }
 
 interface DispatchProps {
     reportDocRead: () => void;
     loadComments: (toDate?: Date) => void;
+    loadUnReadComments: (toDate?: Date) => void;
 }
 
 interface CommentsProps extends InjectableProps, DispatchProps {
@@ -63,10 +65,13 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
         }
 
         if (this.props.doc.id !== prevProps.doc.id) {
-            this.loadMoreComments();
+            //Load information only if there are no comments available.
+            if (!this.props.comments) {
+                this.loadMoreComments();
+
+            }
         }
     }
-
     reportDocReadAndCleanFocusId() {
         this.setState({ focusId: undefined });
         setTimeout(() => {
@@ -114,11 +119,13 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                 {
                     (this.props.moreComments || this.props.comments) &&
                     <>
-                        <br /><br /><br />
                         <VisibilitySensor onChange={(visible: boolean) => {
-                            if (visible) this.reportDocReadAndCleanFocusId();
+                            if (visible) {
+                                console.log("reportDocReadAndCleanFocusId");
+                                this.reportDocReadAndCleanFocusId();
+                            }
                         }}>
-                            <span>&nbsp;</span>
+                            <div></div>
                         </VisibilitySensor>
                     </>
                 }
@@ -131,7 +138,8 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): DispatchProps => {
     return {
         reportDocRead: () => dispatch(reportDocRead(ownProps.doc.id)),
-        loadComments: () => dispatch(requestCommentsToState(ownProps.doc.id))
+        loadComments: () => dispatch(requestCommentsToState(ownProps.doc.id)),
+        loadUnReadComments: () => dispatch(requestunReadCommentsToState(ownProps.doc.id))
     }
 }
 
@@ -141,7 +149,8 @@ const mapStateToProps = (state: ApplicationState, props: CommentsProps): Injecta
         loading: mapOfComments ? mapOfComments.loading : false,
         canPostComment: !!state.currentUser.user,
         moreComments: mapOfComments?.moreComments,
-        comments: mapOfComments?.comments
+        comments: mapOfComments?.comments,
+        unReadCommentsCount: mapOfComments?.unReadCommentsCount
     };
 };
 

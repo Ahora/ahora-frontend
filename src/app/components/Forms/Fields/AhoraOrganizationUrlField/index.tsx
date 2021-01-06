@@ -33,7 +33,6 @@ class AhoraOrganizationUrlField extends React.Component<LoginFieldProps, GroupBy
     }
 
     componentDidUpdate(prevProps: LoginFieldProps) {
-        console.log(this.props.value);
         if (prevProps.value !== this.props.value && this.props.value != this.state.rawValue) {
             this.setState({ rawValue: this.props.value || "" });
         }

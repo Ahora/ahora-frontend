@@ -1,5 +1,6 @@
 .docsheader {
     padding: 8px;
+    background-color: #f0f2f5;
 
     .form-group {
         margin-bottom: 0;
@@ -33,63 +34,8 @@
     padding: 8px;
 }
 
-.content-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100%;
-    background-color: var(--framework-fill-background);
-    width: 100%;
-
-    .content {
-        flex: 1 1 auto;
-        display: flex;
-        position: relative;
-        overflow: hidden;
-        width: 100%;
-
-        .main-content {
-            display: flex;
-            height: 100%;
-            flex-direction: column;
-            background-color: var(--framework-fill-base);
-            position: relative;
-            flex: 1 1 100%;
-            min-width: 360px;
-        }
-
-        .doc-list-wrapper {
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .left-side {
-            display: flex;
-            flex-direction: column;
-            max-width: 450px;
-            width:33%;
-            overflow: hidden;
-            position: relative;
-            flex: 0 0 auto;
-        }
-
-         .scrollable {
-            overflow: auto;
-            overflow-x: hidden;
-            height: 100%;
-            display: flex;
-            width: 100%;
-
-            > * {
-             width:100%   
-            }
-        }
-    }
-}
 .add-doc-button {
-    padding: 0px 8px;
-    .add-button {
-        margin: 10px 0px;
-    }
+    margin: 5px 0px;
 }
 
 .no-docs {

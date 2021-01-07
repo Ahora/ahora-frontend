@@ -53,9 +53,10 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
 
     render() {
         return (
+
             <div style={{ padding: "8px" }}>
-                <AhoraForm onUpdate={this.onFormUpdate.bind(this)} data={this.state.form} onCancel={this.onCancel.bind(this)} onSumbit={this.onSubmit.bind(this)}>
-                    <AhoraField displayName="Subject" fieldName="subject" fieldType="text" required={true}></AhoraField>
+                <AhoraForm submitButtonText="Post" onUpdate={this.onFormUpdate.bind(this)} data={this.state.form} onCancel={this.onCancel.bind(this)} onSumbit={this.onSubmit.bind(this)}>
+                    <AhoraField autoFocus={true} displayName="Subject" fieldName="subject" fieldType="text" required={true}></AhoraField>
                     <AhoraField displayName="Type" fieldName="docTypeId" fieldType="doctype" required={true}></AhoraField>
                     <AhoraField displayName="Labels" fieldName="labels" fieldType="labels"></AhoraField>
                     <AhoraField displayName="Description" fieldName="description" fieldType="markdown"></AhoraField>

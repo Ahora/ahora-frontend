@@ -7,7 +7,7 @@ import RootPageComponent from "app/pages/RootPage";
 import AddOrganizationPage from "app/pages/organizations/add";
 import { Layout, Button, Badge } from 'antd';
 import { Link } from "react-router-dom";
-import { AlertFilled } from "@ant-design/icons";
+import { InboxOutlined } from "@ant-design/icons";
 import { ApplicationState } from "app/store";
 import { connect } from "react-redux";
 import { Organization } from "app/services/organizations";
@@ -51,11 +51,10 @@ class Dashboard extends React.Component<Props, State> {
               </div>
               <div style={{ float: 'right' }}>
                 <CurrentUser></CurrentUser>
-                {
-                  (this.props.organization && this.props.unReadCount !== undefined && this.props.unReadCount > 0) &&
-                  <Link to={`/organizations/${this.props.organization.login}/inbox`}>
+                {this.props.organization &&
+                  <Link title="Inbox" to={`/organizations/${this.props.organization.login}/inbox`}>
                     <Badge count={this.props.unReadCount}>
-                      <Button type="text" style={{ color: "#000000" }} icon={<AlertFilled></AlertFilled>} />
+                      <Button type="text" style={{ color: "#000000" }} icon={<InboxOutlined></InboxOutlined>} />
                     </Badge>
                   </Link>
                 }

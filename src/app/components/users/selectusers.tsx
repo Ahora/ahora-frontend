@@ -16,6 +16,7 @@ interface SelectUserProps extends DispatchProps {
     onSelect(user: UserItem): void;
     currentUserId?: number,
     editMode?: boolean;
+    autoFocus?: boolean;
 }
 
 
@@ -67,6 +68,7 @@ class SelectUser extends React.Component<SelectUserProps, State> {
         if (this.state.editMode) {
             return (
                 <Select
+                    autoFocus={this.props.autoFocus}
                     showSearch={true}
                     autoClearSearchValue={true}
                     labelInValue

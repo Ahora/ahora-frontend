@@ -54,6 +54,7 @@ export interface SearchDocResult {
 const docsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}");
 const docsunReadCommentsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docsunread");
 const reportDocReadClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/view");
+const watchersClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/watchers/{userId}");
 export const getDocs = async (query?: SearchCriterias, offset: number = 0, limit: number = 30): Promise<SearchDocResult> => {
     const result = await docsClient.get({
         query: { ...query, offset, limit }
@@ -111,6 +112,19 @@ export const assignDoc = async (login: string, id: number, userId: number): Prom
         data: { userId }
     });
     return result.data;
+}
+
+export const addWatcherToDoc = async (id: number, userId: number): Promise<void> => {
+    await watchersClient.post({
+        params: { id },
+        data: { userId }
+    });
+}
+
+export const deleteWatcherFromDoc = async (id: number, userId: number): Promise<void> => {
+    await watchersClient.delete({
+        params: { id, userId }
+    });
 }
 
 export const watchDoc = async (login: string, id: number): Promise<DocWatcher> => {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Doc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc, updateDocStatus, updateDocIsPrivate } from 'app/services/docs';
+import { Doc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc, updateDocStatus, updateDocIsPrivate, addWatcherToDoc, deleteWatcherFromDoc } from 'app/services/docs';
 import { RouteComponentProps } from 'react-router';
 import CommentListComponent from 'app/components/Comments/List';
 import { connect } from 'react-redux';
@@ -29,6 +29,8 @@ import { AddCommentInState } from 'app/store/comments/actions';
 import { requestDocToState } from 'app/store/docs/actions';
 import AhoraDate from 'app/components/Basics/AhoraTime';
 import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
+import { addWatcheToDocInState, DeleteWatcheFromDocInState, requestDocToState } from 'app/store/docs/actions';
+
 
 interface DocsDetailsPageState {
     focusCommentId?: number;
@@ -53,6 +55,8 @@ interface DispatchProps {
     reportAsRead(docId: number): void;
     requestDoc: () => void;
     addComment: (comment: Comment, tempCommentId?: number) => void;
+    addWatcher: (userId: number) => void;
+    deleteWatcher: (userId: number) => void;
 }
 
 interface AllProps extends RouteComponentProps<DocsDetailsPageParams>, injectedParams, DispatchProps {
@@ -140,6 +144,26 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         this.updateDoc(updatedDoc);
     }
 
+    async onUserAddedToWatchers(user: UserItem) {
+        try {
+            this.props.addWatcher(user.id);
+            await addWatcherToDoc(this.props.doc!.id, user.id);
+        }
+        catch {
+            this.props.deleteWatcher(user.id);
+        }
+    }
+
+    async onUserDeletedFromWatchers(userId: number) {
+        try {
+            this.props.deleteWatcher(userId);
+            await deleteWatcherFromDoc(this.props.doc!.id, userId);
+        }
+        catch {
+            this.props.addWatcher(userId);
+        }
+    }
+
     async delete() {
         if (this.props.doc) {
             if (this.props.onDocDeleted) {
@@ -177,6 +201,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         return (
             <>
                 {doc ?
+
                     <AhoraFlexPanel scrollId={`scrollableComments${doc.id}`} bottom={canAddComment && <AddCommentComponent commentAdded={this.commentAdded.bind(this)} login={this.props.match.params.login} docId={doc.id}></AddCommentComponent>}>
                         <div className="doc-details">
                             <div>
@@ -265,6 +290,8 @@ const mapStateToProps = (state: ApplicationState, ownProps: AllProps): injectedP
 
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: AllProps): DispatchProps => {
     return {
+        addWatcher: (userId) => dispatch(addWatcheToDocInState(parseInt(ownProps.match.params.docId), userId)),
+        deleteWatcher: (userId) => dispatch(DeleteWatcheFromDocInState(parseInt(ownProps.match.params.docId), userId)),
         requestDoc: () => dispatch(requestDocToState(parseInt(ownProps.match.params.docId))),
         reportAsRead: (docId: number) => dispatch(reportDocRead(docId)),
         addComment: (comment: Comment, tempCommentId?: number) => dispatch(AddCommentInState(comment, tempCommentId)),

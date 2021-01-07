@@ -64,7 +64,6 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
                 });
             }
         }, 0);
-
     }
 
     editMode() {

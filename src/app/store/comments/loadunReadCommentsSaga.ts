@@ -20,7 +20,7 @@ function* getShortcutsFromServer(action: RequestCommentsAction) {
             fromDate = doc?.lastView ? doc?.lastView.updatedAt : doc?.createdAt;
         }
         else if (commentState?.moreComments?.length !== commentState?.unReadCommentsCount) {
-            if (commentState?.comments.length > 0) {
+            if (commentState?.comments?.length > 0) {
                 const commentId = commentState.comments[commentState.comments.length - 1];
                 const toComment = commentState.map.get(commentId);
                 fromDate = toComment?.createdAt;

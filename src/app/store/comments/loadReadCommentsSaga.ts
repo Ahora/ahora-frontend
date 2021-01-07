@@ -13,7 +13,7 @@ function* getShortcutsFromServer(action: RequestCommentsAction) {
 
     const commentState = state.comments.docs.get(action.payload);
     if (!commentState || !commentState.loading) {
-        if (commentState?.comments.length > 0) {
+        if (commentState?.comments?.length > 0) {
             const commentId = commentState.comments[0];
             const toComment = commentState.map.get(commentId);
             toDate = toComment?.createdAt;

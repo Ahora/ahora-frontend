@@ -8,7 +8,6 @@ import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
 import { requestCommentsToState, requestunReadCommentsToState } from 'app/store/comments/actions';
 import { Divider } from 'antd';
-import VisibilitySensor from 'react-visibility-sensor';
 import { reportDocRead } from 'app/store/shortcuts/actions';
 
 require("./style.scss")
@@ -20,6 +19,7 @@ interface InjectableProps {
     comments?: number[];
     pinnedComments?: number[];
     focusId?: number;
+    moreCommentFocusId?: number;
     unReadCommentsCount?: number;
 }
 
@@ -41,36 +41,58 @@ interface State {
 
 
 class CommentListComponent extends React.Component<CommentsProps, State>  {
+    private endElement: React.RefObject<HTMLDivElement>;
+
     constructor(props: CommentsProps) {
         super(props);
         this.state = { focusId: props.focusId }
+        this.endElement = React.createRef();
     }
 
-    loadMoreComments() {
-        this.props.loadComments();
+    public scrollToEnd() {
+        if (this.endElement.current) {
+            this.endElement.current.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest"
+            });
+        }
     }
 
-    async componentDidUpdate(prevProps: CommentsProps) {
-        let focusId = this.state.focusId;
-        if (prevProps.focusId != this.props.focusId) {
-            focusId = this.props.focusId;
+    componentDidMount() {
+        this.firstLoad();
+    }
+
+
+    firstLoad() {
+        //Load information only if there are no comments available.
+        if (!this.props.comments && !this.props.loading) {
+            this.props.loadComments();
         }
 
-        if (this.props.moreComments && this.props.moreComments.length > 0 && this.props.moreComments[0] !== focusId) {
+        let focusId: number | undefined = undefined;
+        if (this.props.moreComments) {
             focusId = this.props.moreComments[0];
         }
-
-        if (focusId !== this.state.focusId) {
-            this.setState({ focusId });
-        }
-
-        if (this.props.doc.id !== prevProps.doc.id) {
-            //Load information only if there are no comments available.
-            if (!this.props.comments) {
-                this.loadMoreComments();
+        else {
+            if (this.props.comments && this.props.comments.length > 0) {
+                focusId = this.props.comments[0];
 
             }
         }
+
+        this.setState({ focusId });
+    }
+
+    async componentDidUpdate(prevProps: CommentsProps) {
+        if (prevProps.focusId != this.props.focusId) {
+            this.setState({ focusId: this.props.focusId });
+        }
+
+        if (prevProps.comments)
+
+            if (this.props.doc.id !== prevProps.doc.id) {
+                this.firstLoad();
+            }
     }
     reportDocReadAndCleanFocusId() {
         this.setState({ focusId: undefined });
@@ -82,10 +104,6 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
     render() {
         return (
             <>
-
-                <VisibilitySensor onChange={(visible: boolean) => { if (visible) this.loadMoreComments(); }}>
-                    <span>&nbsp;</span>
-                </VisibilitySensor>
                 {this.props.pinnedComments && this.props.pinnedComments.length > 0 &&
                     (<>
                         <div className="list">
@@ -101,35 +119,20 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
                 {this.props.comments && this.props.comments.length > 0 &&
                     <div className="list">
-                        {this.props.comments.map((commentId: number) => <CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>)}
+                        {this.props.comments.map((commentId: number) => <CommentDetailsComponent key={commentId} focus={commentId === this.props.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>)}
                     </div>
-
                 }
 
                 {(this.props.moreComments && this.props.moreComments.length > 0) &&
-                    <div>
+                    <div ref={this.endElement}>
                         <Divider className="divider-new-comments" orientation="right">New comments</Divider>
                         <div className="list">
                             {this.props.moreComments.map((commentId: number) => {
-                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
+                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.props.moreCommentFocusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
                             })}
                         </div>
                     </div>
                 }
-                {
-                    (this.props.moreComments || this.props.comments) &&
-                    <>
-                        <VisibilitySensor onChange={(visible: boolean) => {
-                            if (visible) {
-                                console.log("reportDocReadAndCleanFocusId");
-                                this.reportDocReadAndCleanFocusId();
-                            }
-                        }}>
-                            <div></div>
-                        </VisibilitySensor>
-                    </>
-                }
-
             </>
         );
     }
@@ -150,7 +153,8 @@ const mapStateToProps = (state: ApplicationState, props: CommentsProps): Injecta
         canPostComment: !!state.currentUser.user,
         moreComments: mapOfComments?.moreComments,
         comments: mapOfComments?.comments,
-        unReadCommentsCount: mapOfComments?.unReadCommentsCount
+        unReadCommentsCount: mapOfComments?.unReadCommentsCount,
+        moreCommentFocusId: (mapOfComments && mapOfComments.moreComments && mapOfComments.moreComments.length > 0 && !props.focusId) ? mapOfComments.moreComments[0] : undefined
     };
 };
 

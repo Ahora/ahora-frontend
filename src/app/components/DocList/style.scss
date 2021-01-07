@@ -1,4 +1,5 @@
 .doc-list {
+    
     .active {
         background: #e6f7ff;
 
@@ -12,7 +13,10 @@
     }
     
     .doc-list-item {
-
+        &:hover {
+            background: #e6f1ff;
+        }
+        
         .item-wrapper {
             width:100%;
             padding: 10px;

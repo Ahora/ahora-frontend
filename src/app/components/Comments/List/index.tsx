@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { Comment } from 'app/services/comments';
 import CommentDetailsComponent from '../Details';
-import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import { Doc } from 'app/services/docs';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
-import { requestCommentsToState, requestunReadCommentsToState } from 'app/store/comments/actions';
-import { Divider } from 'antd';
+import { requestCommentsToState, requestPinnedCommentsToState, requestunReadCommentsToState } from 'app/store/comments/actions';
+import { Divider, Typography } from 'antd';
 import { reportDocRead } from 'app/store/shortcuts/actions';
+import InfiniteScroll from 'react-infinite-scroll-component';
+
 
 require("./style.scss")
 
@@ -21,10 +22,12 @@ interface InjectableProps {
     focusId?: number;
     moreCommentFocusId?: number;
     unReadCommentsCount?: number;
+    hasMore: boolean;
 }
 
 interface DispatchProps {
     reportDocRead: () => void;
+    loadPinnedMessages: () => void;
     loadComments: (toDate?: Date) => void;
     loadUnReadComments: (toDate?: Date) => void;
 }
@@ -67,20 +70,8 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
         //Load information only if there are no comments available.
         if (!this.props.comments && !this.props.loading) {
             this.props.loadComments();
+            this.props.loadPinnedMessages();
         }
-
-        let focusId: number | undefined = undefined;
-        if (this.props.moreComments) {
-            focusId = this.props.moreComments[0];
-        }
-        else {
-            if (this.props.comments && this.props.comments.length > 0) {
-                focusId = this.props.comments[0];
-
-            }
-        }
-
-        this.setState({ focusId });
     }
 
     async componentDidUpdate(prevProps: CommentsProps) {
@@ -88,17 +79,13 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
             this.setState({ focusId: this.props.focusId });
         }
 
-        if (prevProps.comments)
-
-            if (this.props.doc.id !== prevProps.doc.id) {
-                this.firstLoad();
-            }
+        if (this.props.doc.id !== prevProps.doc.id) {
+            this.firstLoad();
+        }
     }
     reportDocReadAndCleanFocusId() {
         this.setState({ focusId: undefined });
-        setTimeout(() => {
-            this.props.reportDocRead();
-        }, 0);
+        this.props.reportDocRead();
     }
 
     render() {
@@ -106,33 +93,35 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
             <>
                 {this.props.pinnedComments && this.props.pinnedComments.length > 0 &&
                     (<>
-                        <div className="list">
-                            {this.props.pinnedComments.map((commentId: number) => {
-                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
-                            })}
-                        </div>
+                        <Typography.Title level={3}>Pinned:</Typography.Title>
+                        {this.props.pinnedComments.map((commentId: number) => {
+                            return (<CommentDetailsComponent key={commentId} docId={this.props.doc.id} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
+                        })}
+                        <Typography.Title level={3}>Comments:</Typography.Title>
                     </>)
                 }
 
-                {this.props.loading && <AhoraSpinner />}
+                <InfiniteScroll
+                    dataLength={this.props.comments?.length || 0} //This is important field to render the next data
+                    next={() => { /*this.loadMoreComments()*/ }}
+                    style={{ overflow: "hidden", display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+                    hasMore={this.props.hasMore}
+                    inverse={true}
+                    loader={<></>}
+                    scrollableTarget={`scrollableComments${this.props.doc.id}`}
+                >
+                    {(this.props.moreComments && this.props.moreComments.length > 0) &&
+                        <>
+                            {this.props.moreComments.map((commentId: number) => { return (<CommentDetailsComponent key={commentId} focus={commentId === this.props.moreCommentFocusId} docId={this.props.doc.id} login={this.props.login} commentId={commentId}></CommentDetailsComponent>); })}
+                            <Divider className="divider-new-comments" orientation="right">New comments</Divider>
+                        </>
+                    }
+
+                    {this.props.comments?.map((commentId: number) => <CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} docId={this.props.doc.id} login={this.props.login} commentId={commentId}></CommentDetailsComponent>)}
 
 
-                {this.props.comments && this.props.comments.length > 0 &&
-                    <div className="list">
-                        {this.props.comments.map((commentId: number) => <CommentDetailsComponent key={commentId} focus={commentId === this.props.focusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>)}
-                    </div>
-                }
+                </InfiniteScroll>
 
-                {(this.props.moreComments && this.props.moreComments.length > 0) &&
-                    <div ref={this.endElement}>
-                        <Divider className="divider-new-comments" orientation="right">New comments</Divider>
-                        <div className="list">
-                            {this.props.moreComments.map((commentId: number) => {
-                                return (<CommentDetailsComponent key={commentId} focus={commentId === this.props.moreCommentFocusId} doc={this.props.doc} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
-                            })}
-                        </div>
-                    </div>
-                }
             </>
         );
     }
@@ -142,7 +131,8 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): Dispat
     return {
         reportDocRead: () => dispatch(reportDocRead(ownProps.doc.id)),
         loadComments: () => dispatch(requestCommentsToState(ownProps.doc.id)),
-        loadUnReadComments: () => dispatch(requestunReadCommentsToState(ownProps.doc.id))
+        loadUnReadComments: () => dispatch(requestunReadCommentsToState(ownProps.doc.id)),
+        loadPinnedMessages: () => dispatch(requestPinnedCommentsToState(ownProps.doc.id))
     }
 }
 
@@ -154,7 +144,9 @@ const mapStateToProps = (state: ApplicationState, props: CommentsProps): Injecta
         moreComments: mapOfComments?.moreComments,
         comments: mapOfComments?.comments,
         unReadCommentsCount: mapOfComments?.unReadCommentsCount,
-        moreCommentFocusId: (mapOfComments && mapOfComments.moreComments && mapOfComments.moreComments.length > 0 && !props.focusId) ? mapOfComments.moreComments[0] : undefined
+        moreCommentFocusId: (mapOfComments && mapOfComments.moreComments && mapOfComments.moreComments.length > 0 && !props.focusId) ? mapOfComments.moreComments[0] : undefined,
+        pinnedComments: mapOfComments?.pinnedComments,
+        hasMore: mapOfComments ? mapOfComments.hasMore : false
     };
 };
 

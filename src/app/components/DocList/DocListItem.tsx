@@ -3,7 +3,6 @@ import { Doc } from 'app/services/docs';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Status } from 'app/services/statuses';
-import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
 import { DocType } from 'app/services/docTypes';
 import LabelsList from 'app/components/Labels/LabelList';
@@ -13,6 +12,7 @@ import { List, Typography, Tag, Space } from 'antd';
 import './style.scss';
 import UsersAvatarList from '../users/UsersAvatarList';
 import AhoraSpinner from '../Forms/Basics/Spinner';
+import AhoraDate from '../Basics/AhoraTime';
 
 interface injectedParams {
     statuses: Map<number, Status>;
@@ -48,7 +48,7 @@ class DocListItem extends React.Component<AllProps> {
                     <div className="item-wrapper">
                         <div className="extra">
                             <div>
-                                <Moment titleFormat="YYYY-MM-DD HH:mm" ago={true} fromNow withTitle date={doc.updatedAt || doc.createdAt}></Moment>
+                                <AhoraDate date={doc.updatedAt || doc.createdAt}></AhoraDate>
                             </div>
                             <Space className="tags" direction="vertical">
                                 <div>

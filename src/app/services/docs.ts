@@ -106,10 +106,10 @@ export const getDoc = async (id: number): Promise<Doc> => {
     return result.data;
 }
 
-export const assignDoc = async (login: string, id: number, username: string): Promise<UserItem> => {
+export const assignDoc = async (login: string, id: number, userId: number): Promise<UserItem> => {
     const result = await docsClient.post({
         url: `/api/organizations/${login}/docs/${id}/assignee`,
-        data: { username }
+        data: { userId }
     });
     return result.data;
 }
@@ -183,8 +183,9 @@ export const updateDocDescription = async (login: string, id: number, descriptio
 }
 
 export const updateDocIsPrivate = async (login: string, id: number, isPrivate: boolean): Promise<Doc> => {
-    const result = await docsClient.put({
+    const result = await docsClient.post({
         params: { id, login },
+        url: `/api/organizations/${login}/docs/${id}/isprivate`,
         data: { isPrivate }
     });
     return result.data;

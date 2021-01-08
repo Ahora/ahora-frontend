@@ -8,11 +8,12 @@ import { Doc } from 'app/services/docs';
 
 interface Props {
     comment: Comment;
-    doc: Doc;
+    docId: number;
 }
 
 interface CanCommentProps {
     currentUser: User | undefined | null;
+    doc?: Doc;
 }
 
 interface AllProps extends CanCommentProps, Props {
@@ -25,18 +26,25 @@ class CanPingComment extends React.Component<AllProps> {
     }
 
     render() {
-        return (
-            <>
-                {canPinComment(this.props.doc, this.props.currentUser) && <>{this.props.children}</>}
-            </>
-        );
+        if (this.props.doc) {
+            return (
+                <>
+                    {canPinComment(this.props.doc, this.props.currentUser) && <>{this.props.children}</>}
+                </>
+            );
+        }
+        else {
+            return <></>
+        }
+
     };
 }
 
 
-const mapStateToProps = (state: ApplicationState): CanCommentProps => {
+const mapStateToProps = (state: ApplicationState, ownProps: AllProps): CanCommentProps => {
     return {
-        currentUser: state.currentUser.user
+        currentUser: state.currentUser.user,
+        doc: state.docs.docs.get(ownProps.docId)
     };
 };
 

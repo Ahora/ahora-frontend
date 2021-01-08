@@ -18,6 +18,7 @@ import { isMobile, isBrowser } from "react-device-detect";
 import StoreOrganizationShortcut from 'app/store/shortcuts/StoreOrganizationShortcut';
 import { addDocToShortcut, loadShortcutDocs, updateShortcutsearchCriteria } from 'app/store/shortcuts/actions';
 import { deleteDocInState, setDocInState } from 'app/store/docs/actions';
+import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
 
 require('./styles.scss')
 
@@ -141,59 +142,72 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         this.props.history.replace(`/organizations/${this.props.match.params.login}/${this.props.match.params.section}/${addedDoc.id}`)
     }
 
+    renderDocList() {
+        return (<div className="doc-list-wrapper">
+            <DocList onPageChanged={this.pageChanged.bind(this)} pageSize={30} totalDocs={this.props.totalDocs} page={this.props.page} section={this.props.match.params.section} docs={this.props.docs} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>
+                <div className="no-docs">No Results</div>
+            </DocList>
+        </div>);
+    }
+
+    renderDocListTop() {
+        return (
+            <CanAddDoc>
+                <Link className="add-doc-button" to={`/organizations/${this.props.match.params.login}/${this.props.match.params.section}/add`}>
+                    <Button className="add-button" block type="primary">
+                        <PlusOutlined />Add Discussion</Button>
+                </Link>
+            </CanAddDoc>
+        );
+    }
+
+    renderDocDetails() {
+        if (this.state.currentDocId) {
+            return <DocsDetailsPage onDocDeleted={this.onDocDeleted.bind(this)} onDocUpdated={this.onDocUpdated.bind(this)} {...this.props}></DocsDetailsPage>
+        }
+        else {
+            return <Switch>
+                <Route path={`/organizations/:login/:section/add`} component={(props: any) => <AddDocPage {...props} onCancel={this.onAddCancel.bind(this)} onDocAdded={this.onDocAdded.bind(this)} />} />
+                <Route path={`/organizations/:login/:section`} component={DefaultDocsPage} />
+            </Switch>
+        }
+    }
+
     render() {
         return (
-            <section style={{ height: "100%" }} className="ant-layout site-layout">
-                {(isBrowser || (isMobile && this.props.match.params.docId === undefined)) &&
-                    <div className="docsheader">
-                        <SearchDocsInput searchCriterias={this.state.searchCriteria} searchSelected={this.onInputSearchSelected.bind(this)}></SearchDocsInput>
-                    </div>
-                }
-                <section className="ant-layout site-layout">
-                    <div className="ant-layout">
-                        <div className="ant-layout site-layout-content">
-                            <div className="content-wrapper">
-                                <div className="content">
-                                    <div className="main-content">
-                                        <div className="content-wrapper">
-                                            <div className="content">
-                                                {
-                                                    (isBrowser || (isMobile && this.props.match.params.docId === undefined)) &&
-                                                    <div className={isBrowser ? "left-side" : "main-content"}>
-                                                        <CanAddDoc>
-                                                            <Link className="add-doc-button" to={`/organizations/${this.props.match.params.login}/${this.props.match.params.section}/add`}>
-                                                                <Button className="add-button" block type="primary">
-                                                                    <PlusOutlined />Add Discussion</Button>
-                                                            </Link>
-                                                        </CanAddDoc>
-                                                        <div className="doc-list-wrapper scrollable">
-                                                            <DocList onPageChanged={this.pageChanged.bind(this)} pageSize={30} totalDocs={this.props.totalDocs} page={this.props.page} section={this.props.match.params.section} docs={this.props.docs} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>
-                                                                <div className="no-docs">No Results</div>
-                                                            </DocList>
-                                                        </div>
-                                                    </div>
-                                                }
-                                                {(isBrowser || (isMobile && this.props.match.params.docId)) &&
-                                                    <div className="main-content">
-                                                        {this.state.currentDocId ?
-                                                            <DocsDetailsPage onDocDeleted={this.onDocDeleted.bind(this)} onDocUpdated={this.onDocUpdated.bind(this)} {...this.props}></DocsDetailsPage>
-                                                            :
-                                                            <Switch>
-                                                                <Route path={`/organizations/:login/:section/add`} component={(props: any) => <AddDocPage {...props} onCancel={this.onAddCancel.bind(this)} onDocAdded={this.onDocAdded.bind(this)} />} />
-                                                                <Route path={`/organizations/:login/:section`} component={DefaultDocsPage} />
-                                                            </Switch>
-                                                        }
-                                                    </div>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </section>
+
+            <AhoraFlexPanel top={(isBrowser || (isMobile && this.props.match.params.docId === undefined)) &&
+                <div className="docsheader">
+                    <SearchDocsInput searchCriterias={this.state.searchCriteria} searchSelected={this.onInputSearchSelected.bind(this)}></SearchDocsInput>
+                </div>
+            }>
+                <div className="site-layout-content">
+                    {isMobile ?
+                        <>
+                            {this.props.match.params.docId === undefined ?
+                                <>
+                                    {this.renderDocListTop()}
+                                    {this.renderDocList()}
+                                </>
+                                :
+                                <>
+                                    {this.renderDocDetails()}
+                                </>
+                            }
+                        </>
+                        :
+                        <AhoraFlexPanel left={
+                            <AhoraFlexPanel top={this.renderDocListTop()}>
+                                {this.renderDocList()}
+                            </AhoraFlexPanel>
+                        }>
+
+                            {this.renderDocDetails()}
+
+                        </AhoraFlexPanel>
+                    }
+                </div>
+            </AhoraFlexPanel>
         );
     };
 }

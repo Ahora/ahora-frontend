@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Comment, updateComment, deleteComment, pinComment, unpinComment } from 'app/services/comments';
-import Moment from 'react-moment';
 import CanEditOrDeleteComment from 'app/components/Authentication/CanEditOrDeleteComment';
 import CanPinComment from 'app/components/Authentication/CanPinComment';
-import { Doc } from 'app/services/docs';
 import { Comment as CommentComponent } from 'antd';
 import './style.scss';
 import { CheckOutlined } from '@ant-design/icons';
@@ -16,6 +14,7 @@ import { Dispatch } from 'redux';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { deleteCommentInState, setQouteCommentInState, updateCommentInState } from 'app/store/comments/actions';
+import AhoraDate from 'app/components/Basics/AhoraTime';
 
 interface InjectableProps {
     comment?: Comment;
@@ -30,7 +29,7 @@ interface DispatchProps {
 interface CommentsProps extends InjectableProps, DispatchProps {
     commentId: number;
     login: string;
-    doc: Doc;
+    docId: number;
     focus: boolean;
 }
 
@@ -147,14 +146,14 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
                             <UserAvatar userId={this.props.comment.authorUserId}></UserAvatar>
                         </>
                     }
-                    datetime={<Moment titleFormat="YYYY-MM-DD HH:mm" withTitle fromNow format="YYYY-MM-DD HH:mm" date={this.props.comment.createdAt}></Moment>}
+                    datetime={<AhoraDate date={this.props.comment.createdAt}></AhoraDate>}
                     actions={(this.isDraft()) ? undefined : [ //Don't show actions if comment is not created yet in the server
                         <span key="comment-basic-reply-to" onClick={this.onQoute.bind(this, this.props.comment)}>Quote</span>,
                         <CanEditOrDeleteComment comment={this.props.comment}>
                             <span onClick={this.editMode.bind(this)}>Edit</span>
                             <span onClick={this.deleteCommentHandle.bind(this)}>Delete</span>
                         </CanEditOrDeleteComment>,
-                        <CanPinComment doc={this.props.doc} comment={this.props.comment}>
+                        <CanPinComment docId={this.props.docId} comment={this.props.comment}>
                             <span onClick={this.pinToggle.bind(this)}>{this.props.comment.pinned ? "Unpin" : "Pin"}</span>
                         </CanPinComment>
                     ]}
@@ -180,13 +179,13 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: CommentsProps): DispatchProps => {
     return {
         qouteComment: (comment: Comment) => dispatch(setQouteCommentInState(comment)),
-        deleteComment: (commentId: number) => dispatch(deleteCommentInState(ownProps.doc.id, commentId)),
-        updateComment: (comment: Comment) => dispatch(updateCommentInState(ownProps.doc.id, comment))
+        deleteComment: (commentId: number) => dispatch(deleteCommentInState(ownProps.docId, commentId)),
+        updateComment: (comment: Comment) => dispatch(updateCommentInState(ownProps.docId, comment))
     }
 }
 
 const mapStateToProps = (state: ApplicationState, props: CommentsProps): InjectableProps => {
-    const mapOfComments = state.comments.docs.get(props.doc.id);
+    const mapOfComments = state.comments.docs.get(props.docId);
 
     return {
         comment: mapOfComments?.map.get(props.commentId)

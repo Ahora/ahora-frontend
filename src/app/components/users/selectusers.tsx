@@ -14,7 +14,7 @@ interface DispatchProps {
 
 interface SelectUserProps extends DispatchProps {
     onSelect(user: UserItem): void;
-    defaultSelected?: number,
+    currentUserId?: number,
     editMode?: boolean;
     autoFocus?: boolean;
 }
@@ -22,7 +22,8 @@ interface SelectUserProps extends DispatchProps {
 
 interface State {
     isLoading: boolean,
-    options?: UserItem[],
+    options: UserItem[],
+    currentUserId?: number;
     query: string;
     editMode: boolean;
 }
@@ -57,8 +58,9 @@ class SelectUser extends React.Component<SelectUserProps, State> {
     onChange(user: any) {
         this.props.onSelect(user.label.props.user);
         this.setState({
-            editMode: (this.props.editMode === undefined) ? true : this.props.editMode,
-            query: ''
+            editMode: this.props.editMode || false,
+            query: '',
+            currentUserId: user.label.props.user.id
         });
     }
 
@@ -69,7 +71,6 @@ class SelectUser extends React.Component<SelectUserProps, State> {
                     defaultOpen={true}
                     autoFocus={this.props.autoFocus}
                     showSearch={true}
-                    mode="multiple"
                     autoClearSearchValue={true}
                     labelInValue
                     loading={this.state.isLoading}
@@ -87,8 +88,8 @@ class SelectUser extends React.Component<SelectUserProps, State> {
             );
         }
         else {
-            if (this.props.defaultSelected && this.props.defaultSelected) {
-                return (<span onClick={this.onStartEdit.bind(this)}><UserDetails userId={this.props.defaultSelected}></UserDetails></span>)
+            if (this.state.currentUserId || this.props.currentUserId) {
+                return (<span onClick={this.onStartEdit.bind(this)}><UserDetails userId={this.state.currentUserId || this.props.currentUserId}></UserDetails></span>)
             }
             else {
                 return (<span onClick={this.onStartEdit.bind(this)}>Unassigned</span>)

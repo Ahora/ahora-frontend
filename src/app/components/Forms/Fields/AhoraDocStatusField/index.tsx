@@ -43,7 +43,7 @@ class AhoraDocStatusField extends React.Component<Props, State> {
     render() {
         return (
             <div>
-                <Select autoFocus={this.props.autoFocus} onBlur={this.onBlur.bind(this)} value={this.state.value} onChange={this.handleChange.bind(this)}>
+                <Select defaultOpen={true} autoFocus={this.props.autoFocus} onBlur={this.onBlur.bind(this)} value={this.state.value} onChange={this.handleChange.bind(this)}>
                     {this.props.statuses.map((status) => <Select.Option key={status.id} value={status.id!}>{status.name}</Select.Option>)}
                 </Select>
             </div>)

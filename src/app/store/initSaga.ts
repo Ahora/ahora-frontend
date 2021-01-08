@@ -9,6 +9,7 @@ import receiveCommentsSaga from "./comments/receiveCommentsSaga";
 import loadunReadCommentNumbersSaga from "./comments/loadunReadCommentsNumberSaga";
 import loadReadCommentsSaga from "./comments/loadReadCommentsSaga";
 import loadUnreadCommentsSaga from "./comments/loadunReadCommentsSaga";
+import loadPinnedCommentsSaga from "./comments/loadPinnedCommentsSaga";
 import usersSaga from "./users/sagas";
 import requestDocSaga from "./docs/requestDocSaga";
 import currentUserSaga from "./currentuser/sagas";
@@ -33,5 +34,6 @@ export const initSagas = () => {
     sagaMiddleware.run(loadShortcutDocsSaga);
     sagaMiddleware.run(currentUserSaga);
     sagaMiddleware.run(usersSaga);
+    sagaMiddleware.run(loadPinnedCommentsSaga);
 }
 export default sagaMiddleware;

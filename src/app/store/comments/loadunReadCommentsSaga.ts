@@ -19,16 +19,10 @@ function* getShortcutsFromServer(action: RequestCommentsAction) {
             //Load more unread messages as well from the same date
             fromDate = doc?.lastView ? doc?.lastView.updatedAt : doc?.createdAt;
         }
-        else if (commentState?.moreComments?.length !== commentState?.unReadCommentsCount) {
-            if (commentState?.comments?.length > 0) {
-                const commentId = commentState.comments[commentState.comments.length - 1];
-                const toComment = commentState.map.get(commentId);
-                fromDate = toComment?.createdAt;
-            }
-        }
-        if (fromDate) {
+
+        if ((commentState?.moreComments === undefined || commentState?.moreComments.length !== commentState.unReadCommentsCount) && fromDate) {
             const unreadComments: Comment[] = yield call(getComments, action.payload, undefined, fromDate);
-            yield put(receiveUnreadCommentsToState(action.payload, unreadComments.reverse()));
+            yield put(receiveUnreadCommentsToState(action.payload, unreadComments));
 
         }
     }

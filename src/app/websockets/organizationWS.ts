@@ -1,11 +1,12 @@
 
 import { Comment } from "app/services/comments";
-import { deleteCommentInState, setCommentAddedInState, setCommentUpdatedInState } from 'app/store/comments/actions';
+import { AddCommentInState, deleteCommentInState, setCommentAddedInState, setCommentUpdatedInState } from 'app/store/comments/actions';
 import io from 'socket.io-client';
 import { deleteDocInState, setDocInState } from 'app/store/docs/actions';
 import { Doc } from 'app/services/docs';
 import { ahoraDispatch } from 'app/store/dispatchHelpers';
 import { setWebSocketId } from ".";
+import { store } from "app/store";
 
 export const socket = io({ "transports": ['websocket'] });
 socket.on('connect', () => { setWebSocketId(socket.id); });
@@ -20,7 +21,24 @@ export default class OrganizationWebSocket {
 
         //Comments
         socket.on('comment-post', (comment: Comment) => {
-            ahoraDispatch(setCommentAddedInState(comment));
+            //If it's the same user don't show it as unread comment. treat it as comment that added by the user.
+            if (store.getState().currentUser.user?.id === comment.authorUserId) {
+                ahoraDispatch(AddCommentInState(comment));
+            }
+            else {
+                ahoraDispatch(setCommentAddedInState(comment));
+            }
+        });
+
+        socket.on('comment-docupdate', (comment: Comment) => {
+            //If it's the same user don't show it as unread comment. treat it as comment that added by the user.
+            if (store.getState().currentUser.user?.id === comment.authorUserId) {
+                ahoraDispatch(AddCommentInState(comment));
+            }
+            else {
+                ahoraDispatch(setCommentAddedInState(comment));
+
+            }
         });
 
         socket.on('comment-put', (comment: Comment) => {
@@ -33,15 +51,15 @@ export default class OrganizationWebSocket {
 
 
         //Docs
-        socket.on('docs-post', (doc: Doc) => {
+        socket.on('doc-post', (doc: Doc) => {
             ahoraDispatch(setDocInState(doc));
         });
 
-        socket.on('docs-put', (doc: Doc) => {
+        socket.on('doc-put', (doc: Doc) => {
             ahoraDispatch(setDocInState(doc));
         });
 
-        socket.on('docs-delete', (doc: Comment) => {
+        socket.on('doc-delete', (doc: Comment) => {
             ahoraDispatch(deleteDocInState(doc.id));
         });
     }

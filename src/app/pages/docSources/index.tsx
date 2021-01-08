@@ -1,6 +1,5 @@
 import * as React from 'react';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
-import Moment from 'react-moment';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { getDocSources, DocSource, deleteDocSource, syncNowDocSource } from 'app/services/docSources';
@@ -8,6 +7,7 @@ import CanManageOrganization from 'app/components/Authentication/CanManageOrgani
 import { Link } from 'react-router-dom';
 import { AddDocSourceForm } from 'app/components/DocSources/AddDocSourceForm';
 import { Button, Table, Popconfirm, Menu, Space } from 'antd';
+import AhoraDate from 'app/components/Basics/AhoraTime';
 
 interface MilestonesPageState {
     form?: any;
@@ -100,7 +100,7 @@ class DocSourcesPage extends React.Component<MilestonesPageProps, MilestonesPage
                         } />
                         <Table.Column title="Organization/User" dataIndex="organization" key="organization" />
                         <Table.Column title="Last Updated" dataIndex="lastUpdated" key="lastUpdated" render={(lastUpdated?: Date) =>
-                            <>{lastUpdated && <Moment date={lastUpdated} format="D MMM YYYY hh:mm"></Moment>}</>
+                            <>{lastUpdated && <AhoraDate date={lastUpdated}></AhoraDate>}</>
                         } />
                         <Table.Column title="Syncing" dataIndex="syncing" key="syncing" render={(syncing?: boolean) =>
                             <>{syncing!.toString()}</>

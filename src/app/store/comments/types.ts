@@ -11,7 +11,9 @@ export const ADD_TEMP_COMMENT = 'ADD_TEMP_COMMENT';
 export const REQUEST_COMMENTS = 'REQUEST_COMMENTS';
 export const REQUEST_READ_COMMENTS = 'REQUEST_READ_COMMENTS';
 export const REQUEST_UNREAD_COMMENTS = 'REQUEST_UNREAD_COMMENTS';
+export const REQUEST_PINNED_COMMENTS = 'REQUEST_PINNED_COMMENTS';
 export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS';
+export const RECEIVE_PINNED_COMMENTS = 'RECEIVE_PINNED_COMMENTS';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const UPDATE_COMMENT = 'UPDATE_COMMENT';
 export const QOUTE_COMMENT = 'QOUTE_COMMENT';
@@ -25,10 +27,12 @@ export interface CommentsState {
 export interface DocCommentsState {
     comments?: number[];
     moreComments?: number[];
+    pinnedComments?: number[];
     unReadCommentsCount: number;
     qouteComment?: Comment
     loading: boolean;
     map: Map<number, Comment>;
+    hasMore: boolean
 }
 
 export interface CommentAddedAction {
@@ -81,12 +85,11 @@ export interface UpdateCommentAction {
 }
 
 interface ReceiveCommentsAction {
-    type: typeof RECEIVE_COMMENTS | typeof RECEIVE_UNREAD_COMMENTS,
+    type: typeof RECEIVE_COMMENTS | typeof RECEIVE_UNREAD_COMMENTS | typeof RECEIVE_PINNED_COMMENTS,
     payload: {
         comments: Comment[],
         docId: number
     }
-
 }
 
 interface DeletedCommentAction {

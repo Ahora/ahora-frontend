@@ -9,7 +9,6 @@ import SelectUser from 'app/components/users/selectusers';
 import { UserItem, User } from 'app/services/users';
 import { DocType } from 'app/services/docTypes';
 import { Comment } from 'app/services/comments';
-import Moment from 'react-moment';
 import EditableHeader from 'app/components/EditableHeader';
 import EditableMarkDown from 'app/components/EditableMarkDown';
 import { canEditDoc } from 'app/services/authentication';
@@ -27,7 +26,10 @@ import { reportDocRead } from 'app/store/shortcuts/actions';
 import AddCommentComponent from 'app/components/Comments/AddComment';
 import { addComment } from 'app/services/comments';
 import { AddCommentInState } from 'app/store/comments/actions';
+import AhoraDate from 'app/components/Basics/AhoraTime';
+import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
 import { addWatcheToDocInState, DeleteWatcheFromDocInState, requestDocToState } from 'app/store/docs/actions';
+
 
 interface DocsDetailsPageState {
     focusCommentId?: number;
@@ -124,8 +126,8 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     }
 
     async onAssigneeSelect(user: UserItem) {
-        const addedUserItem: UserItem = await assignDoc(this.props.match.params.login, parseInt(this.props.match.params.docId), user.username);
-        const updatedDoc = { ...this.props.doc!, assignee: addedUserItem };
+        const addedUserItem: UserItem = await assignDoc(this.props.match.params.login, parseInt(this.props.match.params.docId), user.id);
+        const updatedDoc = { ...this.props.doc!, assigneeUserId: addedUserItem.id };
         this.updateDoc(updatedDoc);
     }
 
@@ -198,80 +200,74 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         return (
             <>
                 {doc ?
-                    <div className="content-wrapper">
-                        <div className="content">
-                            <div className="main-content">
-                                <div className="scrollable">
-                                    <div className="doc-details">
-                                        <div>
-                                            <Space className="extra">
-                                                <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
-                                                <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
-                                                <Popconfirm onConfirm={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} title="Are you sure?">
-                                                    <Tag color="#108ee9">{doc.isPrivate ? "Private" : "Public"}</Tag>
+
+                    <AhoraFlexPanel scrollId={`scrollableComments${doc.id}`} bottom={canAddComment && <AddCommentComponent commentAdded={this.commentAdded.bind(this)} login={this.props.match.params.login} docId={doc.id}></AddCommentComponent>}>
+                        <div className="doc-details">
+                            <div>
+                                <Space className="extra">
+                                    <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
+                                    <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
+                                    <Popconfirm onConfirm={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} title="Are you sure?">
+                                        <Tag color="#108ee9">{doc.isPrivate ? "Private" : "Public"}</Tag>
+                                    </Popconfirm>
+                                </Space>
+                                <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
+                                    <h1>{doc.subject}</h1>
+                                </EditableHeader>
+                                <Space direction="vertical" style={{ width: "100%" }}>
+                                    <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
+                                    <UserAvatarList canEdit={canEdit} userIds={doc.watchers} />
+                                </Space>
+                                <Descriptions>
+                                    <Descriptions.Item label="Assignee">
+                                        <SelectUser editMode={false} currentUserId={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
+                                    </Descriptions.Item>
+                                    {docType && <Descriptions.Item label="Type"><>{docType.name}</></Descriptions.Item>}
+                                    {doc.closedAt && <Descriptions.Item label="Closed At"><AhoraDate date={doc.closedAt}></AhoraDate></Descriptions.Item>}
+                                    {doc.lastView && <Descriptions.Item label="Last viewd by me">
+                                        <AhoraDate date={doc.lastView.updatedAt}></AhoraDate>
+                                    </Descriptions.Item>
+                                    }
+                                    {doc.source &&
+                                        <>
+                                            <Descriptions.Item label="Github Issue Id">
+                                                <a target="_blank" href={doc.source.url}>{doc.sourceId}</a>
+                                            </Descriptions.Item>
+                                            <Descriptions.Item label="Repo">{doc.source.repo}</Descriptions.Item>
+                                            <Descriptions.Item label="Organization">{doc.source.organization}</Descriptions.Item>
+                                        </>
+                                    }
+                                    <Descriptions.Item label="Views">{doc.views}</Descriptions.Item>
+                                </Descriptions>
+                                <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
+                                    <CommentAnt className="description"
+                                        datetime={
+                                            <AhoraDate date={doc.createdAt}></AhoraDate>
+                                        }
+                                        actions={
+                                            canEdit ? [
+                                                <Popconfirm onConfirm={this.delete.bind(this)} title="Are you sure?">
+                                                    <span>Delete discussion</span>
                                                 </Popconfirm>
-                                            </Space>
-                                            <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
-                                                <h1>{doc.subject}</h1>
-                                            </EditableHeader>
-                                        </div>
-                                        <Space direction="vertical">
-                                            <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
-                                            <UserAvatarList onUserDeleted={this.onUserDeletedFromWatchers.bind(this)} onUserSelected={this.onUserAddedToWatchers.bind(this)} canEdit={canEdit} userIds={doc.watchers} />
-                                        </Space>
-                                        <Descriptions>
-                                            <Descriptions.Item label="Assignee">
-                                                <SelectUser editMode={false} defaultSelected={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
-                                            </Descriptions.Item>
-                                            {docType && <Descriptions.Item label="Type"><>{docType.name}</></Descriptions.Item>}
-                                            {doc.closedAt && <Descriptions.Item label="Closed At"><Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.closedAt}></Moment></Descriptions.Item>}
-                                            {doc.lastView && <Descriptions.Item label="Last viewd by me">
-                                                <Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.lastView.updatedAt}></Moment>
-                                            </Descriptions.Item>
-                                            }
-                                            {doc.source &&
-                                                <>
-                                                    <Descriptions.Item label="Github Issue Id">
-                                                        <a target="_blank" href={doc.source.url}>{doc.sourceId}</a>
-                                                    </Descriptions.Item>
-                                                    <Descriptions.Item label="Repo">{doc.source.repo}</Descriptions.Item>
-                                                    <Descriptions.Item label="Organization">{doc.source.organization}</Descriptions.Item>
-                                                </>
-                                            }
-                                            <Descriptions.Item label="Views">{doc.views}</Descriptions.Item>
-                                        </Descriptions>
-                                        <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
-                                            <CommentAnt className="description"
-                                                datetime={
-                                                    <Moment titleFormat="YYYY-MM-DD HH:mm" withTitle format="YYYY-MM-DD HH:mm" date={doc.createdAt}></Moment>
-                                                }
-                                                actions={
-                                                    canEdit ? [
-                                                        <Popconfirm onConfirm={this.delete.bind(this)} title="Are you sure?">
-                                                            <span>Delete discussion</span>
-                                                        </Popconfirm>
-                                                    ] : undefined
-                                                }
-                                                avatar={
-                                                    <UserAvatar userId={doc.reporterUserId}></UserAvatar>
-                                                }
-                                                author={
-                                                    <UserDetails userId={doc.reporterUserId}></UserDetails>
-                                                }
-                                                content={
-                                                    <p className="markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
-                                                }>
+                                            ] : undefined
+                                        }
+                                        avatar={
+                                            <UserAvatar userId={doc.reporterUserId}></UserAvatar>
+                                        }
+                                        author={
+                                            <UserDetails userId={doc.reporterUserId}></UserDetails>
+                                        }
+                                        content={
+                                            <p className="markdown-body" dangerouslySetInnerHTML={{ __html: doc.htmlDescription }}></p>
+                                        }>
 
-                                            </CommentAnt>
-                                        </EditableMarkDown>
-                                        <CommentListComponent focusId={this.state.focusCommentId} doc={doc} login={this.props.match.params.login}></CommentListComponent>
-                                    </div>
-                                </div>
-                                {canAddComment && <AddCommentComponent commentAdded={this.commentAdded.bind(this)} login={this.props.match.params.login} docId={doc.id}></AddCommentComponent>}
+                                    </CommentAnt>
+                                </EditableMarkDown>
                             </div>
+                            <CommentListComponent focusId={this.state.focusCommentId} doc={doc} login={this.props.match.params.login}></CommentListComponent>
                         </div>
+                    </AhoraFlexPanel>
 
-                    </div>
                     : <AhoraSpinner />
                 }
             </>

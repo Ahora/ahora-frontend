@@ -7,18 +7,8 @@
     }
 }
 
-.doc-details {
-    padding: 10px;
-    h1 {
-        font-size: medium;
-        font-weight: bold;
-    }
-    
-    .description {
-        border: 1px solid #f0f0f0;
-        margin-bottom: 5px;
-        padding: 0px 10px;
-    }
+.doc-title {
+    padding: 10px 10px 0px 10px;
 
     .extra {
         float: right;
@@ -27,11 +17,23 @@
             display: inline-block;
         }
     }
+
+    h1 {
+        font-size: medium;
+        font-weight: bold;
+    }
 }
 
+.doc-details {    
+    .description {
+        border: 1px solid #f0f0f0;
+        margin-bottom: 5px;
+        padding: 0px 10px;
+    }
+}
 
 .doc-details {
-    padding: 8px;
+    padding: 0px 10px;
 }
 
 .add-doc-button {

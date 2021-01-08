@@ -3,7 +3,7 @@ import { Doc } from 'app/services/docs';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Status } from 'app/services/statuses';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { DocType } from 'app/services/docTypes';
 import LabelsList from 'app/components/Labels/LabelList';
 import { Organization } from 'app/services/organizations';
@@ -29,12 +29,18 @@ interface DocListItemProps extends injectedParams {
     isActive: boolean;
 }
 
-interface AllProps extends DocListItemProps {
+interface AllProps extends RouteComponentProps, DocListItemProps {
 
 }
 class DocListItem extends React.Component<AllProps> {
     constructor(props: AllProps) {
         super(props);
+    }
+
+    onClick() {
+        if (this.props.doc) {
+            this.props.history.push(`/organizations/${this.props.currentOrganization!.login}/${this.props.section || "docs"}/${this.props.doc.id}`);
+        }
     }
 
     render() {
@@ -44,7 +50,7 @@ class DocListItem extends React.Component<AllProps> {
             const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId);
             const isViewed: boolean = this.props.unReadComments || (doc.lastView && new Date(doc.lastView.updatedAt) > new Date(doc.updatedAt)) ? true : false;
             return (
-                <List.Item className={`${this.props.isActive ? "active" : ""} doc-list-item`}>
+                <List.Item onClick={this.onClick.bind(this)} className={`${this.props.isActive ? "active" : ""} doc-list-item`}>
                     <div className="item-wrapper">
                         <div className="extra">
                             <div>
@@ -64,11 +70,13 @@ class DocListItem extends React.Component<AllProps> {
                         <div>
                             <div className="title">
                                 <Typography.Text strong={!isViewed}>
-                                    <Link to={`/organizations/${this.props.currentOrganization!.login}/${this.props.section || "docs"}/${doc.id}`}>{doc.subject}</Link>
+                                    <Link to={`/ organizations / ${this.props.currentOrganization!.login} / ${this.props.section || "docs"} / ${doc.id}`}>{doc.subject}</Link>
                                 </Typography.Text>
                             </div>
-                            <div><LabelsList defaultSelected={doc.labels}></LabelsList></div>
-                            <div><UsersAvatarList maxCount={5} userIds={doc.watchers}></UsersAvatarList></div>
+                            <Space direction="vertical">
+                                <div><LabelsList defaultSelected={doc.labels}></LabelsList></div>
+                                <div><UsersAvatarList maxCount={5} userIds={doc.watchers}></UsersAvatarList></div>
+                            </Space>
                         </div>
                     </div>
                 </List.Item >
@@ -94,4 +102,4 @@ const mapStateToProps = (state: ApplicationState, ownProps: DocListItemProps): i
 };
 
 
-export default connect(mapStateToProps, null)(DocListItem as any); 
+export default withRouter(connect(mapStateToProps, null)(DocListItem as any)) as any; 

@@ -201,22 +201,25 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
             <>
                 {doc ?
 
-                    <AhoraFlexPanel scrollId={`scrollableComments${doc.id}`} bottom={canAddComment && <AddCommentComponent commentAdded={this.commentAdded.bind(this)} login={this.props.match.params.login} docId={doc.id}></AddCommentComponent>}>
+                    <AhoraFlexPanel top={
+                        <div className="doc-title">
+                            <Space className="extra">
+                                <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
+                                <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
+                                <Popconfirm onConfirm={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} title="Are you sure?">
+                                    <Tag color="#108ee9">{doc.isPrivate ? "Private" : "Public"}</Tag>
+                                </Popconfirm>
+                            </Space>
+                            <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
+                                <h1>{doc.subject}</h1>
+                            </EditableHeader>
+                        </div>
+                    } scrollId={`scrollableComments${doc.id}`} bottom={canAddComment && <AddCommentComponent commentAdded={this.commentAdded.bind(this)} login={this.props.match.params.login} docId={doc.id}></AddCommentComponent>}>
                         <div className="doc-details">
                             <div>
-                                <Space className="extra">
-                                    <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
-                                    <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
-                                    <Popconfirm onConfirm={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} title="Are you sure?">
-                                        <Tag color="#108ee9">{doc.isPrivate ? "Private" : "Public"}</Tag>
-                                    </Popconfirm>
-                                </Space>
-                                <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
-                                    <h1>{doc.subject}</h1>
-                                </EditableHeader>
                                 <Space direction="vertical" style={{ width: "100%" }}>
                                     <LabelsList onChange={this.onLabelsUpdate.bind(this)} canEdit={canEdit} defaultSelected={doc.labels}></LabelsList>
-                                    <UserAvatarList canEdit={canEdit} userIds={doc.watchers} />
+                                    <UserAvatarList onUserDeleted={this.onUserDeletedFromWatchers.bind(this)} onUserSelected={this.onUserAddedToWatchers.bind(this)} canEdit={canEdit} userIds={doc.watchers} />
                                 </Space>
                                 <Descriptions>
                                     <Descriptions.Item label="Assignee">

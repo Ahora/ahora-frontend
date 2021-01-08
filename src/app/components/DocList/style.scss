@@ -13,6 +13,8 @@
     }
     
     .doc-list-item {
+        cursor: pointer;
+        
         &:hover {
             background: #e6f1ff;
         }

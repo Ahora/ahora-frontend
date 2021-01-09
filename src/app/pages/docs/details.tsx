@@ -25,7 +25,7 @@ import UserAvatarList from 'app/components/users/UsersAvatarList';
 import { reportDocRead } from 'app/store/shortcuts/actions';
 import AddCommentComponent from 'app/components/Comments/AddComment';
 import { addComment } from 'app/services/comments';
-import { AddCommentInState } from 'app/store/comments/actions';
+import { AddCommentInState, requestCommentsToState } from 'app/store/comments/actions';
 import AhoraDate from 'app/components/Basics/AhoraTime';
 import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
 import { addWatcheToDocInState, DeleteWatcheFromDocInState, requestDocToState } from 'app/store/docs/actions';
@@ -48,14 +48,17 @@ interface injectedParams {
     loading: boolean;
     currentUser: User | undefined | null;
     doc?: Doc;
+    hasCommentsLoaded: boolean;
 }
 
 interface DispatchProps {
-    reportAsRead(docId: number): void;
+    reportAsRead(): void;
     requestDoc: () => void;
     addComment: (comment: Comment, tempCommentId?: number) => void;
     addWatcher: (userId: number) => void;
     deleteWatcher: (userId: number) => void;
+    loadComments: () => void;
+
 }
 
 interface AllProps extends RouteComponentProps<DocsDetailsPageParams>, injectedParams, DispatchProps {
@@ -80,7 +83,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
     updateDoc(doc: Doc) {
         this.props.onDocUpdated(doc);
-        this.props.reportAsRead(doc.id);
+        this.props.reportAsRead();
     }
 
     async changeMilestone(milestoneId?: number) {
@@ -99,7 +102,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         const newComment: Comment = await addComment(this.props.match.params.login, comment.docId, comment.comment, comment.parentId);
         this.setState({ focusCommentId: newComment.id });
         this.props.addComment(newComment, comment.id);
-        this.props.reportAsRead(newComment.docId);
+        this.props.reportAsRead();
     }
 
     async componentDidUpdate(PrevProps: AllProps) {
@@ -172,6 +175,16 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         }
     }
 
+    onScrollToBottom() {
+        if (this.props.hasCommentsLoaded) {
+            this.props.reportAsRead()
+        }
+    }
+
+    onScrollToTop() {
+        this.props.loadComments();
+    }
+
     async onDescriptionChanged(value: string) {
         const newDoc = await updateDocDescription(this.props.match.params.login, this.props.doc!.id, value);
         this.updateDoc({ ...this.props.doc, ...newDoc });
@@ -201,7 +214,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
             <>
                 {doc ?
 
-                    <AhoraFlexPanel top={
+                    <AhoraFlexPanel onScrollToTop={this.onScrollToTop.bind(this)} onScrollToBottom={this.onScrollToBottom.bind(this)} top={
                         <div className="doc-title">
                             <Space className="extra">
                                 <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
@@ -279,6 +292,8 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 }
 
 const mapStateToProps = (state: ApplicationState, ownProps: AllProps): injectedParams => {
+    const docId = parseInt(ownProps.match.params.docId);
+    const comments = state.comments.docs.get(docId);
     return {
         docTypes: state.docTypes.mapById,
         statuses: state.statuses.statuses,
@@ -286,7 +301,9 @@ const mapStateToProps = (state: ApplicationState, ownProps: AllProps): injectedP
         statusesMap: state.statuses.map,
         loading: state.statuses.loading,
         currentUser: state.currentUser.user,
-        doc: state.docs.docs.get(parseInt(ownProps.match.params.docId))
+        doc: state.docs.docs.get(docId),
+        hasCommentsLoaded: comments?.moreComments !== undefined && comments?.comments !== undefined,
+
     };
 };
 
@@ -295,7 +312,8 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: AllProps): DispatchPro
         addWatcher: (userId) => dispatch(addWatcheToDocInState(parseInt(ownProps.match.params.docId), userId)),
         deleteWatcher: (userId) => dispatch(DeleteWatcheFromDocInState(parseInt(ownProps.match.params.docId), userId)),
         requestDoc: () => dispatch(requestDocToState(parseInt(ownProps.match.params.docId))),
-        reportAsRead: (docId: number) => dispatch(reportDocRead(docId)),
+        reportAsRead: () => dispatch(reportDocRead(parseInt(ownProps.match.params.docId))),
+        loadComments: () => dispatch(requestCommentsToState((parseInt(ownProps.match.params.docId)))),
         addComment: (comment: Comment, tempCommentId?: number) => dispatch(AddCommentInState(comment, tempCommentId)),
     }
 }

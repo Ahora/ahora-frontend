@@ -102,13 +102,12 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                 }
 
                 <InfiniteScroll
-                    dataLength={this.props.comments?.length || 0} //This is important field to render the next data
-                    next={() => { /*this.loadMoreComments()*/ }}
+                    dataLength={(this.props.comments?.length || 0) + (this.props.moreComments?.length || 0)} //This is important field to render the next data
+                    next={() => { }}
                     style={{ overflow: "hidden", display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
                     hasMore={this.props.hasMore}
                     inverse={true}
                     loader={<></>}
-                    scrollableTarget={`scrollableComments${this.props.doc.id}`}
                 >
                     {(this.props.moreComments && this.props.moreComments.length > 0) &&
                         <>
@@ -144,7 +143,7 @@ const mapStateToProps = (state: ApplicationState, props: CommentsProps): Injecta
         moreComments: mapOfComments?.moreComments,
         comments: mapOfComments?.comments,
         unReadCommentsCount: mapOfComments?.unReadCommentsCount,
-        moreCommentFocusId: (mapOfComments && mapOfComments.moreComments && mapOfComments.moreComments.length > 0 && !props.focusId) ? mapOfComments.moreComments[0] : undefined,
+        moreCommentFocusId: (mapOfComments && mapOfComments.moreComments && mapOfComments.moreComments.length > 0 && !props.focusId) ? mapOfComments.moreComments[mapOfComments.moreComments.length - 1] : undefined,
         pinnedComments: mapOfComments?.pinnedComments,
         hasMore: mapOfComments ? mapOfComments.hasMore : false
     };

@@ -102,15 +102,15 @@ export function commentsReducer(state: CommentsState = initialState, action: Com
         case RECEIVE_COMMENTS:
             let receivedCommentsDoc = state.docs.get(action.payload.docId);
             receivedCommentsDoc = receivedCommentsDoc ? { ...receivedCommentsDoc, loading: false } : { map: new Map(), loading: false, unReadCommentsCount: 0, hasMore: action.payload.comments.length === 30 };
+            const commentIds: number[] = [];
 
             if (action.payload.comments.length > 0) {
-                const commentIds: number[] = [];
                 action.payload.comments.forEach((comment) => {
                     receivedCommentsDoc?.map.set(comment.id, comment);
                     commentIds.push(comment.id);
                 });
-                receivedCommentsDoc.comments = [...receivedCommentsDoc.comments || [], ...commentIds];
             }
+            receivedCommentsDoc.comments = [...receivedCommentsDoc.comments || [], ...commentIds];
             state.docs.set(action.payload.docId, receivedCommentsDoc);
 
             return { ...state, docs: new Map(state.docs) };

@@ -8,9 +8,22 @@ interface Props {
     left?: React.ReactNode;
     leftClassName?: string;
     scrollId?: string;
+    onScrollToBottom?: () => void;
+    onScrollToTop?: () => void;
 }
 
 export default class AhoraFlexPanel extends React.Component<Props>{
+
+    onScroll(event: React.UIEvent<HTMLDivElement>) {
+        const node = event.currentTarget;
+        if (this.props.onScrollToTop && node.scrollTop === 0) {
+            this.props.onScrollToTop();
+        }
+
+        if (this.props.onScrollToBottom && node.scrollHeight - node.scrollTop === node.clientHeight) {
+            this.props.onScrollToBottom();
+        }
+    }
     render() {
         return (
             <div className="ahora-flex-panel-wrapper">
@@ -24,7 +37,7 @@ export default class AhoraFlexPanel extends React.Component<Props>{
                     {this.props.children &&
                         <div className="main-content">
                             {this.props.top}
-                            <div id={this.props.scrollId} className="scrollable">
+                            <div id={this.props.scrollId} onScroll={this.props.onScrollToBottom && this.onScroll.bind(this)} className="scrollable">
                                 {this.props.children}
                             </div>
                             {this.props.bottom}

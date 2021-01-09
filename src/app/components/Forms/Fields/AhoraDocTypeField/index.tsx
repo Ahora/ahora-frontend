@@ -38,7 +38,7 @@ class AhoraDocTypeField extends React.Component<GroupBySelectStateProps, GroupBy
     render() {
         return (
             <Select value={this.props.value} onChange={this.onCheckChange.bind(this)}>
-                {this.props.docTypes.map((docType) => {
+                {this.props.docTypes.filter((docType) => !docType.hideFromSelection).map((docType) => {
                     return (<Select.Option key={docType.id} value={docType.id!}>{docType.name}</Select.Option>);
                 })}
             </Select>)

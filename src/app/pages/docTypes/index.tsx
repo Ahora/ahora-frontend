@@ -13,6 +13,7 @@ interface DocTypeRow {
     description?: string;
     code?: string;
     organizationId: number | null;
+    hideFromSelection: boolean;
 }
 
 interface DocTypeesPageState {
@@ -46,17 +47,20 @@ class DocTypesPage extends React.Component<AllProps, DocTypeesPageState> {
         docTypeRow.name = docTypeRow.docType.name;
         docTypeRow.description = docTypeRow.docType.description || "";
         docTypeRow.code = docTypeRow.docType.code || "";
+        docTypeRow.hideFromSelection = docTypeRow.docType.hideFromSelection;
         this.setState({});
     }
 
     public addnewDocType() {
         this.setState({
             newDocType: {
+                hideFromSelection: false,
                 editable: true,
                 description: "",
                 organizationId: null,
                 name: "",
                 docType: {
+                    hideFromSelection: false,
                     organizationId: null,
                     name: "",
                     code: "",

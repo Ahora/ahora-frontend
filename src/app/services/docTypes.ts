@@ -6,6 +6,7 @@ export interface DocType {
   code: string;
   description: string;
   organizationId: Number | null;
+  hideFromSelection: boolean;
 }
 
 const docTypesClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/doctypes/{id}");

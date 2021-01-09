@@ -12,6 +12,7 @@ interface StatusRow {
     name?: string;
     description?: string;
     organizationId?: number;
+    hideFromSelection: boolean;
 }
 
 interface StatusesPageState {
@@ -50,10 +51,12 @@ class StatusesPage extends React.Component<AllProps, StatusesPageState> {
     public addnewStatus() {
         this.setState({
             newStatus: {
+                hideFromSelection: false,
                 editable: true,
                 description: "",
                 name: "",
                 status: {
+                    hideFromSelection: false,
                     name: "",
                     description: "",
                 }

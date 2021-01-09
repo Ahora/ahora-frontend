@@ -5,6 +5,7 @@ export interface Status {
   name: string;
   description: string;
   organizationId?: number;
+  hideFromSelection: boolean;
 }
 
 const statusesClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/statuses/{id}");

@@ -120,7 +120,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
 
                 </InfiniteScroll>
-
+                <br />
             </>
         );
     }
@@ -143,7 +143,7 @@ const mapStateToProps = (state: ApplicationState, props: CommentsProps): Injecta
         moreComments: mapOfComments?.moreComments,
         comments: mapOfComments?.comments,
         unReadCommentsCount: mapOfComments?.unReadCommentsCount,
-        moreCommentFocusId: (mapOfComments && mapOfComments.moreComments && mapOfComments.moreComments.length > 0 && !props.focusId) ? mapOfComments.moreComments[mapOfComments.moreComments.length - 1] : undefined,
+        moreCommentFocusId: (mapOfComments && mapOfComments.moreComments && mapOfComments.moreComments.length > 0) ? mapOfComments.moreComments[mapOfComments.moreComments.length - 1] : undefined,
         pinnedComments: mapOfComments?.pinnedComments,
         hasMore: mapOfComments ? mapOfComments.hasMore : false
     };

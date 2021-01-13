@@ -107,7 +107,7 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
                         <Button disabled={this.state.isSubmitting} htmlType="submit" type="primary">
                             {
                                 this.state.isSubmitting ?
-                                    <AhoraSpinner /> : <>{this.props.submitButtonText || "Send"}</>
+                                    <AhoraSpinner /> : <>{this.props.submitButtonText || "Save"}</>
                             }
                         </Button>
                         {this.props.onCancel && <Button danger onClick={this.cancel.bind(this)}>Cancel</Button>}

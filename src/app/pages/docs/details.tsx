@@ -4,10 +4,8 @@ import { RouteComponentProps } from 'react-router';
 import CommentListComponent from 'app/components/Comments/List';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
-import { Status } from 'app/services/statuses';
 import SelectUser from 'app/components/users/selectusers';
 import { UserItem, User } from 'app/services/users';
-import { DocType } from 'app/services/docTypes';
 import { Comment } from 'app/services/comments';
 import EditableHeader from 'app/components/EditableHeader';
 import EditableMarkDown from 'app/components/EditableMarkDown';
@@ -17,7 +15,7 @@ import LabelsList from 'app/components/Labels/LabelList';
 import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
-import { Comment as CommentAnt, Descriptions, Space, Popconfirm, Tag } from 'antd';
+import { Comment as CommentAnt, Descriptions, Space, Popconfirm } from 'antd';
 import { Dispatch } from 'redux';
 import UserDetails from 'app/components/users/UserDetails';
 import UserAvatar from 'app/components/users/UserAvatar';
@@ -29,6 +27,9 @@ import { AddCommentInState, requestCommentsToState } from 'app/store/comments/ac
 import AhoraDate from 'app/components/Basics/AhoraTime';
 import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
 import { addWatcheToDocInState, DeleteWatcheFromDocInState, requestDocToState } from 'app/store/docs/actions';
+import DocTypeText from 'app/components/localization/DocTypeText';
+import { FormattedMessage } from 'react-intl';
+import IsPrivateTag from 'app/components/localization/IsPrivateTag';
 
 
 interface DocsDetailsPageState {
@@ -41,9 +42,6 @@ interface DocsDetailsPageParams {
 }
 
 interface injectedParams {
-    statuses: Status[],
-    docTypes: Map<number, DocType>,
-    statusesMap: Map<number, Status>,
     milestonesMap: Map<number, OrganizationMilestone>,
     loading: boolean;
     currentUser: User | undefined | null;
@@ -194,11 +192,9 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         const doc: Doc | undefined = this.props.doc;
         let canEdit: boolean = false;
         let canAddComment: boolean = !!this.props.currentUser;
-        let docType: DocType | undefined;
         let currentMilestone: OrganizationMilestone | undefined;
         if (doc) {
             canEdit = canEditDoc(this.props.currentUser, doc);
-            docType = this.props.docTypes.get(doc.docTypeId);
 
             if (doc.milestoneId) {
                 currentMilestone = this.props.milestonesMap.get(doc.milestoneId);
@@ -215,7 +211,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 <DocStatusViewEdit canEdit={canEdit} statusId={doc.statusId} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
                                 <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
                                 <Popconfirm onConfirm={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} title="Are you sure?">
-                                    <Tag color="#108ee9">{doc.isPrivate ? "Private" : "Public"}</Tag>
+                                    <IsPrivateTag isPrivate={doc.isPrivate} />
                                 </Popconfirm>
                             </Space>
                             <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
@@ -233,7 +229,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                     <Descriptions.Item label="Assignee">
                                         <SelectUser editMode={false} currentUserId={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
                                     </Descriptions.Item>
-                                    {docType && <Descriptions.Item label="Type"><>{docType.name}</></Descriptions.Item>}
+                                    <Descriptions.Item label={<FormattedMessage id="docTypeDescriptor" />}><DocTypeText docTypeId={doc.docTypeId}></DocTypeText></Descriptions.Item>
                                     {doc.closedAt && <Descriptions.Item label="Closed At"><AhoraDate date={doc.closedAt}></AhoraDate></Descriptions.Item>}
                                     {doc.lastView && <Descriptions.Item label="Last viewd by me">
                                         <AhoraDate date={doc.lastView.updatedAt}></AhoraDate>
@@ -248,7 +244,6 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                             <Descriptions.Item label="Organization">{doc.source.organization}</Descriptions.Item>
                                         </>
                                     }
-                                    <Descriptions.Item label="Views">{doc.views}</Descriptions.Item>
                                 </Descriptions>
                                 <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
                                     <CommentAnt className="description"
@@ -290,15 +285,11 @@ const mapStateToProps = (state: ApplicationState, ownProps: AllProps): injectedP
     const docId = parseInt(ownProps.match.params.docId);
     const comments = state.comments.docs.get(docId);
     return {
-        docTypes: state.docTypes.mapById,
-        statuses: state.statuses.statuses,
         milestonesMap: state.milestones.map,
-        statusesMap: state.statuses.map,
         loading: state.statuses.loading,
         currentUser: state.currentUser.user,
         doc: state.docs.docs.get(docId),
         hasCommentsLoaded: comments?.moreComments !== undefined && comments?.comments !== undefined,
-
     };
 };
 

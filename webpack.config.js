@@ -2,6 +2,8 @@ var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const WebpackRTLPlugin = require('webpack-rtl-plugin')
+
 
 // variables
 var isProduction = process.argv.indexOf('-p') >= 0 || process.env.NODE_ENV === 'production';
@@ -245,6 +247,7 @@ module.exports = {
       filename: '[contenthash].css',
       disable: !isProduction
     }),
+    new WebpackRTLPlugin({ diffOnly: true }),
     new HtmlWebpackPlugin({
       template: 'assets/index.html'
     }),

@@ -15,6 +15,7 @@ import AhoraSpinner from '../Forms/Basics/Spinner';
 import AhoraDate from '../Basics/AhoraTime';
 import DocStatusTag from '../Doc/DocStatusTag';
 import DocTypeTag from '../Doc/DocTypeTag';
+import IsPrivateTag from '../localization/IsPrivateTag';
 
 interface injectedParams {
     statuses: Map<number, Status>;
@@ -63,7 +64,7 @@ class DocListItem extends React.Component<AllProps> {
                                 </div>
                                 <div>
                                     {this.props.unReadComments! > 0 && <Tag color="#f50">{this.props.unReadComments}</Tag>}
-                                    {doc.isPrivate && <Tag color="#108ee9">Private</Tag>}
+                                    <IsPrivateTag isPrivate={doc.isPrivate} />
                                 </div>
                             </Space>
                         </div>

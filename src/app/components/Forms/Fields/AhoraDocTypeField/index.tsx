@@ -4,6 +4,7 @@ import { Select } from 'antd';
 import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { DocType } from 'app/services/docTypes';
+import DocTypeText from 'app/components/localization/DocTypeText';
 
 interface GroupBySelectState {
     value: number;
@@ -39,7 +40,7 @@ class AhoraDocTypeField extends React.Component<GroupBySelectStateProps, GroupBy
         return (
             <Select value={this.props.value} onChange={this.onCheckChange.bind(this)}>
                 {this.props.docTypes.filter((docType) => !docType.hideFromSelection).map((docType) => {
-                    return (<Select.Option key={docType.id} value={docType.id!}>{docType.name}</Select.Option>);
+                    return (<Select.Option key={docType.id} value={docType.id!}><DocTypeText docTypeId={docType.id!} /></Select.Option>);
                 })}
             </Select>)
     }

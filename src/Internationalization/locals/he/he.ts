@@ -8,4 +8,15 @@ export const hebrew: LocalInterface = {
     docType4: "תקציר  פגישה",
     docType5: "Wiki",
     docType6: "דמו",
+    docTypeDescriptor: "סוג",
+    docTypeFieldName: "סוג",
+    subjectFieldName: "נושא",
+    labelsFieldName: "תוויות",
+    descriptionFieldName: "תוכן",
+    privateFieldName: "פרטי",
+    usersFieldName: "משתמשים",
+    submitButtonText: "שלח",
+    cancelButtonText: "בטל",
+    private: "פרטי",
+    public: "ציבורי"
 }

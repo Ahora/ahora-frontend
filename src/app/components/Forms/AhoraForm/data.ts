@@ -1,6 +1,6 @@
 export interface AhoraFormField {
     fieldName: string;
-    displayName: string;
+    displayName: React.ReactNode;
     fieldType: string;
     required?: boolean;
     autoFocus?: boolean;

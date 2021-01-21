@@ -3,6 +3,7 @@ import AhoraSDK from 'app/sdk';
 import { AhoraFormStateField, AhoraFormField } from './data';
 import { Form, Button, Space } from 'antd';
 import AhoraSpinner from '../Basics/Spinner';
+import { FormattedMessage } from 'react-intl';
 
 export declare type FormLayout = 'horizontal' | 'inline' | 'vertical';
 
@@ -108,7 +109,7 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
                                     <AhoraSpinner /> : <>{this.props.submitButtonText || "Save"}</>
                             }
                         </Button>
-                        {this.props.onCancel && <Button danger onClick={this.cancel.bind(this)}>Cancel</Button>}
+                        {this.props.onCancel && <Button danger onClick={this.cancel.bind(this)}><FormattedMessage id="cancelButtonText" /></Button>}
                     </Space>
                 }
 

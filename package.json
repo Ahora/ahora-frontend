@@ -30,7 +30,7 @@
     "@types/react": "16.9.43",
     "@types/react-addons-update": "^0.14.20",
     "@types/react-intl": "^3.0.0",
-    "@types/react-redux": "^7.1.5",
+    "@types/react-redux": "^7.1.15",
     "@types/react-router": "5.1.2",
     "@types/react-router-dom": "^5.1.0",
     "@types/react-router-redux": "^5.0.18",
@@ -93,7 +93,7 @@
     "react-loaders": "^3.0.1",
     "react-markdown-editor-lite": "^0.5.1",
     "react-moment": "^0.9.6",
-    "react-redux": "^7.1.1",
+    "react-redux": "7.2.2",
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "react-router-redux": "^5.0.0-alpha.9",
@@ -120,6 +120,7 @@
     "webpack": "^4.41.2",
     "webpack-cleanup-plugin": "^0.5.1",
     "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.9.0"
+    "webpack-dev-server": "^3.9.0",
+    "webpack-rtl-plugin": "^2.0.0"
   }
 }

@@ -8,4 +8,15 @@ export const english: LocalInterface = {
     docType4: "Meeting Summary",
     docType5: "Wiki",
     docType6: "Demo",
+    docTypeDescriptor: "Type",
+    docTypeFieldName: "Type",
+    subjectFieldName: "Subject",
+    labelsFieldName: "labels",
+    descriptionFieldName: "description",
+    privateFieldName: "Private",
+    usersFieldName: "Users",
+    submitButtonText: "Post",
+    cancelButtonText: "Cancel",
+    private: "Private",
+    public: "Public"
 }

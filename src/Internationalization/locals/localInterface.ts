@@ -22,4 +22,8 @@ export default interface LocalInterface extends Record<string, string> {
     private: string;
     public: string;
 
+    newLabelText: string;
+    selectLabels: string;
+    deleteDocType: string;
+
 }

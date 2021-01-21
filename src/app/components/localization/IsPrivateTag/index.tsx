@@ -6,8 +6,8 @@ export interface isPrivateTagProps {
     isPrivate: boolean;
 }
 
-const IsPrivateTag: React.FC<isPrivateTagProps> = (props: isPrivateTagProps) => (
-    <Tag color="#108ee9">
+const IsPrivateTag: React.FC<isPrivateTagProps> = (props: isPrivateTagProps & React.RefAttributes<HTMLElement>) => (
+    <Tag {...props} color="#108ee9">
         <FormattedMessage id={props.isPrivate ? "private" : "public"} />
     </Tag>
 )

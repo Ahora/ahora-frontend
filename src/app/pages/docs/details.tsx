@@ -253,7 +253,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                         actions={
                                             canEdit ? [
                                                 <Popconfirm onConfirm={this.delete.bind(this)} title="Are you sure?">
-                                                    <span>Delete discussion</span>
+                                                    <span><FormattedMessage id="deleteDocType" /></span>
                                                 </Popconfirm>
                                             ] : undefined
                                         }

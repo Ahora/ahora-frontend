@@ -18,5 +18,8 @@ export const english: LocalInterface = {
     submitButtonText: "Post",
     cancelButtonText: "Cancel",
     private: "Private",
-    public: "Public"
+    public: "Public",
+    newLabelText: "New Label",
+    selectLabels: "Select labels",
+    deleteDocType: "Delete"
 }

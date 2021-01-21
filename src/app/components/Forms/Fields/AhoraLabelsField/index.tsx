@@ -8,6 +8,7 @@ import { Dispatch } from 'redux';
 import { addLabelToState, updateLabelUsedInStore } from 'app/store/labels/actions';
 import LabelTag from 'app/components/Labels/LabelTag';
 import { ApplicationState } from 'app/store';
+import { FormattedMessage } from 'react-intl';
 
 class LabelSelect extends Select<number[]> {
 
@@ -105,7 +106,7 @@ class AhoraLabelsField extends React.Component<Props, GroupBySelectState> {
             mode="multiple"
             value={this.props.value}
             loading={this.state.fetchingData}
-            placeholder="Select labels"
+            placeholder={<FormattedMessage id="selectLabels" />}
             notFoundContent={this.state.fetchingData ? <Spin size="small" /> : null}
             filterOption={false}
             tagRender={this.tagRender.bind(this)}

@@ -18,5 +18,8 @@ export const hebrew: LocalInterface = {
     submitButtonText: "שלח",
     cancelButtonText: "בטל",
     private: "פרטי",
-    public: "ציבורי"
+    public: "ציבורי",
+    newLabelText: "הוסף תווית",
+    selectLabels: "בחר תוויות",
+    deleteDocType: "מחק"
 }

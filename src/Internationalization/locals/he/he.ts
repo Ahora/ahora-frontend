@@ -27,5 +27,9 @@ export const hebrew: LocalInterface = {
     quoteComment: "צטט",
     pinComment: "נעץ",
     unpinComment: "בטל נעיצה",
-    updateCommentButtonText: "עדכן"
+    updateCommentButtonText: "עדכן",
+    markdownPlaceHolder: "הודעה",
+    selectUsers: "בחר משתמשים",
+    noDocSelectText: "התחל דיון או בחר פריט מהרשימה",
+    noDocSelectedButtonText: "הוסף דיון חדש"
 }

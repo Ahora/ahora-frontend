@@ -13,6 +13,7 @@ export default interface LocalInterface extends Record<string, string> {
     subjectFieldName: string;
     labelsFieldName: string;
     descriptionFieldName: string;
+    markdownPlaceHolder: string;
     privateFieldName: string;
     usersFieldName: string;
 
@@ -33,4 +34,7 @@ export default interface LocalInterface extends Record<string, string> {
     unpinComment: string;
     updateCommentButtonText: string;
 
+    selectUsers: string;
+    noDocSelectText: string;
+    noDocSelectedButtonText: string;
 }

@@ -7,6 +7,7 @@ import { debounce } from "lodash";
 import { connect } from "react-redux";
 import { addUsersToState } from "app/store/users/actions";
 import { Dispatch } from 'redux';
+import { FormattedMessage } from "react-intl";
 
 interface DispatchProps {
     addUsersToStore(users: UserItem[]): void;
@@ -75,7 +76,7 @@ class SelectUser extends React.Component<SelectUserProps, State> {
                     labelInValue
                     loading={this.state.isLoading}
                     style={{ minWidth: "300px" }}
-                    placeholder="Select users"
+                    placeholder={<FormattedMessage id="selectUsers" />}
                     notFoundContent={this.state.isLoading ? <AhoraSpinner /> : null}
                     filterOption={false}
                     onSearch={this._handleSearch}

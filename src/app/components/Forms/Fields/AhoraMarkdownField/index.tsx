@@ -85,11 +85,11 @@ class AhoraMarkdownField extends React.Component<Props, State> {
     }
 
     render() {
+
         return (
             <Mentions
                 ref={this.mentionRef}
                 autoFocus={this.state.autoFocus}
-                placeholder="Message"
                 autoSize={true}
                 value={this.props.value}
                 loading={this.state.loading}

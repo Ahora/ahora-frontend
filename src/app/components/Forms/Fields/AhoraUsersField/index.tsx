@@ -8,6 +8,7 @@ import UserDetails from 'app/components/users/UserDetails';
 import { addUsersToState } from 'app/store/users/actions';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 
 class UsersSelect extends Select<number[]> {
 
@@ -75,7 +76,7 @@ class AhoraUsersField extends React.Component<Props, AhoraUsersFieldState> {
                 showSearch={true}
                 mode="multiple"
                 loading={this.state.isLoading}
-                placeholder="Select users"
+                placeholder={<FormattedMessage id="selectUsers" />}
                 notFoundContent={this.state.isLoading ? <AhoraSpinner /> : null}
                 filterOption={false}
                 onSearch={this._handleSearch}

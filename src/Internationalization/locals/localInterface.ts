@@ -26,4 +26,11 @@ export default interface LocalInterface extends Record<string, string> {
     selectLabels: string;
     deleteDocType: string;
 
+    deleteComment: string;
+    editComment: string;
+    quoteComment: string
+    pinComment: string;
+    unpinComment: string;
+    updateCommentButtonText: string;
+
 }

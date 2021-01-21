@@ -192,14 +192,8 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         const doc: Doc | undefined = this.props.doc;
         let canEdit: boolean = false;
         let canAddComment: boolean = !!this.props.currentUser;
-        let currentMilestone: OrganizationMilestone | undefined;
         if (doc) {
             canEdit = canEditDoc(this.props.currentUser, doc);
-
-            if (doc.milestoneId) {
-                currentMilestone = this.props.milestonesMap.get(doc.milestoneId);
-            }
-
         }
         return (
             <>
@@ -209,7 +203,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                         <div className="doc-title">
                             <Space className="extra">
                                 <DocStatusViewEdit canEdit={canEdit} statusId={doc.statusId} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
-                                <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
+                                <DocMilestoneViewEdit canEdit={canEdit} milestoneId={doc.milestoneId} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
                                 <Popconfirm onConfirm={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} title="Are you sure?">
                                     <IsPrivateTag isPrivate={doc.isPrivate} />
                                 </Popconfirm>

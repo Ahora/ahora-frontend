@@ -21,5 +21,11 @@ export const english: LocalInterface = {
     public: "Public",
     newLabelText: "New Label",
     selectLabels: "Select labels",
-    deleteDocType: "Delete"
+    deleteDocType: "Delete",
+    deleteComment: "Delete",
+    editComment: "Edit",
+    quoteComment: "Quote",
+    pinComment: "Pin",
+    unpinComment: "unpin",
+    updateCommentButtonText: "update"
 }

@@ -21,5 +21,11 @@ export const hebrew: LocalInterface = {
     public: "ציבורי",
     newLabelText: "הוסף תווית",
     selectLabels: "בחר תוויות",
-    deleteDocType: "מחק"
+    deleteDocType: "מחק",
+    deleteComment: "מחק",
+    editComment: "ערוך",
+    quoteComment: "צטט",
+    pinComment: "נעץ",
+    unpinComment: "בטל נעיצה",
+    updateCommentButtonText: "עדכן"
 }

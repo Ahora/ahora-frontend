@@ -1,31 +1,25 @@
 import * as React from 'react';
 import ViewEdit from 'app/components/ViewEdit';
-import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
-import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import AhoraDocMilestoneField from 'app/components/Forms/Fields/AhoraDocMilestoneField';
-import { Tag } from 'antd';
+import MilestoneTag from 'app/components/Basics/MilestoneTag';
 
-interface State {
-    fieldData: AhoraFormField;
-}
 interface Props {
-    milestone?: OrganizationMilestone;
+    milestoneId?: number;
     canEdit?: boolean;
     onUpdate: (value: number) => Promise<void>;
 }
 
-class DocMilestoneViewEdit extends React.Component<Props, State> {
+class DocMilestoneViewEdit extends React.Component<Props> {
     constructor(props: Props) {
         super(props);
     }
 
     render() {
-        const milestone = this.props.milestone;
         return (
             <ViewEdit canEdit={this.props.canEdit} onUpdate={this.props.onUpdate.bind(this)}
-                viewComponent={() => { return <Tag>{milestone ? milestone.title : "No milestone"}</Tag> }}
+                viewComponent={() => { return <MilestoneTag milestoneId={this.props.milestoneId}></MilestoneTag> }}
                 editComponent={(props: any) =>
-                    <AhoraDocMilestoneField autoFocus={true} onChange={props.onUpdate} value={this.props.milestone ? this.props.milestone.id : undefined} />
+                    <AhoraDocMilestoneField autoFocus={true} onChange={props.onUpdate} value={this.props.milestoneId} />
                 } />
         );
     }

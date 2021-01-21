@@ -38,7 +38,7 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
         }
 
         this.state = {
-            form: { ...this.props.data } || {},
+            form: { ...this.props.data },
             isSubmitting: false,
             fields: fieldsFromChildren || (this.props.fields ? this.props.fields.map((field) => this.convertField(field)) : [])
         };
@@ -58,7 +58,7 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
         this.setState({ isSubmitting: true, error: undefined });
         try {
             await this.props.onSumbit(this.state.form);
-            this.setState({ isSubmitting: false });
+            this.setState({ isSubmitting: false, form: this.props.data ? { ...this.props.data } : {} });
 
         } catch (error) {
             this.setState({ isSubmitting: false, error });
@@ -94,12 +94,10 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
     render() {
         return (
             <Form onValuesChange={this.onValuesChange.bind(this)} layout={this.props.layout || "vertical"} initialValues={this.props.data} onFinish={this.onSubmit.bind(this)}>
-                {this.state.fields.map((field) => {
-                    const Element = field.instance;
-                    return <Form.Item key={field.fieldName} name={field.fieldName} rules={[{ required: field.required, message: `${field.displayName} is required` }]} label={field.displayName}>
-                        <Element value={this.state.form && this.state.form[field.fieldName]} fieldData={field} formData={this.state.form}></Element>
-                    </Form.Item>
-                })}
+                {this.state.fields.map((field) => <Form.Item key={field.fieldName} name={field.fieldName} rules={[{ required: field.required, message: `${field.displayName} is required` }]} label={field.displayName}>
+                    <field.instance value={this.state.form[field.fieldName]} fieldData={field} formData={this.state.form}></field.instance>
+                </Form.Item>
+                )}
                 {this.state.error && <div>{this.props.showError ? this.props.showError(this.state.error) : <>Unexpected Error</>}</div>}
                 {
                     this.props.hideButtons !== true &&

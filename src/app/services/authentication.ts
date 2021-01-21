@@ -39,7 +39,7 @@ export const canAddDoc = (user: User | undefined | null): boolean => {
 }
 
 export const canEditDoc = (user: User | undefined | null, doc: Doc): boolean => {
-    return !!user && (!!doc.sourceId)
+    return !!user && (!!!doc.sourceId)
 }
 
 export const canEditDashboard = (user: User | undefined | null, dashboard: Dashboard): boolean => {

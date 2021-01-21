@@ -19,6 +19,7 @@ import StoreOrganizationShortcut from 'app/store/shortcuts/StoreOrganizationShor
 import { addDocToShortcut, loadShortcutDocs, updateShortcutsearchCriteria } from 'app/store/shortcuts/actions';
 import { deleteDocInState, setDocInState } from 'app/store/docs/actions';
 import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
+import { FormattedMessage } from 'react-intl';
 
 require('./styles.scss')
 
@@ -155,7 +156,8 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
             <CanAddDoc>
                 <Link className="add-doc-button" to={`/organizations/${this.props.match.params.login}/${this.props.match.params.section}/add`}>
                     <Button className="add-button" block type="primary">
-                        <PlusOutlined />Add Discussion</Button>
+                        <PlusOutlined />
+                        <FormattedMessage id="addDiscussionButtonText" /></Button>
                 </Link>
             </CanAddDoc>
         );

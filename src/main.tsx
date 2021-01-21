@@ -6,18 +6,19 @@ import { Provider } from 'react-redux';
 import { App } from './app';
 import { ConfigProvider } from 'antd';
 
-
 // loading general styles and fonts
 import './general-styles.scss';
 import { store, history } from 'app/store';
+import localMap from './Internationalization';
 
+const tolat: any = localMap.he;
 
 // prepare store
 ReactDOM.render(
   <Provider store={store}>
 
     <ConfigProvider direction="ltr">
-      <IntlProvider locale="en">
+      <IntlProvider messages={tolat} locale="he" defaultLocale="en">
         <ConnectedRouter history={history} store={store}>
           <App />
         </ConnectedRouter>

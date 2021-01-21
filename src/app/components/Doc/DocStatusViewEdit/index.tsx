@@ -1,15 +1,14 @@
 import * as React from 'react';
 import ViewEdit from 'app/components/ViewEdit';
 import { AhoraFormField } from 'app/components/Forms/AhoraForm/data';
-import { Status } from 'app/services/statuses';
 import AhoraDocStatusField from 'app/components/Forms/Fields/AhoraDocStatusField';
-import { Tag } from 'antd';
+import DocStatusTag from '../DocStatusTag';
 
 interface State {
     fieldData: AhoraFormField;
 }
 interface Props {
-    status?: Status;
+    statusId: number;
     onUpdate: (value: number) => Promise<void>;
     canEdit?: boolean;
 }
@@ -20,12 +19,12 @@ class DocStatusViewEdit extends React.Component<Props, State> {
     }
 
     render() {
-        const status = this.props.status;
         return (
             <ViewEdit canEdit={this.props.canEdit} onUpdate={this.props.onUpdate.bind(this)}
-                viewComponent={() => <Tag color="processing">{status ? status.name : "Empty"}</Tag>}
+                viewComponent={() =>
+                    <DocStatusTag statusId={this.props.statusId}></DocStatusTag>}
                 editComponent={(props: any) =>
-                    <AhoraDocStatusField autoFocus={true} onChange={props.onUpdate} value={this.props.status ? this.props.status.id : undefined} />
+                    <AhoraDocStatusField autoFocus={true} onChange={props.onUpdate} value={this.props.statusId} />
                 } />
         );
     }

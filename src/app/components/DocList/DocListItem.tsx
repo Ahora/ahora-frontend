@@ -13,6 +13,8 @@ import './style.scss';
 import UsersAvatarList from '../users/UsersAvatarList';
 import AhoraSpinner from '../Forms/Basics/Spinner';
 import AhoraDate from '../Basics/AhoraTime';
+import DocStatusTag from '../Doc/DocStatusTag';
+import DocTypeTag from '../Doc/DocTypeTag';
 
 interface injectedParams {
     statuses: Map<number, Status>;
@@ -46,8 +48,6 @@ class DocListItem extends React.Component<AllProps> {
     render() {
         const doc = this.props.doc;
         if (doc) {
-            const currentStatus: Status | undefined = this.props.statuses.get(doc.statusId);
-            const currentDocType: DocType | undefined = this.props.docTypes.get(doc.docTypeId);
             const isViewed: boolean = this.props.unReadComments || (doc.lastView && new Date(doc.lastView.updatedAt) > new Date(doc.updatedAt)) ? true : false;
             return (
                 <List.Item onClick={this.onClick.bind(this)} className={`${this.props.isActive ? "active" : ""} doc-list-item`}>
@@ -58,8 +58,8 @@ class DocListItem extends React.Component<AllProps> {
                             </div>
                             <Space className="tags" direction="vertical">
                                 <div>
-                                    <Tag>{(currentDocType) ? currentDocType.name : ""}</Tag>
-                                    <Tag>{(currentStatus) ? currentStatus.name : ""}</Tag>
+                                    <DocTypeTag docTypeId={doc.docTypeId}></DocTypeTag>
+                                    <DocStatusTag statusId={doc.statusId}></DocStatusTag>
                                 </div>
                                 <div>
                                     {this.props.unReadComments! > 0 && <Tag color="#f50">{this.props.unReadComments}</Tag>}

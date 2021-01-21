@@ -2,19 +2,19 @@ import * as React from 'react';
 import { AhoraFormField } from '../../AhoraForm/data';
 import { Input } from 'antd';
 
-interface GroupBySelectState {
+interface State {
     value: string;
 }
 
-interface GroupBySelectStateProps {
+interface Props {
     value?: string;
     fieldData: AhoraFormField;
     onChange: (value: string) => void;
 }
 
 
-class AhoraTextField extends React.Component<GroupBySelectStateProps, GroupBySelectState> {
-    constructor(props: GroupBySelectStateProps) {
+class AhoraTextField extends React.Component<Props, State> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -22,6 +22,11 @@ class AhoraTextField extends React.Component<GroupBySelectStateProps, GroupBySel
         };
     }
 
+    componentDidUpdate(prevProps: Props) {
+        if (this.props.value && this.props.value !== this.state.value) {
+            this.setState({ value: this.props.value })
+        }
+    }
 
     handleChange(event: any) {
         this.setState({ value: event!.target.value });

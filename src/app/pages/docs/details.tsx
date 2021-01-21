@@ -195,15 +195,10 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         let canEdit: boolean = false;
         let canAddComment: boolean = !!this.props.currentUser;
         let docType: DocType | undefined;
-        let currentStatus: Status | undefined;
         let currentMilestone: OrganizationMilestone | undefined;
         if (doc) {
             canEdit = canEditDoc(this.props.currentUser, doc);
             docType = this.props.docTypes.get(doc.docTypeId);
-
-            if (doc.statusId) {
-                currentStatus = this.props.statusesMap.get(doc.statusId);
-            }
 
             if (doc.milestoneId) {
                 currentMilestone = this.props.milestonesMap.get(doc.milestoneId);
@@ -217,7 +212,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                     <AhoraFlexPanel onScrollToTop={this.onScrollToTop.bind(this)} onScrollToBottom={this.onScrollToBottom.bind(this)} top={
                         <div className="doc-title">
                             <Space className="extra">
-                                <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
+                                <DocStatusViewEdit canEdit={canEdit} statusId={doc.statusId} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
                                 <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
                                 <Popconfirm onConfirm={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} title="Are you sure?">
                                     <Tag color="#108ee9">{doc.isPrivate ? "Private" : "Public"}</Tag>

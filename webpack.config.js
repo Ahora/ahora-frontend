@@ -1,16 +1,12 @@
 var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const WebpackRTLPlugin = require('webpack-rtl-plugin')
-
 
 // variables
 var isProduction = process.argv.indexOf('-p') >= 0 || process.env.NODE_ENV === 'production';
 var sourcePath = path.join(__dirname, './src');
 var outPath = path.join(__dirname, './dist');
 var assetsFolder = path.join(outPath, 'assets');
-var fontsFolder = path.join(assetsFolder, 'fonts');
 if (!fs.existsSync(outPath)) {
   fs.mkdirSync(outPath);
 }
@@ -21,17 +17,20 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
+const WebpackRTLPlugin = require('webpack-rtl-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 
 module.exports = {
   context: sourcePath,
   entry: {
+    vendor: './vendor.ts',
     app: './main.tsx'
   },
   output: {
     path: outPath,
-    filename: 'bundle.js',
-    chunkFilename: '[chunkhash].js',
+    filename: '[name].[hash].bundle.js',
+    chunkFilename: '[name].[hash].js',
     publicPath: '/'
   },
   target: 'web',
@@ -41,27 +40,7 @@ module.exports = {
     // (jsnext:main directs not usually distributable es6 format, but es6 sources)
     mainFields: ['module', 'browser', 'main'],
     alias: {
-      app: path.resolve(__dirname, 'src/app/'),
-      "./images/layers.png$": path.resolve(
-        __dirname,
-        "./node_modules/leaflet/dist/images/layers.png"
-      ),
-      "./images/layers-2x.png$": path.resolve(
-        __dirname,
-        "./node_modules/leaflet/dist/images/layers-2x.png"
-      ),
-      "./images/marker-icon.png$": path.resolve(
-        __dirname,
-        "./node_modules/leaflet/dist/images/marker-icon.png"
-      ),
-      "./images/marker-icon-2x.png$": path.resolve(
-        __dirname,
-        "./node_modules/leaflet/dist/images/marker-icon-2x.png"
-      ),
-      "./images/marker-shadow.png$": path.resolve(
-        __dirname,
-        "./node_modules/leaflet/dist/images/marker-shadow.png"
-      )
+      app: path.resolve(__dirname, 'src/app/')
     }
   },
   module: {
@@ -77,85 +56,13 @@ module.exports = {
           'ts-loader'
         ].filter(Boolean)
       },
-      {
-        test: /\leaflet.css$/,
-        use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" }
-        ]
-      },
       // css
       {
         test: /\.css$/,
-        //exclude: [/\leaflet.css$/, path.resolve(__dirname, "./src/app/containers/Account/OrganizationApp/style.css")],
-        use: [
-          isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
-          {
-            loader: 'css-loader',
-            query: {
-              sourceMap: !isProduction,
-            }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              ident: 'postcss',
-              plugins: [
-                require('postcss-import')({ addDependencyTo: webpack }),
-                require('postcss-url')(),
-                require('postcss-preset-env')({
-                  /* use stage 2 features (defaults) */
-                  stage: 2,
-                }),
-                require('postcss-reporter')(),
-                require('postcss-browser-reporter')({
-                  disabled: isProduction
-                })
-              ]
-            }
-          }
-        ]
+        use: [MiniCssExtractPlugin.loader]
       },
       {
         test: /\.scss$/,
-        exclude: path.resolve(__dirname, "./src/general-styles.scss"),
-        use: [
-          isProduction ? MiniCssExtractPlugin.loader : "style-loader", // creates style nodes from JS strings
-          {
-            loader: 'css-loader',
-            query: {
-              sourceMap: !isProduction,
-            }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              ident: 'postcss',
-              plugins: [
-                require('postcss-import')({ addDependencyTo: webpack }),
-                require('postcss-url')(),
-                require('postcss-preset-env')({
-                  /* use stage 2 features (defaults) */
-                  stage: 2,
-                }),
-                require('postcss-reporter')(),
-                require('postcss-browser-reporter')({
-                  disabled: isProduction
-                })
-              ]
-            }
-          },
-          {
-            loader: 'sass-loader',
-            query: {
-              sourceMap: !isProduction,
-            }
-          }
-        ]
-      },
-      {
-        test: /\.scss$/,
-        include: path.resolve(__dirname, "./src/general-styles.scss"),
         use: [
           isProduction ? MiniCssExtractPlugin.loader : "style-loader", // creates style nodes from JS strings
           {

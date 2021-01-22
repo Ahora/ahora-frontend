@@ -10,7 +10,7 @@ interface InjectableProps {
 }
 
 interface UserDetailsProps extends InjectableProps, DispatchProps {
-    userId: number;
+    userId?: number;
     hideDisplayName?: boolean;
 }
 
@@ -34,7 +34,7 @@ class UserDetails extends React.Component<UserDetailsProps> {
 
 
 const mapStateToProps = (state: ApplicationState, props: UserDetailsProps): InjectableProps => {
-    const user = props.user || state.users.map.get(props.userId);
+    const user = props.user || (props.userId !== undefined ? state.users.map.get(props.userId) : undefined);
     return { user };
 };
 

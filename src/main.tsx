@@ -5,11 +5,10 @@ import { ConnectedRouter } from 'react-router-redux';
 import { Provider } from 'react-redux';
 import { App } from './app';
 import { ConfigProvider } from 'antd';
-
-// loading general styles and fonts
-import './general-styles.scss';
 import { store, history } from 'app/store';
 import localMap from './Internationalization';
+
+import './general-styles.scss';
 
 const tolat: any = localMap.he;
 

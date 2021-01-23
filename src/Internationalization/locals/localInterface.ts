@@ -69,4 +69,8 @@ export default interface LocalInterface extends Record<string, string> {
     commentsPinnedComments: string;
     commentsCommentsText: string;
 
+    closedAtDescriptor: string;
+    lastViewedByMeDescriptor: string;
+    assigneeMeDescriptor: string;
+
 }

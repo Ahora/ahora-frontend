@@ -28,13 +28,16 @@ function AppComponent(props: AppProps) {
   );
 }
 
-const mapStateToProps = (state: ApplicationState): AppProps | void => {
+const mapStateToProps = (state: ApplicationState, ownProps: AppProps): AppProps => {
   if (state.organizations.currentOrganization) {
     return {
       messages: (localMap as any)[state.organizations.currentOrganization.locale || "en"],
-      locale: state.organizations.currentOrganization.locale,
+      locale: state.organizations.currentOrganization.locale || "en",
       isRTL: state.organizations.currentOrganization.isRTL
     }
+  }
+  else {
+    return ownProps;
   }
 };
 

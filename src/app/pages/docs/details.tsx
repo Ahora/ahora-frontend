@@ -220,15 +220,12 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                     <UserAvatarList onUserDeleted={this.onUserDeletedFromWatchers.bind(this)} onUserSelected={this.onUserAddedToWatchers.bind(this)} canEdit={canEdit} userIds={doc.watchers} />
                                 </Space>
                                 <Descriptions>
-                                    <Descriptions.Item label="Assignee">
+                                    <Descriptions.Item label={<FormattedMessage id="assigneeMeDescriptor" />}>
                                         <SelectUser editMode={false} currentUserId={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
                                     </Descriptions.Item>
                                     <Descriptions.Item label={<FormattedMessage id="docTypeDescriptor" />}><DocTypeText docTypeId={doc.docTypeId}></DocTypeText></Descriptions.Item>
-                                    {doc.closedAt && <Descriptions.Item label="Closed At"><AhoraDate date={doc.closedAt}></AhoraDate></Descriptions.Item>}
-                                    {doc.lastView && <Descriptions.Item label="Last viewd by me">
-                                        <AhoraDate date={doc.lastView.updatedAt}></AhoraDate>
-                                    </Descriptions.Item>
-                                    }
+                                    {doc.closedAt && <Descriptions.Item label={<FormattedMessage id="closedAtDescriptor" />}><AhoraDate date={doc.closedAt}></AhoraDate></Descriptions.Item>}
+                                    {doc.lastView && <Descriptions.Item label={<FormattedMessage id="lastViewedByMeDescriptor" />}><AhoraDate date={doc.lastView.updatedAt}></AhoraDate></Descriptions.Item>}
                                     {doc.source &&
                                         <>
                                             <Descriptions.Item label="Github Issue Id">

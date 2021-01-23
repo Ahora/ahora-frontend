@@ -56,5 +56,8 @@ export const english: LocalInterface = {
     ahoraFormSubmitText: "Save",
     commentsNewLabel: "New comments",
     commentsPinnedComments: "Pinned Comments",
-    commentsCommentsText: "Comments"
+    commentsCommentsText: "Comments",
+    closedAtDescriptor: "Closed At",
+    lastViewedByMeDescriptor: "Last viewed By Me",
+    assigneeMeDescriptor: "Assignee"
 }

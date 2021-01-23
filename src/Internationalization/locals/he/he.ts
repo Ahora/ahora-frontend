@@ -58,5 +58,8 @@ export const hebrew: LocalInterface = {
 
     commentsNewLabel: "תגובות חדשות",
     commentsPinnedComments: "תגובות נעוצות",
-    commentsCommentsText: "תגובות"
+    commentsCommentsText: "תגובות",
+    closedAtDescriptor: "נסגר בתאריך",
+    lastViewedByMeDescriptor: "נצפה לאחרונה",
+    assigneeMeDescriptor: "נאמן"
 }

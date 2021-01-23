@@ -56,6 +56,14 @@ class SelectUser extends React.Component<SelectUserProps, State> {
         });
     }
 
+    onBlur() {
+        this.setState({
+            editMode: this.props.editMode || false,
+            query: '',
+            currentUserId: this.props.currentUserId
+        });
+    }
+
     onChange(user: any) {
         this.props.onSelect(user.label.props.user);
         this.setState({
@@ -74,9 +82,10 @@ class SelectUser extends React.Component<SelectUserProps, State> {
                     showSearch={true}
                     autoClearSearchValue={true}
                     labelInValue
+                    onBlur={this.onBlur.bind(this)}
                     loading={this.state.isLoading}
                     style={{ minWidth: "300px" }}
-                    placeholder={<FormattedMessage id="selectUsers" />}
+                    placeholder={<FormattedMessage id="selectUser" />}
                     notFoundContent={this.state.isLoading ? <AhoraSpinner /> : null}
                     filterOption={false}
                     onSearch={this._handleSearch}

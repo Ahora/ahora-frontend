@@ -29,6 +29,7 @@ export const english: LocalInterface = {
     unpinComment: "unpin",
     updateCommentButtonText: "update",
     markdownPlaceHolder: "Message",
+    selectUser: "Select user",
     selectUsers: "Select users",
     noDocSelectText: "Start a discussion or just select your relevant doc!",
     noDocSelectedButtonText: "Start a new discussion",

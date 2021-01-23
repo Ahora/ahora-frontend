@@ -35,6 +35,7 @@ export default interface LocalInterface extends Record<string, string> {
     updateCommentButtonText: string;
 
     selectUsers: string;
+    selectUser: string;
     noDocSelectText: string;
     noDocSelectedButtonText: string;
 

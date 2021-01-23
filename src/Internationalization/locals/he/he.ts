@@ -29,6 +29,7 @@ export const hebrew: LocalInterface = {
     unpinComment: "בטל נעיצה",
     updateCommentButtonText: "עדכן",
     markdownPlaceHolder: "הודעה",
+    selectUser: "בחר משתמש",
     selectUsers: "בחר משתמשים",
     noDocSelectText: "התחל דיון או בחר פריט מהרשימה",
     noDocSelectedButtonText: "הוסף דיון חדש",

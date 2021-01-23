@@ -221,7 +221,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 </Space>
                                 <Descriptions>
                                     <Descriptions.Item label={<FormattedMessage id="assigneeMeDescriptor" />}>
-                                        <SelectUser editMode={false} currentUserId={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
+                                        <SelectUser autoFocus={true} editMode={false} currentUserId={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
                                     </Descriptions.Item>
                                     <Descriptions.Item label={<FormattedMessage id="docTypeDescriptor" />}><DocTypeText docTypeId={doc.docTypeId}></DocTypeText></Descriptions.Item>
                                     {doc.closedAt && <Descriptions.Item label={<FormattedMessage id="closedAtDescriptor" />}><AhoraDate date={doc.closedAt}></AhoraDate></Descriptions.Item>}

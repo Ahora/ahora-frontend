@@ -46,7 +46,7 @@ export default interface LocalInterface extends Record<string, string> {
     menuDocsText: string;
     menuTeamsText: string;
     menuMilestonesText: string;
-    MenuSettingsText: string;
+    menuSettingsText: string;
 
     docsNoResults: string;
 

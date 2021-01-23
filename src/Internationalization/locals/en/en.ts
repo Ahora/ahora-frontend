@@ -40,7 +40,7 @@ export const english: LocalInterface = {
     menuDocsText: "Search",
     menuTeamsText: "Teams",
     menuMilestonesText: "Milestones",
-    MenuSettingsText: "Settings",
+    menuSettingsText: "Settings",
     docsNoResults: "No results, please try another search criteria",
     login: "login",
     logout: "logout",

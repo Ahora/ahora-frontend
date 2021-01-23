@@ -95,7 +95,7 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
     render() {
         return (
             <Form onValuesChange={this.onValuesChange.bind(this)} layout={this.props.layout || "vertical"} initialValues={this.props.data} onFinish={this.onSubmit.bind(this)}>
-                {this.state.fields.map((field) => <Form.Item key={field.fieldName} name={field.fieldName} rules={[{ required: field.required, message: `${field.displayName} is required` }]} label={field.displayName}>
+                {this.state.fields.map((field) => <Form.Item key={field.fieldName} name={field.fieldName} rules={[{ required: field.required, message: `required` }]} label={field.displayName}>
                     <field.instance value={this.state.form[field.fieldName]} fieldData={field} formData={this.state.form}></field.instance>
                 </Form.Item>
                 )}
@@ -106,7 +106,7 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
                         <Button disabled={this.state.isSubmitting} htmlType="submit" type="primary">
                             {
                                 this.state.isSubmitting ?
-                                    <AhoraSpinner /> : <>{this.props.submitButtonText || "Save"}</>
+                                    <AhoraSpinner /> : <>{this.props.submitButtonText || <FormattedMessage id="ahoraFormSubmitText" />}</>
                             }
                         </Button>
                         {this.props.onCancel && <Button danger onClick={this.cancel.bind(this)}><FormattedMessage id="cancelButtonText" /></Button>}

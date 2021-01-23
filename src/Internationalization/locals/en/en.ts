@@ -43,5 +43,15 @@ export const english: LocalInterface = {
     MenuSettingsText: "Settings",
     docsNoResults: "No results, please try another search criteria",
     login: "login",
-    logout: "logout"
+    logout: "logout",
+    shortcutTableTitle: "Title",
+    shortcutAddButtonText: "Add Shortcut",
+    shortcutTableSearchCriteria: "Search Criteria",
+    shortcutTableActions: "Actions",
+    shortcutTableDeleteButtonText: "Delete",
+    shortcutTableClearNotificationsText: "Clear Notifications",
+    shortcutAddTitle: "Title",
+    shortcutAddSearchCriteria: "Search Criteria",
+    shortcutAddStar: "star",
+    ahoraFormSubmitText: "Save"
 }

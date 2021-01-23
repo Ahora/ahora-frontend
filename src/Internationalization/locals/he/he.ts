@@ -43,5 +43,16 @@ export const hebrew: LocalInterface = {
     MenuSettingsText: "הגדרות",
     docsNoResults: "לא נמצאו תוצאות, אנא שנה את תנאי החיפוש",
     login: "התחבר",
-    logout: "התנתק"
+    logout: "התנתק",
+    shortcutTableTitle: "כותרת",
+    shortcutAddButtonText: "הוסף קיצור דרך",
+    shortcutTableSearchCriteria: "מאפייני חיפוש",
+    shortcutTableActions: "פעולות",
+    shortcutTableDeleteButtonText: "מחק",
+    shortcutTableClearNotificationsText: "נקה חויים",
+
+    shortcutAddTitle: "כותרת",
+    shortcutAddSearchCriteria: "מאפייני חיפוש",
+    shortcutAddStar: "נעוץ",
+    ahoraFormSubmitText: "שמור"
 }

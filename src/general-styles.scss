@@ -34,6 +34,14 @@ Header * {
     left: -4px;
 }
 
+.ant-layout-rtl {
+    .ant-layout-sider-zero-width-trigger {
+        left: inherit;
+        background: transparent;
+        right: -4px;
+    }
+}
+
 .wrap-content {
     padding: 8px;
 }

@@ -7,6 +7,7 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
 import { RouteComponentProps } from 'react-router';
+import { FormattedMessage } from 'react-intl';
 
 interface AddShortcutsPageState {
     form?: any;
@@ -48,9 +49,9 @@ class AddShortcutsPage extends React.Component<AddShortcutsPageProps, AddShortcu
         return (
             <div className="wrap-content">
                 <AhoraForm onCancel={this.cancelAdd.bind(this)} data={this.state.form} onSumbit={this.onSubmit.bind(this)}>
-                    <AhoraField required={true} fieldName="title" displayName="Title" fieldType="text"></AhoraField>
-                    <AhoraField required={true} fieldName="searchCriteria" displayName="Search Criteria" fieldType="searchcriteria"></AhoraField>
-                    <AhoraField fieldName="star" displayName="Star" fieldType="boolean"></AhoraField>
+                    <AhoraField required={true} fieldName="title" displayName={<FormattedMessage id="shortcutAddTitle" />} fieldType="text"></AhoraField>
+                    <AhoraField required={true} fieldName="searchCriteria" displayName={<FormattedMessage id="shortcutAddSearchCriteria" />} fieldType="searchcriteria"></AhoraField>
+                    <AhoraField fieldName="star" displayName={<FormattedMessage id="shortcutAddStar" />} fieldType="boolean"></AhoraField>
                 </AhoraForm>
             </div>
 

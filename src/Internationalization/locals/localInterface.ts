@@ -52,4 +52,17 @@ export default interface LocalInterface extends Record<string, string> {
 
     login: string;
     logout: string;
+
+    shortcutTableTitle: string;
+    shortcutAddButtonText: string;
+    shortcutTableSearchCriteria: string;
+    shortcutTableActions: string;
+    shortcutTableDeleteButtonText: string;
+    shortcutTableClearNotificationsText: string;
+
+    shortcutAddTitle: string;
+    shortcutAddSearchCriteria: string;
+    shortcutAddStar: string;
+    ahoraFormSubmitText: string;
+
 }

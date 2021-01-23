@@ -40,5 +40,8 @@ export const hebrew: LocalInterface = {
     menuDocsText: "חיפוש",
     menuTeamsText: "צוותים",
     menuMilestonesText: "ציוני דרך",
-    MenuSettingsText: "הגדרות"
+    MenuSettingsText: "הגדרות",
+    docsNoResults: "לא נמצאו תוצאות, אנא שנה את תנאי החיפוש",
+    login: "התחבר",
+    logout: "התנתק"
 }

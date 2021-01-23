@@ -48,4 +48,8 @@ export default interface LocalInterface extends Record<string, string> {
     menuMilestonesText: string;
     MenuSettingsText: string;
 
+    docsNoResults: string;
+
+    login: string;
+    logout: string;
 }

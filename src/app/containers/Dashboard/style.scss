@@ -1,0 +1,21 @@
+.ant-layout-header {
+    .rightside {
+        float: right;
+    }
+
+    .logocontainer {
+        float: left;
+    }
+}
+
+.ant-layout-rtl {
+    .ant-layout-header {
+        .rightside {
+            float: left;
+        }
+
+        .logocontainer {
+            float: right;
+        }
+    }
+}

@@ -146,7 +146,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     renderDocList() {
         return (<div className="doc-list-wrapper">
             <DocList onPageChanged={this.pageChanged.bind(this)} pageSize={30} totalDocs={this.props.totalDocs} page={this.props.page} section={this.props.match.params.section} docs={this.props.docs} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>
-                <div className="no-docs">No Results</div>
+                <div className="no-docs"><FormattedMessage id="docsNoResults" /></div>
             </DocList>
         </div>);
     }

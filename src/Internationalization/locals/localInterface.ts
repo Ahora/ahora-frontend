@@ -65,4 +65,8 @@ export default interface LocalInterface extends Record<string, string> {
     shortcutAddStar: string;
     ahoraFormSubmitText: string;
 
+    commentsNewLabel: string;
+    commentsPinnedComments: string;
+    commentsCommentsText: string;
+
 }

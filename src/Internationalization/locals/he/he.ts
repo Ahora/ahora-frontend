@@ -54,5 +54,9 @@ export const hebrew: LocalInterface = {
     shortcutAddTitle: "כותרת",
     shortcutAddSearchCriteria: "מאפייני חיפוש",
     shortcutAddStar: "נעוץ",
-    ahoraFormSubmitText: "שמור"
+    ahoraFormSubmitText: "שמור",
+
+    commentsNewLabel: "תגובות חדשות",
+    commentsPinnedComments: "תגובות נעוצות",
+    commentsCommentsText: "תגובות"
 }

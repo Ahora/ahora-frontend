@@ -53,5 +53,8 @@ export const english: LocalInterface = {
     shortcutAddTitle: "Title",
     shortcutAddSearchCriteria: "Search Criteria",
     shortcutAddStar: "star",
-    ahoraFormSubmitText: "Save"
+    ahoraFormSubmitText: "Save",
+    commentsNewLabel: "New comments",
+    commentsPinnedComments: "Pinned Comments",
+    commentsCommentsText: "Comments"
 }

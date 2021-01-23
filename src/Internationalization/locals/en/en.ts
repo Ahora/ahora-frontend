@@ -31,5 +31,14 @@ export const english: LocalInterface = {
     markdownPlaceHolder: "Message",
     selectUsers: "Select users",
     noDocSelectText: "Start a discussion or just select your relevant doc!",
-    noDocSelectedButtonText: "Start a new discussion"
+    noDocSelectedButtonText: "Start a new discussion",
+    menuInboxText: "Inbox",
+    menuPrivateText: "Private",
+    menuShortcutsText: "Shortcuts",
+    menuShortcutManageText: "Manage",
+    menuDashboardsText: "Dashboards",
+    menuDocsText: "Search",
+    menuTeamsText: "Teams",
+    menuMilestonesText: "Milestones",
+    MenuSettingsText: "Settings"
 }

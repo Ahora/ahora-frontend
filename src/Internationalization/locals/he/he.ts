@@ -31,5 +31,14 @@ export const hebrew: LocalInterface = {
     markdownPlaceHolder: "הודעה",
     selectUsers: "בחר משתמשים",
     noDocSelectText: "התחל דיון או בחר פריט מהרשימה",
-    noDocSelectedButtonText: "הוסף דיון חדש"
+    noDocSelectedButtonText: "הוסף דיון חדש",
+    menuInboxText: "תיבת דואר",
+    menuPrivateText: "פרטיות",
+    menuShortcutsText: "קיצור דרך",
+    menuShortcutManageText: "נהל",
+    menuDashboardsText: "דוחות",
+    menuDocsText: "חיפוש",
+    menuTeamsText: "צוותים",
+    menuMilestonesText: "ציוני דרך",
+    MenuSettingsText: "הגדרות"
 }

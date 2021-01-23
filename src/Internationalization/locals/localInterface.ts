@@ -37,4 +37,15 @@ export default interface LocalInterface extends Record<string, string> {
     selectUsers: string;
     noDocSelectText: string;
     noDocSelectedButtonText: string;
+
+    menuInboxText: string;
+    menuPrivateText: string;
+    menuShortcutsText: string;
+    menuShortcutManageText: string;
+    menuDashboardsText: string;
+    menuDocsText: string;
+    menuTeamsText: string;
+    menuMilestonesText: string;
+    MenuSettingsText: string;
+
 }

@@ -1,3 +1,5 @@
+import { string } from "prop-types"
+
 export default interface LocalInterface extends Record<string, string> {
     addDiscussionButtonText: string;
     status1: string;
@@ -72,5 +74,10 @@ export default interface LocalInterface extends Record<string, string> {
     closedAtDescriptor: string;
     lastViewedByMeDescriptor: string;
     assigneeMeDescriptor: string;
+
+    statusCommentContent: string;
+    assigneeCommentContent: string;
+    isPrivateCommentprivate: string;
+    isPrivateCommentpublic: string;
 
 }

@@ -1,6 +1,15 @@
 
 import AhoraRestCollector from "../sdk/AhoraRestCollector";
 
+export enum CommentType {
+    comment = 0,
+    statusChanged = 1,
+    isPrivateChanged = 2,
+    labelAdded = 3,
+    labelRemoved = 4,
+    assigneeChanged = 5
+}
+
 export interface Comment {
     id: number;
     docId: number;
@@ -11,6 +20,9 @@ export interface Comment {
     authorUserId: number;
     parentId?: number;
     updatedAt: Date;
+    newValue?: number;
+    oldValue?: number;
+    commentType?: CommentType;
 }
 
 

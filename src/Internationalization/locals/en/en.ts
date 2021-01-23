@@ -59,5 +59,11 @@ export const english: LocalInterface = {
     commentsCommentsText: "Comments",
     closedAtDescriptor: "Closed At",
     lastViewedByMeDescriptor: "Last viewed By Me",
-    assigneeMeDescriptor: "Assignee"
+    assigneeMeDescriptor: "Assignee",
+
+    statusCommentContent: "{author} changed status from: {prevStatus} to: {status}",
+    assigneeCommentContent: "{author} assigned from: {oldUser} to: {user}",
+
+    isPrivateCommentprivate: "{author} changed doc to private",
+    isPrivateCommentpublic: "{author} changed doc to public"
 }

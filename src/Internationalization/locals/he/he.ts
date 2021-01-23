@@ -61,5 +61,11 @@ export const hebrew: LocalInterface = {
     commentsCommentsText: "תגובות",
     closedAtDescriptor: "נסגר בתאריך",
     lastViewedByMeDescriptor: "נצפה לאחרונה",
-    assigneeMeDescriptor: "נאמן"
+    assigneeMeDescriptor: "נאמן",
+
+    statusCommentContent: "{author} שינה סטאטוס מ{status} ל{prevStatus}",
+    assigneeCommentContent: "{author} שייך מ{oldUser} ל{user}",
+
+    isPrivateCommentprivate: "{author} שינה לפרטי",
+    isPrivateCommentpublic: "{author} שינה לציבורי"
 }

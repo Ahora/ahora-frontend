@@ -16,7 +16,7 @@ const tolat: any = localMap.he;
 ReactDOM.render(
   <Provider store={store}>
 
-    <ConfigProvider direction="ltr">
+    <ConfigProvider direction="rtl">
       <IntlProvider messages={tolat} locale="he" defaultLocale="en">
         <ConnectedRouter history={history} store={store}>
           <App />

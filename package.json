@@ -120,7 +120,6 @@
     "webpack": "^4.41.2",
     "webpack-cleanup-plugin": "^0.5.1",
     "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.9.0",
-    "webpack-rtl-plugin": "^2.0.0"
+    "webpack-dev-server": "^3.9.0"
   }
 }

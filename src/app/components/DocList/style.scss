@@ -35,3 +35,22 @@
         }
     }
 }
+
+.ant-layout-rtl {
+    .doc-list {
+        .doc-list-item {
+            .extra {
+                padding-right: 10px;
+                padding-left: auto;
+                float: left;
+                text-align: left;
+
+                .tags {
+                    text-align: left;
+                    margin-right: auto;
+                    margin-left: -8px;
+                }
+            }
+        }
+    }
+}

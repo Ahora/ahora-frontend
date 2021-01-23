@@ -6,18 +6,16 @@ var fs = require('fs');
 var isProduction = process.argv.indexOf('-p') >= 0 || process.env.NODE_ENV === 'production';
 var sourcePath = path.join(__dirname, './src');
 var outPath = path.join(__dirname, './dist');
-var assetsFolder = path.join(outPath, 'assets');
 if (!fs.existsSync(outPath)) {
   fs.mkdirSync(outPath);
 }
 
-const CircularDependencyPlugin = require('circular-dependency-plugin')
 // plugins
+const CircularDependencyPlugin = require('circular-dependency-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-const WebpackRTLPlugin = require('webpack-rtl-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 
@@ -101,28 +99,12 @@ module.exports = {
       { test: /\.html$/, use: 'html-loader' },
       // { test: /\.(a?svg)$/, use: 'url-loader?limit=10000' },
       { test: /\.(jpe?g|gif|bmp|mp3|mp4|ogg|wav|png|svg)$/, use: 'file-loader' },
-      {
-        test: /\.(ttf|eot|woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-        use: {
-          loader: "url-loader"
-        }
-      }
+      { test: /\.(ttf|eot|woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, use: { loader: "url-loader" } }
     ]
   },
   optimization: {
     splitChunks: {
       name: true,
-      cacheGroups: {
-        commons: {
-          chunks: 'initial',
-          minChunks: 2
-        },
-        vendors: {
-          test: /[\\/]node_modules[\\/]/,
-          chunks: 'all',
-          priority: -10
-        }
-      }
     },
     runtimeChunk: true
   },
@@ -146,7 +128,6 @@ module.exports = {
       { from: path.join(sourcePath, 'assets/favicon.ico'), to: outPath },
       { from: path.join(sourcePath, 'assets/fonts'), to: path.join(outPath, 'assets/fonts') },
       { from: path.join(sourcePath, 'assets/images'), to: path.join(outPath, 'images') },
-      //{ from: path.join(sourcePath, 'assets/icons'), to: path.join(outPath, 'icons') },
       { from: path.join(sourcePath, 'assets/webfonts'), to: path.join(outPath, 'webfonts') }
     ]),
     new WebpackCleanupPlugin(),
@@ -154,7 +135,6 @@ module.exports = {
       filename: '[contenthash].css',
       disable: !isProduction
     }),
-    new WebpackRTLPlugin({ diffOnly: true }),
     new HtmlWebpackPlugin({
       template: 'assets/index.html'
     }),
@@ -189,7 +169,6 @@ module.exports = {
     stats: 'minimal',
     clientLogLevel: 'warning'
   },
-  // https://webpack.js.org/configuration/devtool/
   devtool: isProduction ? 'hidden-source-map' : 'eval-source-map',
   // devtool: isProduction ? 'hidden-source-map' : 'cheap-module-eval-source-map',
   node: {

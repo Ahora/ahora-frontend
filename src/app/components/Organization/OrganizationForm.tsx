@@ -30,7 +30,8 @@ export default class OrganizationForm extends React.Component<OrganizationFormPr
                 <AhoraField fieldName="login" fieldType="organizationurl" displayName="Url" required={true}></AhoraField>
                 <AhoraField fieldName="orgType" fieldType="enum" displayName="Type" required={true} settings={{ enum: OrganizationType, keys: ["Public", "Private"] }}></AhoraField>
                 <AhoraField fieldName="isRTL" fieldType="boolean" displayName="RTL"></AhoraField>
-                <AhoraField fieldName="locale" fieldType="text" displayName="locale"></AhoraField>
+                <AhoraField fieldName="locale" fieldType="text" displayName="Locale"></AhoraField>
+                <AhoraField fieldName="defaultDomain" fieldType="text" displayName="Default Domain"></AhoraField>
             </AhoraForm>
         );
     }

@@ -1,5 +1,3 @@
-import { string } from "prop-types"
-
 export default interface LocalInterface extends Record<string, string> {
     addDiscussionButtonText: string;
     status1: string;

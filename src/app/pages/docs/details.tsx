@@ -5,7 +5,7 @@ import CommentListComponent from 'app/components/Comments/List';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import SelectUser from 'app/components/users/selectusers';
-import { UserItem, User } from 'app/services/users';
+import { UserItem, User, UserType } from 'app/services/users';
 import { Comment } from 'app/services/comments';
 import EditableHeader from 'app/components/EditableHeader';
 import EditableMarkDown from 'app/components/EditableMarkDown';
@@ -126,8 +126,8 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         await updateDocLabels(this.props.match.params.login, parseInt(this.props.match.params.docId), labels);
     }
 
-    async onAssigneeSelect(user: UserItem) {
-        const addedUserItem: UserItem = await assignDoc(this.props.match.params.login, parseInt(this.props.match.params.docId), user.id);
+    async onAssigneeSelect(userId?: number) {
+        const addedUserItem: UserItem = await assignDoc(this.props.match.params.login, parseInt(this.props.match.params.docId), userId !== undefined ? userId : null);
         const updatedDoc = { ...this.props.doc!, assigneeUserId: addedUserItem.id };
         this.updateDoc(updatedDoc);
     }
@@ -144,13 +144,13 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         this.updateDoc(updatedDoc);
     }
 
-    async onUserAddedToWatchers(user: UserItem) {
+    async onUserAddedToWatchers(userId: number) {
         try {
-            this.props.addWatcher(user.id);
-            await addWatcherToDoc(this.props.doc!.id, user.id);
+            this.props.addWatcher(userId);
+            await addWatcherToDoc(this.props.doc!.id, userId);
         }
         catch {
-            this.props.deleteWatcher(user.id);
+            this.props.deleteWatcher(userId);
         }
     }
 
@@ -221,7 +221,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 </Space>
                                 <Descriptions>
                                     <Descriptions.Item label={<FormattedMessage id="assigneeMeDescriptor" />}>
-                                        <SelectUser autoFocus={true} editMode={false} currentUserId={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
+                                        <SelectUser showUnassigned={true} userType={UserType.User} autoFocus={true} editMode={false} currentUserId={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
                                     </Descriptions.Item>
                                     <Descriptions.Item label={<FormattedMessage id="docTypeDescriptor" />}><DocTypeText docTypeId={doc.docTypeId}></DocTypeText></Descriptions.Item>
                                     {doc.closedAt && <Descriptions.Item label={<FormattedMessage id="closedAtDescriptor" />}><AhoraDate date={doc.closedAt}></AhoraDate></Descriptions.Item>}

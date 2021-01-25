@@ -1,5 +1,5 @@
 import * as React from "react";
-import { UserItem, searchUsers } from "app/services/users";
+import { UserItem, searchUsers, UserType } from "app/services/users";
 import { Select } from "antd";
 import AhoraSpinner from "../Forms/Basics/Spinner";
 import UserDetails from "./UserDetails";
@@ -14,18 +14,19 @@ interface DispatchProps {
 }
 
 interface SelectUserProps extends DispatchProps {
-    onSelect(user: UserItem): void;
+    onSelect(number: number | null): void;
     currentUserId?: number,
     editMode?: boolean;
     autoFocus?: boolean;
+    userType?: UserType;
+    showUnassigned?: boolean
 }
 
 
 interface State {
     isLoading: boolean,
     options: UserItem[],
-    currentUserId?: number;
-    query: string;
+    currentUserId: number | null | undefined;
     editMode: boolean;
 }
 
@@ -34,13 +35,13 @@ class SelectUser extends React.Component<SelectUserProps, State> {
     constructor(props: SelectUserProps) {
         super(props);
         this.state = {
+            currentUserId: undefined,
             isLoading: false,
             options: [],
-            query: '',
             editMode: (props.editMode === undefined) ? true : props.editMode
         };
 
-        this._handleSearch = debounce(this._handleSearch, 800);
+        this._handleSearch = debounce(this._handleSearch, 500);
 
     }
 
@@ -59,17 +60,20 @@ class SelectUser extends React.Component<SelectUserProps, State> {
     onBlur() {
         this.setState({
             editMode: this.props.editMode || false,
-            query: '',
             currentUserId: this.props.currentUserId
         });
     }
 
     onChange(user: any) {
-        this.props.onSelect(user.label.props.user);
+        let userId: number | null = null
+        if (user.value !== "") {
+            userId = user.label.props.user.id;
+        }
+        this.props.onSelect(userId);
+
         this.setState({
             editMode: this.props.editMode || false,
-            query: '',
-            currentUserId: user.label.props.user.id
+            currentUserId: userId
         });
     }
 
@@ -89,8 +93,8 @@ class SelectUser extends React.Component<SelectUserProps, State> {
                     notFoundContent={this.state.isLoading ? <AhoraSpinner /> : null}
                     filterOption={false}
                     onSearch={this._handleSearch}
-                    onSelect={this.onChange.bind(this)}
-                    onChange={this._handleInputChange}>
+                    onSelect={this.onChange.bind(this)}>
+                    { this.props.showUnassigned && <Select.Option key={"null"} value={""}>Unassigned</Select.Option>}
                     {this.state.options && this.state.options.map(user => (
                         <Select.Option key={user.id} value={user.id.toString()}><UserDetails user={user} /></Select.Option>
                     ))}
@@ -98,8 +102,8 @@ class SelectUser extends React.Component<SelectUserProps, State> {
             );
         }
         else {
-            if (this.state.currentUserId || this.props.currentUserId) {
-                return (<span onClick={this.onStartEdit.bind(this)}><UserDetails userId={this.state.currentUserId || this.props.currentUserId}></UserDetails></span>)
+            if (this.state.currentUserId !== undefined || this.props.currentUserId) {
+                return (<span onClick={this.onStartEdit.bind(this)}><UserDetails userId={this.state.currentUserId !== undefined ? this.state.currentUserId : this.props.currentUserId}></UserDetails></span>)
             }
             else {
                 return (<span onClick={this.onStartEdit.bind(this)}>Unassigned</span>)
@@ -107,14 +111,10 @@ class SelectUser extends React.Component<SelectUserProps, State> {
         }
     }
 
-    _handleInputChange = (query: string) => {
-        this.setState({ query });
-    }
-
     _handleSearch = async (query: string) => {
         this.setState({ isLoading: true });
 
-        const users = await searchUsers(query);
+        const users = await searchUsers(query, this.props.userType);
         this.props.addUsersToStore(users);
         this.setState({
             isLoading: false,

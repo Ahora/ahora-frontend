@@ -46,12 +46,15 @@ export default class UserList extends React.Component<LabelsSelectorProps, Users
         }
     }
 
-    onUserAdded(user: UserItem) {
-        const selectedUsers = [...this.state.selectedUsers, user.id!];
-        this.props.onChange(selectedUsers);
-        this.setState({
-            selectedUsers
-        });
+    onUserAdded(userId?: number) {
+        if (userId) {
+            const selectedUsers = [...this.state.selectedUsers, userId];
+            this.props.onChange(selectedUsers);
+            this.setState({
+                selectedUsers
+            });
+        }
+
     }
 
     openDropDown() {

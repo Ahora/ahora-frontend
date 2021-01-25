@@ -79,4 +79,6 @@ export default interface LocalInterface extends Record<string, string> {
     isPrivateCommentprivate: string;
     isPrivateCommentpublic: string;
 
+    unassigned: string;
+
 }

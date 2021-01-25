@@ -66,5 +66,6 @@ export const english: LocalInterface = {
     assigneeCommentContent: "{author} assigned from: {oldUser} to: {user}",
 
     isPrivateCommentprivate: "{author} changed doc to private",
-    isPrivateCommentpublic: "{author} changed doc to public"
+    isPrivateCommentpublic: "{author} changed doc to public",
+    unassigned: "Unassigned"
 }

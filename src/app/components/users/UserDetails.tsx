@@ -4,6 +4,7 @@ import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { requestUserInfo } from 'app/store/users/actions';
+import { FormattedMessage } from 'react-intl';
 
 interface InjectableProps {
     user?: UserItem;
@@ -28,7 +29,7 @@ class UserDetails extends React.Component<UserDetailsProps> {
 
     render() {
         if (this.props.userId === null && this.props.user === undefined) {
-            return <>Unassigned</>;
+            return <FormattedMessage id="unassigned" />;
         }
         else {
             const userInfo = this.props.user;

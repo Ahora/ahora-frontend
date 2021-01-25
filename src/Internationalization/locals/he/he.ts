@@ -68,5 +68,6 @@ export const hebrew: LocalInterface = {
     assigneeCommentContent: "{author} שייך מ{oldUser} ל{user}",
 
     isPrivateCommentprivate: "{author} שינה לפרטי",
-    isPrivateCommentpublic: "{author} שינה לציבורי"
+    isPrivateCommentpublic: "{author} שינה לציבורי",
+    unassigned: "לא הוקצה"
 }

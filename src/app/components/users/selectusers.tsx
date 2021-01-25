@@ -97,7 +97,7 @@ class SelectUser extends React.Component<SelectUserProps, State> {
                     filterOption={false}
                     onSearch={this._handleSearch}
                     onSelect={this.onChange.bind(this)}>
-                    { this.props.showUnassigned && <Select.Option key={"null"} value={""}>Unassigned</Select.Option>}
+                    { this.props.showUnassigned && <Select.Option key={"null"} value={""}><FormattedMessage id="unassigned" /></Select.Option>}
                     {this.state.options && this.state.options.map(user => (
                         <Select.Option key={user.id} value={user.id.toString()}><UserDetails user={user} /></Select.Option>
                     ))}
@@ -109,7 +109,7 @@ class SelectUser extends React.Component<SelectUserProps, State> {
                 return (<span onClick={this.onStartEdit.bind(this)}><UserDetails userId={this.state.currentUserId !== undefined ? this.state.currentUserId : this.props.currentUserId}></UserDetails></span>)
             }
             else {
-                return (<span onClick={this.onStartEdit.bind(this)}>Unassigned</span>)
+                return (<span onClick={this.onStartEdit.bind(this)}><FormattedMessage id="unassigned" /></span>)
             }
         }
     }

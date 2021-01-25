@@ -69,7 +69,6 @@ class SelectUser extends React.Component<SelectUserProps, State> {
         if (user.value !== "") {
             userId = user.label.props.user.id;
         }
-        console.log(userId, this.state.currentUserId);
         if (userId !== this.state.currentUserId) {
             this.props.onSelect(userId);
 

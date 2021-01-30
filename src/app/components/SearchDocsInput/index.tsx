@@ -49,18 +49,15 @@ var searchOptions: SearchParserOptions = { keywords: ['status', 'docType', 'priv
 const autoComleteTokens: string[] = searchOptions.keywords!.map((token) => `${token}:`);
 
 export interface SearchCriterias {
-    assignee?: string[];
-    reporter?: string[];
-    label?: string | string[];
-    status?: string | string[];
-    repo?: string | string[];
+    assignee?: (number | null)[];
+    reporter?: (number | null)[];
+    label?: number[];
+    status?: string[];
     milestone?: string | string[];
-    text?: string | string[]
-    docType?: string | string[]
-    mention?: string | string[]
-    private?: string | string[]
+    docType?: string[]
+    mention?: string[] | number[]
+    private?: boolean;
 }
-
 
 interface Props {
     required?: boolean;

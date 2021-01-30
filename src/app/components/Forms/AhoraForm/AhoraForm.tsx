@@ -28,6 +28,10 @@ interface AhoraFormProps {
 
 
 export default class AhoraForm extends React.Component<AhoraFormProps, AhoraFormState> {
+
+    private formRef: React.RefObject<any>;
+
+
     constructor(props: AhoraFormProps) {
         super(props);
 
@@ -37,6 +41,9 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
                 return this.convertField(fieldComponent.props);
             });
         }
+
+        this.formRef = React.createRef();
+
 
         this.state = {
             form: { ...this.props.data },
@@ -69,9 +76,9 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
 
     componentDidUpdate(prevProps: AhoraFormProps) {
         if (this.props.data !== prevProps.data) {
-            this.setState({
-                form: { ...this.props.data }
-            });
+            console.log("form refreshed", this.props.data, prevProps.data)
+            this.formRef.current.initialValue = this.props.data;
+            this.formRef.current.resetFields();
         }
     }
 
@@ -94,10 +101,12 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
 
     render() {
         return (
-            <Form onValuesChange={this.onValuesChange.bind(this)} layout={this.props.layout || "vertical"} initialValues={this.props.data} onFinish={this.onSubmit.bind(this)}>
-                {this.state.fields.map((field) => <Form.Item key={field.fieldName} name={field.fieldName} rules={[{ required: field.required, message: `required` }]} label={field.displayName}>
-                    <field.instance value={this.state.form[field.fieldName]} fieldData={field} formData={this.state.form}></field.instance>
-                </Form.Item>
+            <Form ref={this.formRef} onValuesChange={this.onValuesChange.bind(this)} layout={this.props.layout || "vertical"} initialValues={this.props.data} onFinish={this.onSubmit.bind(this)}>
+                {this.state.fields.map((field) => {
+                    return <Form.Item style={{ minWidth: "150px" }} key={field.fieldName} name={field.fieldName} rules={[{ required: field.required, message: `required` }]} label={field.displayName}>
+                        <field.instance fieldData={field} formData={this.state.form}></field.instance>
+                    </Form.Item>
+                }
                 )}
                 {this.state.error && <div>{this.props.showError ? this.props.showError(this.state.error) : <>Unexpected Error</>}</div>}
                 {

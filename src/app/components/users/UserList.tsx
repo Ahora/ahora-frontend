@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Tag } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { UserItem } from 'app/services/users';
 import SelectUser from './selectusers';
 import UserDetails from './UserDetails';
 

@@ -16,16 +16,17 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
         case UPDATE_SHURTCUT_SEARCH_CRITERIAS:
             let shortcutStore = state.map.get(action.payload.shortcutId);
             if (shortcutStore) {
-                shortcutStore = { ...shortcutStore, searchCriteria: action.payload.searchCriterias }
+                shortcutStore = { ...shortcutStore, draftsearchCriteria: action.payload.searchCriterias }
                 state.map.set(action.payload.shortcutId, shortcutStore);
             }
             return { ...state };
         case SET_CURRENT_ORGANIZATION:
             return {
                 ...initialState, map: new Map<string, StoreOrganizationShortcut>([
-                    ["inbox", { searchCriteria: { mention: ["me"] }, disableNotification: false, unreadDocs: new Set() }],
-                    ["private", { searchCriteria: { private: ["true"] }, disableNotification: false, unreadDocs: new Set() }],
-                    ["docs", { searchCriteria: { status: ["open"] }, disableNotification: true, unreadDocs: new Set() }]
+                    ["inbox", { searchCriteria: { mention: ["me"] }, disableNotification: false, unreadDocs: new Set(), strict: true }],
+                    ["private", { searchCriteria: { private: true }, disableNotification: false, unreadDocs: new Set(), strict: true }],
+                    ["docs", { searchCriteria: { status: ["open"] }, disableNotification: true, unreadDocs: new Set(), strict: true }]
+
                 ])
             }
         case ADD_SHORTCUT:

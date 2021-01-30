@@ -22,7 +22,7 @@ function* getShortcutsData(action: any) {
     const shortcutsMap: Map<string, StoreOrganizationShortcut> = state.shortcuts.map;
 
     shortcutsMap.forEach((value, key) => {
-        array.push({ shortcutId: key, searchCriteria: value.searchCriteria });
+        array.push({ shortcutId: key, searchCriteria: value.draftsearchCriteria || value.searchCriteria });
     });
 
     for (let index = 0; index < array.length; index++) {

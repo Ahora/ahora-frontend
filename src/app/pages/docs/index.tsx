@@ -3,7 +3,7 @@ import { RouteComponentProps, Switch, Route } from 'react-router';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
-import SearchDocsInput, { SearchCriterias } from 'app/components/SearchDocsInput';
+import { SearchCriterias } from 'app/components/SearchDocsInput';
 import { parseUrl, ParsedUrl } from "query-string";
 import { Doc } from 'app/services/docs';
 import DocList from 'app/components/DocList';
@@ -20,12 +20,11 @@ import { addDocToShortcut, loadShortcutDocs, updateShortcutsearchCriteria } from
 import { deleteDocInState, setDocInState } from 'app/store/docs/actions';
 import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
 import { FormattedMessage } from 'react-intl';
+import SimpleDocsInput from 'app/components/SearchDocsInput/SimpleDocsInput';
 
 require('./styles.scss')
 
 interface DocsPageState {
-    searchCriteria?: SearchCriterias;
-    searchCriteriasText?: string;
     currentDocId?: number;
 }
 
@@ -41,7 +40,8 @@ interface injectedParams {
     totalDocs: number;
     loading: boolean;
     searchCriteria?: SearchCriterias;
-    docs?: Set<number>
+    docs?: Set<number>,
+    canUpdateSearchCriteria: boolean
 }
 
 interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedParams {
@@ -70,10 +70,8 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         if (this.props.location.search.length > 0) {
             const parsedUrl: ParsedUrl = parseUrl(this.props.location.search);
             const searchCriterias: SearchCriterias = parsedUrl.query;
-            this.searchSelected(searchCriterias);
-        }
-        else if (this.props.searchCriteria) {
-            this.searchSelected(this.props.searchCriteria);
+            console.log(searchCriterias);
+            //this.searchSelected(searchCriterias);
         }
 
         if (!this.props.docs) {
@@ -98,15 +96,8 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     async onInputSearchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string) {
         this.props.setSearchCriterias(this.props.match.params.section, searchCriterias);
         this.props.loadShortcutDocs(this.props.match.params.section, 1);
-        this.searchSelected(searchCriterias, searchCriteriasText);
     }
 
-    async searchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string) {
-        this.setState({
-            searchCriteria: searchCriterias,
-            searchCriteriasText
-        });
-    }
     async componentDidUpdate(PrevProps: AllProps) {
         if (this.props.match.params.docId !== PrevProps.match.params.docId) {
             const docId: number = parseInt(this.props.match.params.docId);
@@ -145,7 +136,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     renderDocList() {
         return (<div className="doc-list-wrapper">
-            <DocList onPageChanged={this.pageChanged.bind(this)} pageSize={30} totalDocs={this.props.totalDocs} page={this.props.page} section={this.props.match.params.section} docs={this.props.docs} activeDocId={this.state.currentDocId} searchCriteria={this.state.searchCriteria}>
+            <DocList onPageChanged={this.pageChanged.bind(this)} pageSize={30} totalDocs={this.props.totalDocs} page={this.props.page} section={this.props.match.params.section} docs={this.props.docs} activeDocId={this.state.currentDocId} searchCriteria={this.props.searchCriteria}>
                 <div className="no-docs"><FormattedMessage id="docsNoResults" /></div>
             </DocList>
         </div>);
@@ -180,7 +171,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
             <AhoraFlexPanel top={(isBrowser || (isMobile && this.props.match.params.docId === undefined)) &&
                 <div className="docsheader">
-                    <SearchDocsInput searchCriterias={this.state.searchCriteria} searchSelected={this.onInputSearchSelected.bind(this)}></SearchDocsInput>
+                    <SimpleDocsInput showSaveButton={this.props.canUpdateSearchCriteria} searchSelected={this.onInputSearchSelected.bind(this)} searchCriterias={this.props.searchCriteria} ></SimpleDocsInput>
                 </div>
             }>
                 <div className="site-layout-content">
@@ -218,10 +209,11 @@ const mapStateToProps = (state: ApplicationState, props: AllProps): injectedPara
     let availableShortcut: StoreOrganizationShortcut | undefined = state.shortcuts.map.get(props.match.params.section);
     return {
         page: availableShortcut?.page || 0,
+        canUpdateSearchCriteria: (availableShortcut?.strict !== true) && (availableShortcut?.draftsearchCriteria !== undefined && (availableShortcut?.draftsearchCriteria !== availableShortcut?.searchCriteria)),
         loading: false,
         docs: availableShortcut?.docs,
         totalDocs: (availableShortcut && availableShortcut.totalDocs) ? availableShortcut.totalDocs : 0,
-        searchCriteria: availableShortcut?.searchCriteria
+        searchCriteria: availableShortcut?.draftsearchCriteria || availableShortcut?.searchCriteria
     };
 };
 

@@ -75,6 +75,8 @@ export function updateShortcutsearchCriteria(shortcutId: string, searchCriterias
     }
 }
 
+
+
 export const requestShortcutsData = () => ({ type: FETCH_SHORTCUTS });
 export const receiveShortcutsData = (data: OrganizationShortcut[]) => ({ type: RECEIVE_SHORTCUTS, data });
 

@@ -1,4 +1,4 @@
-import { ShortcutsState, ShortcutActionTypes, ADD_SHORTCUT, DELETE_SHORTCUT, RECEIVE_SHORTCUTS, UPDATE_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, UPDATE_UNREAD_DOCS_SHORTCUT, REPORT_DOC_READ, SHORTCUT_DOCS_RECEIVED, SHORTCUT_DOCS_ADD } from './types'
+import { ShortcutsState, ShortcutActionTypes, ADD_SHORTCUT, DELETE_SHORTCUT, RECEIVE_SHORTCUTS, UPDATE_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, UPDATE_UNREAD_DOCS_SHORTCUT, REPORT_DOC_READ, SHORTCUT_DOCS_RECEIVED, SHORTCUT_DOCS_ADD, UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS } from './types'
 import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
 import { SET_CURRENT_ORGANIZATION } from '../organizations/types';
 import StoreOrganizationShortcut from './StoreOrganizationShortcut';
@@ -13,10 +13,17 @@ const initialState: ShortcutsState = {
 
 export function shortcutsReducer(state = initialState, action: ShortcutActionTypes): ShortcutsState {
     switch (action.type) {
+        case UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS:
+            let shortcutDraftStore = state.map.get(action.payload.shortcutId);
+            if (shortcutDraftStore) {
+                shortcutDraftStore = { ...shortcutDraftStore, draftsearchCriteria: action.payload.searchCriterias }
+                state.map.set(action.payload.shortcutId, shortcutDraftStore);
+            }
+            return { ...state };
         case UPDATE_SHURTCUT_SEARCH_CRITERIAS:
             let shortcutStore = state.map.get(action.payload.shortcutId);
             if (shortcutStore) {
-                shortcutStore = { ...shortcutStore, draftsearchCriteria: action.payload.searchCriterias }
+                shortcutStore = { ...shortcutStore, searchCriteria: action.payload.searchCriterias, draftsearchCriteria: undefined }
                 state.map.set(action.payload.shortcutId, shortcutStore);
             }
             return { ...state };

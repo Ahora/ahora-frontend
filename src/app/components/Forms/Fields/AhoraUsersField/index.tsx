@@ -96,13 +96,11 @@ class AhoraUsersField extends React.Component<Props, AhoraUsersFieldState> {
     render() {
         return (
             <UsersSelect
-                showSearch={false}
                 mode="multiple"
                 value={this.props.value}
                 loading={this.state.isLoading}
                 placeholder={<FormattedMessage id="selectUsers" />}
                 dropdownStyle={{ minWidth: "400px" }}
-                onSearch={this._handleSearch}
                 onChange={this.onUpdate.bind(this)}
                 onDropdownVisibleChange={this.dropDownChanged.bind(this)}
                 dropdownRender={(menu) => {
@@ -120,17 +118,17 @@ class AhoraUsersField extends React.Component<Props, AhoraUsersFieldState> {
 
                 {this.props.showUnassigned && <Select.Option key={"null"} value={"null"}><FormattedMessage id="unassigned" /></Select.Option>}
                 {this.props.value &&
-                    <Select.OptGroup label="selected" >
+                    <Select.OptGroup label={<FormattedMessage id="selectedUsers" />} >
                         {this.props.value.map((userId) => <Select.Option key={`selected-${userId}`} value={userId}><UserDetails userId={userId} /></Select.Option>)}
                     </Select.OptGroup>}
                 {(this.state.recentUsers && this.state.query.length === 0 && this.state.recentUsers.length > 0) &&
-                    <Select.OptGroup label="Recent" >
+                    <Select.OptGroup label={<FormattedMessage id="recentUsers" />}>
                         {this.state.recentUsers.map((userId) => <Select.Option key={userId} value={userId}><UserDetails userId={userId} /></Select.Option>)}
                     </Select.OptGroup>
                 }
 
                 {(this.state.query.length > 0) &&
-                    <Select.OptGroup label="Search Results" >
+                    <Select.OptGroup label={<FormattedMessage id="usersSearchResults" />} >
                         {this.state.options.map(user => (
                             <Select.Option key={user.id} value={user.id}><UserDetails user={user} /></Select.Option>
                         ))}

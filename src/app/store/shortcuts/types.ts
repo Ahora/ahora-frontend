@@ -15,6 +15,7 @@ export interface ShortcutsState {
 
 // src/store/chat/types.ts
 export const ADD_SHORTCUT = 'ADD_SHORTCUT';
+export const UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS = 'UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS';
 export const UPDATE_SHURTCUT_SEARCH_CRITERIAS = 'UPDATE_SHURTCUT_SEARCH_CRITERIAS';
 export const DELETE_SHORTCUT = 'DELETE_SHORTCUT';
 export const UPDATE_SHORTCUT = 'UPDATE_SHORTCUT';
@@ -77,7 +78,7 @@ export interface ShortcutAddDocAction {
 }
 
 interface UpdateShortcutSearchCriteriasAction {
-    type: typeof UPDATE_SHURTCUT_SEARCH_CRITERIAS
+    type: typeof UPDATE_SHURTCUT_SEARCH_CRITERIAS | typeof UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS
     payload: {
         shortcutId: string,
         searchCriterias: SearchCriterias

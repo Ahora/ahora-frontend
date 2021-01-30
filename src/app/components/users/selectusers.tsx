@@ -8,12 +8,17 @@ import { connect } from "react-redux";
 import { addUsersToState } from "app/store/users/actions";
 import { Dispatch } from 'redux';
 import { FormattedMessage } from "react-intl";
+import { ApplicationState } from "app/store";
 
 interface DispatchProps {
     addUsersToStore(users: UserItem[]): void;
 }
 
-interface SelectUserProps extends DispatchProps {
+interface InjectableProps {
+    recentUsers: Set<number>
+}
+
+interface SelectUserProps extends DispatchProps, InjectableProps {
     onSelect(number: number | null): void;
     currentUserId?: number,
     editMode?: boolean;
@@ -25,9 +30,11 @@ interface SelectUserProps extends DispatchProps {
 
 interface State {
     isLoading: boolean,
+    recentUsers?: number[];
     options: UserItem[],
     currentUserId: number | null | undefined;
     editMode: boolean;
+    query: string;
 }
 
 class SelectUser extends React.Component<SelectUserProps, State> {
@@ -38,6 +45,7 @@ class SelectUser extends React.Component<SelectUserProps, State> {
             currentUserId: undefined,
             isLoading: false,
             options: [],
+            query: '',
             editMode: (props.editMode === undefined) ? true : props.editMode
         };
 
@@ -60,24 +68,29 @@ class SelectUser extends React.Component<SelectUserProps, State> {
     onBlur() {
         this.setState({
             editMode: this.props.editMode || false,
-            currentUserId: this.props.currentUserId
+            currentUserId: this.props.currentUserId,
+            query: ""
         });
     }
 
     onChange(user: any) {
+        console.log(user);
         let userId: number | null = null
         if (user.value !== "") {
-            userId = user.label.props.user.id;
+            userId = user.value;
         }
         if (userId !== this.state.currentUserId) {
             this.props.onSelect(userId);
-
         }
 
         this.setState({
             editMode: this.props.editMode || false,
             currentUserId: userId
         });
+    }
+
+    dropDownChanged() {
+        this.setState({ recentUsers: [...this.props.recentUsers].reverse() })
     }
 
     render() {
@@ -87,20 +100,32 @@ class SelectUser extends React.Component<SelectUserProps, State> {
                     defaultOpen={true}
                     autoFocus={this.props.autoFocus}
                     showSearch={true}
+                    onFocus={this.dropDownChanged.bind(this)}
                     autoClearSearchValue={true}
                     labelInValue
                     onBlur={this.onBlur.bind(this)}
                     loading={this.state.isLoading}
                     style={{ minWidth: "300px" }}
+                    onDropdownVisibleChange={this.dropDownChanged.bind(this)}
                     placeholder={<FormattedMessage id="selectUser" />}
                     notFoundContent={this.state.isLoading ? <AhoraSpinner /> : null}
                     filterOption={false}
                     onSearch={this._handleSearch}
                     onSelect={this.onChange.bind(this)}>
                     { this.props.showUnassigned && <Select.Option key={"null"} value={""}><FormattedMessage id="unassigned" /></Select.Option>}
-                    {this.state.options && this.state.options.map(user => (
-                        <Select.Option key={user.id} value={user.id.toString()}><UserDetails user={user} /></Select.Option>
-                    ))}
+                    {(this.state.recentUsers && this.state.query.length === 0 && this.state.recentUsers.length > 0) &&
+                        <Select.OptGroup label={<FormattedMessage id="recentUsers" />}>
+                            {this.state.recentUsers.map((userId) => <Select.Option key={userId} value={userId}><UserDetails userId={userId} /></Select.Option>)}
+                        </Select.OptGroup>
+                    }
+                    {(this.state.query.length > 0) &&
+                        <Select.OptGroup label={<FormattedMessage id="usersSearchResults" />} >
+                            {this.state.options.map(user => (
+                                <Select.Option key={user.id} value={user.id}><UserDetails user={user} /></Select.Option>
+                            ))}
+                        </Select.OptGroup>
+                    }
+
                 </ Select>
             );
         }
@@ -115,16 +140,23 @@ class SelectUser extends React.Component<SelectUserProps, State> {
     }
 
     _handleSearch = async (query: string) => {
-        this.setState({ isLoading: true });
+        this.setState({ isLoading: true, query });
 
         const users = await searchUsers(query, this.props.userType);
         this.props.addUsersToStore(users);
         this.setState({
             isLoading: false,
-            options: users,
+            options: users
         });
     }
 }
+
+const mapStateToProps = (state: ApplicationState): InjectableProps => {
+    return {
+        recentUsers: state.users.recentUsers
+    }
+}
+
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
@@ -132,4 +164,4 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(SelectUser as any); 
+export default connect(mapStateToProps, mapDispatchToProps)(SelectUser as any); 

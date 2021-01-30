@@ -16,11 +16,12 @@ import { PlusOutlined } from '@ant-design/icons';
 import DefaultDocsPage from './default';
 import { isMobile, isBrowser } from "react-device-detect";
 import StoreOrganizationShortcut from 'app/store/shortcuts/StoreOrganizationShortcut';
-import { addDocToShortcut, loadShortcutDocs, updateShortcutsearchCriteria } from 'app/store/shortcuts/actions';
+import { addDocToShortcut, loadShortcutDocs, updateShortcutDraftsearchCriteria, updateShortcutsearchCriteria } from 'app/store/shortcuts/actions';
 import { deleteDocInState, setDocInState } from 'app/store/docs/actions';
 import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
 import { FormattedMessage } from 'react-intl';
 import SimpleDocsInput from 'app/components/SearchDocsInput/SimpleDocsInput';
+import { updateShortcutSearchCriteria } from 'app/services/OrganizationShortcut';
 
 require('./styles.scss')
 
@@ -50,6 +51,7 @@ interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedPar
 
 interface DispatchProps {
     setSearchCriterias(section: string, data?: SearchCriterias): void;
+    setDraftSearchCriterias(section: string, data?: SearchCriterias): void;
     loadShortcutDocs(shortcutId: string, page: number): void;
     deleteDoc(docId: number): void;
     updateDoc(doc: Doc): void;
@@ -94,7 +96,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     }
 
     async onInputSearchSelected(searchCriterias?: SearchCriterias, searchCriteriasText?: string) {
-        this.props.setSearchCriterias(this.props.match.params.section, searchCriterias);
+        this.props.setDraftSearchCriterias(this.props.match.params.section, searchCriterias);
         this.props.loadShortcutDocs(this.props.match.params.section, 1);
     }
 
@@ -127,6 +129,11 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         else {
             this.props.history.goBack();
         }
+    }
+
+    async onSaveSearchCriteria(searchCriterias: SearchCriterias) {
+        await updateShortcutSearchCriteria(parseInt(this.props.match.params.section), searchCriterias);
+        this.props.setSearchCriterias(this.props.match.params.section, searchCriterias);
     }
 
     onDocAdded(addedDoc: Doc) {
@@ -171,7 +178,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
             <AhoraFlexPanel top={(isBrowser || (isMobile && this.props.match.params.docId === undefined)) &&
                 <div className="docsheader">
-                    <SimpleDocsInput showSaveButton={this.props.canUpdateSearchCriteria} searchSelected={this.onInputSearchSelected.bind(this)} searchCriterias={this.props.searchCriteria} ></SimpleDocsInput>
+                    <SimpleDocsInput onSave={this.onSaveSearchCriteria.bind(this)} showSaveButton={this.props.canUpdateSearchCriteria} searchSelected={this.onInputSearchSelected.bind(this)} searchCriterias={this.props.searchCriteria} ></SimpleDocsInput>
                 </div>
             }>
                 <div className="site-layout-content">
@@ -220,6 +227,7 @@ const mapStateToProps = (state: ApplicationState, props: AllProps): injectedPara
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
         setSearchCriterias: (shortcutdId: string, data: SearchCriterias) => dispatch(updateShortcutsearchCriteria(shortcutdId, data)),
+        setDraftSearchCriterias: (shortcutdId: string, data: SearchCriterias) => dispatch(updateShortcutDraftsearchCriteria(shortcutdId, data)),
         loadShortcutDocs: (shortcutdId: string, page: number) => dispatch(loadShortcutDocs(shortcutdId, page)),
         deleteDoc: (docId: number) => dispatch(deleteDocInState(docId)),
         updateDoc: (doc: Doc) => dispatch(setDocInState(doc)),

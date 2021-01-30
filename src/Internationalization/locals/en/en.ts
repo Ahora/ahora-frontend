@@ -67,5 +67,15 @@ export const english: LocalInterface = {
 
     isPrivateCommentprivate: "{author} changed doc to private",
     isPrivateCommentpublic: "{author} changed doc to public",
-    unassigned: "Unassigned"
+    unassigned: "Unassigned",
+    searchLabelText: "Label",
+    searchReporterText: "Reporter",
+    searchAssigneeText: "Assignee",
+    searchMentionText: "Mention",
+    searchStatusText: "Status",
+    searchDocTypeText: "Type",
+    searchIsPrivateText: "State",
+    recentUsers: "Recent",
+    usersSearchResults: "Search results",
+    selectedUsers: "Selected",
 }

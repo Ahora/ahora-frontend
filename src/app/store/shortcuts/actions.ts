@@ -1,4 +1,4 @@
-import { ADD_SHORTCUT, RECEIVE_SHORTCUTS, ShortcutActionTypes, FETCH_SHORTCUTS, DELETE_SHORTCUT, UPDATE_SHORTCUT, UPDATE_UNREAD_DOCS_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, REPORT_DOC_READ, LOAD_SHORTCUT_DOCS, SHORTCUT_DOCS_RECEIVED, ShortcutDocsReceivedAction, SHORTCUT_DOCS_ADD, ShortcutAddDocAction } from './types'
+import { ADD_SHORTCUT, RECEIVE_SHORTCUTS, ShortcutActionTypes, FETCH_SHORTCUTS, DELETE_SHORTCUT, UPDATE_SHORTCUT, UPDATE_UNREAD_DOCS_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, REPORT_DOC_READ, LOAD_SHORTCUT_DOCS, SHORTCUT_DOCS_RECEIVED, ShortcutDocsReceivedAction, SHORTCUT_DOCS_ADD, ShortcutAddDocAction, UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS } from './types'
 import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
 import { SearchCriterias } from 'app/components/SearchDocsInput';
 
@@ -71,6 +71,13 @@ export function updateShortcutToState(newShortcut: OrganizationShortcut): Shortc
 export function updateShortcutsearchCriteria(shortcutId: string, searchCriterias: SearchCriterias): ShortcutActionTypes {
     return {
         type: UPDATE_SHURTCUT_SEARCH_CRITERIAS,
+        payload: { shortcutId, searchCriterias }
+    }
+}
+
+export function updateShortcutDraftsearchCriteria(shortcutId: string, searchCriterias: SearchCriterias): ShortcutActionTypes {
+    return {
+        type: UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS,
         payload: { shortcutId, searchCriterias }
     }
 }

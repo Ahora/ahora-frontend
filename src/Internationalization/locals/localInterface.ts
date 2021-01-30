@@ -81,4 +81,16 @@ export default interface LocalInterface extends Record<string, string> {
 
     unassigned: string;
 
+    recentUsers: string;
+    usersSearchResults: string;
+    selectedUsers: string;
+
+    searchLabelText: string;
+    searchReporterText: string;
+    searchAssigneeText: string;
+    searchMentionText: string;
+    searchStatusText: string;
+    searchDocTypeText: string;
+    searchIsPrivateText: string;
+
 }

@@ -9,7 +9,7 @@ interface State {
 interface Props {
     value?: boolean;
     fieldData: AhoraFormField;
-    onChange: (value: boolean) => void;
+    onChange?: (value: boolean) => void;
 }
 
 
@@ -25,7 +25,8 @@ class AhoraBooleanField extends React.Component<Props, State> {
 
     handleChange(value: any) {
         this.setState({ value });
-        this.props.onChange(value);
+        if (this.props.onChange)
+            this.props.onChange(value);
     }
 
     render() {

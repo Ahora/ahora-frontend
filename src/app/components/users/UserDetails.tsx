@@ -5,13 +5,14 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { requestUserInfo } from 'app/store/users/actions';
 import { FormattedMessage } from 'react-intl';
+import AhoraSpinner from '../Forms/Basics/Spinner';
 
 interface InjectableProps {
     user?: UserItem;
 }
 
 interface UserDetailsProps extends InjectableProps, DispatchProps {
-    userId: number | null;
+    userId: number | string | null;
     hideDisplayName?: boolean;
 }
 
@@ -23,7 +24,10 @@ class UserDetails extends React.Component<UserDetailsProps> {
 
     componentDidMount() {
         if (this.props.userId && !this.props.user) {
-            this.props.requestUserInfo(this.props.userId);
+            const userId = parseInt(this.props.userId.toString());
+            if (!isNaN(userId)) {
+                this.props.requestUserInfo(userId);
+            }
         }
     }
 
@@ -33,14 +37,33 @@ class UserDetails extends React.Component<UserDetailsProps> {
         }
         else {
             const userInfo = this.props.user;
-            return <>{userInfo && <>{userInfo.username}{(this.props.hideDisplayName !== true && userInfo.displayName) && <> ({userInfo.displayName})</>}</>}</>
+            if (userInfo) {
+                return <>{userInfo && <>{userInfo.username}{(this.props.hideDisplayName !== true && userInfo.displayName) && <> ({userInfo.displayName})</>}</>}</>
+
+            }
+            else {
+                return <AhoraSpinner />
+            }
         }
     }
 }
 
 
 const mapStateToProps = (state: ApplicationState, props: UserDetailsProps): InjectableProps => {
-    const user = props.user || state.users.map.get(props.userId!);
+
+    let user = props.user;
+    if (props.userId !== null && props.userId !== undefined) {
+        const realNumber = parseInt(props.userId.toString());
+
+        if (!user && props.userId === "me") {
+            user = state.currentUser.user;
+        }
+        else if (!isNaN(realNumber)) {
+            user = state.users.map.get(realNumber);
+        }
+    }
+
+
     return { user };
 };
 

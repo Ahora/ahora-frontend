@@ -6,20 +6,15 @@ class MulipleValuesSelect extends Select<string[]> {
 
 interface MultipleValuesProps {
     value?: string[];
+    mode?: 'multiple' | 'single';
     getValues: () => ReactNode;
-    onChange: (value: string[]) => void;
+    onChange?: (value: string[]) => void;
 }
 
 export default function MultipleValuesField(props: MultipleValuesProps) {
-
-
-    const onUpdate = (values: string[]) => {
-        props.onChange(values);
-    }
-
     return <MulipleValuesSelect
-        mode="multiple"
-        onChange={onUpdate}
+        mode={props.mode ? (props.mode === "single" ? undefined : props.mode) : "multiple"}
+        onChange={props.onChange}
         showSearch={false}
         value={props.value}>
         {props.getValues()}

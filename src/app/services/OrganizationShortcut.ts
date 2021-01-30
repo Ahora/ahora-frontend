@@ -42,6 +42,13 @@ export const updateShortcut = async (id: number, Shortcut: OrganizationShortcut)
     return result.data;
 }
 
+export const updateShortcutSearchCriteria = async (id: number, searchCriteria: SearchCriterias): Promise<void> => {
+    await notificationsClient.put({
+        params: { id },
+        data: { searchCriteria }
+    });
+}
+
 export const updateShortcutTitle = async (id: number, title: string): Promise<OrganizationShortcut> => {
     const result = await notificationsClient.put({
         params: { id, },

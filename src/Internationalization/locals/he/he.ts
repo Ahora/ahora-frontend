@@ -69,5 +69,17 @@ export const hebrew: LocalInterface = {
 
     isPrivateCommentprivate: "{author} שינה לפרטי",
     isPrivateCommentpublic: "{author} שינה לציבורי",
-    unassigned: "לא הוקצה"
+    unassigned: "לא הוקצה",
+
+    searchLabelText: "תווית",
+    searchReporterText: "מחבר",
+    searchAssigneeText: "נאמן",
+    searchMentionText: "מוזכר",
+    searchStatusText: "סטאטוס",
+    searchDocTypeText: "סוג",
+    searchIsPrivateText: "מצב",
+
+    recentUsers: "רלוונטים",
+    usersSearchResults: "תוצאות חיפוש",
+    selectedUsers: "נבחרים",
 }

@@ -12,7 +12,7 @@ export default function SearchDocIsPrivateField(props: Props) {
 
     const getValues = () => {
         return <>
-            <Select.Option value="">הכל</Select.Option>
+            <Select.Option value=""><FormattedMessage id="all"></FormattedMessage></Select.Option>
             <Select.Option value="true"><FormattedMessage id="private"></FormattedMessage></Select.Option>
             <Select.Option value="false"><FormattedMessage id="public"></FormattedMessage></Select.Option>
         </>

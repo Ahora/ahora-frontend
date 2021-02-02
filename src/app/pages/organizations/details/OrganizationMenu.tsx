@@ -2,7 +2,6 @@ import * as React from "react";
 import { Organization } from "../../../services/organizations";
 import { Link } from "react-router-dom";
 import { Layout, Menu, Badge } from 'antd';
-import { StarFilled } from '@ant-design/icons';
 import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined, InboxOutlined } from '@ant-design/icons';
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
 import { User } from "app/services/users";
@@ -76,8 +75,8 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
                 <Menu.Item icon={<InboxOutlined />} key="private">
                     <Link onDoubleClick={this.forceReload.bind(this, "private")} to={`/organizations/${organization.login}/private`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("private")?.unreadDocs?.size}><FormattedMessage id="menuprivateText" /></Badge></Link>
                 </Menu.Item>
-                {this.props.shortcuts?.map((shortcut) => <Menu.Item className="ant-menu-item" icon={shortcut.star && <StarFilled />} key={shortcut.id}>
-                    <Link className="ahora-shurtcut-link" onDoubleClick={this.forceReload.bind(this, shortcut.id!.toString())} to={`/organizations/${this.props.organization && this.props.organization.login}/${shortcut.id}`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get(shortcut.id!.toString())?.unreadDocs?.size}>{shortcut.title}</Badge></Link>
+                {this.props.shortcuts?.map((shortcut) => <Menu.Item className="ant-menu-item" icon={<Badge offset={[15, 0]} count={this.props.shortcutsMap.get(shortcut.id!.toString())?.unreadDocs?.size} />} key={shortcut.id}>
+                    <Link className="ahora-shurtcut-link" onDoubleClick={this.forceReload.bind(this, shortcut.id!.toString())} to={`/organizations/${this.props.organization && this.props.organization.login}/${shortcut.id}`}>{shortcut.title}</Link>
                 </Menu.Item>
                 )}
                 <Menu.Item icon={<PieChartOutlined />} key="dashboards"><Link to={`/organizations/${organization.login}/dashboards`}><FormattedMessage id="menuDashboardsText" /></Link></Menu.Item>

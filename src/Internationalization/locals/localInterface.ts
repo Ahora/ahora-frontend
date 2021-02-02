@@ -98,4 +98,6 @@ export default interface LocalInterface extends Record<string, string> {
     clearNotificationsShortcut: string;
     deleteShortcut: string;
     addShortcutButton: string;
+
+    all: string;
 }

@@ -96,11 +96,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
             const docId: number = parseInt(this.props.match.params.docId);
             this.setState({ currentDocId: isNaN(docId) ? undefined : docId });
         }
-
-        if (this.props.searchCriteria !== PrevProps.searchCriteria) {
-            this.setSearchCriterias();
-        }
-
     }
 
     onDocDeleted(docToBeDeleted: Doc) {

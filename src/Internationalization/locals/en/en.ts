@@ -83,5 +83,6 @@ export const english: LocalInterface = {
     editShortcut: "Edit",
     clearNotificationsShortcut: "Clear Notifications",
     deleteShortcut: "Delete",
-    addShortcutButton: "Add"
+    addShortcutButton: "Add",
+    all: "all"
 }

@@ -75,15 +75,15 @@ function ShortcutTitle(props: Props) {
 
     const renameNotification = async () => {
 
-        if (renameText) {
+        if (renameText && props.shortcut) {
             if (props.shortcutdId === "docs") {
-                const addedShortcut = await addShortcutSimple(renameText, props.shortcut?.draftsearchCriteria!);
+                const addedShortcut = await addShortcutSimple(renameText, props.shortcut.draftsearchCriteria!);
                 props.addShortcutToState(addedShortcut);
                 props.history.replace(`/organizations/${props.organizationId}/${addedShortcut.id}`);
 
             }
             else {
-                if (props.shortcut?.shortcut) {
+                if (props.shortcut.shortcut) {
                     const shortCutToUpdate = { ...props.shortcut?.shortcut, title: renameText }
                     const oldText = props.shortcut.shortcut.title;
                     try {

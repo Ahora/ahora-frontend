@@ -74,7 +74,6 @@ class SelectUser extends React.Component<SelectUserProps, State> {
     }
 
     onChange(user: any) {
-        console.log(user);
         let userId: number | null = null
         if (user.value !== "") {
             userId = user.value;

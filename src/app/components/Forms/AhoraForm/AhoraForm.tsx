@@ -76,7 +76,6 @@ export default class AhoraForm extends React.Component<AhoraFormProps, AhoraForm
 
     componentDidUpdate(prevProps: AhoraFormProps) {
         if (this.props.data !== prevProps.data) {
-            console.log("form refreshed", this.props.data, prevProps.data)
             this.formRef.current.initialValue = this.props.data;
             this.formRef.current.resetFields();
         }

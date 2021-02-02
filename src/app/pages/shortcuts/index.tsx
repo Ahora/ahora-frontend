@@ -40,7 +40,7 @@ class ShortcutsPage extends React.Component<ShortcutsPageProps, ShortcutsPageSta
     }
 
     async ondeleteShortcut(shortcut: OrganizationShortcut) {
-        await deleteShortcut(shortcut.id!);
+        await deleteShortcut(shortcut.id!.toString());
         this.props.removeShortcutFromState(shortcut.id!);
     }
 
@@ -95,7 +95,7 @@ const mapStateToProps = (state: ApplicationState): ShortcutsPageParams => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        removeShortcutFromState: (id: number) => { dispatch(deleteShortcutFromState(id)) },
+        removeShortcutFromState: (id: number) => { dispatch(deleteShortcutFromState(id.toString())) },
         updateShortcutToState: (status: OrganizationShortcut) => { dispatch(updateShortcutToState(status)) }
     }
 }

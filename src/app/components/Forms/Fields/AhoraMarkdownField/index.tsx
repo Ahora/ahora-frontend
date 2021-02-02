@@ -104,7 +104,7 @@ class AhoraMarkdownField extends React.Component<Props, State> {
                 value={this.props.value}
                 loading={this.state.loading}
                 defaultValue={this.props.value}
-                onPressEnter={this.props.onPressEnter.bind(this)}
+                onPressEnter={this.props.onPressEnter && this.props.onPressEnter.bind(this)}
                 onSelect={this.onUserSelect.bind(this)}
                 onChange={this.onChange.bind(this)}
                 onSearch={this.onSearch.bind(this)}>

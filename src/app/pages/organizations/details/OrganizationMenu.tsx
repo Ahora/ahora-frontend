@@ -74,10 +74,10 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
                 {this.props.currentUser &&
                     <>
                         <Menu.Item icon={<InboxOutlined />} key="inbox">
-                            <Link onDoubleClick={this.forceReload.bind(this, "inbox")} to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("inbox")?.unreadDocs?.size}><FormattedMessage id="menuInboxText" /></Badge></Link>
+                            <Link onDoubleClick={this.forceReload.bind(this, "inbox")} to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("inbox")?.unreadDocs?.size}><FormattedMessage id="menuinboxText" /></Badge></Link>
                         </Menu.Item>
                         <Menu.Item icon={<InboxOutlined />} key="private">
-                            <Link onDoubleClick={this.forceReload.bind(this, "private")} to={`/organizations/${organization.login}/private`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("private")?.unreadDocs?.size}><FormattedMessage id="menuPrivateText" /></Badge></Link>
+                            <Link onDoubleClick={this.forceReload.bind(this, "private")} to={`/organizations/${organization.login}/private`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("private")?.unreadDocs?.size}><FormattedMessage id="menuprivateText" /></Badge></Link>
                         </Menu.Item>
                         {this.props.shortcuts ?
                             <SubMenu key={"shortcuts"} icon={<MessageOutlined />} title={<FormattedMessage id="menuShortcutsText" />}>
@@ -96,7 +96,7 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
                     </>
                 }
                 <Menu.Item icon={<PieChartOutlined />} key="dashboards"><Link to={`/organizations/${organization.login}/dashboards`}><FormattedMessage id="menuDashboardsText" /></Link></Menu.Item>
-                <Menu.Item icon={<UnorderedListOutlined />} key="docs"><Link onDoubleClick={this.forceReload.bind(this, "docs")} to={`/organizations/${organization.login}/docs`}><FormattedMessage id="menuDocsText" /></Link></Menu.Item>
+                <Menu.Item icon={<UnorderedListOutlined />} key="docs"><Link onDoubleClick={this.forceReload.bind(this, "docs")} to={`/organizations/${organization.login}/docs`}><FormattedMessage id="menudocsText" /></Link></Menu.Item>
                 <Menu.Item icon={<TeamOutlined />} key="teams"><Link to={`/organizations/${organization.login}/teams`}><FormattedMessage id="menuTeamsText" /></Link></Menu.Item>
                 {this.props.showMilestones || canManageOrg && <Menu.Item icon={<FlagOutlined />} key="milestones"><Link to={`/organizations/${organization.login}/milestones`}><FormattedMessage id="menuMilestonesText" /></Link></Menu.Item>}
                 {canManageOrg && <Menu.Item icon={<SettingOutlined />} key="settings"><Link to={`/organizations/${organization.login}/settings`}><FormattedMessage id="menuSettingsText" /></Link></Menu.Item>}

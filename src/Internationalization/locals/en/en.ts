@@ -33,12 +33,12 @@ export const english: LocalInterface = {
     selectUsers: "Select users",
     noDocSelectText: "Start a discussion or just select your relevant doc!",
     noDocSelectedButtonText: "Start a new discussion",
-    menuInboxText: "Inbox",
-    menuPrivateText: "Private",
+    menuinboxText: "Inbox",
+    menuprivateText: "Private",
     menuShortcutsText: "Shortcuts",
     menuShortcutManageText: "Manage",
     menuDashboardsText: "Dashboards",
-    menuDocsText: "Search",
+    menudocsText: "Search",
     menuTeamsText: "Teams",
     menuMilestonesText: "Milestones",
     menuSettingsText: "Settings",
@@ -78,4 +78,10 @@ export const english: LocalInterface = {
     recentUsers: "Recent",
     usersSearchResults: "Search results",
     selectedUsers: "Selected",
+
+    renameShortcut: "Rename",
+    editShortcut: "Edit",
+    clearNotificationsShortcut: "Clear Notifications",
+    deleteShortcut: "Delete",
+    addShortcutButton: "Add"
 }

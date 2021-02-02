@@ -33,12 +33,12 @@ export const hebrew: LocalInterface = {
     selectUsers: "בחר משתמשים",
     noDocSelectText: "התחל דיון או בחר פריט מהרשימה",
     noDocSelectedButtonText: "הוסף דיון חדש",
-    menuInboxText: "תיבת דואר",
-    menuPrivateText: "פרטיות",
+    menuinboxText: "תיבת דואר",
+    menudocsText: "חיפוש",
+    menuprivateText: "פרטיות",
     menuShortcutsText: "קיצור דרך",
     menuShortcutManageText: "נהל",
     menuDashboardsText: "דוחות",
-    menuDocsText: "חיפוש",
     menuTeamsText: "צוותים",
     menuMilestonesText: "ציוני דרך",
     menuSettingsText: "הגדרות",
@@ -82,4 +82,10 @@ export const hebrew: LocalInterface = {
     recentUsers: "רלוונטים",
     usersSearchResults: "תוצאות חיפוש",
     selectedUsers: "נבחרים",
+
+    renameShortcut: "שנה שם",
+    editShortcut: "ערוך",
+    clearNotificationsShortcut: "נקה חיווים",
+    deleteShortcut: "מחק",
+    addShortcutButton: "הוסף"
 }

@@ -1,0 +1,11 @@
+.shortcut-title {
+    display: flex;
+    .title {
+        margin: 0px 5px;
+        flex-grow: 1;
+    }
+
+    .renameBtn {
+        cursor: pointer;
+    }
+}

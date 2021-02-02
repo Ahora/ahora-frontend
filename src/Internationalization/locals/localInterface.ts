@@ -39,12 +39,12 @@ export default interface LocalInterface extends Record<string, string> {
     noDocSelectText: string;
     noDocSelectedButtonText: string;
 
-    menuInboxText: string;
-    menuPrivateText: string;
+    menuinboxText: string;
+    menuprivateText: string;
     menuShortcutsText: string;
     menuShortcutManageText: string;
     menuDashboardsText: string;
-    menuDocsText: string;
+    menudocsText: string;
     menuTeamsText: string;
     menuMilestonesText: string;
     menuSettingsText: string;
@@ -93,4 +93,9 @@ export default interface LocalInterface extends Record<string, string> {
     searchDocTypeText: string;
     searchIsPrivateText: string;
 
+    renameShortcut: string;
+    editShortcut: string;
+    clearNotificationsShortcut: string;
+    deleteShortcut: string;
+    addShortcutButton: string;
 }

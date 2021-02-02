@@ -11,6 +11,7 @@ export interface UserItem {
     displayName?: string;
     id: number;
     avatar?: string;
+    userType: UserType;
 }
 
 export interface User {
@@ -19,6 +20,7 @@ export interface User {
     username: string;
     avatar?: string;
     email: string;
+    userType: UserType;
 }
 
 const currentUserClient: AhoraRestCollector = new AhoraRestCollector("/api/me");

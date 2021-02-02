@@ -1,4 +1,5 @@
 import { Button, Form, Space } from "antd";
+import { UserType } from "app/services/users";
 import React, { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { SearchCriterias } from ".";
@@ -38,7 +39,7 @@ export default function SimpleDocsInput(props: Props) {
             <AhoraUsersField fieldData={{}}></AhoraUsersField>
         </Form.Item>
         <Form.Item style={{ minWidth: "170px" }} name="assignee" label={<FormattedMessage id="searchAssigneeText" />}>
-            <SearchDocUserGroupField fieldData={{} as any}></SearchDocUserGroupField>
+            <SearchDocUserGroupField userType={UserType.User} fieldData={{} as any}></SearchDocUserGroupField>
         </Form.Item>
         <Form.Item style={{ minWidth: "170px" }} name="status" label={<FormattedMessage id="searchStatusText" />}>
             <SearchDocStatusField fieldData={{} as any}></SearchDocStatusField>

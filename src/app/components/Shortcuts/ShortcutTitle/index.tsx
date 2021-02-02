@@ -77,7 +77,7 @@ function ShortcutTitle(props: Props) {
 
         if (renameText && props.shortcut) {
             if (props.shortcutdId === "docs") {
-                const addedShortcut = await addShortcutSimple(renameText, props.shortcut.draftsearchCriteria!);
+                const addedShortcut = await addShortcutSimple(renameText, props.shortcut.draftsearchCriteria || props.shortcut.searchCriteria);
                 props.addShortcutToState(addedShortcut);
                 props.history.replace(`/organizations/${props.organizationId}/${addedShortcut.id}`);
 

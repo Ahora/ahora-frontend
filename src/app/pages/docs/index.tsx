@@ -66,7 +66,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
 
     setSearchCriterias() {
         if (this.props.location.search.length > 0) {
-            const parsedUrl: ParsedUrl = parseUrl(this.props.location.search);
+            const parsedUrl: ParsedUrl = parseUrl(this.props.location.search, { parseNumbers: true, parseBooleans: true });
             const searchCriterias: SearchCriterias = parsedUrl.query;
             console.log(searchCriterias);
             //this.searchSelected(searchCriterias);

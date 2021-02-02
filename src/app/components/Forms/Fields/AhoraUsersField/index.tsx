@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { AhoraFormField } from '../../AhoraForm/data';
 import { Input, Select } from "antd";
-import { searchUsers, UserItem } from 'app/services/users';
+import { searchUsers, UserItem, UserType } from 'app/services/users';
 import { debounce } from 'lodash';
 import UserDetails from 'app/components/users/UserDetails';
 import { addUsersToState, updateUserUsedInState } from 'app/store/users/actions';
@@ -19,11 +19,12 @@ interface AhoraUsersFieldState {
     isLoading: boolean,
     options: UserItem[],
     query: string;
-    recentUsers?: number[];
+    recentUsers?: UserItem[];
 }
 
 interface InjectableProps {
-    recentUsers: Set<number>
+    recentUsers: Set<number>;
+    usersMap: Map<number, UserItem>;
 }
 
 interface DispatchProps {
@@ -36,6 +37,7 @@ interface Props extends DispatchProps, InjectableProps {
     fieldData: AhoraFormField;
     showUnassigned?: boolean;
     onChange: (value: number[]) => void;
+    userType?: UserType;
 }
 
 class AhoraUsersField extends React.Component<Props, AhoraUsersFieldState> {
@@ -89,7 +91,23 @@ class AhoraUsersField extends React.Component<Props, AhoraUsersFieldState> {
 
     dropDownChanged(open: boolean) {
         if (open) {
-            this.setState({ recentUsers: [...this.props.recentUsers].reverse() })
+            const userids = [...this.props.recentUsers].reverse();
+
+            const users = userids.map((userId) => this.props.usersMap.get(userId));
+            const userToShow: any[] = users.filter((user) => {
+                if (user === undefined) {
+                    return false;
+                }
+                if (this.props.userType !== undefined) {
+                    if (user.userType !== this.props.userType) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+            this.setState({ recentUsers: userToShow });
         }
     }
 
@@ -97,19 +115,15 @@ class AhoraUsersField extends React.Component<Props, AhoraUsersFieldState> {
         return (
             <UsersSelect
                 mode="multiple"
+                autoFocus={false}
+                showSearch={false}
                 value={this.props.value}
                 loading={this.state.isLoading}
                 placeholder={<FormattedMessage id="selectUsers" />}
                 dropdownStyle={{ minWidth: "400px" }}
-                onChange={this.onUpdate.bind(this)}
                 onDropdownVisibleChange={this.dropDownChanged.bind(this)}
                 dropdownRender={(menu) => {
                     return <>
-                        {false && this.state.query.length === 0 &&
-                            <>
-                                {this.state.value?.map((userId) => <div><UserDetails userId={userId} /></div>)}
-                            </>
-                        }
                         <Input autoFocus={true} onChange={this.onInputChange.bind(this)}></Input>
                         {menu}
                     </>
@@ -123,7 +137,7 @@ class AhoraUsersField extends React.Component<Props, AhoraUsersFieldState> {
                     </Select.OptGroup>}
                 {(this.state.recentUsers && this.state.query.length === 0 && this.state.recentUsers.length > 0) &&
                     <Select.OptGroup label={<FormattedMessage id="recentUsers" />}>
-                        {this.state.recentUsers.map((userId) => <Select.Option key={userId} value={userId}><UserDetails userId={userId} /></Select.Option>)}
+                        {this.state.recentUsers.map((user) => <Select.Option key={user.id} value={user.id}><UserDetails user={user} /></Select.Option>)}
                     </Select.OptGroup>
                 }
 
@@ -142,7 +156,8 @@ class AhoraUsersField extends React.Component<Props, AhoraUsersFieldState> {
 
 const mapStateToProps = (state: ApplicationState): InjectableProps => {
     return {
-        recentUsers: state.users.recentUsers
+        recentUsers: state.users.recentUsers,
+        usersMap: state.users.map
     }
 }
 

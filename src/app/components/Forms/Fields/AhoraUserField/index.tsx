@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { AhoraFormField } from '../../AhoraForm/data';
 import SelectUser from 'app/components/users/selectusers';
+import { UserType } from 'app/services/users';
 
 interface GroupBySelectState {
     value?: number;
@@ -26,7 +27,7 @@ class AhoraUserField extends React.Component<GroupBySelectStateProps, GroupBySel
 
     render() {
         return (
-            <SelectUser editMode={true} onSelect={this.handleChange.bind(this)} ></SelectUser>
+            <SelectUser userType={UserType.User} editMode={true} onSelect={this.handleChange.bind(this)} ></SelectUser>
         );
     }
 }

@@ -17,7 +17,7 @@ interface AppProps {
 function AppComponent(props: AppProps) {
   return (
     <ConfigProvider direction={props.isRTL ? "rtl" : "ltr"}>
-      <IntlProvider messages={props.messages} locale={props.locale || "en"} defaultLocale="en">
+      <IntlProvider messages={props.messages} onError={() => { }} locale={props.locale || "en"} defaultLocale="en">
         <BrowserRouter>
           <Switch>
             <Route path="/" component={Dashboard} />

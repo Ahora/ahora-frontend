@@ -17,7 +17,7 @@ function* loadDocs(action: LoadShortcutActions) {
     if (shortcut) {
         //Clean the shortcuts!
         yield put(UpdateShortcutDocs(action.payload.shortcutId));
-        const searchResults: SearchDocResult = yield call(getDocs, shortcut.searchCriteria, pageSize * (action.payload.page - 1), pageSize);
+        const searchResults: SearchDocResult = yield call(getDocs, shortcut.draftsearchCriteria || shortcut.searchCriteria, pageSize * (action.payload.page - 1), pageSize);
         const docs = searchResults.docs.reverse();
         yield put(setDocsInState(docs));
         yield put(UpdateShortcutDocs(action.payload.shortcutId, docs.map((doc) => doc.id), searchResults.totalCount, action.payload.page));

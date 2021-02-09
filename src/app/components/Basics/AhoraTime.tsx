@@ -1,6 +1,9 @@
 import React from "react";
+import { useIntl, } from "react-intl";
 import Moment from "react-moment";
 
 export default function AhoraDate(props: any) {
-    return <Moment local={true} ago={true} fromNow withTitle date={props.date}></Moment>
+    const intl = useIntl();
+
+    return <Moment locale={intl.locale} local={true} ago={true} fromNow date={props.date}></Moment>
 }

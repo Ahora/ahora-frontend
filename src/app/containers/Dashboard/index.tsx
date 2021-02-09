@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 import { Organization } from "app/services/organizations";
 import LoginPage from "app/pages/auth/login";
 
-
+import "./style.scss";
 
 interface InjectedProps {
   organization?: Organization,
@@ -44,12 +44,12 @@ class Dashboard extends React.Component<Props, State> {
           <Layout className="site-layout">
             <Header className="site-layout-background" >
 
-              <div style={{ float: "left" }}>
+              <div className="logocontainer">
                 <div className="logo" style={{ width: "80px" }}>
                   <Link to="/"><img src="/images/logo.svg" /></Link>
                 </div>
               </div>
-              <div style={{ float: 'right' }}>
+              <div className="rightside">
                 <CurrentUser></CurrentUser>
                 {this.props.organization &&
                   <Link title="Inbox" to={`/organizations/${this.props.organization.login}/inbox`}>

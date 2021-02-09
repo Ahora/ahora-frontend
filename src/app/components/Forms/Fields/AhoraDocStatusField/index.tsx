@@ -4,6 +4,7 @@ import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { Status } from 'app/services/statuses';
 import { Select } from 'antd';
+import DocStatusText from 'app/components/localization/DocStatusText';
 
 interface State {
     value: number;
@@ -39,12 +40,13 @@ class AhoraDocStatusField extends React.Component<Props, State> {
         this.props.onChange(this.state.value);
     }
 
-
     render() {
         return (
             <div>
                 <Select defaultOpen={true} autoFocus={this.props.autoFocus} onBlur={this.onBlur.bind(this)} value={this.state.value} onChange={this.handleChange.bind(this)}>
-                    {this.props.statuses.filter((status) => !status.hideFromSelection).map((status) => <Select.Option key={status.id} value={status.id!}>{status.name}</Select.Option>)}
+                    {this.props.statuses.filter((status) => !status.hideFromSelection).map((status) => <Select.Option key={status.id} value={status.id!}>
+                        <DocStatusText statusId={status.id!}></DocStatusText>
+                    </Select.Option>)}
                 </Select>
             </div>)
     }

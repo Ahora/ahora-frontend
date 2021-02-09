@@ -6,15 +6,15 @@
     padding: 0px 10px;
 
      &:hover {
-            background-color: beige;
+        background-color: beige;
 
-            .ant-comment-actions {
-                bottom: 0px; 
-                right: 5px;
-                display: block;
-                position: absolute;
-            }
+        .ant-comment-actions {
+            bottom: 0px; 
+            right: 5px;
+            display: block;
+            position: absolute;
         }
+    }
 
     .ant-comment-actions {
         display: none;
@@ -26,5 +26,19 @@
         top: -3px;
         position: relative;
         color: green;
+    }
+}
+
+.ant-layout-rtl {
+    .comment {
+        &:hover {
+            .ant-comment-actions {
+                bottom: 0px; 
+                left: 5px;
+                right: auto;
+                display: block;
+                position: absolute;
+            }
+        }
     }
 }

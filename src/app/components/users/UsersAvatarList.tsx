@@ -2,14 +2,12 @@ import * as React from 'react';
 import { Avatar, Popconfirm } from "antd";
 import UserAvatar from './UserAvatar';
 import SelectUser from 'app/components/users/selectusers';
-import { UserItem } from 'app/services/users';
-
 
 interface UserAvatarListProps {
     userIds: number[];
     maxCount?: number;
     canEdit?: boolean;
-    onUserSelected?: (user: UserItem) => void;
+    onUserSelected?: (userId: number) => void;
     onUserDeleted?: (userId: number) => void;
 }
 
@@ -32,10 +30,10 @@ export default class UserAvatarList extends React.Component<UserAvatarListProps,
         this.setState({ addUserClicked: true })
     }
 
-    onUserSelect(user: UserItem) {
+    onUserSelect(userId: number) {
         this.setState({ addUserClicked: false });
         if (this.props.onUserSelected) {
-            this.props.onUserSelected(user);
+            this.props.onUserSelected(userId);
         }
     }
 

@@ -15,6 +15,7 @@ export interface ShortcutsState {
 
 // src/store/chat/types.ts
 export const ADD_SHORTCUT = 'ADD_SHORTCUT';
+export const UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS = 'UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS';
 export const UPDATE_SHURTCUT_SEARCH_CRITERIAS = 'UPDATE_SHURTCUT_SEARCH_CRITERIAS';
 export const DELETE_SHORTCUT = 'DELETE_SHORTCUT';
 export const UPDATE_SHORTCUT = 'UPDATE_SHORTCUT';
@@ -26,6 +27,7 @@ export const LOAD_SHORTCUT_DOCS = 'LOAD_SHORTCUT_DOCS';
 export const RECEIVE_SHORTCUTS = 'RECEIVE_SHORTCUTS';
 export const UPDATE_UNREAD_DOCS_SHORTCUT = 'UPDATE_UNREAD_DOCS_SHORTCUT';
 export const REPORT_DOC_READ = 'REPORT_DOC_READ';
+export const SHORTCUTS_UPDATE_STAR = 'SHORTCUTS_UPDATE_STAR';
 
 
 interface SetOrg {
@@ -76,8 +78,18 @@ export interface ShortcutAddDocAction {
     }
 }
 
+export interface ShortcutUpdateStartAction {
+    type: typeof SHORTCUTS_UPDATE_STAR,
+    payload: {
+        shortcutId: string,
+        star: boolean
+    }
+}
+
+
+
 interface UpdateShortcutSearchCriteriasAction {
-    type: typeof UPDATE_SHURTCUT_SEARCH_CRITERIAS
+    type: typeof UPDATE_SHURTCUT_SEARCH_CRITERIAS | typeof UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS
     payload: {
         shortcutId: string,
         searchCriterias: SearchCriterias
@@ -92,7 +104,7 @@ export interface ReportDocReadAction {
 interface DeleteShortcutAction {
     type: typeof DELETE_SHORTCUT
     meta: {
-        id: number
+        id: string
     }
 }
 
@@ -101,4 +113,4 @@ interface FetchShortcutesAction {
     data: OrganizationShortcut[]
 }
 
-export type ShortcutActionTypes = AddCommentAction | ClearUnreadCommentsAction | CommentAddedAction | ShortcutAddDocAction | DeleteDocAction | AddShortcutAction | ShortcutDocsReceivedAction | LoadShortcutActions | DeleteShortcutAction | ReportDocReadAction | FetchShortcutesAction | UpdateShortcutAction | SetOrg | UpdateShortcutDocs | UpdateShortcutSearchCriteriasAction
+export type ShortcutActionTypes = ShortcutUpdateStartAction | AddCommentAction | ClearUnreadCommentsAction | CommentAddedAction | ShortcutAddDocAction | DeleteDocAction | AddShortcutAction | ShortcutDocsReceivedAction | LoadShortcutActions | DeleteShortcutAction | ReportDocReadAction | FetchShortcutesAction | UpdateShortcutAction | SetOrg | UpdateShortcutDocs | UpdateShortcutSearchCriteriasAction

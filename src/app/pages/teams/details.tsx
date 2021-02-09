@@ -155,7 +155,7 @@ export default class OrganizationTeamDetailsPage extends React.Component<AllProp
                     <div>
                         <h2>Sub Teams</h2>
                         <CanManageOrganization>
-                            <AhoraForm submitButtonText="Add" onSumbit={this.onSubmit.bind(this)}>
+                            <AhoraForm submitButtonText="Add" data={{ teamNameVal: "" }} onSumbit={this.onSubmit.bind(this)}>
                                 <AhoraField fieldType="text" fieldName="teamNameVal" displayName="name" required={true} />
                             </AhoraForm>
                         </CanManageOrganization>

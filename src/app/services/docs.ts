@@ -106,7 +106,7 @@ export const getDoc = async (id: number): Promise<Doc> => {
     return result.data;
 }
 
-export const assignDoc = async (login: string, id: number, userId: number): Promise<UserItem> => {
+export const assignDoc = async (login: string, id: number, userId: number | null): Promise<UserItem> => {
     const result = await docsClient.post({
         url: `/api/organizations/${login}/docs/${id}/assignee`,
         data: { userId }

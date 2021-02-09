@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { OrganizationShortcut, deleteShortcut, updateShortcut } from 'app/services/OrganizationShortcut';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
-import CanManageOrganization from 'app/components/Authentication/CanManageOrganization';
 import { ApplicationState } from 'app/store';
 import { deleteShortcutFromState, updateShortcutToState } from 'app/store/shortcuts/actions';
 import { Dispatch } from 'redux';
@@ -11,6 +10,7 @@ import { Link } from 'react-router-dom';
 import { StarFilled } from '@ant-design/icons';
 import { SearchCriterias } from 'app/components/SearchDocsInput';
 import { SearchCriteriasDisplay } from 'app/components/SearchDocsInput/SearchCriteriasDisplay';
+import { FormattedMessage } from 'react-intl';
 
 interface ShortcutsPageState {
     form?: any;
@@ -40,7 +40,7 @@ class ShortcutsPage extends React.Component<ShortcutsPageProps, ShortcutsPageSta
     }
 
     async ondeleteShortcut(shortcut: OrganizationShortcut) {
-        await deleteShortcut(shortcut.id!);
+        await deleteShortcut(shortcut.id!.toString());
         this.props.removeShortcutFromState(shortcut.id!);
     }
 
@@ -57,26 +57,24 @@ class ShortcutsPage extends React.Component<ShortcutsPageProps, ShortcutsPageSta
                 <Menu className="navbar-menu" mode="horizontal">
                     <Space>
                         <Link className="ant-menu-submenu-plus" to={`/organizations/${this.props.organizationId}/shortcuts/add`}>
-                            <Button>Add shortcut</Button>
+                            <Button><FormattedMessage id="shortcutAddButtonText" /></Button>
                         </Link>
                     </Space>
                 </Menu>
                 {(this.props.shortcuts) ?
                     <Table dataSource={this.props.shortcuts} rowKey="id">
-                        <Table.Column title="Star" dataIndex="star" key="star" render={(val: boolean) => val && <StarFilled />} />
-                        <Table.Column title="Title" dataIndex="title" key="title" />
-                        <Table.Column title="Search Criteria" dataIndex="searchCriteria" key="searchCriteria" render={(val: SearchCriterias) => val && <SearchCriteriasDisplay searchCriterias={val} />} />
-                        <Table.Column title="Actions" render={(value: any, shortcut: OrganizationShortcut) =>
-                            <CanManageOrganization>
-                                <Space>
-                                    <Popconfirm onConfirm={this.ondeleteShortcut.bind(this, shortcut)} title="Are you sure?">
-                                        <Button danger>Delete</Button>
-                                    </Popconfirm>
-                                    <Popconfirm onConfirm={this.clearNotifications.bind(this, shortcut)} title="Are you sure?">
-                                        <Button>Clear Notifications</Button>
-                                    </Popconfirm>
-                                </Space>
-                            </CanManageOrganization>
+                        <Table.Column dataIndex="star" key="star" render={(val: boolean) => val && <StarFilled />} />
+                        <Table.Column title={<FormattedMessage id="shortcutTableTitle" />} dataIndex="title" key="title" />
+                        <Table.Column title={<FormattedMessage id="shortcutTableSearchCriteria" />} dataIndex="searchCriteria" key="searchCriteria" render={(val: SearchCriterias) => val && <SearchCriteriasDisplay searchCriterias={val} />} />
+                        <Table.Column title={<FormattedMessage id="shortcutTableActions" />} render={(value: any, shortcut: OrganizationShortcut) =>
+                            <Space>
+                                <Popconfirm onConfirm={this.ondeleteShortcut.bind(this, shortcut)} title="Are you sure?">
+                                    <Button danger><FormattedMessage id="shortcutTableDeleteButtonText" /></Button>
+                                </Popconfirm>
+                                <Popconfirm onConfirm={this.clearNotifications.bind(this, shortcut)} title="Are you sure?">
+                                    <Button><FormattedMessage id="shortcutTableClearNotificationsText" /></Button>
+                                </Popconfirm>
+                            </Space>
                         }></Table.Column>
                     </Table >
                     :
@@ -97,7 +95,7 @@ const mapStateToProps = (state: ApplicationState): ShortcutsPageParams => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
-        removeShortcutFromState: (id: number) => { dispatch(deleteShortcutFromState(id)) },
+        removeShortcutFromState: (id: number) => { dispatch(deleteShortcutFromState(id.toString())) },
         updateShortcutToState: (status: OrganizationShortcut) => { dispatch(updateShortcutToState(status)) }
     }
 }

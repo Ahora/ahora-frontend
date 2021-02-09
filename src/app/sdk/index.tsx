@@ -23,6 +23,10 @@ import AhoraContentGadget from "app/components/Dashboards/Gadgets/Content/graph"
 import DocListGadget from "app/components/Dashboards/Gadgets/DocListGadget/Gadget";
 import AhoraMarkdownField from "app/components/Forms/Fields/AhoraMarkdownField";
 import AhoraBooleanField from "app/components/Forms/Fields/AhoraBooleanField";
+import AhoraDocStatusField from "app/components/Forms/Fields/AhoraDocStatusField";
+import SearchDocStatusField from "app/components/Forms/Fields/searchDocs/SearchDocStatusField";
+import SearchDocTypeField from "app/components/Forms/Fields/searchDocs/SearchDocDocTypeField";
+import SearchDocUserGroupField from "app/components/Forms/Fields/searchDocs/SearchDocUserGroupField";
 
 
 class AhoraSDK {
@@ -58,11 +62,17 @@ sdkInstance.formComponents.register("githubrepository", AhoraRepistoryAutoComple
 sdkInstance.formComponents.register("githuborganization", AhoraOrganizationAutoCompleteField);
 sdkInstance.formComponents.register("user", AhoraUserField);
 sdkInstance.formComponents.register("doctype", AhoraDocTypeField);
+sdkInstance.formComponents.register("status", AhoraDocStatusField);
 sdkInstance.formComponents.register("labels", AhoraLabelsField);
 sdkInstance.formComponents.register("docsgroup", AhoraGroupDocField);
 sdkInstance.formComponents.register("markdown", AhoraMarkdownField);
 sdkInstance.formComponents.register("users", AhoraUsersField);
 sdkInstance.formComponents.register("boolean", AhoraBooleanField);
+
+sdkInstance.formComponents.register("searchdocstatuses", SearchDocStatusField);
+sdkInstance.formComponents.register("searchdocTypes", SearchDocTypeField);
+sdkInstance.formComponents.register("searchusers", SearchDocUserGroupField);
+
 
 sdkInstance.dashboardGadgets.registerGadget("AhoraBarsPie", {
     title: "Pie or Bars Chart",

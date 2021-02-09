@@ -7,6 +7,7 @@ import AhoraForm from 'app/components/Forms/AhoraForm/AhoraForm';
 import AhoraField from 'app/components/Forms/AhoraForm/AhoraField';
 import { Dispatch } from 'redux';
 import { rememberLastDocTypeId } from 'app/store/docTypes/actions';
+import { FormattedMessage } from 'react-intl';
 
 interface AddDocsPageState {
     form: any;
@@ -55,15 +56,15 @@ class AddDocPage extends React.Component<Props, AddDocsPageState> {
         return (
 
             <div style={{ padding: "8px" }}>
-                <AhoraForm submitButtonText="Post" onUpdate={this.onFormUpdate.bind(this)} data={this.state.form} onCancel={this.onCancel.bind(this)} onSumbit={this.onSubmit.bind(this)}>
-                    <AhoraField autoFocus={true} displayName="Subject" fieldName="subject" fieldType="text" required={true}></AhoraField>
-                    <AhoraField displayName="Type" fieldName="docTypeId" fieldType="doctype" required={true}></AhoraField>
-                    <AhoraField displayName="Labels" fieldName="labels" fieldType="labels"></AhoraField>
-                    <AhoraField displayName="Description" fieldName="description" fieldType="markdown"></AhoraField>
-                    <AhoraField displayName="Private" fieldName="isPrivate" fieldType="boolean"></AhoraField>
-                    <AhoraField displayName="Users" fieldName="users" fieldType="users"></AhoraField>
+                <AhoraForm submitButtonText={<FormattedMessage id="submitButtonText" />} onUpdate={this.onFormUpdate.bind(this)} data={this.state.form} onCancel={this.onCancel.bind(this)} onSumbit={this.onSubmit.bind(this)}>
+                    <AhoraField autoFocus={true} displayName={<FormattedMessage id="subjectFieldName" />} fieldName="subject" fieldType="text" required={true}></AhoraField>
+                    <AhoraField displayName={<FormattedMessage id="docTypeFieldName" />} fieldName="docTypeId" fieldType="doctype" required={true}></AhoraField>
+                    <AhoraField displayName={<FormattedMessage id="labelsFieldName" />} fieldName="labels" fieldType="labels"></AhoraField>
+                    <AhoraField displayName={<FormattedMessage id="descriptionFieldName" />} fieldName="description" fieldType="markdown"></AhoraField>
+                    <AhoraField displayName={<FormattedMessage id="privateFieldName" />} fieldName="isPrivate" fieldType="boolean"></AhoraField>
+                    <AhoraField displayName={<FormattedMessage id="usersFieldName" />} fieldName="users" fieldType="users"></AhoraField>
                 </AhoraForm>
-            </div>
+            </div >
         );
     };
 }

@@ -1,11 +1,17 @@
 
 import AhoraRestCollector from "../sdk/AhoraRestCollector";
 
+export enum UserType {
+    User = 0,
+    Group = 1
+}
+
 export interface UserItem {
     username: string;
     displayName?: string;
     id: number;
     avatar?: string;
+    userType: UserType;
 }
 
 export interface User {
@@ -14,6 +20,7 @@ export interface User {
     username: string;
     avatar?: string;
     email: string;
+    userType: UserType;
 }
 
 const currentUserClient: AhoraRestCollector = new AhoraRestCollector("/api/me");
@@ -32,9 +39,9 @@ export const getUserById = async (id: number): Promise<UserItem> => {
     return result.data;
 }
 
-export const searchUsers = async (q: string): Promise<UserItem[]> => {
+export const searchUsers = async (q: string, userType?: UserType): Promise<UserItem[]> => {
     const result = await userClient.get({
-        query: { q }
+        query: { q, userType }
     });
     return result.data;
 }

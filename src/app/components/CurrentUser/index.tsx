@@ -5,6 +5,7 @@ import { Dispatch } from 'redux';
 import { User } from 'app/services/users';
 import { requestCurrentUserData } from 'app/store/currentuser/actions';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 interface LabelsPageState {
 }
@@ -38,8 +39,8 @@ class CurrentUser extends React.Component<AllProps, LabelsPageState> {
             <>
                 {this.props.currentUser !== undefined && (<>
                     {this.props.currentUser ?
-                        (<span>{this.props.currentUser.displayName || this.props.currentUser.username} | <a href="/auth/logout">Logout</a></span>) :
-                        (<Link to="/login">Login</Link>)
+                        (<span>{this.props.currentUser.displayName || this.props.currentUser.username} | <a href="/auth/logout"><FormattedMessage id="logout" /></a></span>) :
+                        (<Link to="/login"><FormattedMessage id="login" /></Link>)
                     }
                 </>)}
             </>

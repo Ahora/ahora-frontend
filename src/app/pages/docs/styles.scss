@@ -49,3 +49,11 @@
     margin: auto;
     text-align: center;
 }
+
+.ant-layout-rtl {
+    .doc-title {
+        .extra {
+            float: left;
+        }
+    }
+}

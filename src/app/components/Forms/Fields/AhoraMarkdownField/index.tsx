@@ -1,21 +1,23 @@
 import * as React from 'react';
 import { AhoraFormField } from '../../AhoraForm/data';
 import { Mentions } from 'antd';
-import { UserItem, searchUsers } from 'app/services/users';
+import { searchUsers, UserItem } from 'app/services/users';
 import { debounce } from 'lodash';
 import { ApplicationState } from 'app/store';
 import { Dispatch } from 'redux';
-import { updateUserUsedInState } from 'app/store/users/actions';
+import { addUsersToState, updateUserUsedInState } from 'app/store/users/actions';
 import { connect } from 'react-redux';
 import UserDetails from 'app/components/users/UserDetails';
 
 const { Option } = Mentions;
 
 interface InjectableProps {
-    recentUsers: Set<number>
+    recentUsers: Set<number>,
+    usersMap: Map<number, UserItem>
 }
 interface DispatchProps {
     userUsed(id: number): void;
+    addUsersToStore(users: UserItem[]): void;
 }
 
 interface State {
@@ -30,6 +32,7 @@ interface Props extends DispatchProps, InjectableProps {
     autoFocus?: boolean;
     fieldData: AhoraFormField;
     onChange?: (value: string) => void;
+    onPressEnter: () => void;
 }
 
 
@@ -61,10 +64,17 @@ class AhoraMarkdownField extends React.Component<Props, State> {
             });
 
             const users = await searchUsers(search);
-
+            this.props.addUsersToStore(users);
             this.setState({
                 loading: false,
                 users: users.slice(0, 10)
+            });
+        }
+        else {
+            const possibleUsers = [...this.props.recentUsers].reverse();
+            const users = possibleUsers.map((userId) => this.props.usersMap.get(userId)!)
+            this.setState({
+                users
             });
         }
     }
@@ -85,21 +95,22 @@ class AhoraMarkdownField extends React.Component<Props, State> {
     }
 
     render() {
+
         return (
             <Mentions
                 ref={this.mentionRef}
                 autoFocus={this.state.autoFocus}
-                placeholder="Message"
                 autoSize={true}
                 value={this.props.value}
                 loading={this.state.loading}
                 defaultValue={this.props.value}
+                onPressEnter={this.props.onPressEnter && this.props.onPressEnter.bind(this)}
                 onSelect={this.onUserSelect.bind(this)}
                 onChange={this.onChange.bind(this)}
                 onSearch={this.onSearch.bind(this)}>
                 {this.state.users && this.state.users.map((user) => (
                     <Option key={user.id.toString()} value={user.username}>
-                        <UserDetails user={user}></UserDetails>
+                        <UserDetails userId={user.id} user={user}></UserDetails>
                     </Option>
                 ))}
             </Mentions>
@@ -109,14 +120,16 @@ class AhoraMarkdownField extends React.Component<Props, State> {
 
 const mapStateToProps = (state: ApplicationState): InjectableProps => {
     return {
-        recentUsers: state.users.recentUsers
+        recentUsers: state.users.recentUsers,
+        usersMap: state.users.map
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
 
     return {
-        userUsed: (id: number) => dispatch(updateUserUsedInState(id))
+        userUsed: (id: number) => dispatch(updateUserUsedInState(id)),
+        addUsersToStore: (users: UserItem[]) => dispatch(addUsersToState(users)),
     }
 }
 

@@ -1,5 +1,6 @@
 import * as React from 'react';
-import SearchDocsInput, { SearchCriterias } from 'app/components/SearchDocsInput';
+import { SearchCriterias } from 'app/components/SearchDocsInput';
+import SimpleDocsInput from 'app/components/SearchDocsInput/SimpleDocsInput';
 
 interface GroupBySelectState {
     value?: SearchCriterias;
@@ -28,7 +29,8 @@ class AhoraSearchCriteriasField extends React.Component<GroupBySelectStateProps,
 
     render() {
         return (
-            <SearchDocsInput required={false} searchCriterias={this.state.value} searchSelected={this.onSearchSelected.bind(this)} ></SearchDocsInput>);
+            <SimpleDocsInput searchCriterias={this.state.value} searchSelected={this.onSearchSelected.bind(this)} ></SimpleDocsInput>
+        );
     }
 }
 

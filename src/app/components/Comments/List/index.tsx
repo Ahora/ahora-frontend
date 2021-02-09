@@ -9,6 +9,7 @@ import { requestCommentsToState, requestPinnedCommentsToState, requestunReadComm
 import { Divider, Typography } from 'antd';
 import { reportDocRead } from 'app/store/shortcuts/actions';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { FormattedMessage } from 'react-intl';
 
 
 require("./style.scss")
@@ -93,11 +94,11 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
             <>
                 {this.props.pinnedComments && this.props.pinnedComments.length > 0 &&
                     (<>
-                        <Typography.Title level={3}>Pinned:</Typography.Title>
+                        <Typography.Title level={3}><FormattedMessage id="commentsPinnedComments" /></Typography.Title>
                         {this.props.pinnedComments.map((commentId: number) => {
                             return (<CommentDetailsComponent key={commentId} docId={this.props.doc.id} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
                         })}
-                        <Typography.Title level={3}>Comments:</Typography.Title>
+                        <Typography.Title level={3}><FormattedMessage id="commentsCommentsText" /></Typography.Title>
                     </>)
                 }
 
@@ -112,7 +113,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                     {(this.props.moreComments && this.props.moreComments.length > 0) &&
                         <>
                             {this.props.moreComments.map((commentId: number) => { return (<CommentDetailsComponent key={commentId} focus={commentId === this.props.moreCommentFocusId} docId={this.props.doc.id} login={this.props.login} commentId={commentId}></CommentDetailsComponent>); })}
-                            <Divider className="divider-new-comments" orientation="right">New comments</Divider>
+                            <Divider className="divider-new-comments" orientation="right"><FormattedMessage id="commentsNewLabel" /></Divider>
                         </>
                     }
 
@@ -120,7 +121,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
 
 
                 </InfiniteScroll>
-
+                <br />
             </>
         );
     }
@@ -143,7 +144,7 @@ const mapStateToProps = (state: ApplicationState, props: CommentsProps): Injecta
         moreComments: mapOfComments?.moreComments,
         comments: mapOfComments?.comments,
         unReadCommentsCount: mapOfComments?.unReadCommentsCount,
-        moreCommentFocusId: (mapOfComments && mapOfComments.moreComments && mapOfComments.moreComments.length > 0 && !props.focusId) ? mapOfComments.moreComments[mapOfComments.moreComments.length - 1] : undefined,
+        moreCommentFocusId: (mapOfComments && mapOfComments.moreComments && mapOfComments.moreComments.length > 0) ? mapOfComments.moreComments[mapOfComments.moreComments.length - 1] : undefined,
         pinnedComments: mapOfComments?.pinnedComments,
         hasMore: mapOfComments ? mapOfComments.hasMore : false
     };

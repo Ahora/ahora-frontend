@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Comment, updateComment, deleteComment, pinComment, unpinComment } from 'app/services/comments';
+import { Comment, updateComment, deleteComment, pinComment, unpinComment, CommentType } from 'app/services/comments';
 import CanEditOrDeleteComment from 'app/components/Authentication/CanEditOrDeleteComment';
 import CanPinComment from 'app/components/Authentication/CanPinComment';
 import { Comment as CommentComponent } from 'antd';
@@ -15,6 +15,8 @@ import { ApplicationState } from 'app/store';
 import { connect } from 'react-redux';
 import { deleteCommentInState, setQouteCommentInState, updateCommentInState } from 'app/store/comments/actions';
 import AhoraDate from 'app/components/Basics/AhoraTime';
+import { FormattedMessage } from 'react-intl';
+import CommentFactory from './CommentFactory';
 
 interface InjectableProps {
     comment?: Comment;
@@ -147,23 +149,23 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
                         </>
                     }
                     datetime={<AhoraDate date={this.props.comment.createdAt}></AhoraDate>}
-                    actions={(this.isDraft()) ? undefined : [ //Don't show actions if comment is not created yet in the server
-                        <span key="comment-basic-reply-to" onClick={this.onQoute.bind(this, this.props.comment)}>Quote</span>,
+                    actions={(this.isDraft() || this.props.comment.commentType !== CommentType.comment) ? undefined : [ //Don't show actions if comment is not created yet in the server
+                        <span key="comment-basic-reply-to" onClick={this.onQoute.bind(this, this.props.comment)}><FormattedMessage id="quoteComment" /></span>,
                         <CanEditOrDeleteComment comment={this.props.comment}>
-                            <span onClick={this.editMode.bind(this)}>Edit</span>
-                            <span onClick={this.deleteCommentHandle.bind(this)}>Delete</span>
+                            <span onClick={this.editMode.bind(this)}><FormattedMessage id="editComment" /></span>
+                            <span onClick={this.deleteCommentHandle.bind(this)}><FormattedMessage id="deleteComment" /></span>
                         </CanEditOrDeleteComment>,
                         <CanPinComment docId={this.props.docId} comment={this.props.comment}>
-                            <span onClick={this.pinToggle.bind(this)}>{this.props.comment.pinned ? "Unpin" : "Pin"}</span>
+                            <span onClick={this.pinToggle.bind(this)}>{this.props.comment.pinned ? <FormattedMessage id="unpinComment" /> : <FormattedMessage id="pinComment" />}</span>
                         </CanPinComment>
                     ]}
                     content={
                         this.state.editMode ?
-                            <AhoraForm submitButtonText="Update" data={{ comment: this.props.comment.comment }} onCancel={this.discard.bind(this)} onSumbit={this.post.bind(this)}>
+                            <AhoraForm submitButtonText={<FormattedMessage id="updateCommentButtonText" />} data={{ comment: this.props.comment.comment }} onCancel={this.discard.bind(this)} onSumbit={this.post.bind(this)}>
                                 <AhoraField fieldType="markdown" fieldName="comment" displayName=""></AhoraField>
                             </AhoraForm>
                             :
-                            <p className="markdown-body" dangerouslySetInnerHTML={{ __html: this.props.comment.htmlComment }}></p>
+                            <CommentFactory comment={this.props.comment} />
                     }>
 
                 </CommentComponent>

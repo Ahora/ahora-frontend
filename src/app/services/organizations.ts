@@ -15,6 +15,8 @@ export interface Organization {
     description: string;
     orgType: OrganizationType;
     hasPayment: boolean;
+    isRTL: boolean,
+    locale?: string;
 }
 
 export interface OrganizationDetailsWithPermission extends Organization {

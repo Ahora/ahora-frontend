@@ -34,12 +34,33 @@ export const addShortcut = async (Shortcut: OrganizationShortcut): Promise<Organ
     return result.data;
 }
 
+export const addShortcutSimple = async (title: string, searchCriteria: SearchCriterias): Promise<OrganizationShortcut> => {
+    const result = await notificationsClient.post({
+        data: { title, searchCriteria }
+    });
+    return result.data;
+}
+
 export const updateShortcut = async (id: number, Shortcut: OrganizationShortcut): Promise<OrganizationShortcut> => {
     const result = await notificationsClient.put({
         params: { id },
         data: Shortcut
     });
     return result.data;
+}
+
+export const updateShortcutSearchCriteria = async (id: string, searchCriteria: SearchCriterias): Promise<void> => {
+    await notificationsClient.put({
+        params: { id },
+        data: { searchCriteria }
+    });
+}
+
+export const updateShortcutStar = async (id: string, star: boolean): Promise<void> => {
+    await notificationsClient.put({
+        params: { id },
+        data: { star }
+    });
 }
 
 export const updateShortcutTitle = async (id: number, title: string): Promise<OrganizationShortcut> => {
@@ -50,7 +71,7 @@ export const updateShortcutTitle = async (id: number, title: string): Promise<Or
     return result.data;
 }
 
-export const deleteShortcut = async (id: number): Promise<void> => {
+export const deleteShortcut = async (id: string): Promise<void> => {
     await notificationsClient.delete({
         params: { id }
     });

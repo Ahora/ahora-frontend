@@ -17,7 +17,7 @@ const printTextOfQuery = (field: string, val: string | string[]): string => {
     }
     else {
         //Wrap values with space in "".
-        return val.map((itemVal) => itemVal.indexOf(" ") > -1 ? `"${itemVal}"` : itemVal).map((itemVal) => `${field}:${itemVal}`).join(" ");
+        return val.map((itemVal) => (itemVal.indexOf && itemVal.indexOf(" ") > -1) ? `"${itemVal}"` : itemVal).map((itemVal) => `${field}:${itemVal}`).join(" ");
 
     }
 }

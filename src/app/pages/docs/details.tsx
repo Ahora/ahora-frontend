@@ -4,10 +4,8 @@ import { RouteComponentProps } from 'react-router';
 import CommentListComponent from 'app/components/Comments/List';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
-import { Status } from 'app/services/statuses';
 import SelectUser from 'app/components/users/selectusers';
-import { UserItem, User } from 'app/services/users';
-import { DocType } from 'app/services/docTypes';
+import { UserItem, User, UserType } from 'app/services/users';
 import { Comment } from 'app/services/comments';
 import EditableHeader from 'app/components/EditableHeader';
 import EditableMarkDown from 'app/components/EditableMarkDown';
@@ -17,7 +15,7 @@ import LabelsList from 'app/components/Labels/LabelList';
 import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
-import { Comment as CommentAnt, Descriptions, Space, Popconfirm, Tag } from 'antd';
+import { Comment as CommentAnt, Descriptions, Space, Popconfirm } from 'antd';
 import { Dispatch } from 'redux';
 import UserDetails from 'app/components/users/UserDetails';
 import UserAvatar from 'app/components/users/UserAvatar';
@@ -29,6 +27,9 @@ import { AddCommentInState, requestCommentsToState } from 'app/store/comments/ac
 import AhoraDate from 'app/components/Basics/AhoraTime';
 import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
 import { addWatcheToDocInState, DeleteWatcheFromDocInState, requestDocToState } from 'app/store/docs/actions';
+import DocTypeText from 'app/components/localization/DocTypeText';
+import { FormattedMessage } from 'react-intl';
+import IsPrivateTag from 'app/components/localization/IsPrivateTag';
 
 
 interface DocsDetailsPageState {
@@ -41,9 +42,6 @@ interface DocsDetailsPageParams {
 }
 
 interface injectedParams {
-    statuses: Status[],
-    docTypes: Map<number, DocType>,
-    statusesMap: Map<number, Status>,
     milestonesMap: Map<number, OrganizationMilestone>,
     loading: boolean;
     currentUser: User | undefined | null;
@@ -128,8 +126,8 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         await updateDocLabels(this.props.match.params.login, parseInt(this.props.match.params.docId), labels);
     }
 
-    async onAssigneeSelect(user: UserItem) {
-        const addedUserItem: UserItem = await assignDoc(this.props.match.params.login, parseInt(this.props.match.params.docId), user.id);
+    async onAssigneeSelect(userId?: number) {
+        const addedUserItem: UserItem = await assignDoc(this.props.match.params.login, parseInt(this.props.match.params.docId), userId !== undefined ? userId : null);
         const updatedDoc = { ...this.props.doc!, assigneeUserId: addedUserItem.id };
         this.updateDoc(updatedDoc);
     }
@@ -146,13 +144,13 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         this.updateDoc(updatedDoc);
     }
 
-    async onUserAddedToWatchers(user: UserItem) {
+    async onUserAddedToWatchers(userId: number) {
         try {
-            this.props.addWatcher(user.id);
-            await addWatcherToDoc(this.props.doc!.id, user.id);
+            this.props.addWatcher(userId);
+            await addWatcherToDoc(this.props.doc!.id, userId);
         }
         catch {
-            this.props.deleteWatcher(user.id);
+            this.props.deleteWatcher(userId);
         }
     }
 
@@ -194,21 +192,8 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         const doc: Doc | undefined = this.props.doc;
         let canEdit: boolean = false;
         let canAddComment: boolean = !!this.props.currentUser;
-        let docType: DocType | undefined;
-        let currentStatus: Status | undefined;
-        let currentMilestone: OrganizationMilestone | undefined;
         if (doc) {
             canEdit = canEditDoc(this.props.currentUser, doc);
-            docType = this.props.docTypes.get(doc.docTypeId);
-
-            if (doc.statusId) {
-                currentStatus = this.props.statusesMap.get(doc.statusId);
-            }
-
-            if (doc.milestoneId) {
-                currentMilestone = this.props.milestonesMap.get(doc.milestoneId);
-            }
-
         }
         return (
             <>
@@ -217,10 +202,10 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                     <AhoraFlexPanel onScrollToTop={this.onScrollToTop.bind(this)} onScrollToBottom={this.onScrollToBottom.bind(this)} top={
                         <div className="doc-title">
                             <Space className="extra">
-                                <DocStatusViewEdit canEdit={canEdit} status={currentStatus} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
-                                <DocMilestoneViewEdit canEdit={canEdit} milestone={currentMilestone} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
+                                <DocStatusViewEdit canEdit={canEdit} statusId={doc.statusId} onUpdate={this.changeStatus.bind(this)}></DocStatusViewEdit>
+                                <DocMilestoneViewEdit canEdit={canEdit} milestoneId={doc.milestoneId} onUpdate={this.changeMilestone.bind(this)}></DocMilestoneViewEdit>
                                 <Popconfirm onConfirm={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} title="Are you sure?">
-                                    <Tag color="#108ee9">{doc.isPrivate ? "Private" : "Public"}</Tag>
+                                    <IsPrivateTag isPrivate={doc.isPrivate} />
                                 </Popconfirm>
                             </Space>
                             <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
@@ -235,15 +220,12 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                     <UserAvatarList onUserDeleted={this.onUserDeletedFromWatchers.bind(this)} onUserSelected={this.onUserAddedToWatchers.bind(this)} canEdit={canEdit} userIds={doc.watchers} />
                                 </Space>
                                 <Descriptions>
-                                    <Descriptions.Item label="Assignee">
-                                        <SelectUser editMode={false} currentUserId={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
+                                    <Descriptions.Item label={<FormattedMessage id="assigneeMeDescriptor" />}>
+                                        <SelectUser showUnassigned={true} userType={UserType.User} autoFocus={true} editMode={false} currentUserId={doc.assigneeUserId} onSelect={this.onAssigneeSelect.bind(this)}></SelectUser>
                                     </Descriptions.Item>
-                                    {docType && <Descriptions.Item label="Type"><>{docType.name}</></Descriptions.Item>}
-                                    {doc.closedAt && <Descriptions.Item label="Closed At"><AhoraDate date={doc.closedAt}></AhoraDate></Descriptions.Item>}
-                                    {doc.lastView && <Descriptions.Item label="Last viewd by me">
-                                        <AhoraDate date={doc.lastView.updatedAt}></AhoraDate>
-                                    </Descriptions.Item>
-                                    }
+                                    <Descriptions.Item label={<FormattedMessage id="docTypeDescriptor" />}><DocTypeText docTypeId={doc.docTypeId}></DocTypeText></Descriptions.Item>
+                                    {doc.closedAt && <Descriptions.Item label={<FormattedMessage id="closedAtDescriptor" />}><AhoraDate date={doc.closedAt}></AhoraDate></Descriptions.Item>}
+                                    {doc.lastView && <Descriptions.Item label={<FormattedMessage id="lastViewedByMeDescriptor" />}><AhoraDate date={doc.lastView.updatedAt}></AhoraDate></Descriptions.Item>}
                                     {doc.source &&
                                         <>
                                             <Descriptions.Item label="Github Issue Id">
@@ -253,7 +235,6 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                             <Descriptions.Item label="Organization">{doc.source.organization}</Descriptions.Item>
                                         </>
                                     }
-                                    <Descriptions.Item label="Views">{doc.views}</Descriptions.Item>
                                 </Descriptions>
                                 <EditableMarkDown canEdit={canEdit} onChanged={this.onDescriptionChanged.bind(this)} value={doc.description}>
                                     <CommentAnt className="description"
@@ -263,7 +244,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                         actions={
                                             canEdit ? [
                                                 <Popconfirm onConfirm={this.delete.bind(this)} title="Are you sure?">
-                                                    <span>Delete discussion</span>
+                                                    <span><FormattedMessage id="deleteDocType" /></span>
                                                 </Popconfirm>
                                             ] : undefined
                                         }
@@ -295,15 +276,11 @@ const mapStateToProps = (state: ApplicationState, ownProps: AllProps): injectedP
     const docId = parseInt(ownProps.match.params.docId);
     const comments = state.comments.docs.get(docId);
     return {
-        docTypes: state.docTypes.mapById,
-        statuses: state.statuses.statuses,
         milestonesMap: state.milestones.map,
-        statusesMap: state.statuses.map,
         loading: state.statuses.loading,
         currentUser: state.currentUser.user,
         doc: state.docs.docs.get(docId),
         hasCommentsLoaded: comments?.moreComments !== undefined && comments?.comments !== undefined,
-
     };
 };
 

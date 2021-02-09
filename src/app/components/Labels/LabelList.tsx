@@ -3,6 +3,7 @@ import { Tag } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import LabelTag from './LabelTag';
 import AhoraLabelsField from '../Forms/Fields/AhoraLabelsField';
+import { FormattedMessage } from 'react-intl';
 
 interface LabelsSelectorState {
     isDropDownOpened: boolean;
@@ -55,8 +56,8 @@ export default class LabelsList extends React.Component<AllProps, LabelsSelector
                 {
                     (this.props.canEdit && !this.state.isDropDownOpened) &&
                     <Tag className="site-tag-plus" onClick={this.openDropDown.bind(this)}>
-                        <PlusOutlined /> New Label
-                                </Tag>
+                        <PlusOutlined /> <FormattedMessage id="newLabelText" />
+                    </Tag>
                 }
 
 

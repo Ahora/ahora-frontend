@@ -22,7 +22,7 @@ function* getShortcutsData(action: any) {
     const shortcutsMap: Map<string, StoreOrganizationShortcut> = state.shortcuts.map;
 
     shortcutsMap.forEach((value, key) => {
-        array.push({ shortcutId: key, searchCriteria: value.searchCriteria });
+        array.push({ shortcutId: key, searchCriteria: value.draftsearchCriteria || value.searchCriteria });
     });
 
     for (let index = 0; index < array.length; index++) {
@@ -39,7 +39,7 @@ function* getShortcutsData(action: any) {
     }
 
     //Run periodic refresh every 30 seconds
-    yield delay(3000000)
+    yield delay(30000)
     yield put({ type: REFRESH_SHORTCUTS });
 }
 

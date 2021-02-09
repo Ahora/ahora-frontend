@@ -1,4 +1,4 @@
-import { ShortcutsState, ShortcutActionTypes, ADD_SHORTCUT, DELETE_SHORTCUT, RECEIVE_SHORTCUTS, UPDATE_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, UPDATE_UNREAD_DOCS_SHORTCUT, REPORT_DOC_READ, SHORTCUT_DOCS_RECEIVED, SHORTCUT_DOCS_ADD } from './types'
+import { ShortcutsState, ShortcutActionTypes, ADD_SHORTCUT, DELETE_SHORTCUT, RECEIVE_SHORTCUTS, UPDATE_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, UPDATE_UNREAD_DOCS_SHORTCUT, REPORT_DOC_READ, SHORTCUT_DOCS_RECEIVED, SHORTCUT_DOCS_ADD, UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS, SHORTCUTS_UPDATE_STAR } from './types'
 import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
 import { SET_CURRENT_ORGANIZATION } from '../organizations/types';
 import StoreOrganizationShortcut from './StoreOrganizationShortcut';
@@ -13,19 +13,27 @@ const initialState: ShortcutsState = {
 
 export function shortcutsReducer(state = initialState, action: ShortcutActionTypes): ShortcutsState {
     switch (action.type) {
+        case UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS:
+            let shortcutDraftStore = state.map.get(action.payload.shortcutId);
+            if (shortcutDraftStore) {
+                shortcutDraftStore = { ...shortcutDraftStore, draftsearchCriteria: action.payload.searchCriterias }
+                state.map.set(action.payload.shortcutId, shortcutDraftStore);
+            }
+            return { ...state };
         case UPDATE_SHURTCUT_SEARCH_CRITERIAS:
             let shortcutStore = state.map.get(action.payload.shortcutId);
             if (shortcutStore) {
-                shortcutStore = { ...shortcutStore, searchCriteria: action.payload.searchCriterias }
+                shortcutStore = { ...shortcutStore, searchCriteria: action.payload.searchCriterias, draftsearchCriteria: undefined }
                 state.map.set(action.payload.shortcutId, shortcutStore);
             }
             return { ...state };
         case SET_CURRENT_ORGANIZATION:
             return {
                 ...initialState, map: new Map<string, StoreOrganizationShortcut>([
-                    ["inbox", { searchCriteria: { mention: ["me"] }, disableNotification: false, unreadDocs: new Set() }],
-                    ["private", { searchCriteria: { private: ["true"] }, disableNotification: false, unreadDocs: new Set() }],
-                    ["docs", { searchCriteria: { status: ["open"] }, disableNotification: true, unreadDocs: new Set() }]
+                    ["inbox", { searchCriteria: { mention: ["me"] }, disableNotification: false, unreadDocs: new Set(), strict: true }],
+                    ["private", { searchCriteria: { private: true }, disableNotification: false, unreadDocs: new Set(), strict: true }],
+                    ["docs", { searchCriteria: { status: ["open"] }, disableNotification: true, unreadDocs: new Set(), strict: true }]
+
                 ])
             }
         case ADD_SHORTCUT:
@@ -40,11 +48,12 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             return { ...state, shortcuts, map: state.map, loading: false }
         case DELETE_SHORTCUT:
             state.map.delete(action.meta.id.toString());
+            const shortcutIdToDelete = parseInt(action.meta.id);
             return {
                 ...state,
                 map: state.map,
                 shortcuts: state.shortcuts ? state.shortcuts.filter(
-                    shortcut => shortcut.id !== action.meta.id
+                    shortcut => shortcut.id !== shortcutIdToDelete
                 ) : []
 
             }
@@ -131,7 +140,13 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
                 }
             });
             return { ...state, map: new Map(state.map) };
-
+        case SHORTCUTS_UPDATE_STAR:
+            let shortcutStar = state.map.get(action.payload.shortcutId);
+            if (shortcutStar && shortcutStar.shortcut) {
+                shortcutStar = { ...shortcutStar, shortcut: { ...shortcutStar.shortcut, star: action.payload.star } }
+                state.map.set(action.payload.shortcutId, shortcutStar);
+            }
+            return { ...state, map: new Map(state.map) };
         default:
             return state
     }

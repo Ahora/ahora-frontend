@@ -2,11 +2,8 @@ import * as React from "react";
 import { Organization } from "../../../services/organizations";
 import { Link } from "react-router-dom";
 import { Layout, Menu, Badge } from 'antd';
-import { MessageOutlined, PlusCircleOutlined, StarFilled } from '@ant-design/icons';
 import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined, InboxOutlined } from '@ant-design/icons';
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
-import SubMenu from "antd/lib/menu/SubMenu";
-import AhoraSpinner from "app/components/Forms/Basics/Spinner";
 import { User } from "app/services/users";
 import { OrganizationTeamUser } from "app/services/organizationTeams";
 import { canManageOrganization } from "app/services/authentication";
@@ -15,6 +12,7 @@ import StoreOrganizationShortcut from "app/store/shortcuts/StoreOrganizationShor
 import { connect } from "react-redux";
 import { loadShortcutDocs } from "app/store/shortcuts/actions";
 import { Dispatch } from "redux";
+import { FormattedMessage } from "react-intl";
 require("./style.scss")
 
 interface OrganizationDetailsPageProps extends InjectableProps, DispatchProps {
@@ -33,6 +31,7 @@ interface DispatchProps {
 
 interface InjectableProps {
     shortcutsMap: Map<string, StoreOrganizationShortcut>;
+    showMilestones: boolean;
 }
 
 interface OrganizationDetailsPageState {
@@ -69,41 +68,22 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
                 selectedKeys={[this.props.match || "dashboards"]}
                 style={{ height: '100%' }}
             >
-                {this.props.currentUser &&
-                    <>
-                        <Menu.Item icon={<InboxOutlined />} key="inbox">
-                            <Link onDoubleClick={this.forceReload.bind(this, "inbox")} to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("inbox")?.unreadDocs?.size}>Inbox</Badge></Link>
-                        </Menu.Item>
-                        <Menu.Item icon={<InboxOutlined />} key="private">
-                            <Link onDoubleClick={this.forceReload.bind(this, "private")} to={`/organizations/${organization.login}/private`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("private")?.unreadDocs?.size}>Private</Badge></Link>
-                        </Menu.Item>
-                        <Menu.Item style={{ display: "none" }} icon={<MessageOutlined />}>
-                            Shortcuts
-                <Link className="ant-menu-submenu-plus" to={`/organizations/${this.props.organization.login}/shortcuts/add`}>
-                                <PlusCircleOutlined />
-                            </Link>
-                        </Menu.Item>
-                        {this.props.shortcuts ?
-                            <SubMenu key={"shortcuts"} icon={<MessageOutlined />} title="shortcuts">
-                                {this.props.shortcuts.map((shortcut) => <Menu.Item className="ant-menu-item" icon={shortcut.star && <StarFilled />} key={shortcut.id}>
-                                    <Link onDoubleClick={this.forceReload.bind(this, shortcut.id!.toString())} to={`/organizations/${this.props.organization && this.props.organization.login}/${shortcut.id}`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get(shortcut.id!.toString())?.unreadDocs?.size}>{shortcut.title}</Badge></Link>
-                                </Menu.Item>
-                                )}
-                                <Menu.Item key="shortcuts">
-                                    <Link to={`/organizations/${this.props.organization.login}/shortcuts`}>Manage</Link>
-                                </Menu.Item>
-                            </SubMenu>
 
-                            :
-                            <Menu.Item key="loader"><AhoraSpinner /></Menu.Item>
-                        }
-                    </>
-                }
-                <Menu.Item icon={<PieChartOutlined />} key="dashboards"><Link to={`/organizations/${organization.login}/dashboards`}>Dashboards</Link></Menu.Item>
-                <Menu.Item icon={<UnorderedListOutlined />} key="docs"><Link onDoubleClick={this.forceReload.bind(this, "docs")} to={`/organizations/${organization.login}/docs`}>Browse</Link></Menu.Item>
-                <Menu.Item icon={<TeamOutlined />} key="teams"><Link to={`/organizations/${organization.login}/teams`}>Teams</Link></Menu.Item>
-                <Menu.Item icon={<FlagOutlined />} key="milestones"><Link to={`/organizations/${organization.login}/milestones`}>Milestones</Link></Menu.Item>
-                {canManageOrg && <Menu.Item icon={<SettingOutlined />} key="settings"><Link to={`/organizations/${organization.login}/settings`}>Settings</Link></Menu.Item>}
+                <Menu.Item icon={<InboxOutlined />} key="inbox">
+                    <Link onDoubleClick={this.forceReload.bind(this, "inbox")} to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("inbox")?.unreadDocs?.size}><FormattedMessage id="menuinboxText" /></Badge></Link>
+                </Menu.Item>
+                <Menu.Item icon={<InboxOutlined />} key="private">
+                    <Link onDoubleClick={this.forceReload.bind(this, "private")} to={`/organizations/${organization.login}/private`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("private")?.unreadDocs?.size}><FormattedMessage id="menuprivateText" /></Badge></Link>
+                </Menu.Item>
+                {this.props.shortcuts?.map((shortcut) => <Menu.Item className="ant-menu-item" icon={<Badge offset={[15, 0]} count={this.props.shortcutsMap.get(shortcut.id!.toString())?.unreadDocs?.size} />} key={shortcut.id}>
+                    <Link className="ahora-shurtcut-link" onDoubleClick={this.forceReload.bind(this, shortcut.id!.toString())} to={`/organizations/${this.props.organization && this.props.organization.login}/${shortcut.id}`}>{shortcut.title}</Link>
+                </Menu.Item>
+                )}
+                <Menu.Item icon={<PieChartOutlined />} key="dashboards"><Link to={`/organizations/${organization.login}/dashboards`}><FormattedMessage id="menuDashboardsText" /></Link></Menu.Item>
+                <Menu.Item icon={<UnorderedListOutlined />} key="docs"><Link onDoubleClick={this.forceReload.bind(this, "docs")} to={`/organizations/${organization.login}/docs`}><FormattedMessage id="menudocsText" /></Link></Menu.Item>
+                <Menu.Item icon={<TeamOutlined />} key="teams"><Link to={`/organizations/${organization.login}/teams`}><FormattedMessage id="menuTeamsText" /></Link></Menu.Item>
+                {this.props.showMilestones || canManageOrg && <Menu.Item icon={<FlagOutlined />} key="milestones"><Link to={`/organizations/${organization.login}/milestones`}><FormattedMessage id="menuMilestonesText" /></Link></Menu.Item>}
+                {canManageOrg && <Menu.Item icon={<SettingOutlined />} key="settings"><Link to={`/organizations/${organization.login}/settings`}><FormattedMessage id="menuSettingsText" /></Link></Menu.Item>}
             </Menu>
         </Sider>
     }
@@ -116,7 +96,10 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
 }
 
 const mapStateToProps = (state: ApplicationState): InjectableProps => {
-    return { shortcutsMap: state.shortcuts.map };
+    return {
+        shortcutsMap: state.shortcuts.map,
+        showMilestones: state.milestones.milestones.length > 0,
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrganizationMenu as any);

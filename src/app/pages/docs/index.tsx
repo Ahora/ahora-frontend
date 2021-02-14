@@ -71,7 +71,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
             console.log(searchCriterias);
             //this.searchSelected(searchCriterias);
         }
-
         if (!this.props.docs) {
             this.props.loadShortcutDocs(this.props.match.params.section, 1);
         }
@@ -95,6 +94,12 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         if (this.props.match.params.docId !== PrevProps.match.params.docId) {
             const docId: number = parseInt(this.props.match.params.docId);
             this.setState({ currentDocId: isNaN(docId) ? undefined : docId });
+        }
+
+        if (this.props.match.params.section !== PrevProps.match.params.section) {
+            if (!this.props.docs) {
+                this.props.loadShortcutDocs(this.props.match.params.section, 1);
+            }
         }
     }
 

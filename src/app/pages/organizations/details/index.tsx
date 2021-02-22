@@ -28,6 +28,9 @@ import { OrganizationShortcut } from "app/services/OrganizationShortcut";
 import OrganizationMenu from "./OrganizationMenu"
 import { Layout } from "antd";
 import OrganizationWebSocket from "app/websockets/organizationWS";
+import { Container, Section, Bar } from 'react-simple-resizer';
+import { isBrowser } from "react-device-detect";
+
 
 interface OrganizationDetailsPageProps {
   shortcuts?: OrganizationShortcut[];
@@ -93,14 +96,19 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
   }
 
   render = () => {
-    const { Content } = Layout;
     const organization = this.state.organization;
     if (organization) {
       return (
-        <Layout>
-          <OrganizationMenu match={this.props.match.params.section} organization={organization} currentUser={this.props.currentUser} currentOrgPermission={this.props.currentOrgPermission} shortcuts={this.props.shortcuts} />
-          <Layout className="site-layout-content">
-            <Content>
+        <Layout className="site-layout-content">
+          <Container style={{ height: '100%' }}>
+            {isBrowser && <>
+              <Section defaultSize={200} minSize={0}>
+                <OrganizationMenu match={this.props.match.params.section} organization={organization} currentUser={this.props.currentUser} currentOrgPermission={this.props.currentOrgPermission} shortcuts={this.props.shortcuts} />
+              </Section>
+              <Bar size={3} style={{ background: '#888888', cursor: 'col-resize' }} />
+            </>
+            }
+            <Section>
               <Switch>
                 <Route path={`/organizations/:login/settings/:settingsSection?`} component={OrganizationSettingsPage} />
                 <Route path={`/organizations/:login/onboarding`} component={OrganizationNew} />
@@ -125,11 +133,9 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
                 <Route path={`/organizations/:login`} component={DashboardsPage}>
                 </Route>
               </Switch>
-            </Content>
-          </Layout>
-        </Layout>
-
-
+            </Section>
+          </Container>
+        </Layout >
       );
     } else {
       return <AhoraSpinner></AhoraSpinner>;

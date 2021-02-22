@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Organization } from "../../../services/organizations";
 import { Link } from "react-router-dom";
-import { Layout, Menu, Badge } from 'antd';
+import { Menu, Badge } from 'antd';
 import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined, InboxOutlined } from '@ant-design/icons';
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
 import { User } from "app/services/users";
@@ -16,11 +16,8 @@ import { FormattedMessage } from "react-intl";
 require("./style.scss")
 
 interface OrganizationDetailsPageProps extends InjectableProps, DispatchProps {
-    shortcuts?: OrganizationShortcut[];
-    currentOrgPermission?: OrganizationTeamUser;
-    currentUser?: User | undefined;
-    organization: Organization;
-    match: string;
+
+    match?: string;
 
 }
 
@@ -32,6 +29,10 @@ interface DispatchProps {
 interface InjectableProps {
     shortcutsMap: Map<string, StoreOrganizationShortcut>;
     showMilestones: boolean;
+    shortcuts?: OrganizationShortcut[];
+    currentOrgPermission?: OrganizationTeamUser;
+    currentUser?: User | undefined;
+    organization?: Organization;
 }
 
 interface OrganizationDetailsPageState {
@@ -56,12 +57,11 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
     }
 
     render() {
-        const { Sider } = Layout;
         const canManageOrg: boolean = canManageOrganization(this.props.currentOrgPermission);
         const organization = this.props.organization;
 
-        return <Sider theme="dark" breakpoint="sm" collapsedWidth="0" collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
-            <Menu
+        if (organization) {
+            return <Menu
                 theme="dark"
                 mode="inline"
                 defaultOpenKeys={["shortcuts"]}
@@ -84,8 +84,12 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
                 <Menu.Item icon={<TeamOutlined />} key="teams"><Link to={`/organizations/${organization.login}/teams`}><FormattedMessage id="menuTeamsText" /></Link></Menu.Item>
                 {this.props.showMilestones || canManageOrg && <Menu.Item icon={<FlagOutlined />} key="milestones"><Link to={`/organizations/${organization.login}/milestones`}><FormattedMessage id="menuMilestonesText" /></Link></Menu.Item>}
                 {canManageOrg && <Menu.Item icon={<SettingOutlined />} key="settings"><Link to={`/organizations/${organization.login}/settings`}><FormattedMessage id="menuSettingsText" /></Link></Menu.Item>}
-            </Menu>
-        </Sider>
+            </Menu>;
+        }
+        else {
+            return <></>
+        }
+
     }
 }
 
@@ -97,6 +101,10 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
 
 const mapStateToProps = (state: ApplicationState): InjectableProps => {
     return {
+        currentOrgPermission: state.organizations.currentOrgPermission,
+        shortcuts: state.shortcuts.shortcuts,
+        currentUser: state.currentUser.user,
+        organization: state.organizations.currentOrganization,
         shortcutsMap: state.shortcuts.map,
         showMilestones: state.milestones.milestones.length > 0,
     };

@@ -187,7 +187,6 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
 const mapStateToProps = (state: ApplicationState, ownProps: Props): InjectableProps => {
 
     let availableShortcut: StoreOrganizationShortcut | undefined = state.shortcuts.map.get(ownProps.shortcutdId);
-    console.log("bdage", availableShortcut?.unreadDocs?.size);
     return {
         organizationId: state.organizations.currentOrganization?.login,
         shortcut: availableShortcut,

@@ -21,6 +21,7 @@ import { deleteDocInState, setDocInState } from 'app/store/docs/actions';
 import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
 import { FormattedMessage } from 'react-intl';
 import ShortcutTitle from 'app/components/Shortcuts/ShortcutTitle';
+import AhoraHotKey from 'app/components/Basics/AhoraHotKey';
 
 require('./styles.scss')
 
@@ -140,11 +141,13 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     renderDocListTop() {
         return (
             <CanAddDoc>
-                <Link className="add-doc-button" to={`/organizations/${this.props.match.params.login}/${this.props.match.params.section}/add`}>
-                    <Button className="add-button" block type="primary">
-                        <PlusOutlined />
-                        <FormattedMessage id="addDiscussionButtonText" /></Button>
-                </Link>
+                <AhoraHotKey shortcut="alt+n">
+                    <Link className="add-doc-button" to={`/organizations/${this.props.match.params.login}/${this.props.match.params.section}/add`}>
+                        <Button className="add-button" block type="primary">
+                            <PlusOutlined />
+                            <FormattedMessage id="addDiscussionButtonText" /></Button>
+                    </Link>
+                </AhoraHotKey>
             </CanAddDoc>
         );
     }

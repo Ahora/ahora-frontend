@@ -9,6 +9,7 @@ import { User } from 'app/services/users';
 import { connect } from 'react-redux';
 import { KeyboardEvent } from 'react';
 import { markdownToHTML } from 'app/sdk/markdown';
+import AhoraHotKey from 'app/components/Basics/AhoraHotKey';
 require("./style.scss")
 
 
@@ -55,6 +56,14 @@ class AddCommentComponent extends React.Component<CommentsProps, State> {
         return commentRows.join("\n") + "\n\n";
     }
 
+    focus() {
+        console.log(this.markdownRef);
+
+        if (this.markdownRef.current) {
+            this.markdownRef.current.focus();
+        }
+    }
+
     componentDidUpdate(prevProps: CommentsProps) {
         if (prevProps.qouteComment !== this.props.qouteComment && this.props.qouteComment && this.props.qouteComment.comment !== this.state.rawComment) {
 
@@ -62,9 +71,7 @@ class AddCommentComponent extends React.Component<CommentsProps, State> {
                 rawComment: this.quouteText(this.props.qouteComment.comment)
             });
 
-            if (this.markdownRef.current) {
-                this.markdownRef.current.focus();
-            }
+            this.focus();
         }
         else if (prevProps.qouteComment !== this.props.qouteComment) {
             if (this.props.qouteComment) {
@@ -83,10 +90,7 @@ class AddCommentComponent extends React.Component<CommentsProps, State> {
             this.setState({
                 submittingComment: true
             });
-            if (this.markdownRef.current) {
-                this.markdownRef.current.focus();
-            }
-
+            this.focus();
             const tempcomment: Comment = {
                 id: this.tempId--,
                 authorUserId: this.props.currentUser!.id,
@@ -115,7 +119,7 @@ class AddCommentComponent extends React.Component<CommentsProps, State> {
         });
     }
 
-    onkeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    onPressEnter(event: KeyboardEvent<HTMLDivElement>) {
         if (!event.shiftKey && !event.ctrlKey && event.key === "Enter") {
             event.stopPropagation();
             event.preventDefault();
@@ -125,16 +129,15 @@ class AddCommentComponent extends React.Component<CommentsProps, State> {
 
     render() {
         return (
-            <>
-                <div className="mt-2 add-comment-container">
-                    <AhoraMarkdownField onPressEnter={this.onkeyDown.bind(this)} refs={this.markdownRef} autoFocus={true} onChange={this.handleChange.bind(this)} value={this.state.rawComment} fieldData={{ displayName: "", fieldName: "comment", fieldType: "markdown" }}></AhoraMarkdownField>
-                    <div className="buttons">
-                        <Button onClick={this.post.bind(this)} size="small" disabled={this.state.rawComment === undefined || this.state.rawComment.length === 0} type="primary">
-                            {this.state.submittingComment ? <AhoraSpinner /> : <SendOutlined />}
-                        </Button>
-                    </div>
+            <div className="mt-2 add-comment-container">
+                <AhoraMarkdownField onPressEnter={this.onPressEnter.bind(this)} ref={this.markdownRef} autoFocus={true} onChange={this.handleChange.bind(this)} value={this.state.rawComment} fieldData={{ displayName: "", fieldName: "comment", fieldType: "markdown" }}></AhoraMarkdownField>
+                <div className="buttons">
+                    <Button onClick={this.post.bind(this)} size="small" disabled={this.state.rawComment === undefined || this.state.rawComment.length === 0} type="primary">
+                        {this.state.submittingComment ? <AhoraSpinner /> : <SendOutlined />}
+                    </Button>
                 </div>
-            </>
+                <AhoraHotKey shortcut="alt+c" action={() => this.focus()}></AhoraHotKey>
+            </div>
         );
     }
 }

@@ -31,7 +31,7 @@ import DocTypeText from 'app/components/localization/DocTypeText';
 import { FormattedMessage } from 'react-intl';
 import IsPrivateTag from 'app/components/localization/IsPrivateTag';
 import DocStar from 'app/components/Doc/DocStar';
-
+import AhoraHotKey from 'app/components/Basics/AhoraHotKey';
 
 interface DocsDetailsPageState {
     focusCommentId?: number;
@@ -167,10 +167,12 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
     async delete() {
         if (this.props.doc) {
+            const deletedDoc: Doc = { ...this.props.doc };
+
             if (this.props.onDocDeleted) {
                 this.props.onDocDeleted(this.props.doc);
             }
-            await deleteDoc(this.props.match.params.login, this.props.doc.id!);
+            await deleteDoc(this.props.match.params.login, deletedDoc.id);
         }
     }
 
@@ -245,9 +247,11 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                         }
                                         actions={
                                             canEdit ? [
-                                                <Popconfirm onConfirm={this.delete.bind(this)} title="Are you sure?">
-                                                    <span><FormattedMessage id="deleteDocType" /></span>
-                                                </Popconfirm>
+                                                <AhoraHotKey action={this.delete.bind(this)} shortcut="alt+d">
+                                                    <Popconfirm onConfirm={this.delete.bind(this)} title="Are you sure?">
+                                                        <span><FormattedMessage id="deleteDocType" /></span>
+                                                    </Popconfirm>
+                                                </AhoraHotKey>
                                             ] : undefined
                                         }
                                         avatar={

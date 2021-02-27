@@ -6,6 +6,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 interface Props {
     shortcut: string;
+    action?: () => void;
 }
 
 
@@ -19,7 +20,13 @@ export default function AhoraHotKey(props: ComponentProps) {
     function handleClick(keyboardEvent: KeyboardEvent) {
         keyboardEvent.stopPropagation();
         keyboardEvent.preventDefault();
-        (divRef.current?.childNodes[0] as any).click();
+        if (props.action) {
+            props.action();
+        }
+        else {
+            (divRef.current?.childNodes[0] as any).click();
+
+        }
     }
 
     useHotkeys(props.shortcut, handleClick);

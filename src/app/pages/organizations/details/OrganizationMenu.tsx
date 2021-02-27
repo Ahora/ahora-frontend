@@ -2,7 +2,7 @@ import * as React from "react";
 import { Organization } from "../../../services/organizations";
 import { Link } from "react-router-dom";
 import { Menu, Badge } from 'antd';
-import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined, InboxOutlined } from '@ant-design/icons';
+import { UnorderedListOutlined, TeamOutlined, PieChartOutlined, SettingOutlined, FlagOutlined, InboxOutlined, StarOutlined } from '@ant-design/icons';
 import { OrganizationShortcut } from "app/services/OrganizationShortcut";
 import { User } from "app/services/users";
 import { OrganizationTeamUser } from "app/services/organizationTeams";
@@ -71,6 +71,9 @@ class OrganizationMenu extends React.Component<OrganizationDetailsPageProps, Org
 
                 <Menu.Item icon={<InboxOutlined />} key="inbox">
                     <Link onDoubleClick={this.forceReload.bind(this, "inbox")} to={`/organizations/${organization.login}/inbox`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("inbox")?.unreadDocs?.size}><FormattedMessage id="menuinboxText" /></Badge></Link>
+                </Menu.Item>
+                <Menu.Item icon={<StarOutlined />} key="star">
+                    <Link onDoubleClick={this.forceReload.bind(this, "star")} to={`/organizations/${organization.login}/star`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("star")?.unreadDocs?.size}><FormattedMessage id="menustarText" /></Badge></Link>
                 </Menu.Item>
                 <Menu.Item icon={<InboxOutlined />} key="private">
                     <Link onDoubleClick={this.forceReload.bind(this, "private")} to={`/organizations/${organization.login}/private`}><Badge offset={[15, 0]} count={this.props.shortcutsMap.get("private")?.unreadDocs?.size}><FormattedMessage id="menuprivateText" /></Badge></Link>

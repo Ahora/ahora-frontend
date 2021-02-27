@@ -88,5 +88,6 @@ export const hebrew: LocalInterface = {
     clearNotificationsShortcut: "נקה חיווים",
     deleteShortcut: "מחק",
     addShortcutButton: "הוסף",
-    all: "הכל"
+    all: "הכל",
+    menustarText: "מעודפים"
 }

@@ -40,6 +40,7 @@ export default interface LocalInterface extends Record<string, string> {
     noDocSelectedButtonText: string;
 
     menuinboxText: string;
+    menustarText: string;
     menuprivateText: string;
     menuShortcutsText: string;
     menuShortcutManageText: string;

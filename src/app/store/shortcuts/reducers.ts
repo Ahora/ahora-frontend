@@ -31,6 +31,7 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             return {
                 ...initialState, map: new Map<string, StoreOrganizationShortcut>([
                     ["inbox", { searchCriteria: { mention: ["me"] }, disableNotification: false, unreadDocs: new Set(), strict: true }],
+                    ["star", { searchCriteria: { star: true }, disableNotification: false, unreadDocs: new Set(), strict: true }],
                     ["private", { searchCriteria: { private: true }, disableNotification: false, unreadDocs: new Set(), strict: true }],
                     ["docs", { searchCriteria: { status: ["open"] }, disableNotification: true, unreadDocs: new Set(), strict: true }]
 

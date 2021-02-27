@@ -41,9 +41,9 @@ export interface Doc {
     }
     watchers: number[],
     lastView: null | {
+        star: boolean;
         updatedAt: Date
     }
-
 }
 
 export interface SearchDocResult {
@@ -53,6 +53,7 @@ export interface SearchDocResult {
 
 const docsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}");
 const docsunReadCommentsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docsunread");
+const docStarClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/star");
 const reportDocReadClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/view");
 const watchersClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/watchers/{userId}");
 export const getDocs = async (query?: SearchCriterias, offset: number = 0, limit: number = 30): Promise<SearchDocResult> => {
@@ -187,6 +188,14 @@ export const updateDocIsPrivate = async (login: string, id: number, isPrivate: b
         params: { id, login },
         url: `/api/organizations/${login}/docs/${id}/isprivate`,
         data: { isPrivate }
+    });
+    return result.data;
+}
+
+export const updateDocStar = async (id: number, star: boolean): Promise<Doc> => {
+    const result = await docStarClient.post({
+        params: { id },
+        data: { star }
     });
     return result.data;
 }

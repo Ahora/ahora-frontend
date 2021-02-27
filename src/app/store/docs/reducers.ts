@@ -1,6 +1,6 @@
 import { Doc } from "app/services/docs";
 import { REPORT_DOC_READ } from "../shortcuts/types";
-import { ADD_WATCHER_TO_DOC, DELETE_DOC, DELETE_WATCHER_FROM_DOC, DocsActionTypes, DocsState, SET_DOC, SET_DOCS } from "./types";
+import { ADD_WATCHER_TO_DOC, DELETE_DOC, DELETE_WATCHER_FROM_DOC, DocsActionTypes, DocsState, SET_DOC, SET_DOCS, SET_DOC_STAR } from "./types";
 
 const initialState: DocsState = {
     docs: new Map<number, Doc>()
@@ -14,8 +14,15 @@ export function docsReducer(state = initialState, action: DocsActionTypes): Docs
         case REPORT_DOC_READ:
             let doc = state.docs.get(action.payload);
             if (doc) {
-                doc = { ...doc, lastView: { updatedAt: new Date() } }
+                doc = { ...doc, lastView: { ...(doc.lastView || { star: false }), updatedAt: new Date() } }
                 state.docs.set(action.payload, doc);
+            }
+            return { ...state, docs: new Map(state.docs) };
+        case SET_DOC_STAR:
+            let docStar = state.docs.get(action.payload.docId);
+            if (docStar) {
+                docStar = { ...docStar, lastView: { star: action.payload.star, updatedAt: new Date() } };
+                state.docs.set(action.payload.docId, docStar);
             }
             return { ...state, docs: new Map(state.docs) };
         case SET_DOCS:

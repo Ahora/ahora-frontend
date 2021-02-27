@@ -4,6 +4,7 @@ import { ReportDocReadAction } from "../shortcuts/types";
 export const SET_DOC = 'SET_DOC';
 export const SET_DOCS = 'SET_DOCS';
 export const DELETE_DOC = 'DELETE_DOC';
+export const SET_DOC_STAR = 'SET_DOC_STAR';
 export const ADD_WATCHER_TO_DOC = 'ADD_WATCHER_TO_DOC';
 export const DELETE_WATCHER_FROM_DOC = 'DELETE_WATCHER_FROM_DOC';
 export const LOAD_DOCS = 'LOAD_DOCS';
@@ -40,9 +41,17 @@ export interface DocWatcherAction {
     }
 }
 
+export interface DocSetStarAction {
+    type: typeof SET_DOC_STAR
+    payload: {
+        docId: number;
+        star: boolean
+    }
+}
+
 export interface DeleteDocAction {
     type: typeof DELETE_DOC
     payload: number
 }
 
-export type DocsActionTypes = RequestDocAction | ReportDocReadAction | SetDocAction | DeleteDocAction | SetDocsAction | DocWatcherAction;
+export type DocsActionTypes = DocSetStarAction | RequestDocAction | ReportDocReadAction | SetDocAction | DeleteDocAction | SetDocsAction | DocWatcherAction;

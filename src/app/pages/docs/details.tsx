@@ -30,6 +30,7 @@ import { addWatcheToDocInState, DeleteWatcheFromDocInState, requestDocToState } 
 import DocTypeText from 'app/components/localization/DocTypeText';
 import { FormattedMessage } from 'react-intl';
 import IsPrivateTag from 'app/components/localization/IsPrivateTag';
+import DocStar from 'app/components/Doc/DocStar';
 
 
 interface DocsDetailsPageState {
@@ -207,6 +208,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 <Popconfirm onConfirm={canEdit ? this.updateIsPrivate.bind(this, !doc.isPrivate) : undefined} title="Are you sure?">
                                     <IsPrivateTag isPrivate={doc.isPrivate} />
                                 </Popconfirm>
+                                <DocStar docId={doc.id} />
                             </Space>
                             <EditableHeader canEdit={canEdit} onChanged={this.onSubjectChanged.bind(this)} value={doc.subject}>
                                 <h1>{doc.subject}</h1>

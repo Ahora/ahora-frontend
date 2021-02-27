@@ -16,6 +16,7 @@ import AhoraDate from '../Basics/AhoraTime';
 import DocStatusTag from '../Doc/DocStatusTag';
 import DocTypeTag from '../Doc/DocTypeTag';
 import IsPrivateTag from '../localization/IsPrivateTag';
+import DocStar from '../Doc/DocStar';
 
 interface injectedParams {
     statuses: Map<number, Status>;
@@ -55,7 +56,10 @@ class DocListItem extends React.Component<AllProps> {
                     <div className="item-wrapper">
                         <div className="extra">
                             <div>
-                                <AhoraDate date={doc.updatedAt || doc.createdAt}></AhoraDate>
+                                <Space>
+                                    <AhoraDate date={doc.updatedAt || doc.createdAt}></AhoraDate>
+                                    <DocStar docId={doc.id} />
+                                </Space>
                             </div>
                             <Space className="tags" direction="vertical">
                                 <div>

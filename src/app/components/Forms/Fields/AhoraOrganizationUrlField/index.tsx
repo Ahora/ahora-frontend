@@ -93,7 +93,7 @@ class AhoraOrganizationUrlField extends React.Component<LoginFieldProps, GroupBy
             onChange={this.handleChange.bind(this)}
             onBlur={this.onBlur.bind(this)}
             required={this.props.fieldData.required}
-            prefix={"https://ahora.dev/organizations/"}
+            prefix={"https://ahora.chat/organizations/"}
             suffix={
                 <>
                     {this.state.loading ?

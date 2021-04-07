@@ -30,7 +30,6 @@ interface DispatchProps {
 }
 interface CommentsProps extends InjectableProps, DispatchProps {
     commentId: number;
-    login: string;
     docId: number;
     focus: boolean;
 }
@@ -85,7 +84,7 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
 
     async deleteCommentHandle() {
         if (this.props.comment && confirm("Are you sure you want to delete this?")) {
-            await deleteComment(this.props.login, this.props.comment);
+            await deleteComment(this.props.comment);
             this.props.deleteComment(this.props.comment.id);
         }
     }
@@ -109,7 +108,7 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
             this.setState({
                 submittingComment: true
             });
-            const newComment: Comment = await updateComment(this.props.login, this.props.comment.docId, this.props.comment.id, data.comment);
+            const newComment: Comment = await updateComment(this.props.comment.docId, this.props.comment.id, data.comment);
             this.props.updateComment(newComment);
             this.setState({
                 newCommentText: undefined,
@@ -126,10 +125,10 @@ class CommentDetailsComponent extends React.Component<CommentsProps, State> {
     async pinToggle() {
         if (this.props.comment) {
             if (this.props.comment.pinned) {
-                await unpinComment(this.props.login, this.props.comment);
+                await unpinComment(this.props.comment);
             }
             else {
-                await pinComment(this.props.login, this.props.comment);
+                await pinComment(this.props.comment);
 
             }
 

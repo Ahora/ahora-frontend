@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Doc, updateDoc, assignDoc, updateDocSubject, updateDocDescription, updateDocLabels, deleteDoc, updateDocStatus, updateDocIsPrivate, addWatcherToDoc, deleteWatcherFromDoc } from 'app/services/docs';
-import { RouteComponentProps } from 'react-router';
 import CommentListComponent from 'app/components/Comments/List';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
@@ -12,7 +11,6 @@ import EditableMarkDown from 'app/components/EditableMarkDown';
 import { canEditDoc } from 'app/services/authentication';
 import DocStatusViewEdit from 'app/components/Doc/DocStatusViewEdit';
 import LabelsList from 'app/components/Labels/LabelList';
-import { OrganizationMilestone } from 'app/services/OrganizationMilestones';
 import DocMilestoneViewEdit from 'app/components/Doc/DocMilestoneViewEdit';
 import AhoraSpinner from 'app/components/Forms/Basics/Spinner';
 import { Comment as CommentAnt, Descriptions, Space, Popconfirm } from 'antd';
@@ -26,7 +24,7 @@ import { addComment } from 'app/services/comments';
 import { AddCommentInState, requestCommentsToState } from 'app/store/comments/actions';
 import AhoraDate from 'app/components/Basics/AhoraTime';
 import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
-import { addWatcheToDocInState, DeleteWatcheFromDocInState, requestDocToState } from 'app/store/docs/actions';
+import { addWatcheToDocInState, DeleteWatcheFromDocInState, requestDocToState, setDocInState } from 'app/store/docs/actions';
 import DocTypeText from 'app/components/localization/DocTypeText';
 import { FormattedMessage } from 'react-intl';
 import IsPrivateTag from 'app/components/localization/IsPrivateTag';
@@ -37,13 +35,7 @@ interface DocsDetailsPageState {
     focusCommentId?: number;
 }
 
-interface DocsDetailsPageParams {
-    login: string;
-    docId: string;
-}
-
 interface injectedParams {
-    milestonesMap: Map<number, OrganizationMilestone>,
     loading: boolean;
     currentUser: User | undefined | null;
     doc?: Doc;
@@ -53,6 +45,7 @@ interface injectedParams {
 interface DispatchProps {
     reportAsRead(): void;
     requestDoc: () => void;
+    updateDoc(doc: Doc): void;
     addComment: (comment: Comment, tempCommentId?: number) => void;
     addWatcher: (userId: number) => void;
     deleteWatcher: (userId: number) => void;
@@ -60,9 +53,9 @@ interface DispatchProps {
 
 }
 
-interface AllProps extends RouteComponentProps<DocsDetailsPageParams>, injectedParams, DispatchProps {
-    onDocUpdated: (doc: Doc) => void;
-    onDocDeleted: (doc: Doc) => void;
+interface AllProps extends injectedParams, DispatchProps {
+    onDocDeleted?: (doc: Doc) => void;
+    docId: number;
 }
 
 class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
@@ -74,21 +67,21 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     async changeStatus(statusId: number) {
         if (this.props.doc && statusId !== this.props.doc.statusId) {
             const updatedDoc = { ...this.props.doc, statusId };
-            await updateDocStatus(this.props.match.params.login, this.props.doc.id, statusId);
+            await updateDocStatus(this.props.doc.id, statusId);
             this.updateDoc(updatedDoc);
 
         }
     }
 
     updateDoc(doc: Doc) {
-        this.props.onDocUpdated(doc);
+        this.updateDoc(doc);
         this.props.reportAsRead();
     }
 
     async changeMilestone(milestoneId?: number) {
         if (this.props.doc && milestoneId !== this.props.doc!.milestoneId) {
             const doc = { ...this.props.doc, milestoneId };
-            const updatedDoc = await updateDoc(this.props.match.params.login, doc.id, doc);
+            const updatedDoc = await updateDoc(doc.id, doc);
             this.updateDoc(updatedDoc);
 
         }
@@ -98,21 +91,10 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         this.props.addComment(comment);
         this.setState({ focusCommentId: comment.id })
 
-        const newComment: Comment = await addComment(this.props.match.params.login, comment.docId, comment.comment, comment.parentId);
+        const newComment: Comment = await addComment(comment.docId, comment.comment, comment.parentId);
         this.setState({ focusCommentId: newComment.id });
         this.props.addComment(newComment, comment.id);
         this.props.reportAsRead();
-    }
-
-    async componentDidUpdate(PrevProps: AllProps) {
-
-        /*const prevDocId: number | undefined = PrevProps.doc ? PrevProps.doc.id : undefined;
-        if (this.props.doc && this.props.doc.id !== prevDocId) {
-            if (prevDocId) {
-                this.props.reportAsRead(prevDocId)
-            }
-        }
-        */
     }
 
     async componentDidMount() {
@@ -124,24 +106,24 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     async onLabelsUpdate(labels: number[]): Promise<void> {
         const updatedDoc = { ...this.props.doc!, labels };
         this.updateDoc(updatedDoc);
-        await updateDocLabels(this.props.match.params.login, parseInt(this.props.match.params.docId), labels);
+        await updateDocLabels(this.props.docId, labels);
     }
 
     async onAssigneeSelect(userId?: number) {
-        const addedUserItem: UserItem = await assignDoc(this.props.match.params.login, parseInt(this.props.match.params.docId), userId !== undefined ? userId : null);
+        const addedUserItem: UserItem = await assignDoc(this.props.docId, userId !== undefined ? userId : null);
         const updatedDoc = { ...this.props.doc!, assigneeUserId: addedUserItem.id };
         this.updateDoc(updatedDoc);
     }
 
     async onSubjectChanged(value: string) {
         const updatedDoc = { ...this.props.doc!, subject: value };
-        await updateDocSubject(this.props.match.params.login, this.props.doc!.id, value);
+        await updateDocSubject(this.props.doc!.id, value);
         this.updateDoc(updatedDoc);
     }
 
     async updateIsPrivate(isPrivate: boolean) {
         const updatedDoc: Doc = { ...this.props.doc!, isPrivate };
-        await updateDocIsPrivate(this.props.match.params.login, this.props.doc!.id, isPrivate);
+        await updateDocIsPrivate(this.props.doc!.id, isPrivate);
         this.updateDoc(updatedDoc);
     }
 
@@ -172,7 +154,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
             if (this.props.onDocDeleted) {
                 this.props.onDocDeleted(this.props.doc);
             }
-            await deleteDoc(this.props.match.params.login, deletedDoc.id);
+            await deleteDoc(deletedDoc.id);
         }
     }
 
@@ -187,7 +169,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     }
 
     async onDescriptionChanged(value: string) {
-        const newDoc = await updateDocDescription(this.props.match.params.login, this.props.doc!.id, value);
+        const newDoc = await updateDocDescription(this.props.doc!.id, value);
         this.updateDoc({ ...this.props.doc, ...newDoc });
     }
 
@@ -201,7 +183,6 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
         return (
             <>
                 {doc ?
-
                     <AhoraFlexPanel onScrollToTop={this.onScrollToTop.bind(this)} onScrollToBottom={this.onScrollToBottom.bind(this)} top={
                         <div className="doc-title">
                             <Space className="extra">
@@ -216,7 +197,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                 <h1>{doc.subject}</h1>
                             </EditableHeader>
                         </div>
-                    } scrollId={`scrollableComments${doc.id}`} bottom={canAddComment && <AddCommentComponent commentAdded={this.commentAdded.bind(this)} login={this.props.match.params.login} docId={doc.id}></AddCommentComponent>}>
+                    } scrollId={`scrollableComments${doc.id}`} bottom={canAddComment && <AddCommentComponent commentAdded={this.commentAdded.bind(this)} docId={doc.id}></AddCommentComponent>}>
                         <div className="doc-details">
                             <div>
                                 <Space direction="vertical" style={{ width: "100%" }}>
@@ -267,7 +248,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
                                     </CommentAnt>
                                 </EditableMarkDown>
                             </div>
-                            <CommentListComponent focusId={this.state.focusCommentId} doc={doc} login={this.props.match.params.login}></CommentListComponent>
+                            <CommentListComponent focusId={this.state.focusCommentId} doc={doc}></CommentListComponent>
                         </div>
                     </AhoraFlexPanel>
 
@@ -279,10 +260,9 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 }
 
 const mapStateToProps = (state: ApplicationState, ownProps: AllProps): injectedParams => {
-    const docId = parseInt(ownProps.match.params.docId);
+    const docId = ownProps.docId;
     const comments = state.comments.docs.get(docId);
     return {
-        milestonesMap: state.milestones.map,
         loading: state.statuses.loading,
         currentUser: state.currentUser.user,
         doc: state.docs.docs.get(docId),
@@ -292,11 +272,12 @@ const mapStateToProps = (state: ApplicationState, ownProps: AllProps): injectedP
 
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: AllProps): DispatchProps => {
     return {
-        addWatcher: (userId) => dispatch(addWatcheToDocInState(parseInt(ownProps.match.params.docId), userId)),
-        deleteWatcher: (userId) => dispatch(DeleteWatcheFromDocInState(parseInt(ownProps.match.params.docId), userId)),
-        requestDoc: () => dispatch(requestDocToState(parseInt(ownProps.match.params.docId))),
-        reportAsRead: () => dispatch(reportDocRead(parseInt(ownProps.match.params.docId))),
-        loadComments: () => dispatch(requestCommentsToState((parseInt(ownProps.match.params.docId)))),
+        addWatcher: (userId) => dispatch(addWatcheToDocInState(ownProps.docId, userId)),
+        deleteWatcher: (userId) => dispatch(DeleteWatcheFromDocInState(ownProps.docId, userId)),
+        requestDoc: () => dispatch(requestDocToState(ownProps.docId)),
+        updateDoc: (doc: Doc) => dispatch(setDocInState(doc)),
+        reportAsRead: () => dispatch(reportDocRead(ownProps.docId)),
+        loadComments: () => dispatch(requestCommentsToState((ownProps.docId))),
         addComment: (comment: Comment, tempCommentId?: number) => dispatch(AddCommentInState(comment, tempCommentId)),
     }
 }

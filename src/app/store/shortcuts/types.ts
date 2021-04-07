@@ -28,6 +28,7 @@ export const RECEIVE_SHORTCUTS = 'RECEIVE_SHORTCUTS';
 export const UPDATE_UNREAD_DOCS_SHORTCUT = 'UPDATE_UNREAD_DOCS_SHORTCUT';
 export const REPORT_DOC_READ = 'REPORT_DOC_READ';
 export const SHORTCUTS_UPDATE_STAR = 'SHORTCUTS_UPDATE_STAR';
+export const SHORTCUTS_UPDATE_LAYOUT = 'SHORTCUTS_UPDATE_LAYOUT';
 
 
 interface SetOrg {
@@ -78,6 +79,14 @@ export interface ShortcutAddDocAction {
     }
 }
 
+export interface ShortcutUpdateLayoutAction {
+    type: typeof SHORTCUTS_UPDATE_LAYOUT,
+    payload: {
+        shortcutId: string,
+        layout: string
+    }
+}
+
 export interface ShortcutUpdateStartAction {
     type: typeof SHORTCUTS_UPDATE_STAR,
     payload: {
@@ -85,8 +94,6 @@ export interface ShortcutUpdateStartAction {
         star: boolean
     }
 }
-
-
 
 interface UpdateShortcutSearchCriteriasAction {
     type: typeof UPDATE_SHURTCUT_SEARCH_CRITERIAS | typeof UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS
@@ -113,4 +120,4 @@ interface FetchShortcutesAction {
     data: OrganizationShortcut[]
 }
 
-export type ShortcutActionTypes = ShortcutUpdateStartAction | AddCommentAction | ClearUnreadCommentsAction | CommentAddedAction | ShortcutAddDocAction | DeleteDocAction | AddShortcutAction | ShortcutDocsReceivedAction | LoadShortcutActions | DeleteShortcutAction | ReportDocReadAction | FetchShortcutesAction | UpdateShortcutAction | SetOrg | UpdateShortcutDocs | UpdateShortcutSearchCriteriasAction
+export type ShortcutActionTypes = ShortcutUpdateLayoutAction | ShortcutUpdateStartAction | AddCommentAction | ClearUnreadCommentsAction | CommentAddedAction | ShortcutAddDocAction | DeleteDocAction | AddShortcutAction | ShortcutDocsReceivedAction | LoadShortcutActions | DeleteShortcutAction | ReportDocReadAction | FetchShortcutesAction | UpdateShortcutAction | SetOrg | UpdateShortcutDocs | UpdateShortcutSearchCriteriasAction

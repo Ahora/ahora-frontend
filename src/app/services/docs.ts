@@ -56,6 +56,10 @@ const docsunReadCommentsClient: AhoraRestCollector = new AhoraRestCollector("/ap
 const docStarClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/star");
 const reportDocReadClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/view");
 const watchersClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/watchers/{userId}");
+const docStatusClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/${login}/docs/${id}/status");
+const docAssignClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/${login}/docs/${id}/assignee");
+const docIsPrivateClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/${login}/docs/${id}/isprivate");
+
 export const getDocs = async (query?: SearchCriterias, offset: number = 0, limit: number = 30): Promise<SearchDocResult> => {
     const result = await docsClient.get({
         query: { ...query, offset, limit }
@@ -107,9 +111,9 @@ export const getDoc = async (id: number): Promise<Doc> => {
     return result.data;
 }
 
-export const assignDoc = async (login: string, id: number, userId: number | null): Promise<UserItem> => {
-    const result = await docsClient.post({
-        url: `/api/organizations/${login}/docs/${id}/assignee`,
+export const assignDoc = async (id: number, userId: number | null): Promise<UserItem> => {
+    const result = await docAssignClient.post({
+        params: { id },
         data: { userId }
     });
     return result.data;
@@ -150,43 +154,42 @@ export const addDoc = async (login: string, doc: Doc): Promise<Doc> => {
     return result.data;
 }
 
-export const updateDoc = async (login: string, id: number, doc: Doc): Promise<Doc> => {
+export const updateDoc = async (id: number, doc: Doc): Promise<Doc> => {
     const result = await docsClient.put({
-        params: { login, id },
+        params: { id },
         data: doc
     });
     return result.data;
 }
 
-export const updateDocStatus = async (login: string, docId: number, statusId: number): Promise<void> => {
-    const result = await docsClient.post({
-        url: `/api/organizations/${login}/docs/${docId}/status`,
+export const updateDocStatus = async (id: number, statusId: number): Promise<void> => {
+    const result = await docStatusClient.post({
+        params: { id },
         data: { statusId }
     });
     return result.data;
 
 }
 
-export const updateDocSubject = async (login: string, id: number, subject: string): Promise<Doc> => {
+export const updateDocSubject = async (id: number, subject: string): Promise<Doc> => {
     const result = await docsClient.put({
-        params: { id, login },
+        params: { id },
         data: { subject }
     });
     return result.data;
 }
 
-export const updateDocDescription = async (login: string, id: number, description: string): Promise<Doc> => {
+export const updateDocDescription = async (id: number, description: string): Promise<Doc> => {
     const result = await docsClient.put({
-        params: { id, login },
+        params: { id },
         data: { description }
     });
     return result.data;
 }
 
-export const updateDocIsPrivate = async (login: string, id: number, isPrivate: boolean): Promise<Doc> => {
-    const result = await docsClient.post({
-        params: { id, login },
-        url: `/api/organizations/${login}/docs/${id}/isprivate`,
+export const updateDocIsPrivate = async (id: number, isPrivate: boolean): Promise<Doc> => {
+    const result = await docIsPrivateClient.post({
+        params: { id },
         data: { isPrivate }
     });
     return result.data;
@@ -200,16 +203,16 @@ export const updateDocStar = async (id: number, star: boolean): Promise<Doc> => 
     return result.data;
 }
 
-export const updateDocLabels = async (login: string, id: number, labels?: number[]): Promise<Doc> => {
+export const updateDocLabels = async (id: number, labels?: number[]): Promise<Doc> => {
     const result = await docsClient.put({
-        params: { id, login },
+        params: { id },
         data: { labels }
     });
     return result.data;
 }
 
-export const deleteDoc = async (login: string, id: number): Promise<void> => {
+export const deleteDoc = async (id: number): Promise<void> => {
     await docsClient.delete({
-        params: { login, id }
+        params: { id }
     });
 }

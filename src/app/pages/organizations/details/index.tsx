@@ -108,7 +108,7 @@ class OrganizationDetailsPage extends React.Component<Props, OrganizationDetails
               <Bar size={3} style={{ background: '#888888', cursor: 'col-resize' }} />
             </>
             }
-            <Section>
+            <Section style={{ overflow: 'auto' }}>
               <Switch>
                 <Route path={`/organizations/:login/settings/:settingsSection?`} component={OrganizationSettingsPage} />
                 <Route path={`/organizations/:login/onboarding`} component={OrganizationNew} />

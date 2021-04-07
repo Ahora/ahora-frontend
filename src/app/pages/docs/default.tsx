@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Button } from 'antd';
 import { FormattedMessage } from 'react-intl';
 
@@ -12,7 +12,7 @@ interface Props extends RouteComponentProps<PageParams> {
 
 }
 
-export default class DefaultDocsPage extends React.Component<Props> {
+class DefaultDocsPage extends React.Component<Props> {
     render() {
         return <div className="defaultdoccontainer">
             <p><FormattedMessage id="noDocSelectText" /></p>
@@ -24,3 +24,5 @@ export default class DefaultDocsPage extends React.Component<Props> {
         </div>;
     }
 }
+
+export default withRouter(DefaultDocsPage);

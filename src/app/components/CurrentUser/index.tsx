@@ -31,7 +31,8 @@ class CurrentUser extends React.Component<AllProps, LabelsPageState> {
     }
 
     async componentDidMount() {
-        this.props.requestCurrentUser();
+        if (!this.props.currentUser)
+            this.props.requestCurrentUser();
     }
 
     render() {
@@ -61,4 +62,4 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CurrentUser as any); 
+export default connect(mapStateToProps, mapDispatchToProps)(CurrentUser as any);

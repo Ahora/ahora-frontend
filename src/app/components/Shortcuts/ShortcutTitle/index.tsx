@@ -2,7 +2,7 @@ import { SearchCriterias } from "app/components/SearchDocsInput";
 import SimpleDocsInput from "app/components/SearchDocsInput/SimpleDocsInput";
 import { addShortcutSimple, deleteShortcut, OrganizationShortcut, updateShortcut, updateShortcutSearchCriteria, updateShortcutStar } from "app/services/OrganizationShortcut";
 import { ApplicationState } from "app/store";
-import { addShortcutFromState, deleteShortcutFromState, loadShortcutDocs, setShourtcutStarAction, updateShortcutDraftsearchCriteriaAction, updateShortcutsearchCriteriaAction, updateShortcutToState } from "app/store/shortcuts/actions";
+import { addShortcutFromState, deleteShortcutFromState, loadShortcutDocs, SetShortcutLayoutInState, setShourtcutStarAction, updateShortcutDraftsearchCriteriaAction, updateShortcutsearchCriteriaAction, updateShortcutToState } from "app/store/shortcuts/actions";
 import StoreOrganizationShortcut from "app/store/shortcuts/StoreOrganizationShortcut";
 import React, { useEffect, useState } from "react";
 import { Dispatch } from 'redux';
@@ -29,7 +29,8 @@ interface DispatchProps {
     loadShortcutDocs(shortcutId: string, page: number): void;
     updateShortcutToState(shortcut: OrganizationShortcut): void;
     removeShortcutFromState(id: string): void;
-    addShortcutToState(shortcut: OrganizationShortcut): void,
+    addShortcutToState(shortcut: OrganizationShortcut): void;
+    setLayout(layout: string): void;
 }
 
 interface Props extends RouteComponentProps, InjectableProps, DispatchProps {
@@ -123,22 +124,29 @@ function ShortcutTitle(props: Props) {
             setEditMode(false);
         }
     }
+    const layout = props.shortcut?.layout !== "carusel" ? "carusel" : "Default";
 
     const menu = (
         <Menu>
-            <Menu.Item onClick={() => { setRenameMode(true) }} key="0">
-                <FormattedMessage id="renameShortcut" />
-            </Menu.Item>
-            <Menu.Item onClick={() => { setEditMode(true) }} key="1">
-                <FormattedMessage id="editShortcut" />
+            <Menu.Item onClick={() => { props.setLayout(layout) }} key="9">
+                {layout}
             </Menu.Item>
             <Menu.Divider />
-            <Menu.Item onClick={clearNotifications} key="3">
+            {props.canUpdateSearchCriteria && <Menu.Item onClick={() => { setRenameMode(true) }} key="0">
+                <FormattedMessage id="renameShortcut" />
+            </Menu.Item>
+            }
+            {props.canUpdateSearchCriteria && <Menu.Item onClick={() => { setEditMode(true) }} key="1">
+                <FormattedMessage id="editShortcut" />
+            </Menu.Item>
+            }
+            {props.canUpdateSearchCriteria && <Menu.Divider />}
+            {props.canUpdateSearchCriteria && <Menu.Item onClick={clearNotifications} key="3">
                 <FormattedMessage id="clearNotificationsShortcut" />
-            </Menu.Item>
-            <Menu.Item onClick={ondeleteShortcut} key="4">
+            </Menu.Item>}
+            {props.canUpdateSearchCriteria && <Menu.Item onClick={ondeleteShortcut} key="4">
                 <FormattedMessage id="deleteShortcut" />
-            </Menu.Item>
+            </Menu.Item>}
         </Menu>
     );
 
@@ -147,13 +155,11 @@ function ShortcutTitle(props: Props) {
             <>
                 {props.canEdit && <span className="side" onClick={toggleStar}>{props.shortcut?.shortcut?.star ? <StarFilled /> : <StarOutlined />}</span>}
                 <span className="title"><Badge offset={[15, 0]} count={props.shortcut?.unreadDocs?.size}>{props.shortcut && <FormattedMessage id={`menu${props.shortcutdId}Text`} defaultMessage={props.shortcut?.shortcut?.title} />}</Badge></span>
-                {props.canUpdateSearchCriteria &&
-                    <span className="side">
-                        <Dropdown className="side" overlay={menu} trigger={['click']}>
-                            <SettingOutlined />
-                        </Dropdown>
-                    </span>
-                }
+                <span className="side">
+                    <Dropdown className="side" overlay={menu} trigger={['click']}>
+                        <SettingOutlined />
+                    </Dropdown>
+                </span>
             </>
         }
         {editMode &&
@@ -171,7 +177,7 @@ function ShortcutTitle(props: Props) {
 }
 
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+const mapDispatchToProps = (dispatch: Dispatch, ownProps: Props): DispatchProps => {
     return {
         addShortcutToState: (status: OrganizationShortcut) => { dispatch(addShortcutFromState(status)) },
         removeShortcutFromState: (id: string) => { dispatch(deleteShortcutFromState(id)) },
@@ -180,6 +186,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
         setShortcutStar: (shortcutdId: string, star: boolean) => dispatch(setShourtcutStarAction(shortcutdId, star)),
         setDraftSearchCriterias: (shortcutdId: string, data: SearchCriterias) => dispatch(updateShortcutDraftsearchCriteriaAction(shortcutdId, data)),
         loadShortcutDocs: (shortcutdId: string, page: number) => dispatch(loadShortcutDocs(shortcutdId, page)),
+        setLayout: (layout: string) => dispatch(SetShortcutLayoutInState(ownProps.shortcutdId, layout))
 
     }
 }

@@ -1,4 +1,4 @@
-import { ShortcutsState, ShortcutActionTypes, ADD_SHORTCUT, DELETE_SHORTCUT, RECEIVE_SHORTCUTS, UPDATE_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, UPDATE_UNREAD_DOCS_SHORTCUT, REPORT_DOC_READ, SHORTCUT_DOCS_RECEIVED, SHORTCUT_DOCS_ADD, UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS, SHORTCUTS_UPDATE_STAR } from './types'
+import { ShortcutsState, ShortcutActionTypes, ADD_SHORTCUT, DELETE_SHORTCUT, RECEIVE_SHORTCUTS, UPDATE_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, UPDATE_UNREAD_DOCS_SHORTCUT, REPORT_DOC_READ, SHORTCUT_DOCS_RECEIVED, SHORTCUT_DOCS_ADD, UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS, SHORTCUTS_UPDATE_STAR, SHORTCUTS_UPDATE_LAYOUT } from './types'
 import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
 import { SET_CURRENT_ORGANIZATION } from '../organizations/types';
 import StoreOrganizationShortcut from './StoreOrganizationShortcut';
@@ -146,6 +146,13 @@ export function shortcutsReducer(state = initialState, action: ShortcutActionTyp
             if (shortcutStar && shortcutStar.shortcut) {
                 shortcutStar = { ...shortcutStar, shortcut: { ...shortcutStar.shortcut, star: action.payload.star } }
                 state.map.set(action.payload.shortcutId, shortcutStar);
+            }
+            return { ...state, map: new Map(state.map) };
+
+        case SHORTCUTS_UPDATE_LAYOUT:
+            let shortcutLayout = state.map.get(action.payload.shortcutId);
+            if (shortcutLayout) {
+                state.map.set(action.payload.shortcutId, { ...shortcutLayout, layout: action.payload.layout });
             }
             return { ...state, map: new Map(state.map) };
         default:

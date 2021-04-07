@@ -6,22 +6,15 @@ import { Dispatch } from 'redux';
 import { SearchCriterias } from 'app/components/SearchDocsInput';
 import { parseUrl, ParsedUrl } from "query-string";
 import { Doc } from 'app/services/docs';
-import DocList from 'app/components/DocList';
-import DocsDetailsPage from "app/pages/docs/details";
 import AddDocPage from "app/pages/docs/add";
-import CanAddDoc from 'app/components/Authentication/CanAddDoc';
-import { Link } from 'react-router-dom';
-import { Button } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import DefaultDocsPage from './default';
 import { isMobile, isBrowser } from "react-device-detect";
 import StoreOrganizationShortcut from 'app/store/shortcuts/StoreOrganizationShortcut';
 import { addDocToShortcut, loadShortcutDocs } from 'app/store/shortcuts/actions';
 import { deleteDocInState, setDocInState } from 'app/store/docs/actions';
 import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
-import { FormattedMessage } from 'react-intl';
 import ShortcutTitle from 'app/components/Shortcuts/ShortcutTitle';
-import AhoraHotKey from 'app/components/Basics/AhoraHotKey';
+import SideBySideDocLayout from 'app/components/DocList/DocLayouts/SideBySideDocLayout';
+import CaruselDocLayout from 'app/components/DocList/DocLayouts/CaruselDocLayout';
 
 require('./styles.scss')
 
@@ -40,6 +33,7 @@ interface injectedParams {
     page: number;
     totalDocs: number;
     loading: boolean;
+    layout?: string;
     searchCriteria?: SearchCriterias;
     docs?: Set<number>,
 }
@@ -51,7 +45,6 @@ interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedPar
 interface DispatchProps {
     loadShortcutDocs(shortcutId: string, page: number): void;
     deleteDoc(docId: number): void;
-    updateDoc(doc: Doc): void;
     addDoc(shortcutdId: string, doc: Doc): void;
 }
 
@@ -75,10 +68,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         if (!this.props.docs) {
             this.props.loadShortcutDocs(this.props.match.params.section, 1);
         }
-    }
-
-    pageChanged(newPage: number) {
-        this.props.loadShortcutDocs(this.props.match.params.section, newPage);
     }
 
     async componentDidMount() {
@@ -109,10 +98,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         this.props.history.push(`/organizations/${this.props.match.params.login}/${this.props.match.params.section}`)
     }
 
-    onDocUpdated(updatedDoc: Doc) {
-        this.props.updateDoc(updatedDoc);
-    }
-
     onAddCancel() {
         if (this.props.history.length <= 2) {
             this.props.history.push(`/organizations/${this.props.match.params.login}/${this.props.match.params.section}`)
@@ -130,38 +115,23 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
         this.props.history.replace(`/organizations/${this.props.match.params.login}/${this.props.match.params.section}/${addedDoc.id}`)
     }
 
-    renderDocList() {
-        return (<div className="doc-list-wrapper">
-            <DocList onPageChanged={this.pageChanged.bind(this)} pageSize={30} totalDocs={this.props.totalDocs} page={this.props.page} section={this.props.match.params.section} docs={this.props.docs} activeDocId={this.state.currentDocId} searchCriteria={this.props.searchCriteria}>
-                <div className="no-docs"><FormattedMessage id="docsNoResults" /></div>
-            </DocList>
-        </div>);
+    renderLayout() {
+        switch (this.props.layout) {
+            case "carusel":
+                return <CaruselDocLayout currentDocId={this.state.currentDocId} section={this.props.match.params.section} login={this.props.match.params.login} />
+
+            default:
+                return <SideBySideDocLayout currentDocId={this.state.currentDocId} section={this.props.match.params.section} login={this.props.match.params.login} />;
+        }
     }
 
-    renderDocListTop() {
-        return (
-            <CanAddDoc>
-                <AhoraHotKey shortcut="alt+n">
-                    <Link className="add-doc-button" to={`/organizations/${this.props.match.params.login}/${this.props.match.params.section}/add`}>
-                        <Button className="add-button" block type="primary">
-                            <PlusOutlined />
-                            <FormattedMessage id="addDiscussionButtonText" /></Button>
-                    </Link>
-                </AhoraHotKey>
-            </CanAddDoc>
-        );
-    }
-
-    renderDocDetails() {
-        if (this.state.currentDocId) {
-            return <DocsDetailsPage onDocDeleted={this.onDocDeleted.bind(this)} onDocUpdated={this.onDocUpdated.bind(this)} {...this.props}></DocsDetailsPage>
-        }
-        else {
-            return <Switch>
-                <Route path={`/organizations/:login/:section/add`} component={(props: any) => <AddDocPage {...props} onCancel={this.onAddCancel.bind(this)} onDocAdded={this.onDocAdded.bind(this)} />} />
-                <Route path={`/organizations/:login/:section`} component={DefaultDocsPage} />
-            </Switch>
-        }
+    renderMainContent() {
+        return <Switch>
+            <Route path={`/organizations/:login/:section/add`} component={(props: any) => <AddDocPage {...props} onCancel={this.onAddCancel.bind(this)} onDocAdded={this.onDocAdded.bind(this)} />} />
+            <Route path={`/organizations/:login/:section`} component={() => <>
+                {this.renderLayout()}
+            </>} />
+        </Switch>
     }
 
     render() {
@@ -173,30 +143,7 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                 </div>
             }>
                 <div className="site-layout-content">
-                    {isMobile ?
-                        <>
-                            {this.props.match.params.docId === undefined ?
-                                <>
-                                    {this.renderDocListTop()}
-                                    {this.renderDocList()}
-                                </>
-                                :
-                                <>
-                                    {this.renderDocDetails()}
-                                </>
-                            }
-                        </>
-                        :
-                        <AhoraFlexPanel left={
-                            <AhoraFlexPanel top={this.renderDocListTop()}>
-                                {this.renderDocList()}
-                            </AhoraFlexPanel>
-                        }>
-
-                            {this.renderDocDetails()}
-
-                        </AhoraFlexPanel>
-                    }
+                    {this.renderMainContent()}
                 </div>
             </AhoraFlexPanel>
         );
@@ -207,6 +154,7 @@ const mapStateToProps = (state: ApplicationState, props: AllProps): injectedPara
     let availableShortcut: StoreOrganizationShortcut | undefined = state.shortcuts.map.get(props.match.params.section);
     return {
         page: availableShortcut?.page || 0,
+        layout: availableShortcut?.layout,
         loading: false,
         docs: availableShortcut?.docs,
         totalDocs: (availableShortcut && availableShortcut.totalDocs) ? availableShortcut.totalDocs : 0,
@@ -218,7 +166,6 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
         loadShortcutDocs: (shortcutdId: string, page: number) => dispatch(loadShortcutDocs(shortcutdId, page)),
         deleteDoc: (docId: number) => dispatch(deleteDocInState(docId)),
-        updateDoc: (doc: Doc) => dispatch(setDocInState(doc)),
         addDoc: (shortcutdId: string, doc: Doc) => {
             dispatch(setDocInState(doc));
             dispatch(addDocToShortcut(shortcutdId, doc.id));

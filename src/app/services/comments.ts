@@ -27,6 +27,9 @@ export interface Comment {
 
 
 const commentsClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{docId}/Comments/{id}");
+const commentsPinClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{docId}/Comments/{id}/pin");
+const commentsUnpinClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{docId}/Comments/{id}/unpin");
+
 export const getComments = async (docId: number, toDate?: Date | string, fromCreatedAt?: Date): Promise<Comment[]> => {
     const result = await commentsClient.get({
         params: { docId },
@@ -61,9 +64,9 @@ export const getDoc = async (login: string, docId: number): Promise<Comment> => 
     return result.data;
 }
 
-export const addComment = async (login: string, docId: number, comment: string, parentId?: number): Promise<Comment> => {
+export const addComment = async (docId: number, comment: string, parentId?: number): Promise<Comment> => {
     const result = await commentsClient.post({
-        params: { login, docId },
+        params: { docId },
         data: {
             comment,
             parentId
@@ -72,9 +75,9 @@ export const addComment = async (login: string, docId: number, comment: string, 
     return result.data;
 }
 
-export const updateComment = async (login: string, docId: number, id: number, comment: string): Promise<Comment> => {
+export const updateComment = async (docId: number, id: number, comment: string): Promise<Comment> => {
     const result = await commentsClient.put({
-        params: { login, docId, id },
+        params: { docId, id },
         data: {
             comment
         }
@@ -82,24 +85,23 @@ export const updateComment = async (login: string, docId: number, id: number, co
     return result.data;
 }
 
-export const deleteComment = async (login: string, comment: Comment): Promise<Comment> => {
+export const deleteComment = async (comment: Comment): Promise<Comment> => {
     const result = await commentsClient.delete({
-        params: { login, docId: comment.docId, id: comment.id }
+        params: { docId: comment.docId, id: comment.id }
     });
     return result.data;
 }
 
-export const pinComment = async (login: string, comment: Comment): Promise<Comment> => {
-    const result = await commentsClient.post({
-        url: `/api/organizations/${login}/docs/${comment.docId}/comments/${comment.id}/pin`,
-        params: { login, docId: comment.docId, id: comment.id },
+export const pinComment = async (comment: Comment): Promise<Comment> => {
+    const result = await commentsPinClient.post({
+        params: { docId: comment.docId, id: comment.id },
     });
     return result.data;
 }
 
-export const unpinComment = async (login: string, comment: Comment): Promise<Comment> => {
-    const result = await commentsClient.post({
-        url: `/api/organizations/${login}/docs/${comment.docId}/comments/${comment.id}/unpin`,
+export const unpinComment = async (comment: Comment): Promise<Comment> => {
+    const result = await commentsUnpinClient.post({
+        params: { docId: comment.docId, id: comment.id },
     });
     return result.data;
 }

@@ -35,7 +35,6 @@ interface DispatchProps {
 
 interface CommentsProps extends InjectableProps, DispatchProps {
     doc: Doc;
-    login: string;
 }
 
 interface State {
@@ -96,7 +95,7 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                     (<>
                         <Typography.Title level={3}><FormattedMessage id="commentsPinnedComments" /></Typography.Title>
                         {this.props.pinnedComments.map((commentId: number) => {
-                            return (<CommentDetailsComponent key={commentId} docId={this.props.doc.id} login={this.props.login} commentId={commentId}></CommentDetailsComponent>);
+                            return (<CommentDetailsComponent key={commentId} docId={this.props.doc.id} commentId={commentId}></CommentDetailsComponent>);
                         })}
                         <Typography.Title level={3}><FormattedMessage id="commentsCommentsText" /></Typography.Title>
                     </>)
@@ -112,12 +111,12 @@ class CommentListComponent extends React.Component<CommentsProps, State>  {
                 >
                     {(this.props.moreComments && this.props.moreComments.length > 0) &&
                         <>
-                            {this.props.moreComments.map((commentId: number) => { return (<CommentDetailsComponent key={commentId} focus={commentId === this.props.moreCommentFocusId} docId={this.props.doc.id} login={this.props.login} commentId={commentId}></CommentDetailsComponent>); })}
+                            {this.props.moreComments.map((commentId: number) => { return (<CommentDetailsComponent key={commentId} focus={commentId === this.props.moreCommentFocusId} docId={this.props.doc.id} commentId={commentId}></CommentDetailsComponent>); })}
                             <Divider className="divider-new-comments" orientation="right"><FormattedMessage id="commentsNewLabel" /></Divider>
                         </>
                     }
 
-                    {this.props.comments?.map((commentId: number) => <CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} docId={this.props.doc.id} login={this.props.login} commentId={commentId}></CommentDetailsComponent>)}
+                    {this.props.comments?.map((commentId: number) => <CommentDetailsComponent key={commentId} focus={commentId === this.state.focusId} docId={this.props.doc.id} commentId={commentId}></CommentDetailsComponent>)}
 
 
                 </InfiniteScroll>

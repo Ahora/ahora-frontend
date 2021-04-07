@@ -8,11 +8,7 @@ interface CanCommentProps {
     currentUser: User | undefined | null;
 }
 
-interface DispatchProps {
-    requestCurrentUser(): void;
-}
-
-interface AllProps extends CanCommentProps, DispatchProps {
+interface AllProps extends CanCommentProps {
 
 }
 
@@ -38,4 +34,4 @@ const mapStateToProps = (state: ApplicationState): CanCommentProps => {
 };
 
 
-export default connect(mapStateToProps)(CanCommnet as any); 
+export default connect(mapStateToProps)(CanCommnet as any);

@@ -20,7 +20,6 @@ interface InjectableProps {
 }
 interface CommentsProps extends InjectableProps {
     docId: number;
-    login: string;
     commentAdded: (comment: Comment) => void;
 }
 

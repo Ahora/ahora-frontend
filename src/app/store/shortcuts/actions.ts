@@ -1,4 +1,4 @@
-import { ADD_SHORTCUT, RECEIVE_SHORTCUTS, ShortcutActionTypes, FETCH_SHORTCUTS, DELETE_SHORTCUT, UPDATE_SHORTCUT, UPDATE_UNREAD_DOCS_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, REPORT_DOC_READ, LOAD_SHORTCUT_DOCS, SHORTCUT_DOCS_RECEIVED, ShortcutDocsReceivedAction, SHORTCUT_DOCS_ADD, ShortcutAddDocAction, UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS, SHORTCUTS_UPDATE_STAR } from './types'
+import { ADD_SHORTCUT, RECEIVE_SHORTCUTS, ShortcutActionTypes, FETCH_SHORTCUTS, DELETE_SHORTCUT, UPDATE_SHORTCUT, UPDATE_UNREAD_DOCS_SHORTCUT, UPDATE_SHURTCUT_SEARCH_CRITERIAS, REPORT_DOC_READ, LOAD_SHORTCUT_DOCS, SHORTCUT_DOCS_RECEIVED, ShortcutDocsReceivedAction, SHORTCUT_DOCS_ADD, ShortcutAddDocAction, UPDATE_SHURTCUT_DRAFT_SEARCH_CRITERIAS, SHORTCUTS_UPDATE_STAR, SHORTCUTS_UPDATE_LAYOUT } from './types'
 import { OrganizationShortcut } from 'app/services/OrganizationShortcut';
 import { SearchCriterias } from 'app/components/SearchDocsInput';
 
@@ -19,12 +19,25 @@ export function setShortcutUnReadAndDocs(shortcutId: string, unreadDocs: number[
     }
 }
 
+
+
 export function loadShortcutDocs(shortcutId: string, page: number) {
     return {
         type: LOAD_SHORTCUT_DOCS,
         payload: {
             shortcutId,
             page
+        }
+    }
+}
+
+
+export function SetShortcutLayoutInState(shortcutId: string, layout: string) {
+    return {
+        type: SHORTCUTS_UPDATE_LAYOUT,
+        payload: {
+            shortcutId,
+            layout
         }
     }
 }

@@ -3,8 +3,6 @@ import { DocWatcher, getWatchers } from 'app/services/watchers';
 import { connect } from 'react-redux';
 import { ApplicationState } from 'app/store';
 import { User } from 'app/services/users';
-import { Dispatch } from 'redux';
-import { requestCurrentUserData } from 'app/store/currentuser/actions';
 import { watchDoc, unwatchDoc } from 'app/services/docs';
 import AhoraSpinner from '../Forms/Basics/Spinner';
 import { Button } from 'antd';
@@ -13,11 +11,8 @@ interface injectedParams {
     currentUser?: User,
 }
 
-interface DispatchProps {
-    requestCurrentUser(): void;
-}
 
-interface DocWatcherProps extends injectedParams, DispatchProps {
+interface DocWatcherProps extends injectedParams {
     docId: number;
     login: string;
 }
@@ -116,11 +111,4 @@ const mapStateToProps = (state: ApplicationState): injectedParams => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-    return {
-        requestCurrentUser: () => dispatch(requestCurrentUserData())
-    }
-}
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(DocWatchersComponent as any); 
+export default connect(mapStateToProps)(DocWatchersComponent as any);

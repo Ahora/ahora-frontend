@@ -74,7 +74,7 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
     }
 
     updateDoc(doc: Doc) {
-        this.updateDoc(doc);
+        this.props.updateDoc(doc);
         this.props.reportAsRead();
     }
 

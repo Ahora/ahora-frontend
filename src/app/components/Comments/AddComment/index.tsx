@@ -56,8 +56,6 @@ class AddCommentComponent extends React.Component<CommentsProps, State> {
     }
 
     focus() {
-        console.log(this.markdownRef);
-
         if (this.markdownRef.current) {
             this.markdownRef.current.focus();
         }

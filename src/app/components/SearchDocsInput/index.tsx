@@ -51,6 +51,7 @@ const autoComleteTokens: string[] = searchOptions.keywords!.map((token) => `${to
 export interface SearchCriterias {
     assignee?: (number | null)[];
     reporter?: (number | null)[];
+    repo?: string | string[];
     star?: boolean;
     label?: number[];
     status?: string[];

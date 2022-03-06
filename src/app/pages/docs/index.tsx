@@ -9,7 +9,7 @@ import { Doc } from 'app/services/docs';
 import AddDocPage from "app/pages/docs/add";
 import { isMobile, isBrowser } from "react-device-detect";
 import StoreOrganizationShortcut from 'app/store/shortcuts/StoreOrganizationShortcut';
-import { addDocToShortcut, loadShortcutDocs } from 'app/store/shortcuts/actions';
+import { addDocToShortcut, loadShortcutDocs, updateShortcutDraftsearchCriteriaAction } from 'app/store/shortcuts/actions';
 import { deleteDocInState, setDocInState } from 'app/store/docs/actions';
 import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
 import ShortcutTitle from 'app/components/Shortcuts/ShortcutTitle';
@@ -44,6 +44,7 @@ interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedPar
 
 interface DispatchProps {
     loadShortcutDocs(shortcutId: string, page: number): void;
+    setDraftSearchCriterias(section: string, data?: SearchCriterias): void;
     deleteDoc(docId: number): void;
     addDoc(shortcutdId: string, doc: Doc): void;
 }
@@ -61,9 +62,8 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
     setSearchCriterias() {
         if (this.props.location.search.length > 0) {
             const parsedUrl: ParsedUrl = parseUrl(this.props.location.search, { parseNumbers: true, parseBooleans: true });
-            const searchCriterias: SearchCriterias = parsedUrl.query;
-            console.log(searchCriterias);
-            //this.searchSelected(searchCriterias);
+            const searchCriterias: SearchCriterias = { ...parsedUrl.query, status: ["closed"] };
+            this.props.setDraftSearchCriterias(this.props.match.params.section, searchCriterias)
         }
         if (!this.props.docs) {
             this.props.loadShortcutDocs(this.props.match.params.section, 1);
@@ -166,6 +166,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
         loadShortcutDocs: (shortcutdId: string, page: number) => dispatch(loadShortcutDocs(shortcutdId, page)),
         deleteDoc: (docId: number) => dispatch(deleteDocInState(docId)),
+        setDraftSearchCriterias: (shortcutdId: string, data: SearchCriterias) => dispatch(updateShortcutDraftsearchCriteriaAction(shortcutdId, data)),
         addDoc: (shortcutdId: string, doc: Doc) => {
             dispatch(setDocInState(doc));
             dispatch(addDocToShortcut(shortcutdId, doc.id));
@@ -173,4 +174,4 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocsPage as any); 
+export default connect(mapStateToProps, mapDispatchToProps)(DocsPage as any);

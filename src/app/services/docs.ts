@@ -56,9 +56,9 @@ const docsunReadCommentsClient: AhoraRestCollector = new AhoraRestCollector("/ap
 const docStarClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/star");
 const reportDocReadClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/view");
 const watchersClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/watchers/{userId}");
-const docStatusClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/${login}/docs/${id}/status");
-const docAssignClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/${login}/docs/${id}/assignee");
-const docIsPrivateClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/${login}/docs/${id}/isprivate");
+const docStatusClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/status");
+const docAssignClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/assignee");
+const docIsPrivateClient: AhoraRestCollector = new AhoraRestCollector("/api/organizations/{organizationId}/docs/{id}/isprivate");
 
 export const getDocs = async (query?: SearchCriterias, offset: number = 0, limit: number = 30): Promise<SearchDocResult> => {
     const result = await docsClient.get({

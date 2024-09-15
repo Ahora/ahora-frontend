@@ -10,7 +10,7 @@ import AddDocPage from "app/pages/docs/add";
 import { isMobile, isBrowser } from "react-device-detect";
 import StoreOrganizationShortcut from 'app/store/shortcuts/StoreOrganizationShortcut';
 import { addDocToShortcut, loadShortcutDocs, updateShortcutDraftsearchCriteriaAction } from 'app/store/shortcuts/actions';
-import { deleteDocInState, setDocInState } from 'app/store/docs/actions';
+import { setDocInState } from 'app/store/docs/actions';
 import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
 import ShortcutTitle from 'app/components/Shortcuts/ShortcutTitle';
 import SideBySideDocLayout from 'app/components/DocList/DocLayouts/SideBySideDocLayout';
@@ -45,7 +45,6 @@ interface DocsPageProps extends RouteComponentProps<DocsPageParams>, injectedPar
 interface DispatchProps {
     loadShortcutDocs(shortcutId: string, page: number): void;
     setDraftSearchCriterias(section: string, data?: SearchCriterias): void;
-    deleteDoc(docId: number): void;
     addDoc(shortcutdId: string, doc: Doc): void;
 }
 
@@ -91,11 +90,6 @@ class DocsPage extends React.Component<AllProps, DocsPageState> {
                 this.props.loadShortcutDocs(this.props.match.params.section, 1);
             }
         }
-    }
-
-    onDocDeleted(docToBeDeleted: Doc) {
-        this.props.deleteDoc(docToBeDeleted.id);
-        this.props.history.push(`/organizations/${this.props.match.params.login}/${this.props.match.params.section}`)
     }
 
     onAddCancel() {
@@ -165,7 +159,6 @@ const mapStateToProps = (state: ApplicationState, props: AllProps): injectedPara
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     return {
         loadShortcutDocs: (shortcutdId: string, page: number) => dispatch(loadShortcutDocs(shortcutdId, page)),
-        deleteDoc: (docId: number) => dispatch(deleteDocInState(docId)),
         setDraftSearchCriterias: (shortcutdId: string, data: SearchCriterias) => dispatch(updateShortcutDraftsearchCriteriaAction(shortcutdId, data)),
         addDoc: (shortcutdId: string, doc: Doc) => {
             dispatch(setDocInState(doc));

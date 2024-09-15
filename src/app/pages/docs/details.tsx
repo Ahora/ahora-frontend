@@ -24,7 +24,7 @@ import { addComment } from 'app/services/comments';
 import { AddCommentInState, requestCommentsToState } from 'app/store/comments/actions';
 import AhoraDate from 'app/components/Basics/AhoraTime';
 import AhoraFlexPanel from 'app/components/Basics/AhoraFlexPanel';
-import { addWatcheToDocInState, DeleteWatcheFromDocInState, requestDocToState, setDocInState } from 'app/store/docs/actions';
+import { addWatcheToDocInState, deleteDocInState, DeleteWatcheFromDocInState, requestDocToState, setDocInState } from 'app/store/docs/actions';
 import DocTypeText from 'app/components/localization/DocTypeText';
 import { FormattedMessage } from 'react-intl';
 import IsPrivateTag from 'app/components/localization/IsPrivateTag';
@@ -46,6 +46,7 @@ interface DispatchProps {
     reportAsRead(): void;
     requestDoc: () => void;
     updateDoc(doc: Doc): void;
+    deleteDoc(docId: number): void;
     addComment: (comment: Comment, tempCommentId?: number) => void;
     addWatcher: (userId: number) => void;
     deleteWatcher: (userId: number) => void;
@@ -149,12 +150,12 @@ class DocsDetailsPage extends React.Component<AllProps, DocsDetailsPageState> {
 
     async delete() {
         if (this.props.doc) {
-            const deletedDoc: Doc = { ...this.props.doc };
-
             if (this.props.onDocDeleted) {
                 this.props.onDocDeleted(this.props.doc);
             }
-            await deleteDoc(deletedDoc.id);
+
+            this.props.deleteDoc(this.props.docId);
+            await deleteDoc(this.props.docId);
         }
     }
 
@@ -274,6 +275,7 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: AllProps): DispatchPro
     return {
         addWatcher: (userId) => dispatch(addWatcheToDocInState(ownProps.docId, userId)),
         deleteWatcher: (userId) => dispatch(DeleteWatcheFromDocInState(ownProps.docId, userId)),
+        deleteDoc: (docId: number) => dispatch(deleteDocInState(docId)),
         requestDoc: () => dispatch(requestDocToState(ownProps.docId)),
         updateDoc: (doc: Doc) => dispatch(setDocInState(doc)),
         reportAsRead: () => dispatch(reportDocRead(ownProps.docId)),
